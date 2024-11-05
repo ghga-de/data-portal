@@ -1,0 +1,10 @@
+#!/bin/bash
+# install service in dev container
+
+cd /workspace
+
+# update npm
+npm install -g npm
+
+# install dependencies
+npm install
