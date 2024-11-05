@@ -39,9 +39,10 @@ function readSettings() {
   const settings = { ...defaultSettings, ...specificSettings };
 
   // Override settings with environment variables
+  const prefix = NAME.replace("-", "_");
   for (const key in settings) {
     if (!settings.hasOwnProperty(key)) continue;
-    const envVarName = `${NAME}_${key}`;
+    const envVarName = `${prefix}_${key}`;
     const value = settings[key];
     let envVarValue = process.env[envVarName];
     if (envVarValue === undefined) continue;
