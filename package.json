@@ -8,7 +8,10 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint",
-    "prepare": "husky"
+    "prepare": "husky",
+    "compodoc:build": "compodoc -p tsconfig.doc.json",
+    "compodoc:build-and-serve": "compodoc -p tsconfig.doc.json -s -r 8081",
+    "compodoc:serve": "compodoc -s"
   },
   "private": true,
   "dependencies": {
@@ -27,10 +30,12 @@
     "@angular-devkit/build-angular": "^19.0.0-rc.0",
     "@angular/cli": "^19.0.0-rc.0",
     "@angular/compiler-cli": "^19.0.0-next.0",
+    "@compodoc/compodoc": "^1.1.26",
     "@types/jasmine": "~5.1.0",
     "angular-eslint": "18.4.0",
     "eslint": "^9.13.0",
     "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-jsdoc": "^50.4.3",
     "eslint-plugin-prettier": "^5.2.1",
     "husky": "^9.1.6",
     "jasmine-core": "~5.4.0",

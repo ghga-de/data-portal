@@ -2,6 +2,7 @@
 const eslint = require("@eslint/js");
 const tseslint = require("typescript-eslint");
 const angular = require("angular-eslint");
+const jsdoc = require("eslint-plugin-jsdoc");
 const eslintPluginPrettierRecommended = require('eslint-plugin-prettier/recommended');
 
 module.exports = tseslint.config(
@@ -12,10 +13,15 @@ module.exports = tseslint.config(
       ...tseslint.configs.recommended,
       ...tseslint.configs.stylistic,
       ...angular.configs.tsRecommended,
-      eslintPluginPrettierRecommended
-    ],
+      eslintPluginPrettierRecommended,
+      jsdoc.configs["flat/recommended-typescript"]
+        ],
+        plugins: {
+          jsdoc
+        },
     processor: angular.processInlineTemplates,
     rules: {
+      
       "@angular-eslint/directive-selector": [
         "error",
         {
@@ -32,6 +38,20 @@ module.exports = tseslint.config(
           style: "kebab-case",
         },
       ],
+      "jsdoc/require-jsdoc": [
+        "warn",
+        {
+          // Apply the rule only to functions, classes, and methods
+          require: {
+            FunctionDeclaration: true,
+            MethodDefinition: true,
+            ClassDeclaration: true,
+            ArrowFunctionExpression: true,
+            FunctionExpression: true,
+          },
+        },
+      ],
+      "jsdoc/require-description": "warn",
     },
   },
   {
