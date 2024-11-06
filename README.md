@@ -57,3 +57,13 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+## Package Manager
+
+This project uses pnpm to install dependencies which is a replacement for the much slower npm. Run 
+
+```bash
+pnpm install
+```
+
+to install the dependencies.
