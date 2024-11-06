@@ -2,7 +2,7 @@
 # install service in dev container
 
 cd /workspace
-
+corepack enable pnpm
 echo "Updating npm..."
 npm install -g npm
 
@@ -13,7 +13,7 @@ echo "Installing YAML parser..."
 npm install -g js-yaml
 
 echo "Install application and dev tools..."
-npm install
+pnpm install
 
 # Add some useful bash aliases
 if ! grep -q "^alias ll=" /home/node/.bash_aliases; then
