@@ -6,8 +6,8 @@ interface Config {
 }
 
 declare global {
-  interface Window { 
-       config: Config
+  interface Window {
+    config: Config;
   }
 }
 
