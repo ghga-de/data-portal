@@ -5,6 +5,12 @@ interface Config {
   metldata_url: string;
 }
 
+declare global {
+  interface Window { 
+       config: Config
+  }
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -12,7 +18,7 @@ export class ConfigService {
   #config: Config;
 
   constructor() {
-    this.#config = (window as any).config;
+    this.#config = window.config;
   }
 
   get massUrl(): string {
