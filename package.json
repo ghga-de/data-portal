@@ -8,13 +8,18 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint",
+    "lf": "ng lint --fix",
     "prepare": "husky",
+    "docs": "compodoc -p tsconfig.doc.json -s -r 8081",
     "compodoc:build": "compodoc -p tsconfig.doc.json",
     "compodoc:build-and-serve": "compodoc -p tsconfig.doc.json -s -r 8081",
     "compodoc:serve": "compodoc -s"
   },
+  "type": "module",
   "private": true,
   "dependencies": {
+    "@angular-eslint/eslint-plugin": "^18.4.0",
+    "@angular-eslint/template-parser": "^18.4.0",
     "@angular/animations": "^19.0.0-next.0",
     "@angular/common": "^19.0.0-next.0",
     "@angular/compiler": "^19.0.0-next.0",

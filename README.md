@@ -63,3 +63,7 @@ For more information on using the Angular CLI, including detailed command refere
 The repository is setup in such a way to only allow linted commits. That means, that commits are blocked by husky if they don't pass linting. This ensures that code quality standards are maintained without build up technical debt that has to be fixed later on.
 
 To ensure deterministic behavior, the pre-commit hook *does not* attempt to fix linter errors. Most of the time, you will be fine by simply running ```ng lint --fix``` which attempts to automatically fix most of the issues. If we ran that in the hook, however, you would be committing different code than the one you checked. So if you cannot commit your code, run lint fix. If that doesn't resolve all the issues (which you can see by running ng lint) resolve those issues and try again.
+
+## Ease of use
+
+For comfort, we are adding two shorthands: ```ng lf``` (for lint-fix) and ```ng docs``` (to build and serve the documentation).

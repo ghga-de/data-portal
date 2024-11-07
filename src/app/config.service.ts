@@ -11,6 +11,9 @@ declare global {
   }
 }
 
+/**
+ * The config service provides access to the configuration of the application.
+ */
 @Injectable({
   providedIn: 'root',
 })

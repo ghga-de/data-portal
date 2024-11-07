@@ -1,47 +1,48 @@
-// @ts-check
-const eslint = require("@eslint/js");
-const tseslint = require("typescript-eslint");
-const angular = require("angular-eslint");
-const jsdoc = require("eslint-plugin-jsdoc");
-const eslintPluginPrettierRecommended = require('eslint-plugin-prettier/recommended');
 
-module.exports = tseslint.config(
+// @ts-check
+import angular from '@angular-eslint/eslint-plugin';
+import angularTemplate from '@angular-eslint/eslint-plugin-template';
+import { default as angularTemplateParser } from "@angular-eslint/template-parser";
+import typescriptPlugin, { configs as tsConfigs } from "@typescript-eslint/eslint-plugin";
+import * as typescriptParser from "@typescript-eslint/parser";
+import jsdoc from "eslint-plugin-jsdoc";
+
+import pkg from '@angular-eslint/eslint-plugin';
+const { configs: angularConfigs } = pkg;
+
+// Define the configuration
+export default [
+  // Configuration for TypeScript files
   {
     files: ["**/*.ts"],
-    extends: [
-      eslint.configs.recommended,
-      ...tseslint.configs.recommended,
-      ...tseslint.configs.stylistic,
-      ...angular.configs.tsRecommended,
-      eslintPluginPrettierRecommended,
-      jsdoc.configs["flat/recommended-typescript"]
-        ],
-        plugins: {
-          jsdoc
-        },
-    processor: angular.processInlineTemplates,
+    languageOptions: {
+      parser: typescriptParser,
+      parserOptions: {
+        ecmaVersion: 2020,
+        sourceType: "module",
+        project: "./tsconfig.json",
+      },
+    },
+    plugins: {
+      "@angular-eslint": angular,
+      "@typescript-eslint": typescriptPlugin,
+      jsdoc,
+    },
     rules: {
-      
+      ...tsConfigs.recommended.rules,
+      ...angularConfigs.recommended.rules,
+      ...jsdoc.configs["recommended-typescript"].rules,
       "@angular-eslint/directive-selector": [
         "error",
-        {
-          type: "attribute",
-          prefix: "app",
-          style: "camelCase",
-        },
+        { type: "attribute", prefix: "app", style: "camelCase" },
       ],
       "@angular-eslint/component-selector": [
         "error",
-        {
-          type: "element",
-          prefix: "app",
-          style: "kebab-case",
-        },
+        { type: "element", prefix: "app", style: "kebab-case" },
       ],
       "jsdoc/require-jsdoc": [
         "warn",
         {
-          // Apply the rule only to functions, classes, and methods
           require: {
             FunctionDeclaration: true,
             MethodDefinition: true,
@@ -51,15 +52,23 @@ module.exports = tseslint.config(
           },
         },
       ],
-      "jsdoc/require-description": "warn",
+      "jsdoc/require-description": [
+        "warn",
+        { contexts: ["FunctionDeclaration", "MethodDefinition", "ClassDeclaration"] },
+      ],
     },
   },
   {
     files: ["**/*.html"],
-    extends: [
-      ...angular.configs.templateRecommended,
-      ...angular.configs.templateAccessibility,
-    ],
-    rules: {},
-  }
-);
+    languageOptions: {
+      parser: angularTemplateParser,
+    },
+    plugins: {
+      "@angular-eslint/template": angularTemplate,
+    },
+    rules: {
+      ...angularTemplate.configs.recommended.rules,
+      ...angularTemplate.configs.accessibility.rules,
+    }
+  },
+];
