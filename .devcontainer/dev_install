@@ -4,7 +4,7 @@
 cd /workspace
 corepack enable pnpm
 echo "Updating npm..."
-npm install -g npm
+npm install -g pnpm
 
 # Install dependencies used by run.js
 echo "Install static web server..."
