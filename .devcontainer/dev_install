@@ -2,9 +2,9 @@
 # install service in dev container
 
 cd /workspace
-
+corepack prepare pnpm@9.12.3 --activate
 echo "Updating npm..."
-npm install -g npm
+npm install -g pnpm
 
 # Install dependencies used by run.js
 echo "Install static web server..."
@@ -13,7 +13,7 @@ echo "Installing YAML parser..."
 npm install -g js-yaml
 
 echo "Install application and dev tools..."
-npm install
+pnpm install
 
 # Add some useful bash aliases
 if ! grep -q "^alias ll=" /home/node/.bash_aliases; then
