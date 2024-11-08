@@ -10,16 +10,7 @@ npm install -g pnpm
 echo "Install static web server..."
 curl --proto '=https' --tlsv1.2 -sSfL https://get.static-web-server.net | sh
 echo "Installing YAML parser..."
-npm install -g js-yaml
+pnpm add js-yaml
 
 echo "Install application and dev tools..."
 pnpm install
-
-# Add some useful bash aliases
-if ! grep -q "^alias ll=" /home/node/.bash_aliases; then
-  echo "alias ll='ls -al'" >/home/node/.bash_aliases
-fi
-# Add local npm scripts to the path
-if ! grep -q "/workspace/node_modules/.bin" /home/node/.bashrc; then
-    echo "export PATH=$PATH:/workspace/node_modules/.bin" >>/home/node/.bashrc
-fi
