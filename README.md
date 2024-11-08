@@ -66,4 +66,4 @@ To ensure deterministic behavior, the pre-commit hook *does not* attempt to fix 
 
 ## Ease of use
 
-For comfort, we are adding these shorthands: `npm run lint`, `npm run lf`` (for `lint --fix`) and `npm run docs` (to build and serve the documentation). Apart from seeing the linter warnings when you (try to) commit or run the linter manually, your IDE should also show you these warnings in the code and fixing (the auto-fixable ones) should be offered in the context menu on hover or via Ctrl-..
+For comfort, we are adding these shorthands: `npm run lint`, `npm run lf` (for `lint --fix`) and `npm run docs` (to build and serve the documentation). Apart from seeing the linter warnings when you (try to) commit or run the linter manually, your IDE should also show you these warnings in the code and fixing (the auto-fixable ones) should be offered in the context menu on hover or via Ctrl-..
