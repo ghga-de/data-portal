@@ -2,7 +2,7 @@
 # install service in dev container
 
 cd /workspace
-corepack enable pnpm
+corepack prepare pnpm@9.12.3 --activate
 echo "Updating npm..."
 npm install -g pnpm
 
