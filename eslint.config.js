@@ -1,4 +1,3 @@
-
 // @ts-check
 import angular from '@angular-eslint/eslint-plugin';
 import angularTemplate from '@angular-eslint/eslint-plugin-template';
@@ -6,6 +5,7 @@ import { default as angularTemplateParser } from "@angular-eslint/template-parse
 import typescriptPlugin, { configs as tsConfigs } from "@typescript-eslint/eslint-plugin";
 import * as typescriptParser from "@typescript-eslint/parser";
 import jsdoc from "eslint-plugin-jsdoc";
+import prettier from "eslint-plugin-prettier";
 
 import pkg from '@angular-eslint/eslint-plugin';
 const { configs: angularConfigs } = pkg;
@@ -27,11 +27,13 @@ export default [
       "@angular-eslint": angular,
       "@typescript-eslint": typescriptPlugin,
       jsdoc,
+      prettier,
     },
     rules: {
       ...tsConfigs.recommended.rules,
       ...angularConfigs.recommended.rules,
       ...jsdoc.configs["recommended-typescript"].rules,
+      "prettier/prettier": "warn",
       "@angular-eslint/directive-selector": [
         "error",
         { type: "attribute", prefix: "app", style: "camelCase" },
@@ -65,10 +67,12 @@ export default [
     },
     plugins: {
       "@angular-eslint/template": angularTemplate,
+      prettier,
     },
     rules: {
       ...angularTemplate.configs.recommended.rules,
       ...angularTemplate.configs.accessibility.rules,
+      "prettier/prettier": "warn",
     }
   },
 ];
