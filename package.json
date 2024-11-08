@@ -9,6 +9,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "lf": "ng lint --fix",
+    "preinstall": "npx only-allow pnpm",
     "prepare": "husky",
     "docs": "compodoc -p tsconfig.doc.json -s -r 8081",
     "compodoc:build": "compodoc -p tsconfig.doc.json",
