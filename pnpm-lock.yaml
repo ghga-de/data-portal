@@ -26,6 +26,9 @@ dependencies:
   '@angular/forms':
     specifier: 19.0.0-rc.1
     version: 19.0.0-rc.1(@angular/common@19.0.0-rc.1)(@angular/core@19.0.0-rc.1)(@angular/platform-browser@19.0.0-rc.1)(rxjs@7.8.1)
+  '@angular/material':
+    specifier: ^19.0.0-rc.0
+    version: 19.0.0-rc.1(@angular/animations@19.0.0-rc.1)(@angular/cdk@19.0.0-rc.1)(@angular/common@19.0.0-rc.1)(@angular/core@19.0.0-rc.1)(@angular/forms@19.0.0-rc.1)(@angular/platform-browser@19.0.0-rc.1)(rxjs@7.8.1)
   '@angular/platform-browser':
     specifier: 19.0.0-rc.1
     version: 19.0.0-rc.1(@angular/animations@19.0.0-rc.1)(@angular/common@19.0.0-rc.1)(@angular/core@19.0.0-rc.1)
@@ -544,6 +547,21 @@ packages:
       - terser
     dev: true
 
+  /@angular/cdk@19.0.0-rc.1(@angular/common@19.0.0-rc.1)(@angular/core@19.0.0-rc.1)(rxjs@7.8.1):
+    resolution: {integrity: sha512-aNpSadgqq3bpyZ/OsCiAl/TGMzUZYqAltctgYS3kXIrSphamus+9wOR7SF1dK87RUX/RWj3SMpol6e4kLmyfpw==}
+    peerDependencies:
+      '@angular/common': ^19.0.0-0 || ^19.1.0-0 || ^19.2.0-0 || ^19.3.0-0 || ^20.0.0-0
+      '@angular/core': ^19.0.0-0 || ^19.1.0-0 || ^19.2.0-0 || ^19.3.0-0 || ^20.0.0-0
+      rxjs: ^6.5.3 || ^7.4.0
+    dependencies:
+      '@angular/common': 19.0.0-rc.1(@angular/core@19.0.0-rc.1)(rxjs@7.8.1)
+      '@angular/core': 19.0.0-rc.1(rxjs@7.8.1)(zone.js@0.15.0)
+      rxjs: 7.8.1
+      tslib: 2.8.1
+    optionalDependencies:
+      parse5: 7.2.1
+    dev: false
+
   /@angular/cli@19.0.0-rc.1(@types/node@22.9.0):
     resolution: {integrity: sha512-xZu/uts0fS6ZPfRfee3bMFx7XIsR3SMI6qL/n13j+Z+cRqdofyLOPiZeySf2RiWBXhYyUHIk4E1kT5giN/RABg==}
     engines: {node: ^18.19.1 || ^20.11.1 || >=22.0.0, npm: ^6.11.0 || ^7.5.6 || >=8.0.0, yarn: '>= 1.13.0'}
@@ -641,6 +659,27 @@ packages:
     dependencies:
       '@angular/common': 19.0.0-rc.1(@angular/core@19.0.0-rc.1)(rxjs@7.8.1)
       '@angular/core': 19.0.0-rc.1(rxjs@7.8.1)(zone.js@0.15.0)
+      '@angular/platform-browser': 19.0.0-rc.1(@angular/animations@19.0.0-rc.1)(@angular/common@19.0.0-rc.1)(@angular/core@19.0.0-rc.1)
+      rxjs: 7.8.1
+      tslib: 2.8.1
+    dev: false
+
+  /@angular/material@19.0.0-rc.1(@angular/animations@19.0.0-rc.1)(@angular/cdk@19.0.0-rc.1)(@angular/common@19.0.0-rc.1)(@angular/core@19.0.0-rc.1)(@angular/forms@19.0.0-rc.1)(@angular/platform-browser@19.0.0-rc.1)(rxjs@7.8.1):
+    resolution: {integrity: sha512-PCT4t4JL1INyLj0WEtGOVeS6i7Xk8wQa1sXqFV4nJADD+TPLFkvGFaW/mnXjKGFNXq8BAPe/lZ26uPFgy0HGfA==}
+    peerDependencies:
+      '@angular/animations': ^19.0.0-0 || ^19.1.0-0 || ^19.2.0-0 || ^19.3.0-0 || ^20.0.0-0
+      '@angular/cdk': 19.0.0-rc.1
+      '@angular/common': ^19.0.0-0 || ^19.1.0-0 || ^19.2.0-0 || ^19.3.0-0 || ^20.0.0-0
+      '@angular/core': ^19.0.0-0 || ^19.1.0-0 || ^19.2.0-0 || ^19.3.0-0 || ^20.0.0-0
+      '@angular/forms': ^19.0.0-0 || ^19.1.0-0 || ^19.2.0-0 || ^19.3.0-0 || ^20.0.0-0
+      '@angular/platform-browser': ^19.0.0-0 || ^19.1.0-0 || ^19.2.0-0 || ^19.3.0-0 || ^20.0.0-0
+      rxjs: ^6.5.3 || ^7.4.0
+    dependencies:
+      '@angular/animations': 19.0.0-rc.1(@angular/core@19.0.0-rc.1)
+      '@angular/cdk': 19.0.0-rc.1(@angular/common@19.0.0-rc.1)(@angular/core@19.0.0-rc.1)(rxjs@7.8.1)
+      '@angular/common': 19.0.0-rc.1(@angular/core@19.0.0-rc.1)(rxjs@7.8.1)
+      '@angular/core': 19.0.0-rc.1(rxjs@7.8.1)(zone.js@0.15.0)
+      '@angular/forms': 19.0.0-rc.1(@angular/common@19.0.0-rc.1)(@angular/core@19.0.0-rc.1)(@angular/platform-browser@19.0.0-rc.1)(rxjs@7.8.1)
       '@angular/platform-browser': 19.0.0-rc.1(@angular/animations@19.0.0-rc.1)(@angular/common@19.0.0-rc.1)(@angular/core@19.0.0-rc.1)
       rxjs: 7.8.1
       tslib: 2.8.1
@@ -5238,7 +5277,7 @@ packages:
       domhandler: 5.0.3
       htmlparser2: 9.1.0
       picocolors: 1.1.1
-      postcss: 8.4.47
+      postcss: 8.4.48
       postcss-media-query-parser: 0.2.3
     dev: true
 
@@ -5744,12 +5783,12 @@ packages:
       webpack:
         optional: true
     dependencies:
-      icss-utils: 5.1.0(postcss@8.4.47)
-      postcss: 8.4.47
-      postcss-modules-extract-imports: 3.1.0(postcss@8.4.47)
-      postcss-modules-local-by-default: 4.0.5(postcss@8.4.47)
-      postcss-modules-scope: 3.2.0(postcss@8.4.47)
-      postcss-modules-values: 4.0.0(postcss@8.4.47)
+      icss-utils: 5.1.0(postcss@8.4.48)
+      postcss: 8.4.48
+      postcss-modules-extract-imports: 3.1.0(postcss@8.4.48)
+      postcss-modules-local-by-default: 4.0.5(postcss@8.4.48)
+      postcss-modules-scope: 3.2.0(postcss@8.4.48)
+      postcss-modules-values: 4.0.0(postcss@8.4.48)
       postcss-value-parser: 4.2.0
       semver: 7.6.3
       webpack: 5.96.1(esbuild@0.24.0)
@@ -6054,7 +6093,6 @@ packages:
   /entities@4.5.0:
     resolution: {integrity: sha512-V0hjH4dGPh9Ao5p0MoRY6BVqtwCjhz6vI5LT8AJ55H+4g9/4vbHx1I54fS0XuclLhDHArPQCiMjDxjaL8fPxhw==}
     engines: {node: '>=0.12'}
-    dev: true
 
   /env-paths@2.2.1:
     resolution: {integrity: sha512-+h1lkLKhZMTYjog1VEpJNG7NZJWcuc2DDk/qsqSTRRCOXiLjeQ1d1/udrUGhqMxUgAlwKNZ0cf2uqan5GLuS2A==}
@@ -7120,13 +7158,13 @@ packages:
       safer-buffer: 2.1.2
     dev: true
 
-  /icss-utils@5.1.0(postcss@8.4.47):
+  /icss-utils@5.1.0(postcss@8.4.48):
     resolution: {integrity: sha512-soFhflCVWLfRNOPU3iv5Z9VUdT44xFRbzjLsEzSr5AQmgqPMTHdU3PMT1Cf1ssx8fLNJDA1juftYl+PUcv3MqA==}
     engines: {node: ^10 || ^12 || >= 14}
     peerDependencies:
       postcss: ^8.1.0
     dependencies:
-      postcss: 8.4.47
+      postcss: 8.4.48
     dev: true
 
   /ieee754@1.2.1:
@@ -8657,7 +8695,6 @@ packages:
     resolution: {integrity: sha512-BuBYQYlv1ckiPdQi/ohiivi9Sagc9JG+Ozs0r7b/0iK3sKmrb0b9FdWdBbOdx6hBCM/F9Ir82ofnBhtZOjCRPQ==}
     dependencies:
       entities: 4.5.0
-    dev: true
 
   /parseurl@1.3.3:
     resolution: {integrity: sha512-CiyeOxFT/JZyN5m0z9PfXw4SCBJ6Sygz1Dpl0wqjlhDEGGBP1GnsUVEL0p63hoG1fcj3fHynXi9NYO4nWOL+qQ==}
@@ -8780,45 +8817,45 @@ packages:
     resolution: {integrity: sha512-3sOlxmbKcSHMjlUXQZKQ06jOswE7oVkXPxmZdoB1r5l0q6gTFTQSHxNxOrCccElbW7dxNytifNEo8qidX2Vsig==}
     dev: true
 
-  /postcss-modules-extract-imports@3.1.0(postcss@8.4.47):
+  /postcss-modules-extract-imports@3.1.0(postcss@8.4.48):
     resolution: {integrity: sha512-k3kNe0aNFQDAZGbin48pL2VNidTF0w4/eASDsxlyspobzU3wZQLOGj7L9gfRe0Jo9/4uud09DsjFNH7winGv8Q==}
     engines: {node: ^10 || ^12 || >= 14}
     peerDependencies:
       postcss: ^8.1.0
     dependencies:
-      postcss: 8.4.47
+      postcss: 8.4.48
     dev: true
 
-  /postcss-modules-local-by-default@4.0.5(postcss@8.4.47):
+  /postcss-modules-local-by-default@4.0.5(postcss@8.4.48):
     resolution: {integrity: sha512-6MieY7sIfTK0hYfafw1OMEG+2bg8Q1ocHCpoWLqOKj3JXlKu4G7btkmM/B7lFubYkYWmRSPLZi5chid63ZaZYw==}
     engines: {node: ^10 || ^12 || >= 14}
     peerDependencies:
       postcss: ^8.1.0
     dependencies:
-      icss-utils: 5.1.0(postcss@8.4.47)
-      postcss: 8.4.47
+      icss-utils: 5.1.0(postcss@8.4.48)
+      postcss: 8.4.48
       postcss-selector-parser: 6.1.2
       postcss-value-parser: 4.2.0
     dev: true
 
-  /postcss-modules-scope@3.2.0(postcss@8.4.47):
+  /postcss-modules-scope@3.2.0(postcss@8.4.48):
     resolution: {integrity: sha512-oq+g1ssrsZOsx9M96c5w8laRmvEu9C3adDSjI8oTcbfkrTE8hx/zfyobUoWIxaKPO8bt6S62kxpw5GqypEw1QQ==}
     engines: {node: ^10 || ^12 || >= 14}
     peerDependencies:
       postcss: ^8.1.0
     dependencies:
-      postcss: 8.4.47
+      postcss: 8.4.48
       postcss-selector-parser: 6.1.2
     dev: true
 
-  /postcss-modules-values@4.0.0(postcss@8.4.47):
+  /postcss-modules-values@4.0.0(postcss@8.4.48):
     resolution: {integrity: sha512-RDxHkAiEGI78gS2ofyvCsu7iycRv7oqw5xMWn9iMoR0N/7mf9D50ecQqUo5BZ9Zh2vH4bCUR/ktCqbB9m8vJjQ==}
     engines: {node: ^10 || ^12 || >= 14}
     peerDependencies:
       postcss: ^8.1.0
     dependencies:
-      icss-utils: 5.1.0(postcss@8.4.47)
-      postcss: 8.4.47
+      icss-utils: 5.1.0(postcss@8.4.48)
+      postcss: 8.4.48
     dev: true
 
   /postcss-selector-parser@6.1.2:
@@ -8835,6 +8872,15 @@ packages:
 
   /postcss@8.4.47:
     resolution: {integrity: sha512-56rxCq7G/XfB4EkXq9Egn5GCqugWvDFjafDOThIdMBsI15iqPqR5r15TfSr1YPYeEI19YeaXMCbY6u88Y76GLQ==}
+    engines: {node: ^10 || ^12 || >=14}
+    dependencies:
+      nanoid: 3.3.7
+      picocolors: 1.1.1
+      source-map-js: 1.2.1
+    dev: true
+
+  /postcss@8.4.48:
+    resolution: {integrity: sha512-GCRK8F6+Dl7xYniR5a4FYbpBzU8XnZVeowqsQFYdcXuSbChgiks7qybSkbvnaeqv0G0B+dd9/jJgH8kkLDQeEA==}
     engines: {node: ^10 || ^12 || >=14}
     dependencies:
       nanoid: 3.3.7
@@ -9085,7 +9131,7 @@ packages:
       adjust-sourcemap-loader: 4.0.0
       convert-source-map: 1.9.0
       loader-utils: 2.0.4
-      postcss: 8.4.47
+      postcss: 8.4.48
       source-map: 0.6.1
     dev: true
 
@@ -10172,7 +10218,7 @@ packages:
       '@types/node': 22.9.0
       esbuild: 0.21.5
       less: 4.2.0
-      postcss: 8.4.47
+      postcss: 8.4.48
       rollup: 4.24.4
       sass: 1.80.6
       terser: 5.36.0
