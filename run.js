@@ -1,13 +1,15 @@
 #!/usr/bin/env node
 
-const fs = require("fs");
-const path = require("path");
-const yaml = require("js-yaml");
-const { spawnSync } = require("child_process");
+import { spawnSync } from "child_process";
+import fs from "fs";
+import yaml from "js-yaml";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const NAME = "data-portal";
-
 const DEV_MODE = process.argv.slice(2).includes("--dev");
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 /**
  * Reads and merges configuration settings from default and specific YAML files.
@@ -20,7 +22,7 @@ function readSettings() {
   // Read the default configuration file
   const defaultSettingsPath = path.join(__dirname, `${NAME}.default.yaml`);
   const defaultSettings = yaml.load(
-    fs.readFileSync(defaultSettingsPath, "utf8")
+    fs.readFileSync(defaultSettingsPath, "utf8"),
   );
 
   // Read the (optional) development or production specific configuration file
@@ -112,7 +114,7 @@ function writeSettings(settings) {
 function runDevServer(host, port, logLevel) {
   console.log("Running the development server...");
 
-  params = ["start", "--", "--host", host, "--port", port];
+  const params = ["start", "--", "--host", host, "--port", port];
   if (logLevel == "debug") {
     params.push("--verbose");
   }
