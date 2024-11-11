@@ -2,15 +2,16 @@
 # install service in dev container
 
 cd /workspace
+
 corepack prepare pnpm@9.12.3 --activate
 echo "Updating npm..."
 npm install -g pnpm
 
-# Install dependencies used by run.js
 echo "Install static web server..."
 curl --proto '=https' --tlsv1.2 -sSfL https://get.static-web-server.net | sh
-echo "Installing YAML parser..."
-pnpm add js-yaml
 
 echo "Install application and dev tools..."
 pnpm install
+
+# create certificates
+(cd .devcontainer && ./create_cert)

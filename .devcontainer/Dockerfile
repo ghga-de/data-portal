@@ -1,5 +1,7 @@
 FROM mcr.microsoft.com/devcontainers/typescript-node:1-22-bookworm
 
+RUN apt update && apt install -y dnsutils
+
 # Add some useful bash aliases
 RUN echo "alias ll='ls -al'" >> /home/node/.bash_aliases
 

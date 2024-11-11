@@ -1,6 +1,46 @@
 #!/bin/bash
 
+# USAGE: dev_launcher.sh [staging]
+
 cd /workspace
+
+# Default backend type is the mock service worker
+backend_type="msw"
+
+# The hostname used for the staging deployment
+staging_server="data.staging.ghga.dev"
+
+# Check command line argument
+if [ "$1" = "staging" ]; then
+  backend_type="staging"
+fi
+
+# Create a suitable proxy config file
+if [ "$backend_type" = "staging" ]; then
+  echo "Using staging backend.ç.."
+  server="$staging_server"
+  server_ip=$(dig +short $server @8.8.8.8)
+  port=443
+  ssl=true
+  cp proxy.staging.conf.json proxy.conf.json
+  if ! grep -qs "^$server_ip" /etc/hosts; then
+    echo "Adding $server to /etc/hosts"
+    echo "$server_ip $server" | sudo tee -a /etc/hosts
+  fi
+  echo "Please configure your host computer"
+  echo "to resolve $server to 127.0.0.1."
+else
+  echo "Using mock service worker..."
+  server="localhost"
+  server_ip="127.0.0.1"
+  port=8080
+  ssl=false
+  echo "{}" > proxy.conf.json
+fi
+
+export data_portal_host=127.0.0.1
+export data_portal_port=$port
+export data_portal_ssl=$ssl
 
 # start development server
 /workspace/run.js --dev
