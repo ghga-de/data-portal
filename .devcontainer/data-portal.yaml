@@ -3,5 +3,11 @@
 host: 127.0.0.1
 port: 8080
 
+ssl: false
+ssl_cert: .devcontainer/cert.pem
+ssl_key: .devcontainer/key.pem
+
+log_level: DEBUG
+
 mass_url: /api/mass
 metldata_url: /api/metldata

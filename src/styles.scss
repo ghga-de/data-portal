@@ -4,10 +4,12 @@
 // Plus imports for other components in your app.
 @use "./assets/scss/ghga_colors";
 
+// Add Tailwind CSS
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+// Add Lexend font
 @font-face {
   font-family: "Lexend";
   src:
