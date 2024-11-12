@@ -1,8 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { SiteFooterComponent } from '@app/portal/features/site-footer/site-footer.component';
+import { SiteHeaderComponent } from '@app/portal/features/site-header/site-header.component';
 import { ConfigService } from '@app/shared/services/config.service';
-import { SiteFooterComponent } from './shared/ui/site-footer/site-footer.component';
-import { SiteHeaderComponent } from './shared/ui/site-header/site-header.component';
 
 /**
  * This is the root component of the application.

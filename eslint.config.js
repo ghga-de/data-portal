@@ -6,9 +6,9 @@ import typescriptPlugin, {
   configs as tsConfigs,
 } from "@typescript-eslint/eslint-plugin";
 import * as typescriptParser from "@typescript-eslint/parser";
+import boundaries from "eslint-plugin-boundaries";
 import jsdoc from "eslint-plugin-jsdoc";
 import prettier from "eslint-plugin-prettier";
-import boundaries from "eslint-plugin-boundaries";
 
 import pkg from "@angular-eslint/eslint-plugin";
 const { configs: angularConfigs } = pkg;
@@ -96,10 +96,10 @@ export default [
             },
             // overarching portal context may import other feature components
             {
-              from: [["feature", { context: "portal" }]],
+              from: [["features", { context: "portal" }]],
               allow: [
                 [
-                  "feature",
+                  "features",
                   {
                     context: [
                       "metadata",
@@ -113,23 +113,27 @@ export default [
             // main may only import config and main app modules
             {
               from: ["main"],
-              allow: ["config", "main-app"],
-              message:
-                "The main module should only import config and app component",
+              disallow: ["*"],
+              message: "Main modules may only import config and main app",
             },
             {
               from: ["main"],
               allow: ["config", "main-app"],
             },
+            // main app may only import features and shared modules
             {
               from: ["main-app"],
-              disallow: [["*", { context: "!shared" }]],
-              message: "The main app component should only import shared code",
+              disallow: ["*"],
+              message: "Main app component may only import portal features and shared code",
+            },
+            {
+              from: ["main-app"],
+              allow: [["features", { context: "portal" }], ["*", { context: "shared" }]],
             },
             // config may only import modules for routes
             {
               from: ["config"],
-              disallow: ["routes"],
+              disallow: ["*"],
               message: "Config modules can only import modules with routes",
             },
             {
@@ -144,7 +148,7 @@ export default [
             },
             {
               from: ["routes"],
-              allow: ["feature"],
+              allow: ["features"],
             },
             // unit tests are currently exempt from all rules
             {
@@ -154,7 +158,7 @@ export default [
             // disallow importing from higher levels
             {
               from: ["ui"],
-              disallow: ["feature"],
+              disallow: ["features"],
               message: "UI components should not import feature components",
             },
             {
@@ -164,7 +168,7 @@ export default [
             },
             {
               from: ["service", "model", "util"],
-              disallow: ["feature", "ui"],
+              disallow: ["features", "ui"],
               message:
                 "Components should not be imported from other kinds of modules",
             },
@@ -181,12 +185,12 @@ export default [
             },
             // Auth service may be imported in other contexts
             {
-              from: ["feature", "service"],
+              from: ["features", "service"],
               allow: [["service", { context: "auth" }]],
             },
             // Auth models may be imported in other contexts
             {
-              from: ["feature", "service", "models"],
+              from: ["features", "service", "models"],
               allow: [["model", { context: "auth" }]],
             },
           ],
@@ -224,7 +228,7 @@ export default [
           pattern: "src/app/**/*.routes.ts",
         },
         {
-          type: "feature",
+          type: "features",
           pattern: "src/app/*/features",
           mode: "folder",
           capture: ["context"],

@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 
+/**
+ * This is the site footer component
+ */
 @Component({
   selector: 'app-site-footer',
   imports: [],
