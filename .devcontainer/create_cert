@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# create self-signed certificate for testing with the browser
+
+HOST=data.staging.ghga.dev
+CERTFILE=cert.pem
+KEYFILE=key.pem
+
+cd /workspace/.devcontainer
+
+if ! test -f "$CERTFILE" || ! test -f "$KEYFILE"; then
+  echo "Creating self-signed certificate for $HOST"
+  openssl req -x509 -newkey rsa:4096 -nodes \
+    -out "ca-$CERTFILE" -keyout "ca-$KEYFILE" \
+    -subj "/CN=$HOST" -days 356
+  openssl req -newkey rsa:4096 -nodes \
+    -out "req-$CERTFILE" -keyout "$KEYFILE" \
+    -subj "/CN=$HOST"
+  echo "subjectAltName=DNS:$HOST,DNS:localhost
+authorityKeyIdentifier=keyid,issuer
+basicConstraints=CA:FALSE
+keyUsage=digitalSignature,keyEncipherment
+extendedKeyUsage=serverAuth" > "ca.ext"
+  openssl x509 -req \
+    -CA "ca-$CERTFILE" -CAkey "ca-$KEYFILE" \
+    -in "req-$CERTFILE" -out "$CERTFILE" \
+    -CAcreateserial -days 356 \
+    -extfile ca.ext
+  rm -f "req-$CERTFILT" "ca-$KEYFILE" ca.ext "ca-*.srl"
+  echo "Add ca-$CERTFILE to your browser's trusted certificates"
+fi
