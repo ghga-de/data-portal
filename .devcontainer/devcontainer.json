@@ -1,59 +1,52 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/typescript-node
 {
-	"name": "Data Portal",
-	"dockerComposeFile": "docker-compose.yml",
-	"service": "app",
-	"workspaceFolder": "/workspace",
-	// Features to add to the dev container. More info: https://containers.dev/features.
-	// "features": {},
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	"forwardPorts": [
-		8080, 443
-	],
-	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "dev_install",
-	// Configure tool-specific properties.
-	"customizations": {
-		"vscode": {
-			// Set *default* container specific settings.json values on container create.
-			"settings": {
-				"files.eol": "\n",
-				"terminal.integrated.profiles.linux": {
-					"bash": {
-						"path": "/bin/bash"
-					}
-				},
-				"editor.codeActionsOnSave": {
-					"source.organizeImports": "explicit"
-				},
-				"editor.formatOnSave": true,
-				"editor.renderWhitespace": "all",
-				"editor.rulers": [
-					120
-				],
-				"editor.defaultFormatter": "vscode.typescript-language-features",
-				"licenser.license": "Custom",
-				"licenser.customHeaderFile": "/workspace/.devcontainer/license_header.txt"
-			},
-			// Add the IDs of extensions you want installed when the container is created.
-			"extensions": [
-				"mikestead.dotenv",
-				"ms-azuretools.vscode-docker",
-				"njpwerner.autodocstring",
-				"redhat.vscode-yaml",
-				"eamodio.gitlens",
-				"github.vscode-pull-request-github",
-				"streetsidesoftware.code-spell-checker",
-				"yzhang.markdown-all-in-one",
-				"visualstudioexptteam.vscodeintellicode",
-				"ymotongpoo.licenser",
-				"esbenp.prettier-vscode",
-				"dbaeumer.vscode-eslint",
-				"angular.ng-template"
-			]
-		}
-	},
-	// Comment out to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-	"remoteUser": "node"
+  "name": "Data Portal",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspace",
+  // Features to add to the dev container. More info: https://containers.dev/features.
+  // "features": {},
+  // Use 'forwardPorts' to make a list of ports inside the container available locally.
+  "forwardPorts": [8080, 443],
+  // Use 'postCreateCommand' to run commands after the container is created.
+  "postCreateCommand": "dev_install",
+  // Configure tool-specific properties.
+  "customizations": {
+    "vscode": {
+      // Set *default* container specific settings.json values on container create.
+      "settings": {
+        "files.eol": "\n",
+        "terminal.integrated.profiles.linux": {
+          "bash": {
+            "path": "/bin/bash"
+          }
+        },
+        "editor.codeActionsOnSave": {
+          "source.organizeImports": "explicit"
+        },
+        "editor.formatOnSave": true,
+        "editor.renderWhitespace": "all",
+        "editor.rulers": [88, 120],
+        "editor.defaultFormatter": "vscode.typescript-language-features"
+      },
+      // Add the IDs of extensions you want installed when the container is created.
+      "extensions": [
+        "mikestead.dotenv",
+        "ms-azuretools.vscode-docker",
+        "njpwerner.autodocstring",
+        "redhat.vscode-yaml",
+        "eamodio.gitlens",
+        "github.vscode-pull-request-github",
+        "streetsidesoftware.code-spell-checker",
+        "yzhang.markdown-all-in-one",
+        "visualstudioexptteam.vscodeintellicode",
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "angular.ng-template"
+      ]
+    }
+  },
+  // Comment out to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+  "remoteUser": "node"
 }

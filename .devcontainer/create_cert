@@ -26,6 +26,6 @@ extendedKeyUsage=serverAuth" > "ca.ext"
     -in "req-$CERTFILE" -out "$CERTFILE" \
     -CAcreateserial -days 356 \
     -extfile ca.ext
-  rm -f "req-$CERTFILT" "ca-$KEYFILE" ca.ext "ca-*.srl"
+  rm -f "req-$CERTFILE" "ca-$KEYFILE" ca.ext "ca-${CERTFILE%.pem}.srl"
   echo "Add ca-$CERTFILE to your browser's trusted certificates"
 fi
