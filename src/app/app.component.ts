@@ -11,7 +11,6 @@ import { ConfigService } from '@app/shared/services/config.service';
   selector: 'app-root',
   imports: [RouterOutlet, SiteHeaderComponent, SiteFooterComponent],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss',
 })
 export class AppComponent {
   title = 'data-portal';

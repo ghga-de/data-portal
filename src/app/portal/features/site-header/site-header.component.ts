@@ -1,9 +1,7 @@
 import { Component } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatNavList } from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { RouterLink } from '@angular/router';
 
 /**
  * This is the site header component
@@ -11,14 +9,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 @Component({
   selector: 'app-site-header',
   templateUrl: './site-header.component.html',
-  styleUrl: './site-header.component.scss',
   standalone: true,
-  imports: [
-    MatToolbarModule,
-    MatButtonModule,
-    MatSidenavModule,
-    MatListModule,
-    MatIconModule,
-  ],
+  imports: [MatToolbarModule, MatNavList, RouterLink],
 })
 export class SiteHeaderComponent {}
