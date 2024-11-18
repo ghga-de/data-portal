@@ -15,9 +15,8 @@ services:
     # Comment out the next line to use the root user for all processes.
     user: node
 
-    # define environment variables
-    environment:
-      DATA_PORTAL_CONFIG_YAML: /workspace/.devcontainer/data-portal.yaml
+    env_file:
+      - local.env
 
     # Use "forwardPorts" in **devcontainer.json** to forward an app port locally.
     # (Adding the "ports" property to this file will not forward from a Codespace.)
