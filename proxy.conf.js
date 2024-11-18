@@ -37,7 +37,7 @@ function configure(proxy) {
 }
 
 let target = baseUrl || 'http://127.0.0.1';
-if (!target.endswith('/')) target += '/';
+if (!target.endsWith('/')) target += '/';
 const useProxy = !target.startsWith('http://127.');
 
 const config = {};
