@@ -17,12 +17,18 @@ By default, this will not use a proxy configuration and the API will be provided
 If you want to test the application against the backend provided by the staging deployment, then run:
 
 ```bash
-dev_launcher staging
+dev_launcher data.staging.ghga.dev
 ```
 
-In this case, a proxy configuration will be used that proxies all API endpoints to the staging environment, while the application itself is still served by the development server.
+In this case, a proxy configuration will be used that proxies all API endpoints to the staging environment, while the application itself is still served by the development server. You can also set the staging backend via the environment variable `data_portal_backend`.
 
 If you change the hosts file on your host computer so that localhost points to `data.staging.ghga.dev`, then this setup also allows testing authentication using the real OIDC provider. You need to point your browser to `https://data.staging.ghga.dev` in this case. The development server will serve the application via SSL in this setup, using the certificate created in `.devcontainer/cert.pem`. You can add the corresponding CA certificate `.devcontainer/ca-cert.pem` to the trusted certificates of your development computer or web browser to avoid the warnings when loading the page.
+
+If the staging backend requires an additional Basic authentication, you can set it in the environment variable `data_portal_basic_auth` or pass it on the command line like this:
+
+```bash
+dev_launcher staging username:password
+```
 
 ## Code scaffolding
 

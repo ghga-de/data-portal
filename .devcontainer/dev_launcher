@@ -1,38 +1,66 @@
 #!/bin/bash
 
-# USAGE: dev_launcher.sh [staging]
+# USAGE: dev_launcher.sh [staging [USER:PASSWD]]
 
 cd /workspace
 
-# Default backend type is the mock service worker
-backend_type="msw"
-
-# The hostname used for the staging deployment
-staging_server="data.staging.ghga.dev"
-
-# Check command line argument
+# the default backend type is the mock service worker
+backend="${data_portal_backend:-msw}"
 if [ "$1" = "staging" ]; then
-  backend_type="staging"
+  # the default backend for staging
+  backend="data.staging.ghga.dev"  
+elif [[ "$1" = *.* ]]; then
+  backend="$1"
+elif [ "$1" = "msw" ]; then
+  backend=""
+else
+  echo "Invalid backend: $1"
+  exit 1
 fi
 
-# Create a suitable proxy config file
-if [ "$backend_type" = "staging" ]; then
-  echo "Using staging backend.ç.."
-  server="$staging_server"
-  server_ip=$(dig +short $server @8.8.8.8)
+# create a suitable proxy config file
+if [ "$backend" ]; then
+  echo "Using $backend as backend..."
+
+  cp proxy.staging.conf.json proxy.conf.json
+
+  # configure the backend IP address
+  backend_ip=$(dig +short $backend @8.8.8.8)
+  if [ -z "$backend_ip" ]; then
+    echo "Failed to resolve $backend."
+    exit 1
+  fi
   port=443
   ssl=true
-  cp proxy.staging.conf.json proxy.conf.json
-  if ! grep -qs "^$server_ip" /etc/hosts; then
-    echo "Adding $server to /etc/hosts"
-    echo "$server_ip $server" | sudo tee -a /etc/hosts
+  if ! grep -qs " $backend" /etc/hosts; then
+    echo "Adding $backend = $backend_ip to /etc/hosts..."
+    echo "$backend_ip $backend" | sudo tee -a /etc/hosts
   fi
   echo "Please configure your host computer"
-  echo "to resolve $server to 127.0.0.1."
+  echo "to resolve $backend to 127.0.0.1."
+
+  # optionally use basic auth
+  if [[ "$2" = *:* ]]; then
+    basic_auth="$2"
+  elif [ -n "$2" ]; then
+    echo "Invalid credentials: $2"
+    exit 1
+  else
+    basic_auth="${data_portal_basic_auth}"
+  fi
+  p1='"Authorization": ""'
+  if [[ "$basic_auth" = *:* ]]; then
+    echo "Adding basic auth credentials..."
+    auth_header=$(echo -n "$basic_auth" | base64)
+    p2="\"Authorization\": \"Basic $auth_header\""
+  else
+    p2=""
+  fi
+  sed -i "s/$p1/$p2/" proxy.conf.json
 else
-  echo "Using mock service worker..."
-  server="localhost"
-  server_ip="127.0.0.1"
+
+  echo "Using the mock service worker..."
+
   port=8080
   ssl=false
   echo "{}" > proxy.conf.json
@@ -42,5 +70,5 @@ export data_portal_host=127.0.0.1
 export data_portal_port=$port
 export data_portal_ssl=$ssl
 
-# start development server
+# start the development server
 /workspace/run.js --dev
