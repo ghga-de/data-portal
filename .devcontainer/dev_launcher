@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# USAGE: dev_launcher.sh [staging [USER:PASSWD]]
+# USAGE: dev_launcher.sh [BACKEND [USER:PASSWD]]
 
 cd /workspace
 
-# the default backend type is the mock service worker
+# the default backend is the mock service worker
 backend="${data_portal_backend:-msw}"
 if [ "$1" = "staging" ]; then
   # the default backend for staging
