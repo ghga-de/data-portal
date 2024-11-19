@@ -20,7 +20,7 @@ If you want to test the application against the backend provided by the staging 
 dev_launcher staging
 ```
 
-In this case, a proxy configuration will be used that proxies all API endpoints to the staging environment, while the application itself is still served by the development server. Instead of `staging`, which will translate to `data.staging.ghga.dev`, you can also specify another fully qualified backend name. You can also set the name of the staging backend via the environment variable `data_portal_backend`.
+In this case, a proxy configuration will be used that proxies all API endpoints to the staging environment, while the application itself is still served by the development server. You can change the name of the staging backend via the environment variable `data_portal_base_url`.
 
 If you change the hosts file on your host computer so that localhost points to `data.staging.ghga.dev`, then this setup also allows testing authentication using the real OIDC provider. You need to point your browser to `https://data.staging.ghga.dev` in this case. The development server will serve the application via SSL in this setup, using the certificate created in `.devcontainer/cert.pem`. You can add the corresponding CA certificate `.devcontainer/ca-cert.pem` to the trusted certificates of your development computer or web browser to avoid the warnings when loading the page.
 
