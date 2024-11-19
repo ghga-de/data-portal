@@ -9,5 +9,7 @@ ssl_key: .devcontainer/key.pem
 
 log_level: DEBUG
 
+base_url: http://127.0.0.1:8080
+
 mass_url: /api/mass
 metldata_url: /api/metldata
