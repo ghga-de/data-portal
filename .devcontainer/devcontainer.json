@@ -9,6 +9,8 @@
   // "features": {},
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   "forwardPorts": [8080, 443],
+  // Create an empty local env file if it does not yet exist
+  "initializeCommand": "touch .devcontainer/local.env",
   // Use 'postCreateCommand' to run commands after the container is created.
   "postCreateCommand": "dev_install",
   // Configure tool-specific properties.
