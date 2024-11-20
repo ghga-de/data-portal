@@ -22,7 +22,7 @@
       "@app/*": [
         "src/app/*"
       ]
-    }
+    },
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

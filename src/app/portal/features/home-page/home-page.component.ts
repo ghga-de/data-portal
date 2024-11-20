@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { ConfigService } from '@app/shared/services/config.service';
+import { AuthService } from '@app/auth/services/auth.service';
 
 /**
  * This is the home page component
@@ -10,7 +10,10 @@ import { ConfigService } from '@app/shared/services/config.service';
   templateUrl: './home-page.component.html',
 })
 export class HomePageComponent {
-  #config = inject(ConfigService);
+  #auth = inject(AuthService);
 
-  massUrl = this.#config.massUrl; // just to show that we can access the config service
+  // eslint-disable-next-line jsdoc/require-jsdoc
+  constructor() {
+    console.log(this.#auth);
+  }
 }
