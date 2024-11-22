@@ -1,6 +1,10 @@
 {
   "window.title": "Data Portal - ${dirty}${activeEditorShort}${separator}${rootName}${separator}${profileName}${separator}${appName}",
-  "cSpell.words": ["devcontainer", "devkit", "metldata"],
+  "cSpell.words": [
+    "devcontainer",
+    "devkit",
+    "metldata"
+  ],
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
   "[javascript]": {
@@ -18,5 +22,7 @@
   "eslint.options": {
     "overrideConfigFile": "/workspace/eslint.config.js"
   },
-  "remote.localPortHost": "allInterfaces"
+  "remote.localPortHost": "allInterfaces",
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true
 }
