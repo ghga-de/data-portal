@@ -1,3 +1,4 @@
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { ConfigService } from '@app/shared/services/config.service';
@@ -7,6 +8,7 @@ import {
   User as OidcUser,
   UserManager as OidcUserManager,
 } from 'oidc-client-ts';
+import { catchError, map, of } from 'rxjs';
 
 /**
  * All possible states of the user session
@@ -55,10 +57,15 @@ export interface User {
 })
 export class AuthService {
   #config = inject(ConfigService);
+  #http = inject(HttpClient);
   #router = inject(Router);
   #userSignal = signal<User | null | undefined>(undefined);
 
   #oidcUserManager: OidcUserManager;
+
+  #authUrl = this.#config.authUrl;
+  #loginUrl = `${this.#authUrl}/rpc/login`;
+  #logoutUrl = `${this.#authUrl}/rpc/logout`;
 
   /**
    * Get the current user session as a signal
@@ -104,6 +111,15 @@ export class AuthService {
 
     OidcLog.setLogger(console);
     OidcLog.setLevel(OidcLog.INFO); // set to DEBUG for more output
+
+    /**
+     * On page load we must also load the user session from the server.
+     * We can only skip this when this is the callback page, since int
+     * this case the session is loaded with oidcRedirect().
+     */
+    if (window.location.pathname !== '/oauth/callback') {
+      this.#loadUserSession();
+    }
   }
 
   /**
@@ -179,6 +195,8 @@ export class AuthService {
         errorMessage = 'No OpenID connect user';
       } else if (oidcUser.expired) {
         errorMessage = 'OpenID connect login expired';
+      } else if (!oidcUser.access_token) {
+        errorMessage = 'No OpenID connect access token';
       }
     }
 
@@ -190,19 +208,7 @@ export class AuthService {
       return false;
     }
 
-    console.info('OIDC user:', oidcUser); // TODO: make this a toast message
-
-    const name = oidcUser.profile?.name || ''; // TODO: get this from session
-    const email = oidcUser.profile?.email || ''; // TODO: get this from session
-    this.#userSignal.set({
-      ext_id: oidcUser.profile?.sub,
-      name,
-      full_name: name,
-      email: email,
-      state: 'LoggedIn',
-      csrf: 'todo', // TODO: get this from session
-    });
-    this.#router.navigate(['/']); // TODO: maybe redirect to registration or 2FA
+    this.#loadUserSession(oidcUser.access_token);
     return false;
   }
 
@@ -215,5 +221,85 @@ export class AuthService {
   async logout(): Promise<void> {
     await this.#oidcUserManager.removeUser();
     this.#userSignal.set(null);
+    // TODO: should also log out from server using the logout URL
+  }
+
+  /**
+   * Get the deserialized user session from a JSON-formatted string.
+   * @param session the session as a JSON-formatted string or null
+   * @returns the parsed user or null if no session or undefined if error
+   */
+  #parseUserFromSession(session: string): User | null | undefined {
+    if (!session) return null;
+    let user: User | null;
+    try {
+      user = JSON.parse(session || 'null');
+      if (!user) return null;
+      if (!(user.ext_id && user.name && user.email)) {
+        throw new Error('Missing properties in user session');
+      }
+    } catch (error) {
+      console.error('Cannot parse user session:', session, error);
+      return undefined;
+    }
+    if (!user.full_name) {
+      user.full_name = (user.title ? user.title + ' ' : '') + user.name;
+    }
+    return user;
+  }
+
+  /**
+   * Load the current user session
+   *
+   * This method should be called once to load the user session.
+   * @param accessToken the access token to use for logging in
+   */
+  async #loadUserSession(accessToken: string | undefined = undefined): Promise<void> {
+    console.debug('Loading user session...');
+    const userSignal = this.#userSignal;
+    let headers = new HttpHeaders();
+    if (accessToken) headers = headers.set('X-Authorization', `Bearer ${accessToken}`);
+    this.#http
+      .post<null>(this.#loginUrl, null, { observe: 'response', headers })
+      .pipe(
+        // map to user or null if not found or undefined if error
+        map((response: HttpResponse<null>) => {
+          if (response.status !== 204 || response.body) return undefined;
+          const session = response.headers.get('X-Session');
+          if (!session) return undefined;
+          return this.#parseUserFromSession(session);
+        }),
+        catchError((error) =>
+          of([401, 403, 404].includes(error?.status) ? null : undefined),
+        ),
+      )
+      .subscribe((user: User | null | undefined) => {
+        if (user) {
+          console.debug('User session loaded:', user);
+          userSignal.set(user);
+          const router = this.#router;
+          switch (user.state) {
+            case 'NeedsRegistration':
+              router.navigate(['/register']);
+              break;
+            case 'Registered':
+            case 'NeedsTotpToken':
+            case 'LostTotpToken':
+            case 'NewTotpToken':
+              router.navigate(['/setup-totp']);
+              break;
+            case 'HasTotpToken':
+              router.navigate(['/confirm-totp']);
+              break;
+          }
+        } else {
+          if (accessToken || user === undefined) {
+            console.error('Failed to load user session');
+            // TODO: also add a toast message
+          }
+          this.#oidcUserManager.removeUser();
+          userSignal.set(user);
+        }
+      });
   }
 }

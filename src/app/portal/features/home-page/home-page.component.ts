@@ -1,5 +1,4 @@
-import { Component, inject } from '@angular/core';
-import { AuthService } from '@app/auth/services/auth.service';
+import { Component } from '@angular/core';
 
 /**
  * This is the home page component
@@ -9,9 +8,4 @@ import { AuthService } from '@app/auth/services/auth.service';
   imports: [],
   templateUrl: './home-page.component.html',
 })
-export class HomePageComponent {
-  #authService = inject(AuthService);
-
-  fullName = this.#authService.fullName;
-  sessionState = this.#authService.sessionState;
-}
+export class HomePageComponent {}

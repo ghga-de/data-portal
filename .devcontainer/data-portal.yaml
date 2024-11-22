@@ -11,6 +11,7 @@ log_level: DEBUG
 
 base_url: http://127.0.0.1:8080
 
+auth_url: /api/auth
 mass_url: /api/mass
 metldata_url: /api/metldata
 

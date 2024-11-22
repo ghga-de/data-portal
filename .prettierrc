@@ -5,6 +5,5 @@
   "singleQuote": true,
   "printWidth": 88,
   "proseWrap": "preserve",
-  "endOfLine": "lf",
-  "insert_final_newline": true
+  "endOfLine": "lf"
 }

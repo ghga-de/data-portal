@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 interface Config {
   base_url: string;
+  auth_url: string;
   mass_url: string;
   metldata_url: string;
   oidc_client_id: string;
@@ -62,11 +63,19 @@ export class ConfigService {
   }
 
   /**
+   * Gets the auth service URL from the config object.
+   * @returns the auth service URL sans end slash
+   */
+  get authUrl(): string {
+    return new URL(this.#config.auth_url, withEndSlash(this.#config.base_url)).href;
+  }
+
+  /**
    * Gets the MASS URL from the config object.
    * @returns the MASS URL sans end slash
    */
   get massUrl(): string {
-    return sansEndSlash(this.#config.mass_url);
+    return new URL(this.#config.mass_url, withEndSlash(this.#config.base_url)).href;
   }
 
   /**
@@ -74,7 +83,7 @@ export class ConfigService {
    * @returns the metldata service URL sans slash
    */
   get metldataUrl(): string {
-    return sansEndSlash(this.#config.metldata_url);
+    return new URL(this.#config.metldata_url, withEndSlash(this.#config.base_url)).href;
   }
 
   /**

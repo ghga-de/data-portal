@@ -18,9 +18,32 @@ export const routes: Routes = [
         (m) => m.MetadataBrowserComponent,
       ),
   },
+  // routes used in the authentication flows
   {
     path: 'oauth/callback',
     canActivate: [() => inject(AuthService).oidcRedirect()],
     children: [],
+  },
+  // TODO: add guards to the following routes that check the expected state
+  {
+    path: 'register',
+    loadComponent: () =>
+      import('./auth/features/register/register.component').then(
+        (m) => m.RegisterComponent,
+      ),
+  },
+  {
+    path: 'setup-totp',
+    loadComponent: () =>
+      import('./auth/features/setup-totp/setup-totp.component').then(
+        (m) => m.SetupTotpComponent,
+      ),
+  },
+  {
+    path: 'confirm-totp',
+    loadComponent: () =>
+      import('./auth/features/confirm-totp/confirm-totp.component').then(
+        (m) => m.ConfirmTotpComponent,
+      ),
   },
 ];
