@@ -8,7 +8,10 @@
   // Features to add to the dev container. More info: https://containers.dev/features.
   // "features": {},
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  "forwardPorts": [8080, 443],
+  "forwardPorts": [
+    8080,
+    443
+  ],
   // Create an empty local env file if it does not yet exist
   "initializeCommand": "touch .devcontainer/local.env",
   // Use 'postCreateCommand' to run commands after the container is created.
@@ -29,7 +32,10 @@
         },
         "editor.formatOnSave": true,
         "editor.renderWhitespace": "all",
-        "editor.rulers": [88, 120],
+        "editor.rulers": [
+          88,
+          120
+        ],
         "editor.defaultFormatter": "vscode.typescript-language-features"
       },
       // Add the IDs of extensions you want installed when the container is created.

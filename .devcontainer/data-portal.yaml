@@ -13,3 +13,6 @@ base_url: http://127.0.0.1:8080
 
 mass_url: /api/mass
 metldata_url: /api/metldata
+
+oidc_client_id: ghga-dev-client
+oidc_authority_url: https://login.aai.lifescience-ri.eu/oidc/

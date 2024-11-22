@@ -1,5 +1,8 @@
 /* eslint-disable jsdoc/require-jsdoc */
+import { inject } from '@angular/core';
 import { Routes } from '@angular/router';
+import { AuthService } from '@app/auth/services/auth.service';
+
 export const routes: Routes = [
   {
     path: '',
@@ -14,5 +17,10 @@ export const routes: Routes = [
       import('./metadata/features/metadata-browser/metadata-browser.component').then(
         (m) => m.MetadataBrowserComponent,
       ),
+  },
+  {
+    path: 'oauth/callback',
+    canActivate: [() => inject(AuthService).oidcRedirect()],
+    children: [],
   },
 ];

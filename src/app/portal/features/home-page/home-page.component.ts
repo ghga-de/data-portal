@@ -10,10 +10,8 @@ import { AuthService } from '@app/auth/services/auth.service';
   templateUrl: './home-page.component.html',
 })
 export class HomePageComponent {
-  #auth = inject(AuthService);
+  #authService = inject(AuthService);
 
-  // eslint-disable-next-line jsdoc/require-jsdoc
-  constructor() {
-    console.log(this.#auth);
-  }
+  fullName = this.#authService.fullName;
+  sessionState = this.#authService.sessionState;
 }
