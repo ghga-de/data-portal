@@ -1,0 +1,22 @@
+@use '@angular/material' as mat;
+
+mat-toolbar {
+  background: var(--mat-sys-on-primary);
+}
+
+a[mat-flat-button] {
+  @include mat.button-overrides(
+    (
+      filled-container-color: var(--mat-sys-on-primary),
+      text-label-text-color: var(--mat-sys-secondary),
+    )
+  );
+}
+
+.mat-mdc-button:not(:disabled) {
+  color: #fff;
+}
+
+a#activePage {
+  background-color: var(--mat-sys-secondary-container);
+}
