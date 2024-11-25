@@ -5,7 +5,7 @@ RUN apk upgrade --no-cache --available
 # BUILDER: a container to build the service dist directory
 FROM base AS builder
 # install pnpm
-RUN corepack prepare pnpm@9.13.2 --activate
+RUN corepack prepare pnpm@9.14.2 --activate
 RUN npm install -g pnpm
 # install static web server
 RUN apk add curl sudo which
