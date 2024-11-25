@@ -1,4 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import {
+  FormControl,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { AuthService } from '@app/auth/services/auth.service';
 
 // TODO: Polish this component
 
@@ -7,8 +17,50 @@ import { Component } from '@angular/core';
  */
 @Component({
   selector: 'app-confirm-totp',
-  imports: [],
+  imports: [
+    FormsModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ReactiveFormsModule,
+  ],
   templateUrl: './confirm-totp.component.html',
   styleUrl: './confirm-totp.component.scss',
 })
-export class ConfirmTotpComponent {}
+export class ConfirmTotpComponent {
+  #authService = inject(AuthService);
+
+  codeControl = new FormControl('', [
+    Validators.required,
+    Validators.pattern(/^\d{6}$/),
+  ]);
+
+  verificationError = false;
+
+  /**
+   * Input handler for the TOTP code
+   */
+  onInput() {
+    this.verificationError = false;
+  }
+
+  /**
+   * Submit authentication code
+   */
+  async onSubmit() {
+    this.verificationError = false;
+    const code = this.codeControl.value;
+    if (!code) return;
+    const verified = await this.#authService.verifyTotpCode(code);
+    if (verified) {
+      console.info('Successfully authenticated.');
+      // add toast message here
+      this.#authService.redirectAfterLogin();
+    } else {
+      // maybe add toast message here
+      console.error('Failed to authenticate.');
+      this.codeControl.reset();
+      this.verificationError = true;
+    }
+  }
+}

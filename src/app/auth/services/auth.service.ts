@@ -8,7 +8,8 @@ import {
   User as OidcUser,
   UserManager as OidcUserManager,
 } from 'oidc-client-ts';
-import { catchError, map, of } from 'rxjs';
+import { catchError, firstValueFrom, map, of } from 'rxjs';
+import { CsrfService } from './csrf.service';
 
 /**
  * All possible states of the user session
@@ -52,20 +53,22 @@ export interface User {
  * This service provides the OIDC and 2FA related functionality
  * and keeps track of the state of the user session.
  */
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class AuthService {
   #config = inject(ConfigService);
   #http = inject(HttpClient);
   #router = inject(Router);
+  #csrf = inject(CsrfService);
   #userSignal = signal<User | null | undefined>(undefined);
+
+  #redirectAfterLogin = '/';
 
   #oidcUserManager: OidcUserManager;
 
   #authUrl = this.#config.authUrl;
   #loginUrl = `${this.#authUrl}/rpc/login`;
   #logoutUrl = `${this.#authUrl}/rpc/logout`;
+  #verifyTotpUrl = `${this.#authUrl}/rpc/verify-totp`;
 
   /**
    * Get the current user session as a signal
@@ -171,6 +174,7 @@ export class AuthService {
    * to the authorization endpoint of the OIDC provider.
    */
   async login(): Promise<void> {
+    this.#redirectAfterLogin = location.pathname;
     this.#oidcUserManager.signinRedirect();
   }
 
@@ -219,9 +223,20 @@ export class AuthService {
    * to the authorization endpoint of the OIDC provider.
    */
   async logout(): Promise<void> {
-    await this.#oidcUserManager.removeUser();
-    this.#userSignal.set(null);
-    // TODO: should also log out from server using the logout URL
+    if (this.#userSignal()) {
+      firstValueFrom(
+        this.#http.post<void>(this.#logoutUrl, null).pipe(
+          map(() => true),
+          catchError(() => of(false)),
+        ),
+      ).then(async () => {
+        await this.#oidcUserManager.removeUser();
+        this.#userSignal.set(null);
+        this.#csrf.token = null;
+        this.#redirectAfterLogin = '/';
+        this.#router.navigate(['/']);
+      });
+    }
   }
 
   /**
@@ -277,6 +292,7 @@ export class AuthService {
         if (user) {
           console.debug('User session loaded:', user);
           userSignal.set(user);
+          this.#csrf.token = user.csrf;
           const router = this.#router;
           switch (user.state) {
             case 'NeedsRegistration':
@@ -299,7 +315,47 @@ export class AuthService {
           }
           this.#oidcUserManager.removeUser();
           userSignal.set(user);
+          this.#csrf.token = null;
         }
       });
+  }
+
+  /**
+   * Verify the given TOTP code
+   * @param code the 6-digit TOTP code to verify
+   * @returns a promise that resolves to true if the code is valid
+   */
+  async verifyTotpCode(code: string): Promise<boolean> {
+    let headers = new HttpHeaders();
+    headers = headers.set('X-Authorization', `Bearer TOTP:${code}`);
+    if (!code || code.length !== 6 || !/^\d{6}$/.test(code)) {
+      console.error('Invalid TOTP code');
+      return false;
+    }
+    return firstValueFrom(
+      this.#http.post<null>(this.#verifyTotpUrl, null, { headers }).pipe(
+        map(() => {
+          console.info('TOTP code verified');
+          this.#userSignal.update((user) => {
+            if (user) {
+              user.state = 'Authenticated';
+            }
+            return user;
+          });
+          return true;
+        }),
+        catchError(() => {
+          console.error('Failed to verify TOTP code');
+          return of(false);
+        }),
+      ),
+    );
+  }
+
+  /**
+   * Redirect back to the original page after login
+   */
+  redirectAfterLogin() {
+    this.#router.navigate([this.#redirectAfterLogin]);
   }
 }

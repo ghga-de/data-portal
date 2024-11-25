@@ -131,11 +131,11 @@ export default [
             {
               from: ['config'],
               disallow: ['*'],
-              message: 'Config modules can only import modules with routes',
+              message: 'Config modules can only import routes and auth services',
             },
             {
               from: ['config'],
-              allow: ['routes'],
+              allow: ['routes', ['service', { context: 'auth' }]],
             },
             // modules for routes may not import ui components
             {
