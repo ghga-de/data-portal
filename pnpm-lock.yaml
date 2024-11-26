@@ -33,8 +33,8 @@ importers:
         specifier: 19.0.0-rc.3
         version: 19.0.0-rc.3(@angular/common@19.0.0-rc.3(@angular/core@19.0.0-rc.3(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.0.0-rc.3(rxjs@7.8.1)(zone.js@0.15.0))(@angular/platform-browser@19.0.0-rc.3(@angular/animations@19.0.0-rc.3(@angular/core@19.0.0-rc.3(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.0.0-rc.3(@angular/core@19.0.0-rc.3(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.0.0-rc.3(rxjs@7.8.1)(zone.js@0.15.0)))(rxjs@7.8.1)
       '@angular/material':
-        specifier: 19.0.0-rc.3
-        version: 19.0.0-rc.3(2ggkf5bmbgan54h663qv7i4v7a)
+        specifier: ^19.0.0
+        version: 19.0.0(2ggkf5bmbgan54h663qv7i4v7a)
       '@angular/platform-browser':
         specifier: 19.0.0-rc.3
         version: 19.0.0-rc.3(@angular/animations@19.0.0-rc.3(@angular/core@19.0.0-rc.3(rxjs@7.8.1)(zone.js@0.15.0)))(@angular/common@19.0.0-rc.3(@angular/core@19.0.0-rc.3(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.0.0-rc.3(rxjs@7.8.1)(zone.js@0.15.0))
@@ -367,15 +367,15 @@ packages:
       '@angular/platform-browser': 19.0.0-rc.3
       rxjs: ^6.5.3 || ^7.4.0
 
-  '@angular/material@19.0.0-rc.3':
-    resolution: {integrity: sha512-RL4o+WJVoaUVmPvPJoQ/Y8nAxopuJ2pTWtr8S1HosmiDIn0xVqqBSK9KWHtvHZ41nsXlH9r/4MeASOc0x0mnyQ==}
+  '@angular/material@19.0.0':
+    resolution: {integrity: sha512-j7dDFUh8dqiysuWu32biukDTHScajUYHFR9Srhn98kBwnXMob5y1paMoOx5RQO5DU4KCxKaKx8HcHJBJeTKHjw==}
     peerDependencies:
-      '@angular/animations': ^19.0.0-0 || ^19.1.0-0 || ^19.2.0-0 || ^19.3.0-0 || ^20.0.0-0
-      '@angular/cdk': 19.0.0-rc.3
-      '@angular/common': ^19.0.0-0 || ^19.1.0-0 || ^19.2.0-0 || ^19.3.0-0 || ^20.0.0-0
-      '@angular/core': ^19.0.0-0 || ^19.1.0-0 || ^19.2.0-0 || ^19.3.0-0 || ^20.0.0-0
-      '@angular/forms': ^19.0.0-0 || ^19.1.0-0 || ^19.2.0-0 || ^19.3.0-0 || ^20.0.0-0
-      '@angular/platform-browser': ^19.0.0-0 || ^19.1.0-0 || ^19.2.0-0 || ^19.3.0-0 || ^20.0.0-0
+      '@angular/animations': ^19.0.0 || ^20.0.0
+      '@angular/cdk': 19.0.0
+      '@angular/common': ^19.0.0 || ^20.0.0
+      '@angular/core': ^19.0.0 || ^20.0.0
+      '@angular/forms': ^19.0.0 || ^20.0.0
+      '@angular/platform-browser': ^19.0.0 || ^20.0.0
       rxjs: ^6.5.3 || ^7.4.0
 
   '@angular/platform-browser-dynamic@19.0.0-rc.3':
@@ -5878,7 +5878,7 @@ snapshots:
       rxjs: 7.8.1
       tslib: 2.8.1
 
-  '@angular/material@19.0.0-rc.3(2ggkf5bmbgan54h663qv7i4v7a)':
+  '@angular/material@19.0.0(2ggkf5bmbgan54h663qv7i4v7a)':
     dependencies:
       '@angular/animations': 19.0.0-rc.3(@angular/core@19.0.0-rc.3(rxjs@7.8.1)(zone.js@0.15.0))
       '@angular/cdk': 19.0.0-rc.3(@angular/common@19.0.0-rc.3(@angular/core@19.0.0-rc.3(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1))(@angular/core@19.0.0-rc.3(rxjs@7.8.1)(zone.js@0.15.0))(rxjs@7.8.1)
