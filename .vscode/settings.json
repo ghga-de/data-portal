@@ -1,10 +1,6 @@
 {
   "window.title": "Data Portal - ${dirty}${activeEditorShort}${separator}${rootName}${separator}${profileName}${separator}${appName}",
-  "cSpell.words": [
-    "devcontainer",
-    "devkit",
-    "metldata"
-  ],
+  "cSpell.words": ["devcontainer", "devkit", "metldata", "TOTP"],
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
   "[html]": {

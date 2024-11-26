@@ -8,44 +8,9 @@ import {
   User as OidcUser,
   UserManager as OidcUserManager,
 } from 'oidc-client-ts';
-import { catchError, firstValueFrom, map, of } from 'rxjs';
+import { catchError, firstValueFrom, map, Observable, of } from 'rxjs';
+import { LoginState, User, UserBasicData } from '../models/user';
 import { CsrfService } from './csrf.service';
-
-/**
- * All possible states of the user session
- */
-export type LoginState =
-  | 'Undetermined'
-  | 'LoggedOut'
-  | 'LoggedIn'
-  | 'NeedsRegistration'
-  | 'NeedsReRegistration'
-  | 'Registered'
-  | 'NeedsTotpToken'
-  | 'LostTotpToken'
-  | 'NewTotpToken'
-  | 'HasTotpToken'
-  | 'Authenticated';
-
-/**
- * User session interface
- *
- * Note that this is different from the low-level oidcUser object,
- * which does not contain the user data from the backend.
- */
-export interface User {
-  id?: string;
-  ext_id: string;
-  name: string;
-  title?: string;
-  full_name: string;
-  email: string;
-  state: LoginState;
-  role?: string;
-  csrf: string;
-  timeout?: number;
-  extends?: number;
-}
 
 /**
  * Authentication service
@@ -69,6 +34,7 @@ export class AuthService {
   #loginUrl = `${this.#authUrl}/rpc/login`;
   #logoutUrl = `${this.#authUrl}/rpc/logout`;
   #verifyTotpUrl = `${this.#authUrl}/rpc/verify-totp`;
+  #usersUrl = `${this.#authUrl}/users`;
 
   /**
    * Get the current user session as a signal
@@ -266,7 +232,11 @@ export class AuthService {
   /**
    * Load the current user session
    *
-   * This method should be called once to load the user session.
+   * This method is called on startup to fetch the user session from the backend.
+   *
+   * It is also called to check when a state change was triggered and we need to
+   * wait for and verify that the backend has actually updated the user session.
+   *
    * @param accessToken the access token to use for logging in
    */
   async #loadUserSession(accessToken: string | undefined = undefined): Promise<void> {
@@ -296,6 +266,7 @@ export class AuthService {
           const router = this.#router;
           switch (user.state) {
             case 'NeedsRegistration':
+            case 'NeedsReRegistration':
               router.navigate(['/register']);
               break;
             case 'Registered':
@@ -318,6 +289,62 @@ export class AuthService {
           this.#csrf.token = null;
         }
       });
+  }
+
+  /**
+   * Wait for the backend user session to change the state
+   * @param state the state that is expected to change
+   * @param maxAttempts the maximum number of attempts to wait for the state
+   * @returns a promise that resolves to the last reached state
+   */
+  async #waitForStateChange(
+    state: LoginState,
+    maxAttempts: number = 5,
+  ): Promise<LoginState> {
+    const newState = this.sessionState();
+    if (newState !== state) return newState;
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      const wait = (1 << attempt) * 50; // exponential backoff
+      await new Promise((resolve) => setTimeout(resolve, wait));
+      await this.#loadUserSession();
+      const newState = this.sessionState();
+      if (newState !== state) return newState;
+    }
+    return state;
+  }
+
+  /**
+   * Register or re-register a user
+   * @param id the internal user ID or null for new users
+   * @param ext_id the external user ID (can be null for registered users)
+   * @param basicData the basic user data to register or re-register
+   * @returns a promise that resolves to true if the code is valid
+   */
+  async register(
+    id: string | null,
+    ext_id: string | null,
+    basicData: UserBasicData,
+  ): Promise<boolean> {
+    if (!id && !ext_id) return false;
+    const state = this.sessionState();
+    let url = this.#usersUrl;
+    let rpc: Observable<null>;
+    if (id) {
+      if (state !== 'NeedsReRegistration') return false;
+      rpc = this.#http.put<null>(`${url}/${id}`, basicData);
+    } else {
+      if (state !== 'NeedsRegistration') return false;
+      if (!ext_id) return false;
+      rpc = this.#http.post<null>(url, { ...basicData, ext_id });
+    }
+    await firstValueFrom(rpc);
+    const newState = await this.#waitForStateChange(state);
+    return (
+      newState != state &&
+      !['LoggedOut', 'LoggedIn', 'NeedsRegistration', 'NeedsReRegistration'].includes(
+        newState,
+      )
+    );
   }
 
   /**

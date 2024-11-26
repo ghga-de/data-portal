@@ -19,10 +19,10 @@ import { AuthService } from '@app/auth/services/auth.service';
   selector: 'app-confirm-totp',
   imports: [
     FormsModule,
+    ReactiveFormsModule,
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-    ReactiveFormsModule,
   ],
   templateUrl: './confirm-totp.component.html',
   styleUrl: './confirm-totp.component.scss',
@@ -30,7 +30,7 @@ import { AuthService } from '@app/auth/services/auth.service';
 export class ConfirmTotpComponent {
   #authService = inject(AuthService);
 
-  codeControl = new FormControl('', [
+  codeControl = new FormControl<string>('', [
     Validators.required,
     Validators.pattern(/^\d{6}$/),
   ]);
