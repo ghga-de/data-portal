@@ -18,3 +18,5 @@
 @if (verificationError) {
   <mat-error>The entered authentication code was not valid.</mat-error>
 }
+
+<button mat-button (click)="onLostToken()">Get new 2FA setup</button>

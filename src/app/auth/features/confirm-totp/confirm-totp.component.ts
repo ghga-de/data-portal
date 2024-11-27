@@ -40,14 +40,14 @@ export class ConfirmTotpComponent {
   /**
    * Input handler for the TOTP code
    */
-  onInput() {
+  onInput(): void {
     this.verificationError = false;
   }
 
   /**
    * Submit authentication code
    */
-  async onSubmit() {
+  async onSubmit(): Promise<void> {
     this.verificationError = false;
     const code = this.codeControl.value;
     if (!code) return;
@@ -62,5 +62,12 @@ export class ConfirmTotpComponent {
       this.codeControl.reset();
       this.verificationError = true;
     }
+  }
+
+  /**
+   * Set status to "lost token" and redirect to token setup
+   */
+  onLostToken(): void {
+    this.#authService.lostTotpSetup();
   }
 }

@@ -2,17 +2,17 @@
  * All possible states of the user session
  */
 export type LoginState =
-  | 'Undetermined'
-  | 'LoggedOut'
-  | 'LoggedIn'
-  | 'NeedsRegistration'
-  | 'NeedsReRegistration'
-  | 'Registered'
-  | 'NeedsTotpToken'
-  | 'LostTotpToken'
-  | 'NewTotpToken'
-  | 'HasTotpToken'
-  | 'Authenticated';
+  | 'Undetermined' // the state is not yet determined
+  | 'LoggedOut' // the user is logged out
+  | 'LoggedIn' // the user is logged in with first factor
+  | 'NeedsRegistration' // the user needs to register (backend state)
+  | 'NeedsReRegistration' // the user needs to re-register (backend state)
+  | 'Registered' // the user is registered (backend state)
+  | 'NeedsTotpToken' // the user needs to set up TOTP (frontend state only)
+  | 'LostTotpToken' // the user has lost the TOTP token (frontend state only)
+  | 'NewTotpToken' // a new TOTP token has just been created (backend state)
+  | 'HasTotpToken' // a TOTP token exists but not yet authenticated (backend state)
+  | 'Authenticated'; // user is fully authenticated with second factor (backend state)
 
 /**
  * All possible academic titles

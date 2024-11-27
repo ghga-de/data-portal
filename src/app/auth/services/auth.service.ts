@@ -53,12 +53,22 @@ export class AuthService {
   /**
    * Check whether the session state is known as a signal
    */
-  isDetermined = computed<boolean>(() => !!this.user() !== undefined);
+  isDetermined = computed<boolean>(() => this.user() !== undefined);
+
+  /**
+   * Check whether the session state is still loading as a signal
+   */
+  isUndetermined = computed<boolean>(() => this.user() === undefined);
 
   /**
    * Check whether the user has been logged in with first factor as a signal
    */
   isLoggedIn = computed<boolean>(() => !!this.user());
+
+  /**
+   * Check whether the user has been logged out as a signal
+   */
+  isLoggedOut = computed<boolean>(() => this.user() === null);
 
   /**
    * Check whether the user is fully authenticated with second factor as a signal
@@ -279,9 +289,6 @@ export class AuthService {
       .subscribe((user: User | null | undefined) => {
         if (user) {
           console.debug('User session loaded:', user);
-          if (user.state === 'Registered') {
-            user.state = 'NeedsTotpToken';
-          }
           userSignal.set(user);
           this.#csrf.token = user.csrf;
           const router = this.#router;
@@ -290,11 +297,10 @@ export class AuthService {
             case 'NeedsReRegistration':
               router.navigate(['/register']);
               break;
-            case 'NeedsTotpToken':
-            case 'LostTotpToken':
-            case 'NewTotpToken':
+            case 'Registered':
               router.navigate(['/setup-totp']);
               break;
+            case 'NewTotpToken':
             case 'HasTotpToken':
               router.navigate(['/confirm-totp']);
               break;
@@ -373,7 +379,7 @@ export class AuthService {
    */
   async createTotpToken(): Promise<string | null> {
     const state = this.sessionState();
-    if (!['NeedsTotpToken', 'LostToken', 'NewTotpToken'].includes(state)) return null;
+    if (!['NeedsTotpToken', 'LostTotpToken'].includes(state)) return null;
     let params = new HttpParams();
     if (state == 'LostTotpToken') {
       params = params.set('force', 'true');
@@ -393,7 +399,22 @@ export class AuthService {
   }
 
   /**
-   * Complete the TOTP setup
+   * Move state to "needs TOTP token" and continue with setup
+   */
+  needsTotpSetup(): void {
+    this.#setNewState('NeedsTotpToken');
+  }
+
+  /**
+   * Move state to "lost TOTP token" and proceed with setup
+   */
+  lostTotpSetup(): void {
+    this.#setNewState('LostTotpToken');
+    this.#router.navigate(['/setup-totp']);
+  }
+
+  /**
+   * Move state to "has TOTP token" and proceed with confirmation
    */
   completeTotpSetup(): void {
     this.#setNewState('HasTotpToken');
