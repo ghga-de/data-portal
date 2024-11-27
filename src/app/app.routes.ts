@@ -25,6 +25,7 @@ export const routes: Routes = [
     children: [],
   },
   // TODO: add guards to the following routes that check the expected state
+  // TODO: also add deactivation guards to these routes
   {
     path: 'register',
     loadComponent: () =>

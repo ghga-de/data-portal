@@ -1,4 +1,9 @@
-import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpHeaders,
+  HttpParams,
+  HttpResponse,
+} from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { ConfigService } from '@app/shared/services/config.service';
@@ -34,6 +39,7 @@ export class AuthService {
   #loginUrl = `${this.#authUrl}/rpc/login`;
   #logoutUrl = `${this.#authUrl}/rpc/logout`;
   #verifyTotpUrl = `${this.#authUrl}/rpc/verify-totp`;
+  #totpTokenUrl = `${this.#authUrl}/totp-token`;
   #usersUrl = `${this.#authUrl}/users`;
 
   /**
@@ -206,6 +212,19 @@ export class AuthService {
   }
 
   /**
+   * Move session state
+   * @param state the new state to set
+   */
+  #setNewState(state: LoginState): void {
+    this.#userSignal.update((user) => {
+      if (user && user.state !== state) {
+        user = { ...user, state };
+      }
+      return user;
+    });
+  }
+
+  /**
    * Get the deserialized user session from a JSON-formatted string.
    * @param session the session as a JSON-formatted string or null
    * @returns the parsed user or null if no session or undefined if error
@@ -236,7 +255,6 @@ export class AuthService {
    *
    * It is also called to check when a state change was triggered and we need to
    * wait for and verify that the backend has actually updated the user session.
-   *
    * @param accessToken the access token to use for logging in
    */
   async #loadUserSession(accessToken: string | undefined = undefined): Promise<void> {
@@ -261,6 +279,9 @@ export class AuthService {
       .subscribe((user: User | null | undefined) => {
         if (user) {
           console.debug('User session loaded:', user);
+          if (user.state === 'Registered') {
+            user.state = 'NeedsTotpToken';
+          }
           userSignal.set(user);
           this.#csrf.token = user.csrf;
           const router = this.#router;
@@ -269,7 +290,6 @@ export class AuthService {
             case 'NeedsReRegistration':
               router.navigate(['/register']);
               break;
-            case 'Registered':
             case 'NeedsTotpToken':
             case 'LostTotpToken':
             case 'NewTotpToken':
@@ -348,11 +368,46 @@ export class AuthService {
   }
 
   /**
+   * Create a TOTP token
+   * @returns a promise that resolves to the provisioning URI or null
+   */
+  async createTotpToken(): Promise<string | null> {
+    const state = this.sessionState();
+    if (!['NeedsTotpToken', 'LostToken', 'NewTotpToken'].includes(state)) return null;
+    let params = new HttpParams();
+    if (state == 'LostTotpToken') {
+      params = params.set('force', 'true');
+    }
+    return firstValueFrom(
+      this.#http.post<{ uri: string }>(this.#totpTokenUrl, null, { params }).pipe(
+        map(({ uri }) => {
+          console.info('TOTP token created');
+          return uri || null;
+        }),
+        catchError(() => {
+          console.error('Failed to create TOTP token');
+          return of(null);
+        }),
+      ),
+    );
+  }
+
+  /**
+   * Complete the TOTP setup
+   */
+  completeTotpSetup(): void {
+    this.#setNewState('HasTotpToken');
+    this.#router.navigate(['/confirm-totp']);
+  }
+
+  /**
    * Verify the given TOTP code
    * @param code the 6-digit TOTP code to verify
    * @returns a promise that resolves to true if the code is valid
    */
   async verifyTotpCode(code: string): Promise<boolean> {
+    const state = this.sessionState();
+    if (!['NewTotpToken', 'HasTotpToken'].includes(state)) return false;
     let headers = new HttpHeaders();
     headers = headers.set('X-Authorization', `Bearer TOTP:${code}`);
     if (!code || code.length !== 6 || !/^\d{6}$/.test(code)) {
@@ -363,12 +418,7 @@ export class AuthService {
       this.#http.post<null>(this.#verifyTotpUrl, null, { headers }).pipe(
         map(() => {
           console.info('TOTP code verified');
-          this.#userSignal.update((user) => {
-            if (user) {
-              user.state = 'Authenticated';
-            }
-            return user;
-          });
+          this.#setNewState('Authenticated');
           return true;
         }),
         catchError(() => {

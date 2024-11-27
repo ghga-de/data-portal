@@ -1,1 +1,47 @@
-<p>TODO: Implement TOTP setup!</p>
+<h2>Set up two-factor authentication</h2>
+<p>
+  For additional security when accessing protected data with the GHGA data portal, we
+  are using two-factor authentication and verification of your identity via a contact
+  address that is separate from your primary E-Mail contact address.
+</p>
+<p>
+  The two-factor authentication means that we require you to enter an additional 6-digit
+  authentication code after you logged in via LS Login. This code can be produced by an
+  authenticator app such as Aegis, Microsoft Authenticator or Google Authenticator,
+  which you can install on your mobile phone.
+</p>
+<p>
+  In order to set up the authenticator app to produce the authentication codes for the
+  GHGA data portal, please scan this QR code with your authenticator app:
+</p>
+@let uri = provisioningUri() | async;
+
+@switch (uri) {
+  @case (undefined) {
+    <p>Loading...</p>
+  }
+  @case (null) {
+    <p>Error setting up two-factor authentication.</p>
+    <p><a routerLink="/">Go back to the home page.</a></p>
+  }
+  @default {
+    <qrcode [qrdata]="uri" [width]="160"></qrcode>
+    <button mat-button (click)="showManualSetup = !showManualSetup">
+      @if (showManualSetup) {
+        Hide
+      } @else {
+        Show
+      }
+      manual setup instructions
+    </button>
+    @if (showManualSetup) {
+      <p>
+        If you have trouble scanning the QR Code, please manually input the following
+        setup key in your authenticator app:
+      </p>
+      <p><input type="text" size="35" readonly [value]="getSecret(uri)" /></p>
+      <button mat-button (click)="copySecret(uri)">Copy the setup key</button>
+    }
+    <button mat-raised-button (click)="completeSetup()">Continue</button>
+  }
+}
