@@ -1,20 +1,28 @@
-<mat-toolbar class="flex justify-between">
-  <a routerLink="/">GHGA Logo</a>
+<mat-toolbar class="py-2">
+  <mat-toolbar-row class="align-center flex justify-between">
+    <div class="h-3/4 basis-1/4">
+      <a routerLink="/"
+        ><img src="assets/images/GHGA_logo_clean.png" class="h-full" alt="GHGA Logo"
+      /></a>
+    </div>
 
-  <mat-nav-list>
-    <a
-      [id]="route === '/' ? 'activePage' : ''"
-      mat-button
-      routerLink="/"
-      class="homeLink mx-1"
-      >Home</a
-    ><a
-      [id]="route === '/browse' ? 'activePage' : ''"
-      mat-button
-      routerLink="/browse"
-      class="mx-1"
-      >Browse</a
-    ></mat-nav-list
+    <mat-nav-list class="basis-1/2 text-center">
+      <a
+        [id]="route === '/' ? 'activePage' : ''"
+        mat-button
+        routerLink="/"
+        class="homeLink mx-1"
+        >Home</a
+      ><a
+        [id]="route === '/browse' ? 'activePage' : ''"
+        mat-button
+        routerLink="/browse"
+        class="mx-1"
+        >Browse</a
+      ></mat-nav-list
+    >
+    <div class="basis-1/4 text-right">
+      <a mat-icon-button routerLink="/"> <mat-icon>login</mat-icon></a>
+    </div></mat-toolbar-row
   >
-  <a mat-icon-button routerLink="/"> <mat-icon>login</mat-icon></a>
 </mat-toolbar>
