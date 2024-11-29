@@ -2,7 +2,8 @@
 
 # create self-signed certificate for testing with the browser
 
-HOST=data.staging.ghga.dev
+BASE_URL=${BASE_URL:-https://data.staging.ghga.dev}
+HOST=${BASE_URL#https://}
 CERTFILE=cert.pem
 KEYFILE=key.pem
 

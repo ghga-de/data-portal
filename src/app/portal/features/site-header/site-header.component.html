@@ -22,7 +22,13 @@
       ></mat-nav-list
     >
     <div class="basis-1/4 text-right">
-      <a mat-icon-button routerLink="/"> <mat-icon>login</mat-icon></a>
+      @if (isLoggedIn()) {
+        <button mat-icon-button (click)="onLogout()">
+          <mat-icon>logout</mat-icon>
+        </button>
+      } @else {
+        <button mat-icon-button (click)="onLogin()"><mat-icon>login</mat-icon></button>
+      }
     </div></mat-toolbar-row
   >
 </mat-toolbar>

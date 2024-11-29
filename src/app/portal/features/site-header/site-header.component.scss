@@ -15,13 +15,16 @@ a {
       filled-container-color: var(--mat-sys-primary),
     )
   );
+}
+
+a#activePage {
+  background-color: var(--mat-sys-secondary);
+}
+
+button {
   @include mat.icon-button-overrides(
     (
       icon-color: var(--mat-sys-on-primary),
     )
   );
-}
-
-a#activePage {
-  background-color: var(--mat-sys-secondary);
 }
