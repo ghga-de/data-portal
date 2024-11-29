@@ -27,7 +27,7 @@
   @include mat.theme(
     (
       color: (
-        theme-type: dark,
+        theme-type: light,
         primary: ghga_colors.$primary-palette,
         tertiary: ghga_colors.$tertiary-palette,
       ),
