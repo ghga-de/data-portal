@@ -14,7 +14,6 @@ import { QRCodeComponent } from 'angularx-qrcode';
   selector: 'app-setup-totp',
   imports: [CommonModule, QRCodeComponent, MatButtonModule],
   templateUrl: './setup-totp.component.html',
-  styleUrl: './setup-totp.component.scss',
 })
 export class SetupTotpComponent {
   #authService = inject(AuthService);
