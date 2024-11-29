@@ -3,7 +3,7 @@
 
 cd /workspace
 
-corepack prepare pnpm@9.13.2 --activate
+corepack prepare pnpm@9.14.2 --activate
 echo "Updating pnpm..."
 npm install -g pnpm
 
