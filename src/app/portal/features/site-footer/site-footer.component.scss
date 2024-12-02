@@ -9,8 +9,8 @@ div.icons-div a {
 }
 
 nav div a span {
-  font-size: 95px;
-  line-height: 95px;
+  font-size: 85px;
+  line-height: 85px;
   display: block;
 }
 
@@ -25,4 +25,13 @@ nav div.swirl {
   background-size: 100% 100%;
   background-repeat: no-repeat no-repeat;
   background-position: center bottom;
+}
+
+nav a:hover,
+nav a:active {
+  background-color: color-mix(in srgb, var(--mat-sys-primary) 100%, #fff 8%);
+}
+
+nav a:focus {
+  background-color: color-mix(in srgb, var(--mat-sys-primary) 100%, #fff 12%);
 }

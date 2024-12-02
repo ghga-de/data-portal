@@ -1,7 +1,7 @@
 <mat-toolbar class="py-2">
   <mat-toolbar-row class="align-center flex justify-between">
-    <div class="flex h-3/4 basis-1/4">
-      <a routerLink="/" class="flex w-full flex-nowrap items-center"
+    <div class="flex h-full basis-1/4">
+      <a routerLink="/" class="flex h-full flex-nowrap items-center p-3"
         ><img
           src="assets/images/GHGA_logo_clean.png"
           class="max-h-12"
@@ -18,13 +18,13 @@
     <mat-nav-list class="basis-1/2 text-center">
       <a
         [id]="route === '/' ? 'activePage' : ''"
-        mat-button
+        mat-flat-button
         routerLink="/"
         class="homeLink mx-1"
         >Home</a
       ><a
         [id]="route === '/browse' ? 'activePage' : ''"
-        mat-button
+        mat-flat-button
         routerLink="/browse"
         class="mx-1"
         >Browse</a
