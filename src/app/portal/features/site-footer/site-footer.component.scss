@@ -14,6 +14,11 @@ nav div a span {
   display: block;
 }
 
+nav div a div {
+  color: var(--mat-sys-inverse-primary);
+  border-color: var(--mat-sys-inverse-primary);
+}
+
 nav div.swirl {
   height: 70px;
   background: var(--svg-encoded);

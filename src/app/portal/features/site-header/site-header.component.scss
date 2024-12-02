@@ -9,6 +9,11 @@ mat-toolbar {
   );
 }
 
+mat-toolbar-row div div {
+  color: var(--mat-sys-inverse-primary);
+  border-color: var(--mat-sys-inverse-primary);
+}
+
 a {
   @include mat.button-overrides(
     (
