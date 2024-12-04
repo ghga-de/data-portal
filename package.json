@@ -62,11 +62,17 @@
     "karma-coverage": "~2.2.1",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "msw": "^2.6.6",
     "postcss": "^8.4.49",
     "prettier": "3.3.3",
     "prettier-plugin-tailwindcss": "^0.6.9",
     "tailwindcss": "^3.4.16",
     "typescript": "~5.6.3",
     "typescript-eslint": "^8.17.0"
+  },
+  "msw": {
+    "workerDirectory": [
+      "src/mocks"
+    ]
   }
 }
