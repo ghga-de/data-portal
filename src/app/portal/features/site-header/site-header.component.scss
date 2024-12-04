@@ -19,10 +19,10 @@ a#activePage {
 }
 
 button {
-  --mat-sys-on-surface-variant: #fff;
   @include mat.icon-button-overrides(
     (
       icon-color: var(--mat-sys-on-primary),
+      state-layer-color: var(--mat-sys-on-primary),
     )
   );
 }
@@ -34,4 +34,13 @@ mat-toolbar-row div a:active {
 
 mat-toolbar-row div a:focus {
   background-color: color-mix(in srgb, var(--mat-sys-primary) 100%, #fff 12%);
+}
+
+mat-nav-list a {
+  font-size: medium;
+}
+
+mat-nav-list a mat-icon {
+  scale: 0.8;
+  margin: 0 -5px 0 0;
 }
