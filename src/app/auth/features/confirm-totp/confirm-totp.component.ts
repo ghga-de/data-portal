@@ -25,6 +25,7 @@ import { AuthService } from '@app/auth/services/auth.service';
     MatInputModule,
   ],
   templateUrl: './confirm-totp.component.html',
+  styleUrl: './confirm-totp.component.scss',
 })
 export class ConfirmTotpComponent {
   #authService = inject(AuthService);

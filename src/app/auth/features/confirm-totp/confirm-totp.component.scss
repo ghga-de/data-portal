@@ -1,0 +1,12 @@
+@use '@angular/material' as mat;
+
+button {
+  @include mat.button-overrides(
+    (
+      text-label-text-size: small,
+      text-label-text-color: var(--mat-sys-secondary),
+      text-container-height: 2em,
+      text-horizontal-padding: 0.5em,
+    )
+  );
+}
