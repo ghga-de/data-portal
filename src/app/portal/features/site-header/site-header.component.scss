@@ -9,6 +9,11 @@ mat-toolbar {
   );
 }
 
+mat-toolbar-row {
+  padding-left: 0;
+  height: fit-content;
+}
+
 mat-toolbar-row div div {
   color: var(--mat-sys-quinary);
   border-color: var(--mat-sys-quinary);
@@ -37,7 +42,11 @@ mat-toolbar-row div a:focus {
 }
 
 mat-nav-list a {
-  font-size: medium;
+  @include mat.button-overrides(
+    (
+      text-state-layer-color: var(--mat-sys-on-primary),
+    )
+  );
 }
 
 mat-nav-list a mat-icon {
