@@ -456,6 +456,7 @@ export class AuthService {
     sessionStorage.removeItem('afterLogin');
     if (
       !path ||
+      !path.startsWith('/') ||
       ['/oauth/callback', '/register', '/setup-totp', '/confirm-totp'].some((p) =>
         path!.startsWith(p),
       )
