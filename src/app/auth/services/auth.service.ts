@@ -452,16 +452,16 @@ export class AuthService {
    * Redirect back to the original page after login
    */
   redirectAfterLogin() {
-    let afterLogin = sessionStorage.getItem('afterLogin');
+    let path = sessionStorage.getItem('afterLogin');
     sessionStorage.removeItem('afterLogin');
     if (
-      !afterLogin ||
-      ['/oauth/callback', '/register', '/setup-totp', '/confirm-totp'].some((path) =>
-        afterLogin!.startsWith(path),
+      !path ||
+      ['/oauth/callback', '/register', '/setup-totp', '/confirm-totp'].some((p) =>
+        path!.startsWith(p),
       )
     ) {
-      afterLogin = '/';
+      path = '/';
     }
-    this.#router.navigate([afterLogin]);
+    this.#router.navigate([path]);
   }
 }
