@@ -31,8 +31,6 @@ export class AuthService {
   #csrf = inject(CsrfService);
   #userSignal = signal<User | null | undefined>(undefined);
 
-  #redirectAfterLogin = '/';
-
   #oidcUserManager: OidcUserManager;
 
   #authUrl = this.#config.authUrl;
@@ -156,7 +154,7 @@ export class AuthService {
    * to the authorization endpoint of the OIDC provider.
    */
   async login(): Promise<void> {
-    this.#redirectAfterLogin = location.pathname;
+    sessionStorage.setItem('afterLogin', location.pathname);
     this.#oidcUserManager.signinRedirect();
   }
 
@@ -215,7 +213,7 @@ export class AuthService {
         await this.#oidcUserManager.removeUser();
         this.#userSignal.set(null);
         this.#csrf.token = null;
-        this.#redirectAfterLogin = '/';
+        sessionStorage.removeItem('afterLogin');
         this.#router.navigate(['/']);
       });
     }
@@ -454,6 +452,16 @@ export class AuthService {
    * Redirect back to the original page after login
    */
   redirectAfterLogin() {
-    this.#router.navigate([this.#redirectAfterLogin]);
+    let afterLogin = sessionStorage.getItem('afterLogin');
+    sessionStorage.removeItem('afterLogin');
+    if (
+      !afterLogin ||
+      ['/oauth/callback', '/register', '/setup-totp', '/confirm-totp'].some((path) =>
+        afterLogin!.startsWith(path),
+      )
+    ) {
+      afterLogin = '/';
+    }
+    this.#router.navigate([afterLogin]);
   }
 }
