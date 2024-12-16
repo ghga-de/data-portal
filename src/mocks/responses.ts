@@ -1,6 +1,6 @@
 /**
- * @license Apache-2.0
  * @copyright The GHGA Authors
+ * @license Apache-2.0
  */
 
 import { searchResults } from './data';
