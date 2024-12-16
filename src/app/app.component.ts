@@ -1,3 +1,8 @@
+/**
+ * @license Apache-2.0
+ * @copyright The GHGA Authors
+ */
+
 import { Component, inject, OnInit } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { RouterOutlet } from '@angular/router';

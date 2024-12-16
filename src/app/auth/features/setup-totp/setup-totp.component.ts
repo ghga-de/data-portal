@@ -1,3 +1,8 @@
+/**
+ * @license Apache-2.0
+ * @copyright The GHGA Authors
+ */
+
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';

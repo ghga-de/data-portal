@@ -1,4 +1,9 @@
 /**
+ * @license Apache-2.0
+ * @copyright The GHGA Authors
+ */
+
+/**
  * Create response handlers for MSW
  *
  * This module takes a list of static responses for different endpoints and

@@ -1,3 +1,8 @@
+/**
+ * @license Apache-2.0
+ * @copyright The GHGA Authors
+ */
+
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 

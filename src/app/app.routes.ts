@@ -1,4 +1,8 @@
-/* eslint-disable jsdoc/require-jsdoc */
+/**
+ * @license Apache-2.0
+ * @copyright The GHGA Authors
+ */
+
 import { inject } from '@angular/core';
 import { Routes } from '@angular/router';
 import { AuthService } from '@app/auth/services/auth.service';
@@ -6,6 +10,7 @@ import { AuthService } from '@app/auth/services/auth.service';
 export const routes: Routes = [
   {
     path: '',
+    // eslint-disable-next-line jsdoc/require-jsdoc
     loadComponent: () =>
       import('./portal/features/home-page/home-page.component').then(
         (m) => m.HomePageComponent,
@@ -13,6 +18,7 @@ export const routes: Routes = [
   },
   {
     path: 'browse',
+    // eslint-disable-next-line jsdoc/require-jsdoc
     loadComponent: () =>
       import('./metadata/features/metadata-browser/metadata-browser.component').then(
         (m) => m.MetadataBrowserComponent,
@@ -28,6 +34,7 @@ export const routes: Routes = [
   // TODO: also add deactivation guards to these routes
   {
     path: 'register',
+    // eslint-disable-next-line jsdoc/require-jsdoc
     loadComponent: () =>
       import('./auth/features/register/register.component').then(
         (m) => m.RegisterComponent,
@@ -35,6 +42,7 @@ export const routes: Routes = [
   },
   {
     path: 'setup-totp',
+    // eslint-disable-next-line jsdoc/require-jsdoc
     loadComponent: () =>
       import('./auth/features/setup-totp/setup-totp.component').then(
         (m) => m.SetupTotpComponent,
@@ -42,6 +50,7 @@ export const routes: Routes = [
   },
   {
     path: 'confirm-totp',
+    // eslint-disable-next-line jsdoc/require-jsdoc
     loadComponent: () =>
       import('./auth/features/confirm-totp/confirm-totp.component').then(
         (m) => m.ConfirmTotpComponent,

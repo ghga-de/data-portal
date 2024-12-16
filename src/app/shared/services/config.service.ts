@@ -1,3 +1,8 @@
+/**
+ * @license Apache-2.0
+ * @copyright The GHGA Authors
+ */
+
 import { Injectable } from '@angular/core';
 
 interface Config {

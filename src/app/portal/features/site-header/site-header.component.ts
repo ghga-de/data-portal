@@ -1,3 +1,8 @@
+/**
+ * @license Apache-2.0
+ * @copyright The GHGA Authors
+ */
+
 import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';

@@ -1,4 +1,9 @@
 /**
+ * @license Apache-2.0
+ * @copyright The GHGA Authors
+ */
+
+/**
  * Create a mock service worker for the web browser
  *
  * The mock service worker is used to create mock responses for local testing.

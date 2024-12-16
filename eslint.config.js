@@ -1,5 +1,5 @@
 // @ts-check
-import angular from '@angular-eslint/eslint-plugin';
+import { default as angular, default as pkg } from '@angular-eslint/eslint-plugin';
 import angularTemplate from '@angular-eslint/eslint-plugin-template';
 import { default as angularTemplateParser } from '@angular-eslint/template-parser';
 import markdown from '@eslint/markdown';
@@ -8,11 +8,12 @@ import typescriptPlugin, {
 } from '@typescript-eslint/eslint-plugin';
 import * as typescriptParser from '@typescript-eslint/parser';
 import boundaries from 'eslint-plugin-boundaries';
+import header from 'eslint-plugin-header';
 import jsdoc from 'eslint-plugin-jsdoc';
 import prettier from 'eslint-plugin-prettier';
-
-import pkg from '@angular-eslint/eslint-plugin';
 const { configs: angularConfigs } = pkg;
+
+header.rules.header.meta.schema = false;
 
 // Define the configuration
 export default [
@@ -33,6 +34,7 @@ export default [
       jsdoc,
       prettier,
       boundaries,
+      header,
     },
     rules: {
       ...tsConfigs.recommended.rules,
@@ -46,6 +48,13 @@ export default [
       '@angular-eslint/component-selector': [
         'error',
         { type: 'element', prefix: 'app', style: 'kebab-case' },
+      ],
+      'header/header': [
+        2,
+        'block',
+        ['*', ' * @license Apache-2.0', ' * @copyright The GHGA Authors', ' '],
+        2,
+        { lineEndings: 'linux' },
       ],
       'jsdoc/require-jsdoc': [
         'warn',

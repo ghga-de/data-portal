@@ -1,4 +1,9 @@
 /**
+ * @license Apache-2.0
+ * @copyright The GHGA Authors
+ */
+
+/**
  * Mock data to be used in MSW responses
  */
 

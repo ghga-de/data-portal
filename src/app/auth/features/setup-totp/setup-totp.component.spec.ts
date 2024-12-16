@@ -1,3 +1,8 @@
+/**
+ * @license Apache-2.0
+ * @copyright The GHGA Authors
+ */
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SetupTotpComponent } from './setup-totp.component';
