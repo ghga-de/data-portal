@@ -27,7 +27,6 @@ import { AuthService } from '@app/auth/services/auth.service';
     RouterLink,
   ],
   templateUrl: './register.component.html',
-  styleUrl: './register.component.scss',
 })
 export class RegisterComponent {
   #authService = inject(AuthService);

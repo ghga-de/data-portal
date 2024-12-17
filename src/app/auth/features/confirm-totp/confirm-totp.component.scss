@@ -3,10 +3,10 @@
 button {
   @include mat.button-overrides(
     (
-      text-label-text-size: small,
-      text-label-text-color: var(--mat-sys-secondary),
-      text-container-height: 2em,
-      text-horizontal-padding: 0.5em,
+      outlined-label-text-size: small,
+      outlined-label-text-color: var(--mat-sys-secondary),
+      outlined-container-height: 2em,
+      outlined-horizontal-padding: 0.5em,
     )
   );
 }

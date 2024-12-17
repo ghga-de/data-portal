@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatRipple } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatNavList } from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -13,7 +14,14 @@ import { AuthService } from '@app/auth/services/auth.service';
   selector: 'app-site-header',
   templateUrl: './site-header.component.html',
   standalone: true,
-  imports: [MatToolbarModule, MatNavList, MatButtonModule, MatIconModule, RouterLink],
+  imports: [
+    MatToolbarModule,
+    MatNavList,
+    MatButtonModule,
+    MatIconModule,
+    RouterLink,
+    MatRipple,
+  ],
   styleUrl: './site-header.component.scss',
 })
 export class SiteHeaderComponent {

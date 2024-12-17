@@ -1,5 +1,6 @@
 import { Component, HostBinding } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatRipple } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 
@@ -8,7 +9,7 @@ import { RouterLink } from '@angular/router';
  */
 @Component({
   selector: 'app-site-footer',
-  imports: [RouterLink, MatIconModule, MatButtonModule],
+  imports: [RouterLink, MatIconModule, MatButtonModule, MatRipple],
   templateUrl: './site-footer.component.html',
   styleUrl: './site-footer.component.scss',
 })

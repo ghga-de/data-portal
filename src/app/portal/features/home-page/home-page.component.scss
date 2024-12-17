@@ -1,21 +1,7 @@
 @use '@angular/material' as mat;
 
-p {
-  text-align: justify;
-}
-
-p a {
-  color: var(--mat-sys-tertiary);
-  text-decoration: underline;
-}
-
 p a mat-icon {
   scale: 0.6;
   margin: 0 -5px 0 -3px;
   transform: translateY(10px);
-}
-
-div a {
-  background-color: var(--mat-sys-tertiary);
-  color: var(--mat-sys-on-tertiary);
 }

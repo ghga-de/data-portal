@@ -22,19 +22,19 @@
       }
     </p>
     <p>
-      <span class="label">Name:</span>
+      <span class="inline-block min-w-44 font-bold">Name:</span>
       <span>{{ u.name }}</span>
     </p>
     <p>
-      <span class="label">E-Mail:</span>
+      <span class="inline-block min-w-44 font-bold">E-Mail:</span>
       <span>{{ u.email }}</span>
     </p>
     <p>
-      <span class="label">Life Science ID:</span>
+      <span class="inline-block min-w-44 font-bold">Life Science ID:</span>
       <span>{{ u.ext_id }}</span>
     </p>
     <p class="mb-0">
-      <span class="label">Academic title:</span>
+      <span class="inline-block min-w-44 font-bold">Academic title:</span>
       <mat-form-field>
         <mat-select [formControl]="titleControl">
           @for (title of allTitles; track title) {
