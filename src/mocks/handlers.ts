@@ -11,12 +11,13 @@
  */
 
 import { http, HttpResponse, RequestHandler } from 'msw';
+import { handlers as authHandlers } from './auth';
 import { responses, ResponseValue } from './responses';
 
 /**
  * List of handlers for REST endpoints
  */
-export const handlers: RequestHandler[] = [];
+export const handlers: RequestHandler[] = [...authHandlers];
 
 type ResponseMap = { [params: string]: ResponseValue };
 
