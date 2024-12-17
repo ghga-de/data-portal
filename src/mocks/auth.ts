@@ -25,7 +25,7 @@ const AUTH_URL = new URL(CONFIG.auth_url, BASE_URL).href + '/';
 const LOGIN_URL = new URL('rpc/login', AUTH_URL).href;
 const LOGOUT_URL = new URL('rpc/logout', AUTH_URL).href;
 const TOTP_TOKEN_URL = new URL('totp-token', AUTH_URL).href;
-const TOTP_VALIDATON_URL = new URL('rpc/verify-totp', AUTH_URL).href;
+const TOTP_VALIDATION_URL = new URL('rpc/verify-totp', AUTH_URL).href;
 const USERS_URL = new URL('users', AUTH_URL).href;
 const OIDC_AUTHORITY_URL = CONFIG.oidc_authority_url;
 const OIDC_CONFIG_PATH = '.well-known/openid-configuration';
@@ -172,7 +172,7 @@ export const handlers = [
   /**
    * intercept TOTP verification request
    */
-  http.post(TOTP_VALIDATON_URL, ({ request }) => {
+  http.post(TOTP_VALIDATION_URL, ({ request }) => {
     // the code is passed in the X-Authorization header in this case
     let token = request.headers.get('X-Authorization') || '';
     if (token.startsWith('Bearer TOTP:')) token = token.substring(12);
