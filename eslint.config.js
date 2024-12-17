@@ -51,8 +51,8 @@ export default [
       ],
       'header/header': [
         2,
-        'line',
-        ['@copyright The GHGA Authors', '@license Apache-2.0'],
+        'block',
+        ['*', ' * @copyright The GHGA Authors', ' * @license Apache-2.0', ' '],
         2,
         { lineEndings: 'linux' },
       ],

@@ -1,5 +1,7 @@
-//@copyright The GHGA Authors
-//@license Apache-2.0
+/**
+ * @copyright The GHGA Authors
+ * @license Apache-2.0
+ */
 
 import { TestBed } from '@angular/core/testing';
 

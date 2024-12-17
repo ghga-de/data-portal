@@ -1,5 +1,7 @@
-//@copyright The GHGA Authors
-//@license Apache-2.0
+/**
+ * @copyright The GHGA Authors
+ * @license Apache-2.0
+ */
 
 import { Component, HostBinding } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
