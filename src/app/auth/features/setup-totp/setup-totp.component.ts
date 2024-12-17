@@ -1,7 +1,5 @@
-/**
- * @copyright The GHGA Authors
- * @license Apache-2.0
- */
+//@copyright The GHGA Authors
+//@license Apache-2.0
 
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';

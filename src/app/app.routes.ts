@@ -1,7 +1,5 @@
-/**
- * @copyright The GHGA Authors
- * @license Apache-2.0
- */
+//@copyright The GHGA Authors
+//@license Apache-2.0
 
 import { inject } from '@angular/core';
 import { Routes } from '@angular/router';

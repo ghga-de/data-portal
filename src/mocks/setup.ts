@@ -1,7 +1,5 @@
-/**
- * @copyright The GHGA Authors
- * @license Apache-2.0
- */
+//@copyright The GHGA Authors
+//@license Apache-2.0
 
 /**
  * Create a mock service worker for the web browser
