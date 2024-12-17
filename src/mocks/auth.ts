@@ -7,11 +7,11 @@ import { LoginState, User } from '@app/auth/models/user';
 import { http, HttpResponse } from 'msw';
 
 /**
- * The following state should be set after login.
+ * The following session state will be set after the fake login.
  * Set this to 'NeedsRegistration' to test the full registration and 2FA flow.
  * Set this to 'Authenticated' to immediately have a fully authenticated user.
  */
-const LOGIN_STATE = 'Authenticated' as LoginState;
+const INITIAL_LOGIN_STATE = 'Authenticated' as LoginState;
 
 /**
  * The TOTP code that should be considered valid when testing
@@ -37,14 +37,14 @@ const OIDC_USER_KEY = `oidc.user:${OIDC_AUTHORITY_URL}:${OIDC_CLIENT_ID}`;
  * The dummy user object for MSW
  */
 export const user: User = {
-  id: LOGIN_STATE === 'NeedsRegistration' ? undefined : 'j.doe@ghga.de',
+  id: INITIAL_LOGIN_STATE === 'NeedsRegistration' ? undefined : 'j.doe@ghga.de',
   ext_id: 'aacaffeecaffeecaffeecaffeecaffeecaffeeaad@lifescience-ri.eu',
   name: 'John Doe',
   title: 'Dr.',
   full_name: 'Dr. John Doe',
   email: 'j.jdoe@home.org',
   role: 'data_steward',
-  state: LOGIN_STATE, // the state after login
+  state: INITIAL_LOGIN_STATE, // the state after login
   csrf: 'mock-csrf-token',
   timeout: 3600,
   extends: 7200,
