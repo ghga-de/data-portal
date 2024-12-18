@@ -43,7 +43,7 @@ const useProxy = !target.startsWith('http://127.');
 const config = {};
 
 if (useProxy) {
-  console.log('Configuring proxy server...');
+  console.log(`Running proxy server with target ${target}...`);
   config['/api'] = {
     target,
     changeOrigin: true,

@@ -2,15 +2,5 @@
 
 cd /workspace
 
-# allow passing modes as arguments
-if [ "$1" = "staging" ]; then
-  export data_portal_base_url="https://data.staging.ghga.dev"
-  if [[ "$2" = *:* ]]; then
-    export data_portal_basic_auth="$2"
-  fi
-elif [ "$1" = "msw" ]; then
-  export data_portal_base_url="http://127.0.0.1:8080"
-fi
-
 # start the development server
-./run.js --dev
+./run.js --dev "$@"

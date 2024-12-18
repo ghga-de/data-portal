@@ -2,18 +2,24 @@
 
 # create self-signed certificate for testing with the browser
 
-BASE_URL=${BASE_URL:-https://data.staging.ghga.dev}
-HOST=${BASE_URL#https://}
 CERTFILE=cert.pem
 KEYFILE=key.pem
 
 cd /workspace/.devcontainer
 
 if ! test -f "$CERTFILE" || ! test -f "$KEYFILE"; then
+  URL=${data_portal_base_url}
+  echo "URL=$URL"
+  HOST=$(echo "$URL" | awk -F[/:] '{print $4}')
+  if [ -z "$HOST" ] || [ "$HOST" == "localhost" ] || [ "$HOST" == "127.0.0.1" ]; then
+    HOST="data.staging.ghga.dev"
+  fi
   echo "Creating self-signed certificate for $HOST"
-  openssl req -x509 -newkey rsa:4096 -nodes \
-    -out "ca-$CERTFILE" -keyout "ca-$KEYFILE" \
-    -subj "/CN=$HOST" -days 356
+  if ! test -f "ca-$CERTFILE" || ! test -f "ca-$KEYFILE"; then
+    openssl req -x509 -newkey rsa:4096 -nodes \
+      -out "ca-$CERTFILE" -keyout "ca-$KEYFILE" \
+      -subj "/CN=$HOST" -days 356
+  fi
   openssl req -newkey rsa:4096 -nodes \
     -out "req-$CERTFILE" -keyout "$KEYFILE" \
     -subj "/CN=$HOST"
@@ -27,6 +33,6 @@ extendedKeyUsage=serverAuth" > "ca.ext"
     -in "req-$CERTFILE" -out "$CERTFILE" \
     -CAcreateserial -days 356 \
     -extfile ca.ext
-  rm -f "req-$CERTFILE" "ca-$KEYFILE" ca.ext "ca-${CERTFILE%.pem}.srl"
+  rm -f "req-$CERTFILE" ca.ext "ca-${CERTFILE%.pem}.srl"
   echo "Add ca-$CERTFILE to your browser's trusted certificates"
 fi
