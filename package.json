@@ -46,7 +46,6 @@
     "@angular/compiler-cli": "^19.0.1",
     "@compodoc/compodoc": "^1.1.26",
     "@eslint/markdown": "^6.2.1",
-    "@types/jasmine": "~5.1.5",
     "@types/jest": "^29.5.14",
     "@typescript-eslint/eslint-plugin": "^8.17.0",
     "@typescript-eslint/parser": "^8.17.0",
