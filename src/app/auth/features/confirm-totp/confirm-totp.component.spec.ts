@@ -5,8 +5,14 @@
  */
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { AuthService } from '@app/auth/services/auth.service';
 import { ConfirmTotpComponent } from './confirm-totp.component';
+
+/**
+ * Mock the auth service as needed for the confirm TOTP component
+ */
+class MockAuthService {}
 
 describe('ConfirmTotpComponent', () => {
   let component: ConfirmTotpComponent;
@@ -14,7 +20,8 @@ describe('ConfirmTotpComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ConfirmTotpComponent],
+      imports: [ConfirmTotpComponent, NoopAnimationsModule],
+      providers: [{ provide: AuthService, useClass: MockAuthService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ConfirmTotpComponent);

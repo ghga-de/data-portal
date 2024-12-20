@@ -6,8 +6,12 @@
     "outDir": "./out-tsc/spec",
     "types": [
       "jest"
-    ],
+    ]
   },
+  "files": [
+    "jest.config.ts",
+    "setup-test.ts"
+  ],
   "include": [
     "src/**/*.spec.ts",
     "src/**/*.d.ts"
