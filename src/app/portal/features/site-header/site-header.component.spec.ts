@@ -7,9 +7,11 @@
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from '@app/auth/services/auth.service';
+
+import { screen } from '@testing-library/angular';
+
 import { SiteHeaderComponent } from './site-header.component';
 
 /**
@@ -64,29 +66,18 @@ describe('SiteHeaderComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should display a toolbar', () => {
-    const compiled = fixture.nativeElement as HTMLElement;
-    const toolbar = compiled.querySelector('mat-toolbar');
-    expect(toolbar).toBeTruthy();
-  });
-
-  it('should have a nav list inside the toolbar', () => {
-    const compiled = fixture.nativeElement as HTMLElement;
-    const toolbar = compiled.querySelector('mat-toolbar mat-nav-list');
-    expect(toolbar).toBeTruthy();
+  it('should contain a navigation', () => {
+    const navbar = screen.getByRole('navigation');
+    expect(navbar).toBeVisible();
   });
 
   it('should login and logout', async () => {
     const authService = TestBed.inject(AuthService);
     expect(authService.isLoggedIn()).toBe(false);
 
-    const compiled = fixture.nativeElement as HTMLElement;
-
-    const loginButton: HTMLButtonElement = compiled.querySelector(
-      'mat-toolbar button[mat-icon-button]',
-    )!;
-    expect(loginButton).toBeTruthy();
-    expect(loginButton.textContent).toContain('login');
+    const loginButton = screen.getByRole('button', { name: 'Login' });
+    expect(loginButton).toBeVisible();
+    expect(loginButton).toHaveTextContent('login');
 
     loginButton.click();
 
@@ -94,12 +85,9 @@ describe('SiteHeaderComponent', () => {
 
     await fixture.whenStable();
 
-    const logoutButton: HTMLButtonElement = compiled.querySelector(
-      'mat-toolbar button[mat-icon-button]',
-    )!;
-    expect(logoutButton).toBeTruthy();
-    expect(loginButton).not.toBe(logoutButton);
-    expect(logoutButton.textContent).toContain('logout');
+    const logoutButton = screen.getByRole('button', { name: 'Logout' });
+    expect(logoutButton).not.toBe(loginButton);
+    expect(logoutButton).toHaveTextContent('logout');
 
     logoutButton.click();
 

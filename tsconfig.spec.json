@@ -5,7 +5,9 @@
   "compilerOptions": {
     "outDir": "./out-tsc/spec",
     "types": [
-      "jest"
+      "jest",
+      "@testing-library/jest-dom",
+      "@testing-library/angular",
     ]
   },
   "files": [

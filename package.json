@@ -47,6 +47,8 @@
     "@angular/compiler-cli": "^19.0.5",
     "@compodoc/compodoc": "^1.1.26",
     "@eslint/markdown": "^6.2.1",
+    "@testing-library/angular": "^17.3.5",
+    "@testing-library/jest-dom": "^6.6.3",
     "@types/jest": "^29.5.14",
     "@typescript-eslint/eslint-plugin": "^8.19.1",
     "@typescript-eslint/parser": "^8.19.1",

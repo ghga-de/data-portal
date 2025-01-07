@@ -7,6 +7,9 @@
 // setup-jest.ts
 import { setupZonelessTestEnv } from 'jest-preset-angular/setup-env/zoneless';
 
+// add extended jest matchers
+import '@testing-library/jest-dom';
+
 // suppress console output during tests
 global.console = {
   ...console,
