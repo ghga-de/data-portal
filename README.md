@@ -1,6 +1,6 @@
-# DataPortal
+# GHGA Data Portal
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.0.0-rc.0.
+This repository contains the Angular 19 front-end application for the GHGA data portal.
 
 ## Development server
 
