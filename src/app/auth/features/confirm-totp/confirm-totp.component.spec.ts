@@ -26,7 +26,7 @@ describe('ConfirmTotpComponent', () => {
 
     fixture = TestBed.createComponent(ConfirmTotpComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    await fixture.whenStable();
   });
 
   it('should create', () => {

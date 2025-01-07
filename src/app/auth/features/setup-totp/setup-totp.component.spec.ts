@@ -38,7 +38,7 @@ describe('SetupTotpComponent', () => {
 
     fixture = TestBed.createComponent(SetupTotpComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    await fixture.whenStable();
   });
 
   it('should create', () => {
