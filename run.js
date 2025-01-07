@@ -173,7 +173,7 @@ function runDevServer(host, port, ssl, sslCert, sslKey, logLevel, baseUrl, basic
     console.log(`Your host computer should resolve ${hostname} to ${host}.`);
   }
 
-  console.log('Please point your browser to', baseUrl);
+  console.log('Please point your browser to:', baseUrl);
 
   // export settings used in the proxy config
   process.env.data_portal_base_url = baseUrl;
