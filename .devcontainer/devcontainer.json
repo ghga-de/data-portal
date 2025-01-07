@@ -51,7 +51,8 @@
         "visualstudioexptteam.vscodeintellicode",
         "esbenp.prettier-vscode",
         "dbaeumer.vscode-eslint",
-        "angular.ng-template"
+        "angular.ng-template",
+        "orta.vscode-jest"
       ]
     }
   },
