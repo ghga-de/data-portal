@@ -173,6 +173,8 @@ function runDevServer(host, port, ssl, sslCert, sslKey, logLevel, baseUrl, basic
     console.log(`Your host computer should resolve ${hostname} to ${host}.`);
   }
 
+  console.log('Please point your browser to', baseUrl);
+
   // export settings used in the proxy config
   process.env.data_portal_base_url = baseUrl;
   if (basicAuth) {
@@ -264,11 +266,13 @@ function main() {
   let adapted = false;
   if (DEV) {
     msg += ' in development mode';
-    if (WITH_BACKEND) {
+    if (WITH_BACKEND || WITH_OIDC) {
       if (!baseUrl || baseUrl.startsWith('http://127.')) {
         settings.base_url = baseUrl = DEFAULT_BACKEND;
         adapted = true;
       }
+    }
+    if (WITH_BACKEND) {
       msg += ` with ${baseUrl.split('://')[1] || baseUrl} as backend`;
     } else {
       msg += ' with mock API';
