@@ -21,6 +21,8 @@ const mockConfig = {
   oidc_token_url: 'test/token',
   oidc_userinfo_url: 'test/userinfo',
   oidc_use_discovery: true,
+  mock_api: true,
+  mock_oidc: true,
 };
 
 describe('ConfigService', () => {
