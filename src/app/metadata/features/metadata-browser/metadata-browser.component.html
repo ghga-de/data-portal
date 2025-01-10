@@ -1,1 +1,18 @@
-<p>Browse view</p>
+<div>Total Datasets: {{ stats().count }}</div>
+<div>
+  <mat-accordion multi>
+    @for (hit of stats().hits; track hit.id_) {
+      <app-dataset-expansion-panel [hit]="hit" />
+    }
+  </mat-accordion>
+</div>
+<div>
+  @for (facet of stats().facets; track facet.key) {
+    <div>
+      {{ facet.name }}
+      @for (option of facet.options; track option.value) {
+        <mat-checkbox>{{ option.value }} ({{ option.count }})</mat-checkbox>
+      }
+    </div>
+  }
+</div>
