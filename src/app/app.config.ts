@@ -4,6 +4,7 @@
  * @license Apache-2.0
  */
 
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import {
   ApplicationConfig,
   provideExperimentalZonelessChangeDetection,
@@ -11,10 +12,10 @@ import {
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter } from '@angular/router';
+import { provideHttpCache, withHttpCacheInterceptor } from '@ngneat/cashew';
 
 import {
   HTTP_INTERCEPTORS,
-  provideHttpClient,
   withFetch,
   withInterceptorsFromDi,
 } from '@angular/common/http';
@@ -25,7 +26,13 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideExperimentalZonelessChangeDetection(),
     provideRouter(routes),
-    provideHttpClient(withFetch(), withInterceptorsFromDi()),
+    provideHttpClient(
+      withFetch(),
+      withInterceptorsFromDi(),
+      withInterceptors([withHttpCacheInterceptor()]),
+    ),
+    // cache all GET requests by default
+    provideHttpCache({ strategy: 'implicit' }),
     provideNoopAnimations(),
     provideAnimationsAsync(),
     { provide: HTTP_INTERCEPTORS, useClass: CsrfInterceptor, multi: true },
