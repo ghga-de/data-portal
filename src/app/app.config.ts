@@ -14,12 +14,8 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { provideRouter } from '@angular/router';
 import { provideHttpCache, withHttpCacheInterceptor } from '@ngneat/cashew';
 
-import {
-  HTTP_INTERCEPTORS,
-  withFetch,
-  withInterceptorsFromDi,
-} from '@angular/common/http';
-import { CsrfInterceptor } from '@app/auth/services/csrf.service';
+import { withFetch } from '@angular/common/http';
+import { csrfInterceptor } from '@app/auth/services/csrf.service';
 import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
@@ -28,13 +24,11 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(
       withFetch(),
-      withInterceptorsFromDi(),
-      withInterceptors([withHttpCacheInterceptor()]),
+      withInterceptors([withHttpCacheInterceptor(), csrfInterceptor]),
     ),
     // cache all GET requests by default
     provideHttpCache({ strategy: 'implicit' }),
     provideNoopAnimations(),
     provideAnimationsAsync(),
-    { provide: HTTP_INTERCEPTORS, useClass: CsrfInterceptor, multi: true },
   ],
 };
