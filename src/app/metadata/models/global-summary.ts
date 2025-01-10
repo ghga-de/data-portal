@@ -15,7 +15,7 @@ export interface GlobalSummary {
       count: number;
       stats: { sex: { value: string; count: number }[] };
     };
-    SequencingProcessFile: {
+    ProcessDataFile: {
       count: number;
       stats: { format: { value: string; count: number }[] };
     };

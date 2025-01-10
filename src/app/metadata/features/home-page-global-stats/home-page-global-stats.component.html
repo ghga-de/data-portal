@@ -26,13 +26,14 @@
         <table class="mx-auto w-auto">
           <tbody>
             @for (
-              method of stats().resource_stats.ExperimentMethod.stats.instrument_model;
-              track method.value
+              platform of stats().resource_stats.ExperimentMethod.stats
+                .instrument_model;
+              track platform.value
             ) {
               <tr>
-                <td class="pe-2 text-right font-bold">{{ method.count }}</td>
+                <td class="pe-2 text-right font-bold">{{ platform.count }}</td>
                 <td class="text-left uppercase">
-                  {{ method.value.replaceAll('_', ' ') }}
+                  {{ platform.value.replaceAll('_', ' ') }}
                 </td>
               </tr>
             }
@@ -69,13 +70,12 @@
           ><mat-icon inline class="rounded-full border-4 border-tertiary px-1"
             >description</mat-icon
           ></span
-        ><br />Files:
-        {{ stats().resource_stats.SequencingProcessFile.count }}</mat-card-title
+        ><br />Files: {{ stats().resource_stats.ProcessDataFile.count }}</mat-card-title
       ><mat-card-content class="mt-4 text-sm">
         <table class="mx-auto w-auto">
           <tbody>
             @for (
-              format of stats().resource_stats.SequencingProcessFile.stats.format;
+              format of stats().resource_stats.ProcessDataFile.stats.format;
               track format.value
             ) {
               <tr>

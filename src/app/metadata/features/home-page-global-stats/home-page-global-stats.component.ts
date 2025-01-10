@@ -26,7 +26,7 @@ export class HomePageGlobalStatsComponent {
       Dataset: { count: 0 },
       ExperimentMethod: { count: 0, stats: { instrument_model: [] } },
       Individual: { count: 0, stats: { sex: [] } },
-      SequencingProcessFile: { count: 0, stats: { format: [] } },
+      ProcessDataFile: { count: 0, stats: { format: [] } },
     },
   });
 
@@ -35,6 +35,7 @@ export class HomePageGlobalStatsComponent {
       try {
         console.log(data);
         this.stats.set(JSON.parse(JSON.stringify(data)));
+        console.log(this.stats());
       } catch {}
     });
   }
