@@ -150,10 +150,8 @@ function runDevServer(host, port, ssl, sslCert, sslKey, logLevel, baseUrl, basic
     return;
   }
 
-  if (WITH_BACKEND || WITH_OIDC) {
+  if (WITH_BACKEND) {
     console.log(`Using ${hostname} as backend for API calls via proxy.`);
-    const ipAddress = getIpAddress(hostname);
-    addHostEntry(hostname, ipAddress);
   } else {
     console.log('Using the mock service worker for API calls.');
     basicAuth = null;
@@ -169,11 +167,16 @@ function runDevServer(host, port, ssl, sslCert, sslKey, logLevel, baseUrl, basic
     console.log('Using the mock service worker for authentication.');
   }
 
-  if (host != hostname) {
+  let proxyHint = '';
+  if (WITH_OIDC && host != hostname) {
+    const ipAddress = getIpAddress(hostname);
+    addHostEntry(hostname, ipAddress);
     console.log(`Your host computer should resolve ${hostname} to ${host}.`);
+    proxyHint = `Please point your browser to: ${baseUrl}`;
+    console.log(proxyHint);
   }
-
-  console.log('Please point your browser to:', baseUrl);
+  // pass a hint to the user that shall be shown when running the proxy server
+  process.env.data_portal_proxy_hint = proxyHint;
 
   // export settings used in the proxy config
   process.env.data_portal_base_url = baseUrl;
@@ -266,29 +269,6 @@ function main() {
   let adapted = false;
   if (DEV) {
     msg += ' in development mode';
-    if (WITH_BACKEND || WITH_OIDC) {
-      if (
-        !baseUrl ||
-        baseUrl.startsWith('http://127.') ||
-        baseUrl.startsWith('http://localhost')
-      ) {
-        settings.base_url = baseUrl = DEFAULT_BACKEND;
-        settings.port = port = 443;
-        settings.ssl = ssl = true;
-        adapted = true;
-      }
-    } else {
-      if (
-        baseUrl &&
-        !baseUrl.startsWith('http:127.') &&
-        !baseUrl.startsWith('http://localhost')
-      ) {
-        settings.base_url = baseUrl = 'http://127.0.0.1:8080';
-        settings.port = port = 8080;
-        settings.ssl = ssl = false;
-        adapted = true;
-      }
-    }
     if (WITH_BACKEND) {
       msg += ` with ${baseUrl.split('://')[1] || baseUrl} as backend`;
     } else {
@@ -296,6 +276,14 @@ function main() {
     }
     if (WITH_OIDC) {
       msg += ' and authentication via OIDC';
+      if (
+        !baseUrl ||
+        baseUrl.startsWith('http://127.') ||
+        baseUrl.startsWith('http://localhost')
+      ) {
+        settings.base_url = baseUrl = DEFAULT_BACKEND;
+        adapted = true;
+      }
       if (settings.port !== 443 || !settings.ssl) {
         settings.port = port = 443;
         settings.ssl = ssl = true;
