@@ -267,8 +267,25 @@ function main() {
   if (DEV) {
     msg += ' in development mode';
     if (WITH_BACKEND || WITH_OIDC) {
-      if (!baseUrl || baseUrl.startsWith('http://127.')) {
+      if (
+        !baseUrl ||
+        baseUrl.startsWith('http://127.') ||
+        baseUrl.startsWith('http://localhost')
+      ) {
         settings.base_url = baseUrl = DEFAULT_BACKEND;
+        settings.port = port = 443;
+        settings.ssl = ssl = true;
+        adapted = true;
+      }
+    } else {
+      if (
+        baseUrl &&
+        !baseUrl.startsWith('http:127.') &&
+        !baseUrl.startsWith('http://localhost')
+      ) {
+        settings.base_url = baseUrl = 'http://127.0.0.1:8080';
+        settings.port = port = 8080;
+        settings.ssl = ssl = false;
         adapted = true;
       }
     }
