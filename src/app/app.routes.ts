@@ -15,6 +15,7 @@ export const routes: Routes = [
       import('./portal/features/home-page/home-page.component').then(
         (m) => m.HomePageComponent,
       ),
+    title: 'GHGA | Home',
   },
   {
     path: 'browse',
@@ -22,6 +23,7 @@ export const routes: Routes = [
       import('./metadata/features/metadata-browser/metadata-browser.component').then(
         (m) => m.MetadataBrowserComponent,
       ),
+    title: 'GHGA | Browse Datasets',
   },
   // routes used in the authentication flows
   {
@@ -37,6 +39,7 @@ export const routes: Routes = [
       import('./auth/features/register/register.component').then(
         (m) => m.RegisterComponent,
       ),
+    title: 'GHGA | Registration',
   },
   {
     path: 'setup-totp',
@@ -44,6 +47,7 @@ export const routes: Routes = [
       import('./auth/features/setup-totp/setup-totp.component').then(
         (m) => m.SetupTotpComponent,
       ),
+    title: 'GHGA | Set up TOTP',
   },
   {
     path: 'confirm-totp',
@@ -51,5 +55,6 @@ export const routes: Routes = [
       import('./auth/features/confirm-totp/confirm-totp.component').then(
         (m) => m.ConfirmTotpComponent,
       ),
+    title: 'GHGA | Confirm TOTP',
   },
 ];
