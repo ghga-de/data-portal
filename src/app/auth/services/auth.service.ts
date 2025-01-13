@@ -176,8 +176,6 @@ export class AuthService {
   }
 
   /**
-   * Handle OIDC redirect callback
-   *
    * This method can be used as a guard for the OAuth callback route.
    * @returns true if the route is accessible
    */
@@ -218,8 +216,6 @@ export class AuthService {
   }
 
   /**
-   * Guard registration page
-   *
    * This method can be used as a guard for the registration route.
    * @returns true if the route is accessible
    */
@@ -235,8 +231,6 @@ export class AuthService {
   }
 
   /**
-   * Guard TOTP setup page
-   *
    * This method can be used as a guard for the TOTP setup route.
    * @returns true if the route is accessible
    */
@@ -253,8 +247,6 @@ export class AuthService {
   }
 
   /**
-   * Guard TOTP confirmation page
-   *
    * This method can be used as a guard for the TOTP confirmation route.
    * @returns true if the route is accessible
    */
