@@ -224,18 +224,12 @@ export class AuthService {
    * @returns true if the route is accessible
    */
   guardRegister(): boolean {
-    let errorMessage: string | undefined;
     switch (this.sessionState()) {
-      case 'Undetermined':
-      case 'LoggedOut':
-        errorMessage = 'You must be logged in to register';
-        console.warn(errorMessage); // TODO: also add a toast message
-        return this.#guardBack();
       case 'LoggedIn':
       case 'NeedsReRegistration':
         return true;
     }
-    errorMessage = 'You have been already registered';
+    const errorMessage = 'You cannot register at this point';
     console.warn(errorMessage); // TODO: also add a toast message
     return this.#guardBack();
   }
@@ -247,24 +241,13 @@ export class AuthService {
    * @returns true if the route is accessible
    */
   guardSetupTotp(): boolean {
-    let errorMessage: string | undefined;
     switch (this.sessionState()) {
-      case 'Undetermined':
-      case 'LoggedOut':
-        errorMessage = 'You must be logged in to setup a second factor';
-        console.warn(errorMessage); // TODO: also add a toast message
-        return this.#guardBack();
-      case 'LoggedIn':
-      case 'NeedsReRegistration':
-        errorMessage = 'You must be registered in to setup a second factor';
-        console.warn(errorMessage); // TODO: also add a toast message
-        return this.#guardBack();
       case 'Registered':
       case 'NeedsTotpToken':
       case 'LostTotpToken':
         return true;
     }
-    errorMessage = 'You have already setup a second factor';
+    const errorMessage = 'You cannot setup a second factor at this point';
     console.warn(errorMessage); // TODO: also add a toast message
     return this.#guardBack();
   }
@@ -278,29 +261,11 @@ export class AuthService {
   guardConfirmTotp(): boolean {
     let errorMessage: string | undefined;
     switch (this.sessionState()) {
-      case 'Undetermined':
-      case 'LoggedOut':
-        errorMessage =
-          'You must be logged in with the first factor' +
-          ' before you can authenticate with the second factor';
-        console.warn(errorMessage); // TODO: also add a toast message
-        return this.#guardBack();
-      case 'LoggedIn':
-      case 'NeedsReRegistration':
-        errorMessage = 'You must be registered in to login with second factor';
-        console.warn(errorMessage); // TODO: also add a toast message
-        return this.#guardBack();
-      case 'Registered':
-      case 'NeedsTotpToken':
-      case 'LostTotpToken':
-        errorMessage = 'You must setup the second factor before you can use it';
-        console.warn(errorMessage); // TODO: also add a toast message
-        return this.#guardBack();
       case 'NewTotpToken':
       case 'HasTotpToken':
         return true;
     }
-    errorMessage = 'You are already fully logged in';
+    errorMessage = 'You cannot use the second factor at this point';
     console.warn(errorMessage); // TODO: also add a toast message
     return this.#guardBack();
   }
