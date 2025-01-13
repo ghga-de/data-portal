@@ -165,15 +165,30 @@ export class AuthService {
   }
 
   /**
+   * Navigate back to the home page if no child routes are present
+   * @returns always false to prevent the route from being matched
+   */
+  #guardBack(): boolean {
+    if (!this.#router.routerState.root.children.length) {
+      this.#router.navigate(['/']);
+    }
+    return false;
+  }
+
+  /**
    * Handle OIDC redirect callback
    *
-   * This method can be used as a canActivate guard for the OAuth callback route.
-   * @returns always false to prevent the route from being activated
+   * This method can be used as a guard for the OAuth callback route.
+   * @returns true if the route is accessible
    */
-  async oidcRedirect(): Promise<boolean> {
-    if (await this.#oidcUserManager.getUser()) return false; // already logged in
+  async guardCallback(): Promise<boolean> {
     let oidcUser: OidcUser | undefined;
     let errorMessage: string | undefined;
+    if (await this.#oidcUserManager.getUser()) {
+      errorMessage = 'You are already logged in';
+      console.warn(errorMessage); // TODO: also add a toast message
+      return this.#guardBack();
+    }
     try {
       oidcUser = await this.#oidcUserManager.signinCallback();
     } catch (e) {
@@ -195,11 +210,99 @@ export class AuthService {
         errorMessage = 'OpenID connect login failed';
       }
       console.error(errorMessage); // TODO: also add a toast message
-      return false;
+      return this.#guardBack();
     }
 
     this.#loadUserSession(oidcUser.access_token);
-    return false;
+    return this.#guardBack();
+  }
+
+  /**
+   * Guard registration page
+   *
+   * This method can be used as a guard for the registration route.
+   * @returns true if the route is accessible
+   */
+  guardRegister(): boolean {
+    let errorMessage: string | undefined;
+    switch (this.sessionState()) {
+      case 'Undetermined':
+      case 'LoggedOut':
+        errorMessage = 'You must be logged in to register';
+        console.warn(errorMessage); // TODO: also add a toast message
+        return this.#guardBack();
+      case 'LoggedIn':
+      case 'NeedsReRegistration':
+        return true;
+    }
+    errorMessage = 'You have been already registered';
+    console.warn(errorMessage); // TODO: also add a toast message
+    return this.#guardBack();
+  }
+
+  /**
+   * Guard TOTP setup page
+   *
+   * This method can be used as a guard for the TOTP setup route.
+   * @returns true if the route is accessible
+   */
+  guardSetupTotp(): boolean {
+    let errorMessage: string | undefined;
+    switch (this.sessionState()) {
+      case 'Undetermined':
+      case 'LoggedOut':
+        errorMessage = 'You must be logged in to setup a second factor';
+        console.warn(errorMessage); // TODO: also add a toast message
+        return this.#guardBack();
+      case 'LoggedIn':
+      case 'NeedsReRegistration':
+        errorMessage = 'You must be registered in to setup a second factor';
+        console.warn(errorMessage); // TODO: also add a toast message
+        return this.#guardBack();
+      case 'Registered':
+      case 'NeedsTotpToken':
+      case 'LostTotpToken':
+        return true;
+    }
+    errorMessage = 'You have already setup a second factor';
+    console.warn(errorMessage); // TODO: also add a toast message
+    return this.#guardBack();
+  }
+
+  /**
+   * Guard TOTP confirmation page
+   *
+   * This method can be used as a guard for the TOTP confirmation route.
+   * @returns true if the route is accessible
+   */
+  guardConfirmTotp(): boolean {
+    let errorMessage: string | undefined;
+    switch (this.sessionState()) {
+      case 'Undetermined':
+      case 'LoggedOut':
+        errorMessage =
+          'You must be logged in with the first factor' +
+          ' before you can authenticate with the second factor';
+        console.warn(errorMessage); // TODO: also add a toast message
+        return this.#guardBack();
+      case 'LoggedIn':
+      case 'NeedsReRegistration':
+        errorMessage = 'You must be registered in to login with second factor';
+        console.warn(errorMessage); // TODO: also add a toast message
+        return this.#guardBack();
+      case 'Registered':
+      case 'NeedsTotpToken':
+      case 'LostTotpToken':
+        errorMessage = 'You must setup the second factor before you can use it';
+        console.warn(errorMessage); // TODO: also add a toast message
+        return this.#guardBack();
+      case 'NewTotpToken':
+      case 'HasTotpToken':
+        return true;
+    }
+    errorMessage = 'You are already fully logged in';
+    console.warn(errorMessage); // TODO: also add a toast message
+    return this.#guardBack();
   }
 
   /**
