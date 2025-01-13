@@ -166,7 +166,7 @@ export class AuthService {
 
   /**
    * Navigate back to the home page if no child routes are present
-   * @returns always false to prevent the route from being matched
+   * @returns always false to prevent the route from being accessed
    */
   #guardBack(): boolean {
     if (!this.#router.routerState.root.children.length) {
