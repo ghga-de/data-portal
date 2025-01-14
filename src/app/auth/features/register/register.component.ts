@@ -15,6 +15,7 @@ import { AcademicTitle, UserBasicData } from '@app/auth/models/user';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '@app/auth/services/auth.service';
+import { canDeactivate } from '../can-deactivate.guard';
 
 // TODO: Polish this component
 
@@ -44,6 +45,8 @@ export class RegisterComponent {
   titleControl = new FormControl<AcademicTitle>(null);
 
   accepted = false;
+
+  static canDeactivate = canDeactivate; // protect from leaving the page
 
   /**
    * Initialize the registration component

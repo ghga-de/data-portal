@@ -310,6 +310,7 @@ export class AuthService {
         this.#csrf.token = null;
         sessionStorage.removeItem('afterLogin');
         this.#router.navigate(['/']);
+        // TODO: also add a toast message that we are logged out
       });
     }
   }
