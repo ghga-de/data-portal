@@ -9,7 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatRipple } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
-import { DateToYearPipe } from '../../../shared/utils/date-to-year.pipe';
+import { DateToYearPipe } from '@app/shared/utils/date-to-year.pipe';
 
 /**
  * This is the site footer component
