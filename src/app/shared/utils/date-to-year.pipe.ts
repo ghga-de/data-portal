@@ -1,5 +1,5 @@
 /**
- * Short module description
+ * This pipe takes a js Date object and transforms it to a string of the year. This can be used in the page header but also in data views.
  * @copyright The GHGA Authors
  * @license Apache-2.0
  */

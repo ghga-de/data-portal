@@ -1,5 +1,5 @@
 /**
- * Short module description
+ * These are the unit tests for the DateToYear (example) pipe.
  * @copyright The GHGA Authors
  * @license Apache-2.0
  */
