@@ -15,7 +15,6 @@ import { AcademicTitle, UserBasicData } from '@app/auth/models/user';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '@app/auth/services/auth.service';
-import { canDeactivate } from '../can-deactivate.guard';
 
 // TODO: Polish this component
 
@@ -46,7 +45,7 @@ export class RegisterComponent {
 
   accepted = false;
 
-  static canDeactivate = canDeactivate; // protect from leaving the page
+  allowNavigation = false; // used by canDeactivate guard
 
   /**
    * Initialize the registration component
@@ -79,11 +78,13 @@ export class RegisterComponent {
     const title = this.titleControl.value || null;
     const { id, ext_id, name, email } = user;
     const data: UserBasicData = { name, email, title };
+    this.allowNavigation = true;
     const ok = await this.#authService.register(id || null, ext_id, data);
     if (ok) {
       // add toast message or dialog here
       console.info('Registration was successful.');
     } else {
+      this.allowNavigation = false;
       // add toast message here
       console.error('Registration failed.');
     }

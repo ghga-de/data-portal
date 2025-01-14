@@ -43,6 +43,8 @@ export class SetupTotpComponent {
 
   lostTokenConfirmed = signal(false);
 
+  allowNavigation = false; // used by canDeactivate guard
+
   /**
    * Get the provisioning URI as a signal
    */
@@ -93,6 +95,7 @@ export class SetupTotpComponent {
    * and continue with the TOTP confirmation step.
    */
   completeSetup(): void {
+    this.allowNavigation = true;
     this.#authService.completeTotpSetup();
   }
 }

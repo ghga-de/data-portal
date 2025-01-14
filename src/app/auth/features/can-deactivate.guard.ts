@@ -13,14 +13,21 @@ import {
 import { Observable, switchMap } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 
+interface CanDeactivateComponent {
+  allowNavigation: boolean;
+}
+
 /**
  * A common canDeactivate guard for all pages that are part of the auth flow
+ * @param component - the component that is being navigated away from
  * @returns true if it is ok to leave the page
  */
-export const canDeactivate = (): boolean | Observable<boolean> => {
+export const canDeactivate = (
+  component: CanDeactivateComponent,
+): boolean | Observable<boolean> => {
   const authService = inject(AuthService);
 
-  if (authService.isLoggedOut()) return true;
+  if (component.allowNavigation || authService.isLoggedOut()) return true;
 
   const dialog = inject(MatDialog);
 
