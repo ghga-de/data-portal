@@ -1,4 +1,4 @@
-name: Lint
+name: Test
 
 on:
   push:
@@ -18,5 +18,5 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install
-      - name: Run Linter
-        run: npm run lint
+      - name: Run tests
+        run: npm run test
