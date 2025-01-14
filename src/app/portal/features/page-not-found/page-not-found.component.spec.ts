@@ -6,26 +6,16 @@
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ActivatedRoute } from '@angular/router';
 import { PageNotFoundComponent } from './page-not-found.component';
 
 describe('PageNotFoundComponent', () => {
   let component: PageNotFoundComponent;
   let fixture: ComponentFixture<PageNotFoundComponent>;
 
-  const fakeActivatedRoute = {
-    snapshot: { data: {} },
-  } as ActivatedRoute;
-
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [PageNotFoundComponent],
-      providers: [
-        {
-          provide: ActivatedRoute,
-          useValue: fakeActivatedRoute,
-        },
-      ],
+      providers: [],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PageNotFoundComponent);
@@ -35,5 +25,19 @@ describe('PageNotFoundComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should render the correct content in the <h1> tag', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    const h1 = compiled.querySelector('h1');
+    expect(h1?.textContent).toBe('Page not found');
+  });
+
+  it('should contain the correct description text', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    const p = compiled.querySelector('p');
+    expect(p?.textContent).toContain(
+      "Sorry, we can't seem to find the page you're looking for",
+    );
   });
 });
