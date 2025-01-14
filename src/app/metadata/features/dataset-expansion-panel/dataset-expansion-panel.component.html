@@ -1,6 +1,9 @@
 <mat-expansion-panel (opened)="GetContent()"
   ><mat-expansion-panel-header
-    >{{ hit.id_ }} - {{ hit.content.title }}</mat-expansion-panel-header
+    ><div class="grid w-full grid-cols-12">
+      <span class="col-span-2">{{ hit.id_ }}</span
+      ><span class="col-span-10">{{ hit.content.title }}</span>
+    </div></mat-expansion-panel-header
   >
   <ng-template matExpansionPanelContent
     ><p>Dataset ID: {{ summary().accession }}</p>

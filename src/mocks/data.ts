@@ -18,7 +18,7 @@ export const getDatasetSummary = (accession: string) => ({
 
 export const metadataGlobalSummary = {
   resource_stats: {
-    SequencingProcessFile: {
+    ProcessDataFile: {
       count: 532,
       stats: {
         format: [

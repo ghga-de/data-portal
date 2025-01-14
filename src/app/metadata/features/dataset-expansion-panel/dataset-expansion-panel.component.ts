@@ -50,7 +50,6 @@ export class DatasetExpansionPanelComponent {
       )
       .subscribe((data) => {
         try {
-          console.log(data);
           this.summary.set(JSON.parse(JSON.stringify(data)));
         } catch {}
       });

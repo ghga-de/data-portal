@@ -33,9 +33,7 @@ export class HomePageGlobalStatsComponent {
   constructor() {
     this.#http.get('api/metldata/stats').subscribe((data) => {
       try {
-        console.log(data);
         this.stats.set(JSON.parse(JSON.stringify(data)));
-        console.log(this.stats());
       } catch {}
     });
   }
