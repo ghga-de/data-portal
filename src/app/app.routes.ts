@@ -60,8 +60,13 @@ export const routes: Routes = [
   },
 ];
 
+/**
+ * This strategy provides a simpler way to set the page title. The routes (above) still set a title but it uses a template syntax to extend the title by the GHGA Data Portal string.
+ */
 @Injectable({ providedIn: 'root' })
 export class TemplatePageTitleStrategy extends TitleStrategy {
+  TITLE_TEMPLATE = '#title | GHGA Data Portal';
+
   /**
    * Constructor for the strategy.
    * @param title Creates the member called title that stores the current page title.
@@ -76,7 +81,7 @@ export class TemplatePageTitleStrategy extends TitleStrategy {
   override updateTitle(routerState: RouterStateSnapshot) {
     const title = this.buildTitle(routerState);
     if (title !== undefined) {
-      this.title.setTitle(`${title} | GHGA Data Portal`);
+      this.title.setTitle(this.TITLE_TEMPLATE.replace('#title', title));
     }
   }
 }
