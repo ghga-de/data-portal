@@ -71,7 +71,7 @@ export class SetupTotpComponent {
 
   /**
    * Get the actual secret from the query parameter in the URI
-   * @param uri The provisioning URI containing the secret
+   * @param uri - The provisioning URI containing the secret
    * @returns just the secret from the URI
    */
   getSecret(uri: string): string {
@@ -80,7 +80,7 @@ export class SetupTotpComponent {
 
   /**
    * Copy the secret to the clipboard
-   * @param uri The provisioning URI containing the secret
+   * @param uri - The provisioning URI containing the secret
    */
   copySecret(uri: string): void {
     navigator.clipboard.writeText(this.getSecret(uri));

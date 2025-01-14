@@ -19,7 +19,16 @@ import {
   User as OidcUser,
   UserManager as OidcUserManager,
 } from 'oidc-client-ts';
-import { catchError, firstValueFrom, map, Observable, of } from 'rxjs';
+import {
+  catchError,
+  first,
+  firstValueFrom,
+  interval,
+  map,
+  Observable,
+  of,
+  timeout,
+} from 'rxjs';
 import { LoginState, User, UserBasicData } from '../models/user';
 import { CsrfService } from './csrf.service';
 
@@ -216,11 +225,31 @@ export class AuthService {
   }
 
   /**
+   * Wait until the session is determined and return its state
+   * @param waitForMs - how long we should wait for the session state in ms
+   * @param probeEveryMs - how frequently we should probe the session state in ms
+   * @returns the determined session state or Undetermined on timeout
+   */
+  async #determineSessionState(
+    waitForMs: number = 5_000,
+    probeEveryMs: number = 5,
+  ): Promise<LoginState> {
+    return (await firstValueFrom(
+      interval(probeEveryMs).pipe(
+        map(() => this.sessionState()),
+        first((state) => state !== 'Undetermined'),
+        timeout(waitForMs),
+        catchError(() => of('Undetermined')),
+      ),
+    )) as LoginState;
+  }
+
+  /**
    * This method can be used as a guard for the registration route.
    * @returns true if the route is accessible
    */
-  guardRegister(): boolean {
-    switch (this.sessionState()) {
+  async guardRegister(): Promise<boolean> {
+    switch (await this.#determineSessionState()) {
       case 'LoggedIn':
       case 'NeedsReRegistration':
         return true;
@@ -234,8 +263,8 @@ export class AuthService {
    * This method can be used as a guard for the TOTP setup route.
    * @returns true if the route is accessible
    */
-  guardSetupTotp(): boolean {
-    switch (this.sessionState()) {
+  async guardSetupTotp(): Promise<boolean> {
+    switch (await this.#determineSessionState()) {
       case 'Registered':
       case 'NeedsTotpToken':
       case 'LostTotpToken':
@@ -250,9 +279,9 @@ export class AuthService {
    * This method can be used as a guard for the TOTP confirmation route.
    * @returns true if the route is accessible
    */
-  guardConfirmTotp(): boolean {
+  async guardConfirmTotp(): Promise<boolean> {
     let errorMessage: string | undefined;
-    switch (this.sessionState()) {
+    switch (await this.#determineSessionState()) {
       case 'NewTotpToken':
       case 'HasTotpToken':
         return true;
@@ -287,7 +316,7 @@ export class AuthService {
 
   /**
    * Move session state
-   * @param state the new state to set
+   * @param state - the new state to set
    */
   #setNewState(state: LoginState): void {
     this.#userSignal.update((user) => {
@@ -300,7 +329,7 @@ export class AuthService {
 
   /**
    * Get the deserialized user session from a JSON-formatted string.
-   * @param session the session as a JSON-formatted string or null
+   * @param session - the session as a JSON-formatted string or null
    * @returns the parsed user or null if no session or undefined if error
    */
   #parseUserFromSession(session: string): User | null | undefined {
@@ -329,7 +358,7 @@ export class AuthService {
    *
    * It is also called to check when a state change was triggered and we need to
    * wait for and verify that the backend has actually updated the user session.
-   * @param accessToken the access token to use for logging in
+   * @param accessToken - the access token to use for logging in
    */
   async #loadUserSession(accessToken: string | undefined = undefined): Promise<void> {
     console.debug('Loading user session...');
@@ -383,8 +412,8 @@ export class AuthService {
 
   /**
    * Wait for the backend user session to change the state
-   * @param state the state that is expected to change
-   * @param maxAttempts the maximum number of attempts to wait for the state
+   * @param state - the state that is expected to change
+   * @param maxAttempts - the maximum number of attempts to wait for the state
    * @returns a promise that resolves to the last reached state
    */
   async #waitForStateChange(
@@ -405,9 +434,9 @@ export class AuthService {
 
   /**
    * Register or re-register a user
-   * @param id the internal user ID or null for new users
-   * @param ext_id the external user ID (can be null for registered users)
-   * @param basicData the basic user data to register or re-register
+   * @param id - the internal user ID or null for new users
+   * @param ext_id - the external user ID (can be null for registered users)
+   * @param basicData - the basic user data to register or re-register
    * @returns a promise that resolves to true if the code is valid
    */
   async register(
@@ -487,7 +516,7 @@ export class AuthService {
 
   /**
    * Verify the given TOTP code
-   * @param code the 6-digit TOTP code to verify
+   * @param code - the 6-digit TOTP code to verify
    * @returns a promise that resolves to true if the code is valid
    */
   async verifyTotpCode(code: string): Promise<boolean> {
