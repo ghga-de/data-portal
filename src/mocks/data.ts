@@ -10,7 +10,7 @@
  * Metldata API
  */
 
-// get dataset dummaries with arbitrary accessions
+// get dataset summaries with arbitrary accessions
 export const getDatasetSummary = (accession: string) => ({
   ...datasetSummary,
   accession: accession,

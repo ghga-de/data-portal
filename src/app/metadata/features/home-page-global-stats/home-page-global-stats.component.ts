@@ -4,11 +4,10 @@
  * @license Apache-2.0
  */
 
-import { HttpClient } from '@angular/common/http';
-import { Component, inject, signal } from '@angular/core';
+import { Component, effect, inject } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { GlobalSummary } from '@app/metadata/models/global-summary';
+import { MetadataService } from '@app/metadata/services/metadata.service';
 
 /**
  * Component for the global summary cards
@@ -20,21 +19,15 @@ import { GlobalSummary } from '@app/metadata/models/global-summary';
   styleUrl: './home-page-global-stats.component.scss',
 })
 export class HomePageGlobalStatsComponent {
-  #http = inject(HttpClient);
-  stats = signal<GlobalSummary>({
-    resource_stats: {
-      Dataset: { count: 0 },
-      ExperimentMethod: { count: 0, stats: { instrument_model: [] } },
-      Individual: { count: 0, stats: { sex: [] } },
-      ProcessDataFile: { count: 0, stats: { format: [] } },
-    },
+  #metadata = inject(MetadataService);
+
+  #statsError = this.#metadata.globalSummaryError;
+
+  #errorEffect = effect(() => {
+    if (this.#statsError()) {
+      console.log('Error fetching global summary'); // TODO: show a toast message
+    }
   });
 
-  constructor() {
-    this.#http.get('api/metldata/stats').subscribe((data) => {
-      try {
-        this.stats.set(JSON.parse(JSON.stringify(data)));
-      } catch {}
-    });
-  }
+  stats = this.#metadata.globalSummary;
 }
