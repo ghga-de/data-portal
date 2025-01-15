@@ -7,9 +7,6 @@ jobs:
   lint:
     name: Run ESLint
     runs-on: ubuntu-24.04
-    env:
-      # Because currently the proxy middleware is not working properly with require(esm):
-      NODE_OPTIONS: '--no-experimental-require-module'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
