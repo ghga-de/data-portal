@@ -5,7 +5,7 @@ on:
 
 jobs:
   test:
-    name: Unit Tests
+    name: Run Jest
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository
