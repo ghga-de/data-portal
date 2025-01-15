@@ -92,8 +92,14 @@ export class AuthService {
    * Get the current user session state as a signal
    */
   sessionState = computed<LoginState>(() => {
-    const state = this.user()?.state;
-    return state || (state === null ? 'LoggedOut' : 'Undetermined');
+    const currentUser = this.user();
+    switch (currentUser) {
+      case null:
+        return 'LoggedOut';
+      case undefined:
+        return 'Undetermined';
+    }
+    return currentUser.state || 'Undetermined';
   });
 
   /**
