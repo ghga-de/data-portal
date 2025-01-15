@@ -52,7 +52,8 @@
         "esbenp.prettier-vscode",
         "dbaeumer.vscode-eslint",
         "angular.ng-template",
-        "orta.vscode-jest"
+        "orta.vscode-jest",
+        "ms-playwright.playwright"
       ]
     }
   },
