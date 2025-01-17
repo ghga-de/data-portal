@@ -4,11 +4,13 @@
  * @license Apache-2.0
  */
 
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { signal } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { searchResults } from '@app/../mocks/data';
+import { MassQueryService } from '../../services/massQuery.service';
+import { DatasetExpansionPanelComponent } from '../dataset-expansion-panel/dataset-expansion-panel.component';
 import { MetadataBrowserComponent } from './metadata-browser.component';
 
 /**
@@ -19,10 +21,6 @@ class MockMASSQueryService {
   searchResultsError = signal(undefined);
   loadQueryParameters = () => undefined;
 }
-
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { MassQueryService } from '@app/metadata/services/massQuery.service';
-import { DatasetExpansionPanelComponent } from '../dataset-expansion-panel/dataset-expansion-panel.component';
 
 describe('BrowseComponent', () => {
   let component: MetadataBrowserComponent;
