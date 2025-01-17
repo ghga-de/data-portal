@@ -18,7 +18,7 @@ import { SearchResults, emptySearchResults } from '../models/search-results';
 @Injectable({
   providedIn: 'root',
 })
-export class MassQueryService {
+export class MetadataSearchService {
   #http = inject(HttpClient);
 
   #config = inject(ConfigService);

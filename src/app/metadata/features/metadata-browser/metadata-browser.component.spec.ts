@@ -9,7 +9,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { searchResults } from '@app/../mocks/data';
-import { MassQueryService } from '../../services/massQuery.service';
+import { MetadataSearchService } from '../../services/metadataSearch.service';
 import { DatasetExpansionPanelComponent } from '../dataset-expansion-panel/dataset-expansion-panel.component';
 import { MetadataBrowserComponent } from './metadata-browser.component';
 
@@ -29,7 +29,7 @@ describe('BrowseComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [MetadataBrowserComponent, NoopAnimationsModule],
-      providers: [{ provide: MassQueryService, useClass: MockMASSQueryService }],
+      providers: [{ provide: MetadataSearchService, useClass: MockMASSQueryService }],
     })
       .overrideComponent(MetadataBrowserComponent, {
         remove: { imports: [DatasetExpansionPanelComponent] },

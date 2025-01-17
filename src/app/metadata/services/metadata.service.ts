@@ -23,7 +23,7 @@ import { DatasetSummary, emptyDatasetSummary } from '../models/dataset-summary';
 @Injectable({
   providedIn: 'root',
 })
-export class MetldataQueryService {
+export class MetadataService {
   #http = inject(HttpClient);
 
   #config = inject(ConfigService);

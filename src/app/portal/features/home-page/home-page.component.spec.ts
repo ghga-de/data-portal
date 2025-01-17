@@ -9,7 +9,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { metadataGlobalSummary } from '@app/../mocks/data';
-import { MetldataQueryService } from '@app/metadata/services/metldataQuery.service';
+import { MetadataService } from '@app/metadata/services/metadata.service';
 import { HomePageComponent } from './home-page.component';
 
 /**
@@ -32,7 +32,7 @@ describe('HomePageComponent', () => {
     await TestBed.configureTestingModule({
       imports: [HomePageComponent],
       providers: [
-        { provide: MetldataQueryService, useClass: MockMetadataService },
+        { provide: MetadataService, useClass: MockMetadataService },
         {
           provide: ActivatedRoute,
           useValue: fakeActivatedRoute,

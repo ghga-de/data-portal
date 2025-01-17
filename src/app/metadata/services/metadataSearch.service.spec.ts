@@ -9,17 +9,17 @@ import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ConfigService } from '@app/shared/services/config.service';
-import { MetldataQueryService } from './metldataQuery.service';
+import { MetadataSearchService } from './metadataSearch.service';
 
 /**
  * Mock the config service as needed by the metadata service
  */
 class MockConfigService {
-  metldataURL = 'http://mock.dev/metldata';
+  massURL = 'http://mock.dev/mass';
 }
 
-describe('MetldataQueryService', () => {
-  let service: MetldataQueryService;
+describe('MetadataSearchService', () => {
+  let service: MetadataSearchService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -29,7 +29,7 @@ describe('MetldataQueryService', () => {
         { provide: ConfigService, useClass: MockConfigService },
       ],
     });
-    service = TestBed.inject(MetldataQueryService);
+    service = TestBed.inject(MetadataSearchService);
   });
 
   it('should be created', () => {

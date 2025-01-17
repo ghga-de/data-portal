@@ -7,7 +7,7 @@
 import { Component, effect, inject } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { MetldataQueryService } from '@app/metadata/services/metldataQuery.service';
+import { MetadataService } from '@app/metadata/services/metadata.service';
 
 /**
  * Component for the global summary cards
@@ -19,9 +19,9 @@ import { MetldataQueryService } from '@app/metadata/services/metldataQuery.servi
   styleUrl: './global-summary.component.scss',
 })
 export class GlobalStatsComponent {
-  #metldataQuery = inject(MetldataQueryService);
+  #metadata = inject(MetadataService);
 
-  #statsError = this.#metldataQuery.globalSummaryError;
+  #statsError = this.#metadata.globalSummaryError;
 
   #errorEffect = effect(() => {
     if (this.#statsError()) {
@@ -29,5 +29,5 @@ export class GlobalStatsComponent {
     }
   });
 
-  stats = this.#metldataQuery.globalSummary;
+  stats = this.#metadata.globalSummary;
 }

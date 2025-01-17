@@ -9,7 +9,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
 
 import { datasetSummary, searchResults } from '@app/../mocks/data';
-import { MetldataQueryService } from '@app/metadata/services/metldataQuery.service';
+import { MetadataService } from '@app/metadata/services/metadata.service';
 import { DatasetExpansionPanelComponent } from './dataset-expansion-panel.component';
 
 /**
@@ -27,9 +27,7 @@ describe('DatasetExpansionPanelComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [DatasetExpansionPanelComponent],
-      providers: [
-        { provide: MetldataQueryService, useClass: MockMetldataQueryService },
-      ],
+      providers: [{ provide: MetadataService, useClass: MockMetldataQueryService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(DatasetExpansionPanelComponent);

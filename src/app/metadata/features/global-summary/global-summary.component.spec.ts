@@ -10,7 +10,7 @@ import { signal } from '@angular/core';
 import { GlobalStatsComponent } from './global-summary.component';
 
 import { metadataGlobalSummary } from '@app/../mocks/data';
-import { MetldataQueryService } from '@app/metadata/services/metldataQuery.service';
+import { MetadataService } from '@app/metadata/services/metadata.service';
 
 /**
  * Mock the metadata service as needed for the global stats
@@ -27,9 +27,7 @@ describe('GlobalStatsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [GlobalStatsComponent],
-      providers: [
-        { provide: MetldataQueryService, useClass: MockMetldataQueryService },
-      ],
+      providers: [{ provide: MetadataService, useClass: MockMetldataQueryService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(GlobalStatsComponent);

@@ -13,7 +13,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { MassQueryService } from '@app/metadata/services/massQuery.service';
+import { MetadataSearchService } from '@app/metadata/services/metadataSearch.service';
 import { DatasetExpansionPanelComponent } from '../dataset-expansion-panel/dataset-expansion-panel.component';
 
 /**
@@ -35,14 +35,14 @@ import { DatasetExpansionPanelComponent } from '../dataset-expansion-panel/datas
   styleUrl: './metadata-browser.component.scss',
 })
 export class MetadataBrowserComponent implements OnInit {
-  #massQuery = inject(MassQueryService);
+  #metadataSearch = inject(MetadataSearchService);
 
   #className = 'EmbeddedDataset';
   /**
    * On init, define the default values of the search variables
    */
   ngOnInit(): void {
-    this.#massQuery.loadQueryParameters(this.#className, 10, 0);
+    this.#metadataSearch.loadQueryParameters(this.#className, 10, 0);
   }
 
   searchFormControl = new FormControl('');
@@ -51,7 +51,7 @@ export class MetadataBrowserComponent implements OnInit {
 
   #pageEvent!: PageEvent;
   pageSize = 10;
-  length = computed(() => this.#massQuery.searchResults().count);
+  length = computed(() => this.#metadataSearch.searchResults().count);
   /**
    * Function to handle a change in pagination
    * @param e PageEvent instance
@@ -60,14 +60,18 @@ export class MetadataBrowserComponent implements OnInit {
     this.#pageEvent = e;
     this.pageSize = e.pageSize;
     this.#skip = e.pageSize * e.pageIndex;
-    this.#massQuery.loadQueryParameters(this.#className, this.pageSize, this.#skip);
+    this.#metadataSearch.loadQueryParameters(
+      this.#className,
+      this.pageSize,
+      this.#skip,
+    );
   }
 
   #errorEffect = effect(() => {
-    if (this.#massQuery.searchResultsError()) {
+    if (this.#metadataSearch.searchResultsError()) {
       console.log('Error fetching search results'); // TODO: show a toast message
     }
   });
 
-  searchResults = this.#massQuery.searchResults;
+  searchResults = this.#metadataSearch.searchResults;
 }
