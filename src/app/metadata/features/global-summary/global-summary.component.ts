@@ -7,19 +7,19 @@
 import { Component, effect, inject } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { MetadataService } from '@app/metadata/services/metadata.service';
+import { GlobalSummaryService } from '@app/metadata/services/globalSummary.service';
 
 /**
  * Component for the global summary cards
  */
 @Component({
-  selector: 'app-home-page-global-stats',
+  selector: 'app-global-stats',
   imports: [MatCardModule, MatIconModule],
-  templateUrl: './home-page-global-stats.component.html',
-  styleUrl: './home-page-global-stats.component.scss',
+  templateUrl: './global-summary.component.html',
+  styleUrl: './global-summary.component.scss',
 })
-export class HomePageGlobalStatsComponent {
-  #metadata = inject(MetadataService);
+export class GlobalStatsComponent {
+  #metadata = inject(GlobalSummaryService);
 
   #statsError = this.#metadata.globalSummaryError;
 

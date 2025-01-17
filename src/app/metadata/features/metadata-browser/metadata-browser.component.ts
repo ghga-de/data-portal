@@ -4,8 +4,7 @@
  * @license Apache-2.0
  */
 
-import { HttpClient } from '@angular/common/http';
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -14,7 +13,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { SearchResults } from '@app/metadata/models/search-results';
+import { MetadataSearchService } from '@app/metadata/services/metadataSearch.service';
 import { DatasetExpansionPanelComponent } from '../dataset-expansion-panel/dataset-expansion-panel.component';
 
 /**
@@ -35,36 +34,40 @@ import { DatasetExpansionPanelComponent } from '../dataset-expansion-panel/datas
   templateUrl: './metadata-browser.component.html',
   styleUrl: './metadata-browser.component.scss',
 })
-export class MetadataBrowserComponent {
-  #http = inject(HttpClient);
-  stats = signal<SearchResults>({ facets: [], count: 0, hits: [] });
+export class MetadataBrowserComponent implements OnInit {
+  #metadata = inject(MetadataSearchService);
 
-  pageSize = 10;
-  length = 1;
-  skip = 0;
+  #className = 'EmbeddedDataset';
+  /**
+   * On init, define the default values of the search variables
+   */
+  ngOnInit(): void {
+    this.#metadata.load(this.#className, 10, 0);
+  }
 
   searchFormControl = new FormControl('');
 
-  pageEvent!: PageEvent;
+  #skip = 0;
 
+  #pageEvent!: PageEvent;
+  pageSize = 10;
+  length = computed(() => this.#metadata.searchResults().count);
   /**
    * Function to handle a change in pagination
    * @param e PageEvent instance
    */
   handlePageEvent(e: PageEvent) {
-    this.pageEvent = e;
+    this.#pageEvent = e;
     this.pageSize = e.pageSize;
-    this.length = Math.ceil(this.stats().hits.length / this.pageSize);
-    this.skip = e.pageSize * e.pageIndex;
+    this.#skip = e.pageSize * e.pageIndex;
+    this.#metadata.load(this.#className, this.pageSize, this.#skip);
   }
 
-  constructor() {
-    this.#http
-      .get('api/mass/search?class_name=EmbeddedDataset&limit=10')
-      .subscribe((data) => {
-        try {
-          this.stats.set(JSON.parse(JSON.stringify(data)));
-        } catch {}
-      });
-  }
+  #errorEffect = effect(() => {
+    if (this.#metadata.searchResultsError()) {
+      console.log('Error fetching search results'); // TODO: show a toast message
+    }
+  });
+
+  searchResults = this.#metadata.searchResults;
 }

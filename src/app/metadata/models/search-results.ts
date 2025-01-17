@@ -30,3 +30,9 @@ interface HitContent {
   alias?: string;
   title: string;
 }
+
+export const emptySearchResults: SearchResults = {
+  facets: [],
+  count: 0,
+  hits: [],
+};

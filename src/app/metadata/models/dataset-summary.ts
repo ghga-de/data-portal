@@ -54,3 +54,17 @@ interface ExperimentsSummary {
     experiment_methods: { value: string; count: number }[];
   };
 }
+
+export const emptyDatasetSummary: DatasetSummary = {
+  title: '',
+  accession: '',
+  description: '',
+  type: [],
+  studies_summary: { count: 0, stats: { accession: '', title: '' } },
+  files_summary: { count: 0, stats: { format: [] } },
+  samples_summary: {
+    count: 0,
+    stats: { sex: [], tissues: [], phenotypic_features: [] },
+  },
+  experiments_summary: { count: 0, stats: { experiment_methods: [] } },
+};

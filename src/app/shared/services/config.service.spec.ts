@@ -48,11 +48,11 @@ describe('ConfigService', () => {
   });
 
   it('should provide the MASS URL', () => {
-    expect(service.massUrl).toBe('/test/mass');
+    expect(service.massURL).toBe('/test/mass');
   });
 
   it('should provide the metldata service URL', () => {
-    expect(service.metldataUrl).toBe('/test/metldata');
+    expect(service.metldataURL).toBe('/test/metldata');
   });
 
   it('should provide the OID client ID', () => {

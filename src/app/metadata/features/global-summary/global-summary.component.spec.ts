@@ -7,32 +7,34 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { signal } from '@angular/core';
-import { HomePageGlobalStatsComponent } from './home-page-global-stats.component';
+import { GlobalStatsComponent } from './global-summary.component';
 
 import { metadataGlobalSummary } from '@app/../mocks/data';
-import { MetadataService } from '@app/metadata/services/metadata.service';
+import { GlobalSummaryService } from '@app/metadata/services/globalSummary.service';
 
 /**
  * Mock the metadata service as needed for the global stats
  */
-class MockMetadataService {
+class MockGlobalSummaryService {
   globalSummary = signal(metadataGlobalSummary.resource_stats);
   globalSummaryError = signal(undefined);
 }
 
-describe('HomePageGlobalStatsComponent', () => {
-  let component: HomePageGlobalStatsComponent;
-  let fixture: ComponentFixture<HomePageGlobalStatsComponent>;
+describe('GlobalStatsComponent', () => {
+  let component: GlobalStatsComponent;
+  let fixture: ComponentFixture<GlobalStatsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HomePageGlobalStatsComponent],
-      providers: [{ provide: MetadataService, useClass: MockMetadataService }],
+      imports: [GlobalStatsComponent],
+      providers: [
+        { provide: GlobalSummaryService, useClass: MockGlobalSummaryService },
+      ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(HomePageGlobalStatsComponent);
+    fixture = TestBed.createComponent(GlobalStatsComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    await fixture.whenStable();
   });
 
   it('should create', () => {

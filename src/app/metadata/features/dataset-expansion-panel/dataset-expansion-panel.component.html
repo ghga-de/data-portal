@@ -1,14 +1,14 @@
-<mat-expansion-panel (opened)="GetContent()"
+<mat-expansion-panel (opened)="onOpen()"
   ><mat-expansion-panel-header
     ><div class="grid w-full grid-cols-12">
-      <span class="col-span-2">{{ hit.id_ }}</span
-      ><span class="col-span-10">{{ hit.content.title }}</span>
+      <span class="col-span-2">{{ hit().id_ }}</span
+      ><span class="col-span-10">{{ hit().content.title }}</span>
     </div></mat-expansion-panel-header
   >
   <ng-template matExpansionPanelContent
     ><p>Dataset ID: {{ summary().accession }}</p>
-    @if (hit.content.alias) {
-      <p>EGA ID: {{ hit.content.alias }}</p>
+    @if (hit().content.alias) {
+      <p>EGA ID: {{ hit().content.alias }}</p>
     }
     <p>Full title: {{ summary().title }}</p>
     <p>Description: {{ summary().description }}</p>

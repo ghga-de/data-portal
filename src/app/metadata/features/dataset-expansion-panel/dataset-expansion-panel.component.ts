@@ -4,11 +4,10 @@
  * @license Apache-2.0
  */
 
-import { HttpClient } from '@angular/common/http';
-import { Component, inject, Input, signal } from '@angular/core';
+import { Component, effect, inject, input } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { DatasetSummary } from '@app/metadata/models/dataset-summary';
 import { Hit } from '@app/metadata/models/search-results';
+import { DatasetSummaryService } from '@app/metadata/services/datasetSummary.service';
 
 /**
  * Component for the expansion panel for each dataset found in the search results
@@ -20,38 +19,21 @@ import { Hit } from '@app/metadata/models/search-results';
   styleUrl: './dataset-expansion-panel.component.scss',
 })
 export class DatasetExpansionPanelComponent {
-  @Input()
-  hit!: Hit;
+  hit = input.required<Hit>();
+  #metadata = inject(DatasetSummaryService);
 
-  #http = inject(HttpClient);
-  summary = signal<DatasetSummary>({
-    title: '',
-    accession: '',
-    description: '',
-    type: [],
-    studies_summary: { count: 0, stats: { accession: '', title: '' } },
-    files_summary: { count: 0, stats: { format: [] } },
-    samples_summary: {
-      count: 0,
-      stats: { sex: [], tissues: [], phenotypic_features: [] },
-    },
-    experiments_summary: { count: 0, stats: { experiment_methods: [] } },
-  });
-
-  constructor() {}
+  summary = this.#metadata.datasetSummary;
 
   /**
-   * Function to obtain the dataset summary data
+   * On init, define the default values of the search variables
    */
-  GetContent() {
-    this.#http
-      .get(
-        `/api/metldata/artifacts/stats_public/classes/DatasetStats/resources/${this.hit.id_}`,
-      )
-      .subscribe((data) => {
-        try {
-          this.summary.set(JSON.parse(JSON.stringify(data)));
-        } catch {}
-      });
+  onOpen(): void {
+    this.#metadata.load(this.hit().id_);
   }
+
+  #errorEffect = effect(() => {
+    if (this.#metadata.datasetSummaryError()) {
+      console.log('Error fetching search results'); // TODO: show a toast message
+    }
+  });
 }

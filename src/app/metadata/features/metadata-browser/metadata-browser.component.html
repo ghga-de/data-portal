@@ -1,6 +1,6 @@
 <div class="grid grid-cols-12 grid-rows-none gap-5">
   <div class="col-span-9 col-start-4">
-    <mat-chip class="float-right">Total Datasets: {{ stats().count }}</mat-chip>
+    <mat-chip class="float-right">Total Datasets: {{ searchResults().count }}</mat-chip>
   </div>
   <aside class="col-span-3">
     <div class="rounded-lg border p-3">
@@ -8,7 +8,7 @@
         <mat-form-field class="w-full">
           <input type="search" matInput placeholder="Search" />
         </mat-form-field>
-        @for (facet of stats().facets; track facet.key) {
+        @for (facet of searchResults().facets; track facet.key) {
           <div>
             {{ facet.name }}
             <ul class="mb-5 mt-1 rounded-lg border">
@@ -33,14 +33,14 @@
       <span class="col-span-2">Dataset ID</span><span class="col-span-10">Title</span>
     </div>
     <mat-accordion multi>
-      @for (hit of stats().hits; track hit.id_) {
+      @for (hit of searchResults().hits; track hit.id_) {
         <app-dataset-expansion-panel [hit]="hit" />
       }
     </mat-accordion>
 
     <mat-paginator
       (page)="handlePageEvent($event)"
-      [length]="length"
+      [length]="length()"
       [pageSize]="pageSize"
       [pageSizeOptions]="[5, 10, 25, 50]"
       aria-label="Select page"
