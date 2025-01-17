@@ -16,7 +16,7 @@ import { firstValueFrom, map } from 'rxjs';
 import { DatasetSummary, emptyDatasetSummary } from '../models/dataset-summary';
 
 /**
- * Metldata Query service
+ * Metadata Query service
  *
  * This service provides the functionality to fetch the global metadata summary stats from the server.
  */
@@ -30,6 +30,7 @@ export class MetadataService {
   #metldataURL = this.#config.metldataURL;
 
   #globalSummaryUrl = `${this.#metldataURL}/stats`;
+  #datasetSummaryURL = `${this.#metldataURL}/artifacts/stats_public/classes/DatasetStats/resources`;
 
   #globalSummary = resource<GlobalSummary, void>({
     loader: () =>
@@ -61,10 +62,11 @@ export class MetadataService {
     loader: (param) => {
       const id_ = param.request.id_;
 
-      const datasetSummaryURL = `${this.#metldataURL}/artifacts/stats_public/classes/DatasetStats/resources/${id_}`;
       if (id_) {
         return Promise.resolve(
-          firstValueFrom(this.#http.get<DatasetSummary>(datasetSummaryURL)),
+          firstValueFrom(
+            this.#http.get<DatasetSummary>(`${this.#datasetSummaryURL}/${id_}`),
+          ),
         );
       } else {
         return Promise.resolve(emptyDatasetSummary);

@@ -15,7 +15,7 @@ import { MetadataService } from '@app/metadata/services/metadata.service';
 /**
  * Mock the metadata service as needed for the global stats
  */
-class MockMetldataQueryService {
+class MockMetadataService {
   globalSummary = signal(metadataGlobalSummary.resource_stats);
   globalSummaryError = signal(undefined);
 }
@@ -27,7 +27,7 @@ describe('GlobalStatsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [GlobalStatsComponent],
-      providers: [{ provide: MetadataService, useClass: MockMetldataQueryService }],
+      providers: [{ provide: MetadataService, useClass: MockMetadataService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(GlobalStatsComponent);
