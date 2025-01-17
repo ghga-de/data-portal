@@ -27,10 +27,10 @@ export class MetadataService {
   #http = inject(HttpClient);
 
   #config = inject(ConfigService);
-  #metldataURL = this.#config.metldataURL;
+  #metldataUrl = this.#config.metldataUrl;
 
-  #globalSummaryUrl = `${this.#metldataURL}/stats`;
-  #datasetSummaryURL = `${this.#metldataURL}/artifacts/stats_public/classes/DatasetStats/resources`;
+  #globalSummaryUrl = `${this.#metldataUrl}/stats`;
+  #datasetSummaryUrl = `${this.#metldataUrl}/artifacts/stats_public/classes/DatasetStats/resources`;
 
   #globalSummary = resource<GlobalSummary, void>({
     loader: () =>
@@ -65,7 +65,7 @@ export class MetadataService {
       if (id_) {
         return Promise.resolve(
           firstValueFrom(
-            this.#http.get<DatasetSummary>(`${this.#datasetSummaryURL}/${id_}`),
+            this.#http.get<DatasetSummary>(`${this.#datasetSummaryUrl}/${id_}`),
           ),
         );
       } else {

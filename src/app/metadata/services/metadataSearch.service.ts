@@ -22,7 +22,8 @@ export class MetadataSearchService {
   #http = inject(HttpClient);
 
   #config = inject(ConfigService);
-  #massURL = this.#config.massURL;
+  #massUrl = this.#config.massUrl;
+  #searchUrl = `${this.#massUrl}/search`;
   #className = signal<string | undefined>(undefined);
   #limit = signal<number | undefined>(undefined);
   #skip = signal<number | undefined>(undefined);
@@ -37,10 +38,10 @@ export class MetadataSearchService {
       const className = param.request.className;
       const limit = param.request.limit;
       const skip = param.request.skip;
-      const massQueryURL = `${this.#massURL}/search?class_name=${className}&limit=${limit}&skip=${skip}`;
+      const massQueryUrl = `${this.#searchUrl}?class_name=${className}&limit=${limit}&skip=${skip}`;
       if (className && limit !== undefined && skip !== undefined) {
         return Promise.resolve(
-          firstValueFrom(this.#http.get<SearchResults>(massQueryURL)),
+          firstValueFrom(this.#http.get<SearchResults>(massQueryUrl)),
         );
       } else {
         return Promise.resolve(emptySearchResults);

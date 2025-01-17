@@ -82,7 +82,7 @@ export class ConfigService {
    * Gets the MASS URL from the config object.
    * @returns the MASS URL sans end slash
    */
-  get massURL(): string {
+  get massUrl(): string {
     return sansEndSlash(this.#config.mass_url);
   }
 
@@ -90,7 +90,7 @@ export class ConfigService {
    * Gets the metldata service URL from the config object
    * @returns the metldata service URL sans slash
    */
-  get metldataURL(): string {
+  get metldataUrl(): string {
     return sansEndSlash(this.#config.metldata_url);
   }
 

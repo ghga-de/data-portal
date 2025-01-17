@@ -15,7 +15,7 @@ import { MetadataService } from './metadata.service';
  * Mock the config service as needed by the metadata service
  */
 class MockConfigService {
-  metldataURL = 'http://mock.dev/metldata';
+  metldataUrl = 'http://mock.dev/metldata';
 }
 
 describe('MetadataService', () => {
