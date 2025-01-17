@@ -2,6 +2,8 @@ FROM mcr.microsoft.com/devcontainers/typescript-node:1.1.8-22-bookworm
 
 RUN apt update && apt install -y dnsutils
 
+RUN apt install -y libnss3 libnspr4 libdbus-1-3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libxkbcommon0 libasound2 libatspi2.0-0
+
 # Add some useful bash aliases:
 RUN echo "alias ll='ls -al'" >> /home/node/.bash_aliases
 
