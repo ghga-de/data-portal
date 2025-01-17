@@ -18,7 +18,7 @@ import { SearchResults, emptySearchResults } from '../models/search-results';
 @Injectable({
   providedIn: 'root',
 })
-export class MetadataSearchService {
+export class MassQueryService {
   #http = inject(HttpClient);
 
   #config = inject(ConfigService);
@@ -37,13 +37,10 @@ export class MetadataSearchService {
       const className = param.request.className;
       const limit = param.request.limit;
       const skip = param.request.skip;
+      const massQueryURL = `${this.#massURL}/search?class_name=${className}&limit=${limit}&skip=${skip}`;
       if (className && limit !== undefined && skip !== undefined) {
         return Promise.resolve(
-          firstValueFrom(
-            this.#http.get<SearchResults>(
-              `${this.#massURL}/search?class_name=${className}&limit=${limit}&skip=${skip}`,
-            ),
-          ),
+          firstValueFrom(this.#http.get<SearchResults>(massQueryURL)),
         );
       } else {
         return Promise.resolve(emptySearchResults);
@@ -57,7 +54,7 @@ export class MetadataSearchService {
    * @param limit Number of results to fetch
    * @param skip Number of results to skip to enable pagination
    */
-  load(className: string, limit: number, skip: number): void {
+  loadQueryParameters(className: string, limit: number, skip: number): void {
     this.#className.set(className);
     this.#limit.set(limit);
     this.#skip.set(skip);

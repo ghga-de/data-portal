@@ -9,15 +9,16 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
 
 import { searchResults } from '@app/../mocks/data';
-import { MetadataSearchService } from '@app/metadata/services/metadataSearch.service';
+import { MassQueryService } from '@app/metadata/services/massQuery.service';
 import { MetadataBrowserComponent } from './metadata-browser.component';
 
 /**
- * Mock the metadata service as needed for the global stats
+ * Mock the metadata service as needed for the metadata browser
  */
-class MockMetadataSearchService {
+class MockMASSQueryService {
   searchResults = signal(searchResults);
   searchResultsError = signal(undefined);
+  loadQueryParameters(): void {}
 }
 
 describe('BrowseComponent', () => {
@@ -27,9 +28,7 @@ describe('BrowseComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [MetadataBrowserComponent],
-      providers: [
-        { provide: MetadataSearchService, useClass: MockMetadataSearchService },
-      ],
+      providers: [{ provide: MassQueryService, useClass: MockMASSQueryService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MetadataBrowserComponent);
@@ -44,7 +43,7 @@ describe('BrowseComponent', () => {
   it('should show filters', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const text = compiled.textContent;
-    expect(text).toContain('Test');
-    expect(text).toContain('Test platform');
+    expect(text).toContain('Dataset Type');
+    expect(text).toContain('Test dataset type 1');
   });
 });

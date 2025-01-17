@@ -7,7 +7,7 @@
 import { Component, effect, inject, input } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { Hit } from '@app/metadata/models/search-results';
-import { DatasetSummaryService } from '@app/metadata/services/datasetSummary.service';
+import { MetldataQueryService } from '@app/metadata/services/metldataQuery.service';
 
 /**
  * Component for the expansion panel for each dataset found in the search results
@@ -20,20 +20,20 @@ import { DatasetSummaryService } from '@app/metadata/services/datasetSummary.ser
 })
 export class DatasetExpansionPanelComponent {
   hit = input.required<Hit>();
-  #metadata = inject(DatasetSummaryService);
+  #metldataQuery = inject(MetldataQueryService);
 
-  summary = this.#metadata.datasetSummary;
+  summary = this.#metldataQuery.datasetSummary;
 
   /**
-   * On init, define the default values of the search variables
+   * On opening of the expansible panel, load the query variables to the injectable service to prepare for the backend query
    */
   onOpen(): void {
-    this.#metadata.load(this.hit().id_);
+    this.#metldataQuery.loadDatasetID(this.hit().id_);
   }
 
   #errorEffect = effect(() => {
-    if (this.#metadata.datasetSummaryError()) {
-      console.log('Error fetching search results'); // TODO: show a toast message
+    if (this.#metldataQuery.datasetSummaryError()) {
+      console.log('Error fetching dataset summary'); // TODO: show a toast message
     }
   });
 }

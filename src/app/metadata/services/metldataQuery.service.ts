@@ -1,28 +1,57 @@
 /**
- * Short module description
+ * Global summary service
  * @copyright The GHGA Authors
  * @license Apache-2.0
  */
 
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, resource, signal, Signal } from '@angular/core';
+import {
+  BaseGlobalSummary,
+  emptyGlobalSummary,
+  GlobalSummary,
+} from '@app/metadata/models/global-summary';
 import { ConfigService } from '@app/shared/services/config.service';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, map } from 'rxjs';
 import { DatasetSummary, emptyDatasetSummary } from '../models/dataset-summary';
 
 /**
- * Dataset summary service
+ * Metldata Query service
  *
- * This service provides the functionality to fetch dataset summary data from the server.
+ * This service provides the functionality to fetch the global metadata summary stats from the server.
  */
 @Injectable({
   providedIn: 'root',
 })
-export class DatasetSummaryService {
+export class MetldataQueryService {
   #http = inject(HttpClient);
 
   #config = inject(ConfigService);
-  #metlDataUrl = this.#config.metldataURL;
+  #metldataURL = this.#config.metldataURL;
+
+  #globalSummaryUrl = `${this.#metldataURL}/stats`;
+
+  #globalSummary = resource<GlobalSummary, void>({
+    loader: () =>
+      firstValueFrom(
+        this.#http
+          .get<BaseGlobalSummary>(this.#globalSummaryUrl)
+          .pipe(map((value) => value.resource_stats)),
+      ),
+  }).asReadonly();
+
+  /**
+   * The global summary (empty while loading) as a signal
+   */
+  globalSummary: Signal<GlobalSummary> = computed(
+    () => this.#globalSummary.value() ?? emptyGlobalSummary,
+  );
+
+  /**
+   * The global summary error as a signal
+   */
+  globalSummaryError: Signal<unknown> = this.#globalSummary.error;
+
   #id_ = signal<string | undefined>(undefined);
 
   #datasetSummary = resource({
@@ -31,13 +60,11 @@ export class DatasetSummaryService {
     })),
     loader: (param) => {
       const id_ = param.request.id_;
+
+      const datasetSummaryURL = `${this.#metldataURL}/artifacts/stats_public/classes/DatasetStats/resources/${id_}`;
       if (id_) {
         return Promise.resolve(
-          firstValueFrom(
-            this.#http.get<DatasetSummary>(
-              `${this.#metlDataUrl}/artifacts/stats_public/classes/DatasetStats/resources/${id_}`,
-            ),
-          ),
+          firstValueFrom(this.#http.get<DatasetSummary>(datasetSummaryURL)),
         );
       } else {
         return Promise.resolve(emptyDatasetSummary);
@@ -49,7 +76,7 @@ export class DatasetSummaryService {
    * Function to set some data into the local private variables
    * @param id_ Dataset ID
    */
-  load(id_: string): void {
+  loadDatasetID(id_: string): void {
     this.#id_.set(id_);
   }
 

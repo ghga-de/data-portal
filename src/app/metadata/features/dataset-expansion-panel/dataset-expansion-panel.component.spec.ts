@@ -7,16 +7,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { signal } from '@angular/core';
-import { datasetSummary } from '@app/../mocks/data';
-import { DatasetSummaryService } from '@app/metadata/services/datasetSummary.service';
+
+import { datasetSummary, searchResults } from '@app/../mocks/data';
+import { MetldataQueryService } from '@app/metadata/services/metldataQuery.service';
 import { DatasetExpansionPanelComponent } from './dataset-expansion-panel.component';
 
 /**
- * Mock the metadata service as needed for the global stats
+ * Mock the metadata service as needed for the dataset summary
  */
-class MockDatasetSummaryService {
-  globalSummary = signal(datasetSummary);
-  globalSummaryError = signal(undefined);
+class MockMetldataQueryService {
+  datasetSummary = signal(datasetSummary);
+  datasetSummaryError = signal(undefined);
 }
 describe('DatasetExpansionPanelComponent', () => {
   let component: DatasetExpansionPanelComponent;
@@ -26,12 +27,13 @@ describe('DatasetExpansionPanelComponent', () => {
     await TestBed.configureTestingModule({
       imports: [DatasetExpansionPanelComponent],
       providers: [
-        { provide: DatasetSummaryService, useClass: MockDatasetSummaryService },
+        { provide: MetldataQueryService, useClass: MockMetldataQueryService },
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(DatasetExpansionPanelComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('hit', searchResults.hits.at(0));
     await fixture.whenStable();
   });
 
