@@ -15,7 +15,7 @@ import { DatasetExpansionPanelComponent } from './dataset-expansion-panel.compon
 /**
  * Mock the metadata service as needed for the dataset summary
  */
-class MockMetldataQueryService {
+class MockMetadataService {
   datasetSummary = signal(datasetSummary);
   datasetSummaryError = signal(undefined);
 }
@@ -27,7 +27,7 @@ describe('DatasetExpansionPanelComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [DatasetExpansionPanelComponent],
-      providers: [{ provide: MetadataService, useClass: MockMetldataQueryService }],
+      providers: [{ provide: MetadataService, useClass: MockMetadataService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(DatasetExpansionPanelComponent);

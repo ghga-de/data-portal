@@ -16,7 +16,7 @@ import { MetadataBrowserComponent } from './metadata-browser.component';
 /**
  * Mock the metadata service as needed for the metadata browser
  */
-class MockMASSQueryService {
+class MockMetadataSearchService {
   searchResults = signal(searchResults);
   searchResultsError = signal(undefined);
   loadQueryParameters = () => undefined;
@@ -29,7 +29,9 @@ describe('BrowseComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [MetadataBrowserComponent, NoopAnimationsModule],
-      providers: [{ provide: MetadataSearchService, useClass: MockMASSQueryService }],
+      providers: [
+        { provide: MetadataSearchService, useClass: MockMetadataSearchService },
+      ],
     })
       .overrideComponent(MetadataBrowserComponent, {
         remove: { imports: [DatasetExpansionPanelComponent] },

@@ -73,7 +73,7 @@ export class MetadataService {
   });
 
   /**
-   * Function to set some data into the local private variables
+   * Load the dataset with the given ID
    * @param id_ Dataset ID
    */
   loadDatasetID(id_: string): void {
