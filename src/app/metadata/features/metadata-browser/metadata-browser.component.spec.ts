@@ -9,7 +9,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
 
 import { searchResults } from '@app/../mocks/data';
-import { MassQueryService } from '@app/metadata/services/massQuery.service';
 import { MetadataBrowserComponent } from './metadata-browser.component';
 
 /**
@@ -18,8 +17,12 @@ import { MetadataBrowserComponent } from './metadata-browser.component';
 class MockMASSQueryService {
   searchResults = signal(searchResults);
   searchResultsError = signal(undefined);
-  loadQueryParameters(): void {}
+  loadQueryParameters = () => undefined;
 }
+
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { MassQueryService } from '@app/metadata/services/massQuery.service';
+import { DatasetExpansionPanelComponent } from '../dataset-expansion-panel/dataset-expansion-panel.component';
 
 describe('BrowseComponent', () => {
   let component: MetadataBrowserComponent;
@@ -27,9 +30,13 @@ describe('BrowseComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MetadataBrowserComponent],
+      imports: [MetadataBrowserComponent, NoopAnimationsModule],
       providers: [{ provide: MassQueryService, useClass: MockMASSQueryService }],
-    }).compileComponents();
+    })
+      .overrideComponent(MetadataBrowserComponent, {
+        remove: { imports: [DatasetExpansionPanelComponent] },
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(MetadataBrowserComponent);
     component = fixture.componentInstance;

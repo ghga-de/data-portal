@@ -19,6 +19,7 @@ class MockMetldataQueryService {
   datasetSummary = signal(datasetSummary);
   datasetSummaryError = signal(undefined);
 }
+
 describe('DatasetExpansionPanelComponent', () => {
   let component: DatasetExpansionPanelComponent;
   let fixture: ComponentFixture<DatasetExpansionPanelComponent>;
