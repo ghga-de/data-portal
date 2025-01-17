@@ -3,12 +3,15 @@
 
 cd /workspace
 
-corepack prepare pnpm@9.15.3 --activate
+corepack prepare pnpm@9.15.4 --activate
 echo "Updating pnpm..."
 npm install -g pnpm
 
 echo "Install static web server..."
 curl --proto '=https' --tlsv1.2 -sSfL https://get.static-web-server.net | sh
+
+echo "Install Playwright system dependencies..."
+pnpm exec playwright install-deps
 
 echo "Install application and dev tools..."
 pnpm install

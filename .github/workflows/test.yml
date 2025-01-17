@@ -1,10 +1,11 @@
-name: Test
+name: Unit Tests
 
 on:
   push:
 
 jobs:
-  build:
+  test:
+    name: Run Jest
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository
@@ -18,5 +19,5 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install
-      - name: Run tests
+      - name: Run unit tests
         run: npm run test
