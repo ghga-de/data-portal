@@ -14,8 +14,5 @@ RUN echo "export PATH=\$PATH:/workspace/node_modules/.bin" >> /home/node/.bashrc
 COPY ./dev_install /usr/local/sbin
 COPY ./dev_launcher /usr/local/bin
 
-# Currently the proxy middleware is not working properly with require(esm):
-ENV NODE_OPTIONS="--no-experimental-require-module"
-
 # Don't shut down after the process ends:
 CMD ["sleep", "infinity"]
