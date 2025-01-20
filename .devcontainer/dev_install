@@ -16,5 +16,8 @@ pnpm exec playwright install-deps
 echo "Install application and dev tools..."
 pnpm install
 
+echo "Install Playwright dependencies..."
+pnpm exec playwright install --with-deps
+
 # create certificates
 (cd .devcontainer && ./create_cert)
