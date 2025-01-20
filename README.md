@@ -122,6 +122,14 @@ We are using [Playwright](https://playwright.dev/) for end-to-end (e2e) testing 
 
 Like for unit testing, you can also [use the VS Code extension for Playwright](https://playwright.dev/docs/getting-started-vscode) to run tests interactively using the test explorer in the side bar. VS Code is able to support different test providers (like Jest and Playwright) along with each other.
 
+### Issues relating to headed execution on the WSL
+
+In order for the headed execution to work, two things have to be ensured: 
+- The environment variable $DISPLAY in WSL has to be set to :0. To check this, run 'echo $DISPLAY' - the return value should be :0.
+- There has to be a symlink in /tmp/.X11-unix referencing X0. To check this, run 'ls /tmp/.X11-unix' - the return value should be 'X0'.
+
+If either of these are not correct, please read [here](https://github.com/microsoft/wslg/wiki/Diagnosing-%22cannot-open-display%22-type-issues-with-WSLg) for assistance.
+
 ## The Architecture Matrix
 
 This application is built as a modularized frontend monolith (a "modulith") using vertical slices and layers as module boundaries, which are enforced using the linter.
