@@ -5,7 +5,7 @@
  */
 
 import { Component, inject } from '@angular/core';
-import { MatIconButton } from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MAT_SNACK_BAR_DATA, MatSnackBarRef } from '@angular/material/snack-bar';
 
@@ -14,7 +14,7 @@ import { MAT_SNACK_BAR_DATA, MatSnackBarRef } from '@angular/material/snack-bar'
  */
 @Component({
   selector: 'app-custom-snack-bar',
-  imports: [MatIconModule, MatIconButton],
+  imports: [MatButtonModule, MatIconModule],
   templateUrl: './custom-snack-bar.component.html',
   styleUrl: './custom-snack-bar.component.scss',
 })
