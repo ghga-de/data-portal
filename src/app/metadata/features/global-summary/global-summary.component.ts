@@ -8,13 +8,14 @@ import { Component, effect, inject } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MetadataService } from '@app/metadata/services/metadata.service';
+import { UnderscoreToSpace } from '@app/shared/utils/underscore_to_space.pipe';
 
 /**
  * Component for the global summary cards
  */
 @Component({
   selector: 'app-global-stats',
-  imports: [MatCardModule, MatIconModule],
+  imports: [MatCardModule, MatIconModule, UnderscoreToSpace],
   templateUrl: './global-summary.component.html',
   styleUrl: './global-summary.component.scss',
 })
