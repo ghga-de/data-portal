@@ -72,9 +72,7 @@ export class MetadataBrowserComponent implements OnInit {
 
   #errorEffect = effect(() => {
     if (this.#metadataSearch.searchResultsError()) {
-      const message = 'Error fetching search results';
-      console.error(message);
-      this.#notify.showError(message);
+      this.#notify.showError('Error fetching search results');
     }
   });
 

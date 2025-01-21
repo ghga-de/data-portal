@@ -200,9 +200,7 @@ export class AuthService {
     let oidcUser: OidcUser | undefined;
     let message: string | undefined;
     if (await this.#oidcUserManager.getUser()) {
-      message = 'You are already logged in';
-      console.warn(message);
-      this.#notify.showWarning(message);
+      this.#notify.showWarning('You are already logged in');
       return this.#guardBack();
     }
     try {
@@ -222,11 +220,7 @@ export class AuthService {
     }
 
     if (!oidcUser || message) {
-      if (!message) {
-        message = 'OpenID connect login failed';
-      }
-      console.error(message);
-      this.#notify.showError(message);
+      this.#notify.showError(message || 'OpenID connect login failed');
       return this.#guardBack();
     }
 
@@ -264,9 +258,7 @@ export class AuthService {
       case 'NeedsReRegistration':
         return true;
     }
-    const message = 'You cannot register at this point';
-    console.warn(message);
-    this.#notify.showWarning(message);
+    this.#notify.showWarning('You cannot register at this point');
     return this.#guardBack();
   }
 
@@ -281,9 +273,7 @@ export class AuthService {
       case 'LostTotpToken':
         return true;
     }
-    const message = 'You cannot setup a second factor at this point';
-    console.warn(message);
-    this.#notify.showWarning(message);
+    this.#notify.showWarning('You cannot setup a second factor at this point');
     return this.#guardBack();
   }
 
@@ -292,14 +282,12 @@ export class AuthService {
    * @returns true if the route is accessible
    */
   async guardConfirmTotp(): Promise<boolean> {
-    let message: string | undefined;
     switch (await this.#determineSessionState()) {
       case 'NewTotpToken':
       case 'HasTotpToken':
         return true;
     }
-    message = 'You cannot use the second factor at this point';
-    this.#notify.showWarning(message);
+    this.#notify.showWarning('You cannot use the second factor at this point');
     return this.#guardBack();
   }
 
@@ -413,9 +401,7 @@ export class AuthService {
           }
         } else {
           if (accessToken || user === undefined) {
-            const message = 'Failed to load user session';
-            console.error(message);
-            this.#notify.showError(message);
+            this.#notify.showError('Failed to load user session');
           }
           this.#oidcUserManager.removeUser();
           userSignal.set(user);
@@ -494,15 +480,11 @@ export class AuthService {
     return firstValueFrom(
       this.#http.post<{ uri: string }>(this.#totpTokenUrl, null, { params }).pipe(
         map(({ uri }) => {
-          const message = 'TOTP token created';
-          this.#notify.showSuccess(message);
-          console.info(message);
+          this.#notify.showSuccess('TOTP token created');
           return uri || null;
         }),
         catchError(() => {
-          const message = 'Failed to create TOTP token';
-          this.#notify.showError(message);
-          console.error(message);
+          this.#notify.showError('Failed to create TOTP token');
           return of(null);
         }),
       ),

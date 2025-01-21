@@ -24,6 +24,7 @@ export class NotificationService {
    * @param duration - the duration in milliseconds to show the message
    */
   showSuccess(message: string, duration: number = 3000): void {
+    console.debug(message);
     this.#show(message, 'ok', duration);
   }
 
@@ -33,6 +34,7 @@ export class NotificationService {
    * @param duration - the duration in milliseconds to show the message
    */
   showInfo(message: string, duration: number = 3000): void {
+    console.info(message);
     this.#show(message, 'info', duration);
   }
 
@@ -42,6 +44,7 @@ export class NotificationService {
    * @param duration - the duration in milliseconds to show the message
    */
   showWarning(message: string, duration: number = 4000): void {
+    console.warn(message);
     this.#show(message, 'warn', duration);
   }
 
@@ -51,6 +54,7 @@ export class NotificationService {
    * @param duration - the duration in milliseconds to show the message
    */
   showError(message: string, duration: number = 5000): void {
+    console.error(message);
     this.#show(message, 'error', duration);
   }
 

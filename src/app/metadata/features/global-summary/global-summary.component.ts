@@ -29,9 +29,7 @@ export class GlobalStatsComponent {
 
   #errorEffect = effect(() => {
     if (this.error()) {
-      const message = 'Error fetching statistics';
-      console.error(message);
-      this.#notify.showWarning(message);
+      this.#notify.showWarning('Error fetching statistics');
     }
   });
 
