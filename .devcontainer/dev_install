@@ -7,6 +7,9 @@ corepack prepare pnpm@9.15.4 --activate
 echo "Updating pnpm..."
 npm install -g pnpm
 
+echo "Add markdown-toc for Readme"
+npm install -g markdown-toc
+
 echo "Install static web server..."
 curl --proto '=https' --tlsv1.2 -sSfL https://get.static-web-server.net | sh
 
