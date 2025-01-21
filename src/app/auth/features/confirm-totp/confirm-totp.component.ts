@@ -63,7 +63,7 @@ export class ConfirmTotpComponent {
     if (!code) return;
     const verified = await this.#authService.verifyTotpCode(code);
     if (verified) {
-      this.#notify.showError('Successfully authenticated.');
+      this.#notify.showSuccess('Successfully authenticated.');
       this.allowNavigation = true;
       this.#authService.redirectAfterLogin();
     } else {
