@@ -24,7 +24,7 @@ export class GlobalStatsComponent {
   #notify = inject(NotificationService);
   #metadata = inject(MetadataService);
 
-  loading = this.#metadata.globalSummaryIsLoading;
+  isLoading = this.#metadata.globalSummaryIsLoading;
   error = this.#metadata.globalSummaryError;
 
   #errorEffect = effect(() => {
