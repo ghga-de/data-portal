@@ -31,7 +31,7 @@ test('can view a dataset summary', async ({ page }) => {
   await expect(main).toContainText('Test dataset for details');
 
   await expect(
-    page.getByText('Description: Test dataset for Metadata Repository'),
+    page.getByText('Description: This is the test dataset description'),
   ).not.toBeVisible();
 
   const openSummaryLink = page.getByText('GHGAD588887989');
@@ -39,7 +39,7 @@ test('can view a dataset summary', async ({ page }) => {
   await openSummaryLink.click();
 
   await expect(
-    page.getByText('Description: Test dataset for Metadata Repository'),
+    page.getByText('Description: This is the test dataset description'),
   ).toBeVisible();
 });
 
@@ -58,6 +58,6 @@ test.skip('can navigate to dataset details', async ({ page }) => {
   await expect(page.getByText('Dataset ID: GHGAD588887989')).toBeVisible();
 
   await expect(
-    page.getByText('Description: Test dataset for Metadata Repository'),
+    page.getByText('Description: This is the test dataset description'),
   ).toBeVisible();
 });
