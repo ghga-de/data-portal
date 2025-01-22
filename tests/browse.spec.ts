@@ -43,7 +43,7 @@ test('can view a dataset summary', async ({ page }) => {
   ).toBeVisible();
 });
 
-// TODO: implement dataset details page
+// TODO: adapt and activate after dataset details page implementation
 test.skip('can navigate to dataset details', async ({ page }) => {
   await page.goto('/browse');
 
