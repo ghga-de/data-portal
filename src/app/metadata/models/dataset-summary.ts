@@ -5,10 +5,11 @@
  */
 
 export interface DatasetSummary {
-  title: string;
   accession: string;
+  title: string;
   description: string;
-  type?: string[];
+  dac_email: string;
+  types: string[];
   studies_summary: StudiesSummary;
   files_summary: FilesSummary;
   samples_summary: SamplesSummary;
