@@ -4,9 +4,9 @@
  * @license Apache-2.0
  */
 
-import { UnderscoreToSpace } from './underscore_to_space.pipe';
+import { UnderscoreToSpace } from './underscore-to-space.pipe';
 
-describe('DateToYearPipe', () => {
+describe('UnderscoreToSpacePipe', () => {
   it('can create an instance', () => {
     const pipe = new UnderscoreToSpace();
     expect(pipe).toBeTruthy();
