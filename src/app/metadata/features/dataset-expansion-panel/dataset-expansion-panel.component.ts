@@ -5,7 +5,10 @@
  */
 
 import { Component, effect, inject, input } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatIconModule } from '@angular/material/icon';
 import { Hit } from '@app/metadata/models/search-results';
 import { MetadataService } from '@app/metadata/services/metadata.service';
 
@@ -14,7 +17,7 @@ import { MetadataService } from '@app/metadata/services/metadata.service';
  */
 @Component({
   selector: 'app-dataset-expansion-panel',
-  imports: [MatExpansionModule],
+  imports: [MatExpansionModule, MatChipsModule, MatIconModule, MatButtonModule],
   templateUrl: './dataset-expansion-panel.component.html',
   styleUrl: './dataset-expansion-panel.component.scss',
 })
