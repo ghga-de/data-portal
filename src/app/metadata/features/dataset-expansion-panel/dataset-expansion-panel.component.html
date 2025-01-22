@@ -32,10 +32,10 @@
       }
       <p><strong>Full title:</strong> {{ summary().title }}</p>
       <p><strong>Description:</strong> {{ summary().description }}</p>
-      @if (summary().type && summary().type !== []) {
+      @if (summary().types && summary().types !== []) {
         <p>
           <strong>Types: </strong>
-          @for (type of summary().type; track type) {
+          @for (type of summary().types; track type) {
             <mat-chip class="mr-1 text-sm">{{ type }}</mat-chip>
           }
         </p>
