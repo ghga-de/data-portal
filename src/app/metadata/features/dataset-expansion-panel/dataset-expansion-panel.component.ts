@@ -12,13 +12,20 @@ import { MatIconModule } from '@angular/material/icon';
 import { Hit } from '@app/metadata/models/search-results';
 import { MetadataService } from '@app/metadata/services/metadata.service';
 import { NotificationService } from '@app/shared/services/notification.service';
+import { UnderscoreToSpace } from '@app/shared/utils/underscore-to-space.pipe';
 
 /**
  * Component for the expansion panel for each dataset found in the search results
  */
 @Component({
   selector: 'app-dataset-expansion-panel',
-  imports: [MatExpansionModule, MatChipsModule, MatIconModule, MatButtonModule],
+  imports: [
+    MatExpansionModule,
+    MatChipsModule,
+    MatIconModule,
+    MatButtonModule,
+    UnderscoreToSpace,
+  ],
   templateUrl: './dataset-expansion-panel.component.html',
   styleUrl: './dataset-expansion-panel.component.scss',
 })

@@ -195,7 +195,8 @@
                     track platform.value
                   ) {
                     <li class="list-disc uppercase">
-                      {{ platform.value }} <strong>{{ platform.count }}</strong>
+                      {{ platform.value | underscoreToSpace }}
+                      <strong>{{ platform.count }}</strong>
                     </li>
                   }
                 </ul>
