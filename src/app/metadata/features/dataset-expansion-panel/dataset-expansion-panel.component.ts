@@ -4,7 +4,7 @@
  * @license Apache-2.0
  */
 
-import { Component, effect, inject, input } from '@angular/core';
+import { Component, computed, effect, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -34,8 +34,21 @@ export class DatasetExpansionPanelComponent {
   #metadata = inject(MetadataService);
 
   hit = input.required<Hit>();
+  hitContent = computed(() => this.hit().content);
 
   summary = this.#metadata.datasetSummary;
+  studiesSummary = computed(() => this.summary().studies_summary);
+  studiesSummaryStats = computed(() => this.summary().studies_summary.stats);
+  samplesSummary = computed(() => this.summary().samples_summary);
+  samplesSex = computed(() => this.summary().samples_summary.stats.sex);
+  samplesTissues = computed(() => this.summary().samples_summary.stats.tissues);
+  samplesPhenotypes = computed(
+    () => this.summary().samples_summary.stats.phenotypic_features,
+  );
+  filesSummary = computed(() => this.summary().files_summary);
+  filesFormats = computed(() => this.summary().files_summary.stats.format);
+  experimentsSummary = computed(() => this.summary().experiments_summary);
+  experimentsSummaryStats = computed(() => this.summary().experiments_summary.stats);
 
   /**
    * On opening of the expansible panel, load the query variables to the injectable service to prepare for the backend query

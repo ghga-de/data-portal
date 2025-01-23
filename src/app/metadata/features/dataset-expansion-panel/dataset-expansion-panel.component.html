@@ -3,21 +3,21 @@
     ><div class="grid h-12 w-full grid-cols-12">
       <span class="col-span-2"
         >{{ hit().id_ }}
-        @if (hit().content.alias !== '') {
-          <span>{{ hit().content.alias }}</span>
+        @if (hitContent().alias !== '') {
+          <span>{{ hitContent().alias }}</span>
         }</span
       ><span class="col-span-10 line-clamp-2 text-ellipsis">{{
-        hit().content.title
+        hitContent().title
       }}</span>
     </div></mat-expansion-panel-header
   >
   <ng-template matExpansionPanelContent
     ><div class="pt-4 text-sm">
       <div class="float-right ms-6 flex flex-col gap-y-2">
-        @if (hit().content.alias !== '') {
+        @if (hitContent().alias !== '') {
           <a
             mat-stroked-button
-            [href]="'https://ega-archive.org/datasets/' + hit().content.alias"
+            [href]="'https://ega-archive.org/datasets/' + hitContent().alias"
             target="_blank"
             rel="noopener noreferrer"
             ><mat-icon>open_in_new</mat-icon>EGA Dataset</a
@@ -27,8 +27,8 @@
         <a mat-raised-button><mat-icon>database_search</mat-icon>Dataset Details</a>
       </div>
       <p><strong>Dataset ID:</strong> {{ summary().accession }}</p>
-      @if (hit().content.alias) {
-        <p><strong>EGA ID:</strong> {{ hit().content.alias }}</p>
+      @if (hitContent().alias) {
+        <p><strong>EGA ID:</strong> {{ hitContent().alias }}</p>
       }
       <p><strong>Full title:</strong> {{ summary().title }}</p>
       <p><strong>Description:</strong> {{ summary().description }}</p>
@@ -36,7 +36,7 @@
         <p>
           <strong>Types: </strong>
           @for (type of summary().types; track type) {
-            <mat-chip class="mr-1 text-sm">{{ type }}</mat-chip>
+            <mat-chip class="small-chips mr-1 text-sm">{{ type }}</mat-chip>
           }
         </p>
       }
@@ -51,20 +51,14 @@
                 <strong>Part of study: </strong>
               </p>
               <p>
-                {{
-                  summary().studies_summary.count > 0
-                    ? summary().studies_summary.stats.title
-                    : 'None'
-                }}
+                {{ studiesSummary().count > 0 ? studiesSummaryStats().title : 'None' }}
               </p>
               <p>
                 <strong>Accession ID: </strong>
               </p>
               <p>
                 {{
-                  summary().studies_summary.count > 0
-                    ? summary().studies_summary.stats.accession
-                    : 'N/A'
+                  studiesSummary().count > 0 ? studiesSummaryStats().accession : 'N/A'
                 }}
               </p>
             </div>
@@ -76,34 +70,25 @@
             <div>
               <p><strong>Sample info:</strong></p>
               <p>
-                <strong>{{ summary().samples_summary.count }}</strong> Sample{{
-                  summary().samples_summary.count === 1 ? '' : 's'
+                <strong>{{ samplesSummary().count }}</strong> Sample{{
+                  samplesSummary().count === 1 ? '' : 's'
                 }}
-                @if (summary().samples_summary.stats.sex !== []) {
+                @if (samplesSex() !== []) {
                   (Sex:
-                  @for (
-                    sex of summary().samples_summary.stats.sex;
-                    track sex.value;
-                    let last = $last
-                  ) {
+                  @for (sex of samplesSex(); track sex.value; let last = $last) {
                     {{ sex.count }} {{ sex.value }}{{ last ? ')' : ', ' }}
                   }
                 }
               </p>
               <p>
-                <strong>{{ summary().samples_summary.stats.tissues.length }}</strong>
-                Tissue{{
-                  summary().samples_summary.stats.tissues.length === 1 ? '' : 's'
-                }}
+                <strong>{{ samplesTissues().length }}</strong>
+                Tissue{{ samplesTissues().length === 1 ? '' : 's' }}
               </p>
-              @if (summary().samples_summary.stats.tissues.length > 0) {
+              @if (samplesTissues().length > 0) {
                 <ul class="ms-6">
-                  @for (
-                    tissue of summary().samples_summary.stats.tissues;
-                    track tissue.value
-                  ) {
+                  @for (tissue of samplesTissues(); track tissue.value) {
                     <li>
-                      <mat-chip class="mb-0.5 text-xs"
+                      <mat-chip class="small-chips mb-0.5 text-xs"
                         ><span class="uppercase">{{ tissue.value }} </span>
                         <strong>{{ tissue.count }}</strong></mat-chip
                       >
@@ -112,24 +97,17 @@
                 </ul>
               }
               <p>
-                <strong>{{
-                  summary().samples_summary.stats.phenotypic_features.length
-                }}</strong>
-                Phenotypic Feature{{
-                  summary().samples_summary.stats.phenotypic_features.length === 1
-                    ? ''
-                    : 's'
-                }}
+                <strong>{{ samplesPhenotypes().length }}</strong>
+                Phenotypic Feature{{ samplesPhenotypes().length === 1 ? '' : 's' }}
               </p>
-              @if (summary().samples_summary.stats.phenotypic_features.length > 0) {
+              @if (samplesPhenotypes().length > 0) {
                 <ul class="ms-6">
                   @for (
-                    phenotypic_feature of summary().samples_summary.stats
-                      .phenotypic_features;
+                    phenotypic_feature of samplesPhenotypes();
                     track phenotypic_feature.value
                   ) {
                     <li>
-                      <mat-chip class="mb-0.5"
+                      <mat-chip class="small-chips mb-0.5"
                         ><span class="uppercase">{{ phenotypic_feature.value }} </span
                         ><strong>{{ phenotypic_feature.count }}</strong></mat-chip
                       >
@@ -148,16 +126,13 @@
             <div>
               <p><strong>File Summary:</strong></p>
               <p>
-                <strong>{{ summary().studies_summary.count }}</strong> File{{
-                  summary().studies_summary.count === 1 ? '' : 's'
+                <strong>{{ studiesSummary().count }}</strong> File{{
+                  studiesSummary().count === 1 ? '' : 's'
                 }}
               </p>
-              @if (summary().files_summary.count > 0) {
+              @if (filesSummary().count > 0) {
                 <ul class="ps-5">
-                  @for (
-                    format of summary().files_summary.stats.format;
-                    track format.value
-                  ) {
+                  @for (format of filesFormats(); track format.value) {
                     <li class="list-disc uppercase">
                       {{ format.value }} <strong>{{ format.count }}</strong>
                     </li>
@@ -174,24 +149,22 @@
             <div>
               <p><strong>Experiments Summary:</strong></p>
               <p>
-                <strong>{{ summary().experiments_summary.count }}</strong> Experiment{{
-                  summary().experiments_summary.count === 1 ? '' : 's'
+                <strong>{{ experimentsSummary().count }}</strong> Experiment{{
+                  experimentsSummary().count === 1 ? '' : 's'
                 }}
               </p>
               <p>
                 <strong
-                  >{{ summary().experiments_summary.stats.experiment_methods.length }}
+                  >{{ experimentsSummary().stats.experiment_methods.length }}
                 </strong>
                 Platform{{
-                  summary().experiments_summary.stats.experiment_methods.length === 1
-                    ? ''
-                    : 's'
+                  experimentsSummary().stats.experiment_methods.length === 1 ? '' : 's'
                 }}
               </p>
-              @if (summary().experiments_summary.stats.experiment_methods.length > 0) {
+              @if (experimentsSummary().stats.experiment_methods.length > 0) {
                 <ul class="ps-5">
                   @for (
-                    platform of summary().experiments_summary.stats.experiment_methods;
+                    platform of experimentsSummary().stats.experiment_methods;
                     track platform.value
                   ) {
                     <li class="list-disc uppercase">
