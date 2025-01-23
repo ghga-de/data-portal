@@ -9,7 +9,7 @@ import { expect, test } from '@playwright/test';
 test('has proper title', async ({ page }) => {
   await page.goto('/');
 
-  await expect(page).toHaveTitle('Home | GHGA Data Portal');
+  await expect(page).toHaveTitle('Home | GHGA Archive');
 });
 
 test('has proper heading', async ({ page }) => {
