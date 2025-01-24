@@ -5,7 +5,7 @@
  */
 
 import { Component, computed, effect, inject, OnInit } from '@angular/core';
-import { FormControl, FormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
@@ -35,7 +35,7 @@ import { DatasetExpansionPanelComponent } from '../dataset-expansion-panel/datas
     MatIconModule,
     MatInputModule,
     MatButtonModule,
-    FormsModule,
+    ReactiveFormsModule,
     FacetActivityPipe,
   ],
   templateUrl: './metadata-browser.component.html',
@@ -45,12 +45,15 @@ export class MetadataBrowserComponent implements OnInit {
   #notify = inject(NotificationService);
   #metadataSearch = inject(MetadataSearchService);
   #className = 'EmbeddedDataset';
-  facetData: FacetFilterSetting = {};
   #skip = 0;
   #pageEvent!: PageEvent;
 
+  facetData: FacetFilterSetting = {};
   pageSize = 10;
   searchFormControl = new FormControl('');
+  searchFormGroup = new FormGroup({
+    searchTerm: this.searchFormControl,
+  });
   searchIsLoading = this.#metadataSearch.searchResultsAreLoading;
   searchTerm = '';
   searchResults = this.#metadataSearch.searchResults;
@@ -62,6 +65,14 @@ export class MetadataBrowserComponent implements OnInit {
    */
   ngOnInit(): void {
     this.updateMetadataServiceSearchTerms();
+  }
+
+  /**
+   * Syncs the data between this component and the search service and initiates a new search.
+   */
+  performSearch(): void {
+    this.updateMetadataServiceSearchTerms();
+    this.#metadataSearch.triggerReload();
   }
 
   /**
@@ -79,10 +90,12 @@ export class MetadataBrowserComponent implements OnInit {
 
   /**
    * Sets the parameters for the search and triggers it in the metadataSearch Service
+   * @param event we need to stop the event from propagating
    */
-  submit(): void {
-    this.updateMetadataServiceSearchTerms();
-    this.#metadataSearch.triggerReload();
+  submit(event: MouseEvent | SubmitEvent | Event): void {
+    event.preventDefault();
+    this.searchTerm = this.searchFormControl.value ? this.searchFormControl.value : '';
+    this.performSearch();
   }
 
   /**
@@ -93,8 +106,7 @@ export class MetadataBrowserComponent implements OnInit {
     const facetToRemoveSplit = facetToRemove.split('#');
     if (facetToRemoveSplit.length !== 2) return;
     this.updateFacets(facetToRemoveSplit[0], facetToRemoveSplit[1], false);
-    this.updateMetadataServiceSearchTerms();
-    this.#metadataSearch.triggerReload();
+    this.performSearch();
   }
 
   /**
@@ -102,18 +114,18 @@ export class MetadataBrowserComponent implements OnInit {
    */
   clearSearchQuery(): void {
     this.searchTerm = '';
-    this.updateMetadataServiceSearchTerms();
-    this.#metadataSearch.triggerReload();
+    this.searchFormControl.setValue('');
+    this.performSearch();
   }
 
   /**
    * Clears the search field input and triggers a result update
+   * @param event we need to stop the event from propagating
    */
-  clear(): void {
-    this.searchTerm = '';
+  clear(event: MouseEvent): void {
+    event.preventDefault();
     this.facetData = {};
-    this.updateMetadataServiceSearchTerms();
-    this.#metadataSearch.triggerReload();
+    this.clearSearchQuery();
   }
 
   length = computed(() => this.#metadataSearch.searchResults().count);
@@ -126,7 +138,7 @@ export class MetadataBrowserComponent implements OnInit {
     this.#pageEvent = e;
     this.pageSize = e.pageSize;
     this.#skip = e.pageSize * e.pageIndex;
-    this.updateMetadataServiceSearchTerms();
+    this.performSearch();
   }
 
   #errorEffect = effect(() => {
