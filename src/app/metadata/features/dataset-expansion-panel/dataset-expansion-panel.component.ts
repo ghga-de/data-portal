@@ -12,6 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { Hit } from '@app/metadata/models/search-results';
 import { MetadataService } from '@app/metadata/services/metadata.service';
 import { NotificationService } from '@app/shared/services/notification.service';
+import { AddPluralS } from '@app/shared/utils/final-s-plural.pipe';
 import { UnderscoreToSpace } from '@app/shared/utils/underscore-to-space.pipe';
 
 /**
@@ -25,6 +26,7 @@ import { UnderscoreToSpace } from '@app/shared/utils/underscore-to-space.pipe';
     MatIconModule,
     MatButtonModule,
     UnderscoreToSpace,
+    AddPluralS,
   ],
   templateUrl: './dataset-expansion-panel.component.html',
   styleUrl: './dataset-expansion-panel.component.scss',
@@ -38,17 +40,17 @@ export class DatasetExpansionPanelComponent {
 
   summary = this.#metadata.datasetSummary;
   studiesSummary = computed(() => this.summary().studies_summary);
-  studiesSummaryStats = computed(() => this.summary().studies_summary.stats);
+  studiesSummaryStats = computed(() => this.studiesSummary().stats);
   samplesSummary = computed(() => this.summary().samples_summary);
-  samplesSex = computed(() => this.summary().samples_summary.stats.sex);
-  samplesTissues = computed(() => this.summary().samples_summary.stats.tissues);
-  samplesPhenotypes = computed(
-    () => this.summary().samples_summary.stats.phenotypic_features,
-  );
+  samplesSex = computed(() => this.samplesSummary().stats.sex);
+  samplesTissues = computed(() => this.samplesSummary().stats.tissues);
+  samplesPhenotypes = computed(() => this.samplesSummary().stats.phenotypic_features);
   filesSummary = computed(() => this.summary().files_summary);
-  filesFormats = computed(() => this.summary().files_summary.stats.format);
+  filesFormats = computed(() => this.filesSummary().stats.format);
   experimentsSummary = computed(() => this.summary().experiments_summary);
-  experimentsSummaryStats = computed(() => this.summary().experiments_summary.stats);
+  experimentsPlatforms = computed(
+    () => this.experimentsSummary().stats.experiment_methods,
+  );
 
   /**
    * On opening of the expansible panel, load the query variables to the injectable service to prepare for the backend query

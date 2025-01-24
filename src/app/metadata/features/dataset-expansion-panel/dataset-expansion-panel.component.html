@@ -71,7 +71,7 @@
               <p><strong>Sample info:</strong></p>
               <p>
                 <strong>{{ samplesSummary().count }}</strong> Sample{{
-                  samplesSummary().count === 1 ? '' : 's'
+                  samplesSummary().count | addPluralS
                 }}
                 @if (samplesSex() !== []) {
                   (Sex:
@@ -82,7 +82,7 @@
               </p>
               <p>
                 <strong>{{ samplesTissues().length }}</strong>
-                Tissue{{ samplesTissues().length === 1 ? '' : 's' }}
+                Tissue{{ samplesTissues().length | addPluralS }}
               </p>
               @if (samplesTissues().length > 0) {
                 <ul class="ms-6">
@@ -98,7 +98,7 @@
               }
               <p>
                 <strong>{{ samplesPhenotypes().length }}</strong>
-                Phenotypic Feature{{ samplesPhenotypes().length === 1 ? '' : 's' }}
+                Phenotypic Feature{{ samplesPhenotypes().length | addPluralS }}
               </p>
               @if (samplesPhenotypes().length > 0) {
                 <ul class="ms-6">
@@ -127,7 +127,7 @@
               <p><strong>File Summary:</strong></p>
               <p>
                 <strong>{{ studiesSummary().count }}</strong> File{{
-                  studiesSummary().count === 1 ? '' : 's'
+                  studiesSummary().count | addPluralS
                 }}
               </p>
               @if (filesSummary().count > 0) {
@@ -150,23 +150,16 @@
               <p><strong>Experiments Summary:</strong></p>
               <p>
                 <strong>{{ experimentsSummary().count }}</strong> Experiment{{
-                  experimentsSummary().count === 1 ? '' : 's'
+                  experimentsSummary().count | addPluralS
                 }}
               </p>
               <p>
-                <strong
-                  >{{ experimentsSummary().stats.experiment_methods.length }}
-                </strong>
-                Platform{{
-                  experimentsSummary().stats.experiment_methods.length === 1 ? '' : 's'
-                }}
+                <strong>{{ experimentsPlatforms().length }} </strong>
+                Platform{{ experimentsPlatforms().length | addPluralS }}
               </p>
-              @if (experimentsSummary().stats.experiment_methods.length > 0) {
+              @if (experimentsPlatforms().length > 0) {
                 <ul class="ps-5">
-                  @for (
-                    platform of experimentsSummary().stats.experiment_methods;
-                    track platform.value
-                  ) {
+                  @for (platform of experimentsPlatforms(); track platform.value) {
                     <li class="list-disc uppercase">
                       {{ platform.value | underscoreToSpace }}
                       <strong>{{ platform.count }}</strong>

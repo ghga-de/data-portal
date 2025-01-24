@@ -78,7 +78,7 @@ export const routes: Routes = [
  */
 @Injectable({ providedIn: 'root' })
 export class TemplatePageTitleStrategy extends TitleStrategy {
-  TITLE_TEMPLATE = '#title | GHGA Archive';
+  TITLE_TEMPLATE = '#title | GHGA Data Portal';
 
   /**
    * Constructor for the strategy.
