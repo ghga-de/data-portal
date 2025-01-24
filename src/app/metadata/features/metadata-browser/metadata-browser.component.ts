@@ -70,7 +70,7 @@ export class MetadataBrowserComponent implements OnInit {
   /**
    * Syncs the data between this component and the search service and initiates a new search.
    */
-  performSearch(): void {
+  private performSearch(): void {
     this.updateMetadataServiceSearchTerms();
     this.#metadataSearch.triggerReload();
   }
@@ -78,7 +78,7 @@ export class MetadataBrowserComponent implements OnInit {
   /**
    * Pushes the local filters, search term and page setup to the search service.
    */
-  updateMetadataServiceSearchTerms(): void {
+  private updateMetadataServiceSearchTerms(): void {
     this.#metadataSearch.loadQueryParameters(
       this.#className,
       this.pageSize,
@@ -168,7 +168,7 @@ export class MetadataBrowserComponent implements OnInit {
    * @param option The option of the facet to update
    * @param newValue The new value of the option of the facet
    */
-  updateFacets(key: string, option: string, newValue: boolean) {
+  private updateFacets(key: string, option: string, newValue: boolean) {
     if (newValue) {
       // The value has been checked so we need to add it
       if (!this.facetData[key]) {
