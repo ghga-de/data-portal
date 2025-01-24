@@ -41,34 +41,36 @@
     </div>
   </aside>
   <div class="col-span-9 col-start-4">
-    <mat-chip class="float-right m-1"
-      >Total Datasets: {{ searchResults().count }}</mat-chip
-    >
-    <mat-chip-set aria-label="search and filters">
-      @if (lastSearchQuery() !== '') {
-        <mat-chip (removed)="clearSearchQuery()">
-          Keyword: {{ lastSearchQuery() }}
-          <button matChipRemove>
-            <mat-icon>cancel</mat-icon>
-          </button></mat-chip
-        >
-      }
-      @for (facet of searchResults().facets; track facet.key) {
-        @if (lastSearchFilterFacets()[facet.key]) {
-          @for (option of facet.options; track option.value) {
-            @if (lastSearchFilterFacets()[facet.key].indexOf(option.value) !== -1) {
-              <mat-chip (removed)="removeFacet(facet.key + '#' + option.value)">
-                {{ facet.name }}: {{ option.value }}
-                <button matChipRemove>
-                  <mat-icon>cancel</mat-icon>
-                </button>
-              </mat-chip>
+    <div class="inline-block w-full pb-4">
+      <mat-chip class="float-right m-1"
+        >Total Datasets: {{ searchResults().count }}</mat-chip
+      >
+      <mat-chip-set aria-label="search and filters">
+        @if (lastSearchQuery() !== '') {
+          <mat-chip (removed)="clearSearchQuery()">
+            Keyword: {{ lastSearchQuery() }}
+            <button matChipRemove>
+              <mat-icon>cancel</mat-icon>
+            </button></mat-chip
+          >
+        }
+        @for (facet of searchResults().facets; track facet.key) {
+          @if (lastSearchFilterFacets()[facet.key]) {
+            @for (option of facet.options; track option.value) {
+              @if (lastSearchFilterFacets()[facet.key].indexOf(option.value) !== -1) {
+                <mat-chip (removed)="removeFacet(facet.key + '#' + option.value)">
+                  {{ facet.name }}: {{ option.value }}
+                  <button matChipRemove>
+                    <mat-icon>cancel</mat-icon>
+                  </button>
+                </mat-chip>
+              }
             }
           }
         }
-      }
-    </mat-chip-set>
-    <div class="mb-4 grid grid-cols-12 bg-primary px-6 py-2 text-white">
+      </mat-chip-set>
+    </div>
+    <div class="mb-4 grid w-full grid-cols-12 bg-primary px-6 py-2 text-white">
       <span class="col-span-2">Dataset ID</span><span class="col-span-10">Title</span>
     </div>
     @if (searchIsLoading()) {
