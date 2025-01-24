@@ -1,5 +1,5 @@
 /**
- * This pipe takes a js Date object and transforms it to a string of the year. This can be used in the page header but also in data views.
+ * This pipe takes a number of items and returns an empty string if it is exactly one, or an 's' if it is not.
  * @copyright The GHGA Authors
  * @license Apache-2.0
  */
@@ -7,7 +7,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 /**
- * This pipe can be used to display a year as a string from a Date object.
+ * This pipe is used to add a final 's' to a word describing a set of items depending on the number of existing items.
  */
 @Pipe({
   name: 'addPluralS',

@@ -1,10 +1,10 @@
 /**
- * These are the unit tests for the DateToYear (example) pipe.
+ * These are the unit tests for the AddPluralS pipe.
  * @copyright The GHGA Authors
  * @license Apache-2.0
  */
 
-import { AddPluralS } from './final-s-plural.pipe';
+import { AddPluralS } from './add-plural-s.pipe';
 
 describe('AddPluralSPipe', () => {
   it('can create an instance', () => {

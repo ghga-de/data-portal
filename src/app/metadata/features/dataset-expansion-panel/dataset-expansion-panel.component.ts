@@ -12,7 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { Hit } from '@app/metadata/models/search-results';
 import { MetadataService } from '@app/metadata/services/metadata.service';
 import { NotificationService } from '@app/shared/services/notification.service';
-import { AddPluralS } from '@app/shared/utils/final-s-plural.pipe';
+import { AddPluralS } from '@app/shared/utils/add-plural-s.pipe';
 import { UnderscoreToSpace } from '@app/shared/utils/underscore-to-space.pipe';
 
 /**
