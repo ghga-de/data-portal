@@ -156,8 +156,7 @@ export class MetadataBrowserComponent implements OnInit {
     if (facetData?.length != 2) {
       return;
     }
-    const facetKey = facetData[0];
-    const facetOption = facetData[1];
+    const [facetKey, facetOption] = facetData;
     const newValue = input.checked;
     this.updateFacets(facetKey, facetOption, newValue);
   }

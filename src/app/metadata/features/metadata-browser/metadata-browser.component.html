@@ -46,24 +46,22 @@
     >
     <mat-chip-set aria-label="search and filters">
       @if (lastSearchQuery() !== '') {
-        <mat-chip class="float-left mr-2"
-          ><button class="align-middle" (click)="clearSearchQuery()">
-            <mat-icon>Close</mat-icon></button
-          >Keyword: {{ lastSearchQuery() }}</mat-chip
+        <mat-chip (removed)="clearSearchQuery()">
+          Keyword: {{ lastSearchQuery() }}
+          <button matChipRemove>
+            <mat-icon>cancel</mat-icon>
+          </button></mat-chip
         >
       }
       @for (facet of searchResults().facets; track facet.key) {
         @if (lastSearchFilterFacets()[facet.key]) {
           @for (option of facet.options; track option.value) {
             @if (lastSearchFilterFacets()[facet.key].indexOf(option.value) !== -1) {
-              <mat-chip class="float-left mr-2">
-                <button
-                  class="align-middle"
-                  (click)="removeFacet(facet.key + '#' + option.value)"
-                >
-                  <mat-icon>Close</mat-icon>
-                </button>
+              <mat-chip (removed)="removeFacet(facet.key + '#' + option.value)">
                 {{ facet.name }}: {{ option.value }}
+                <button matChipRemove>
+                  <mat-icon>cancel</mat-icon>
+                </button>
               </mat-chip>
             }
           }
