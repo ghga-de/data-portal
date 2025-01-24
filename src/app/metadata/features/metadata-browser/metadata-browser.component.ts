@@ -54,18 +54,25 @@ export class MetadataBrowserComponent implements OnInit {
   searchIsLoading = this.#metadataSearch.searchResultsAreLoading;
   searchTerm = '';
   searchResults = this.#metadataSearch.searchResults;
-
   lastSearchQuery = this.#metadataSearch.query;
   lastSearchFilterFacets = this.#metadataSearch.facets;
+
   /**
    * On init, define the default values of the search variables
    */
   ngOnInit(): void {
+    this.updateMetadataServiceSearchTerms();
+  }
+
+  /**
+   * Pushes the local filters, search term and page setup to the search service.
+   */
+  updateMetadataServiceSearchTerms(): void {
     this.#metadataSearch.loadQueryParameters(
       this.#className,
-      10,
-      0,
-      '',
+      this.pageSize,
+      this.#skip,
+      this.searchTerm,
       this.facetData,
     );
   }
@@ -74,13 +81,7 @@ export class MetadataBrowserComponent implements OnInit {
    * Sets the parameters for the search and triggers it in the metadataSearch Service
    */
   submit(): void {
-    this.#metadataSearch.loadQueryParameters(
-      this.#className,
-      10,
-      0,
-      this.searchTerm,
-      this.facetData,
-    );
+    this.updateMetadataServiceSearchTerms();
     this.#metadataSearch.triggerReload();
   }
 
@@ -92,13 +93,7 @@ export class MetadataBrowserComponent implements OnInit {
     const facetToRemoveSplit = facetToRemove.split('#');
     if (facetToRemoveSplit.length !== 2) return;
     this.updateFacets(facetToRemoveSplit[0], facetToRemoveSplit[1], false);
-    this.#metadataSearch.loadQueryParameters(
-      this.#className,
-      this.pageSize,
-      this.#skip,
-      this.searchTerm,
-      this.facetData,
-    );
+    this.updateMetadataServiceSearchTerms();
     this.#metadataSearch.triggerReload();
   }
 
@@ -107,13 +102,7 @@ export class MetadataBrowserComponent implements OnInit {
    */
   clearSearchQuery(): void {
     this.searchTerm = '';
-    this.#metadataSearch.loadQueryParameters(
-      this.#className,
-      this.pageSize,
-      this.#skip,
-      this.searchTerm,
-      this.facetData,
-    );
+    this.updateMetadataServiceSearchTerms();
     this.#metadataSearch.triggerReload();
   }
 
@@ -123,13 +112,7 @@ export class MetadataBrowserComponent implements OnInit {
   clear(): void {
     this.searchTerm = '';
     this.facetData = {};
-    this.#metadataSearch.loadQueryParameters(
-      this.#className,
-      this.pageSize,
-      this.#skip,
-      this.searchTerm,
-      this.facetData,
-    );
+    this.updateMetadataServiceSearchTerms();
     this.#metadataSearch.triggerReload();
   }
 
@@ -143,13 +126,7 @@ export class MetadataBrowserComponent implements OnInit {
     this.#pageEvent = e;
     this.pageSize = e.pageSize;
     this.#skip = e.pageSize * e.pageIndex;
-    this.#metadataSearch.loadQueryParameters(
-      this.#className,
-      this.pageSize,
-      this.#skip,
-      this.searchTerm,
-      this.facetData,
-    );
+    this.updateMetadataServiceSearchTerms();
   }
 
   #errorEffect = effect(() => {

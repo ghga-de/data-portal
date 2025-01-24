@@ -2,7 +2,7 @@
   <div class="col-span-9 col-start-4">
     @if (lastSearchQuery() !== '') {
       <mat-chip class="float-left"
-        ><button (click)="clearSearchQuery()">
+        ><button class="align-middle" (click)="clearSearchQuery()">
           <mat-icon>Close</mat-icon></button
         >Keyword: {{ lastSearchQuery() }}</mat-chip
       >
@@ -12,7 +12,10 @@
         @for (option of facet.options; track option.value) {
           @if (lastSearchFilterFacets()[facet.key].indexOf(option.value) !== -1) {
             <mat-chip class="float-left">
-              <button (click)="removeFacet(facet.key + '#' + option.value)">
+              <button
+                class="align-middle"
+                (click)="removeFacet(facet.key + '#' + option.value)"
+              >
                 <mat-icon>Close</mat-icon>
               </button>
               {{ facet.name }}: {{ option.value }}
