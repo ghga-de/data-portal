@@ -5,15 +5,17 @@
  */
 
 import { Component, computed, effect, inject, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { FacetFilterSetting } from '@app/metadata/models/facet-filter';
 import { MetadataSearchService } from '@app/metadata/services/metadataSearch.service';
+import { FacetActivityPipe } from '@app/metadata/utils/facetActivity.pipe';
 import { NotificationService } from '@app/shared/services/notification.service';
 import { DatasetExpansionPanelComponent } from '../dataset-expansion-panel/dataset-expansion-panel.component';
 
@@ -31,6 +33,8 @@ import { DatasetExpansionPanelComponent } from '../dataset-expansion-panel/datas
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
+    FormsModule,
+    FacetActivityPipe,
   ],
   templateUrl: './metadata-browser.component.html',
   styleUrl: './metadata-browser.component.scss',
@@ -38,23 +42,62 @@ import { DatasetExpansionPanelComponent } from '../dataset-expansion-panel/datas
 export class MetadataBrowserComponent implements OnInit {
   #notify = inject(NotificationService);
   #metadataSearch = inject(MetadataSearchService);
-
   #className = 'EmbeddedDataset';
+  facetData: FacetFilterSetting = {};
+  #skip = 0;
+  #pageEvent!: PageEvent;
+
+  pageSize = 10;
+  searchFormControl = new FormControl('');
+  searchIsLoading = this.#metadataSearch.searchResultsAreLoading;
+  searchTerm = '';
+  searchResults = this.#metadataSearch.searchResults;
 
   /**
    * On init, define the default values of the search variables
    */
   ngOnInit(): void {
-    this.#metadataSearch.loadQueryParameters(this.#className, 10, 0);
+    this.#metadataSearch.loadQueryParameters(
+      this.#className,
+      10,
+      0,
+      '',
+      this.facetData,
+    );
   }
 
-  searchFormControl = new FormControl('');
+  /**
+   * Sets the parameters for the search and triggers it in the metadataSearch Service
+   */
+  submit(): void {
+    this.#metadataSearch.loadQueryParameters(
+      this.#className,
+      10,
+      0,
+      this.searchTerm,
+      this.facetData,
+    );
+    this.#metadataSearch.triggerReload();
+  }
 
-  #skip = 0;
+  /**
+   * Clears the search field input and triggers a result update
+   */
+  clear(): void {
+    this.searchTerm = '';
+    this.facetData = {};
+    this.#metadataSearch.loadQueryParameters(
+      this.#className,
+      10,
+      0,
+      this.searchTerm,
+      this.facetData,
+    );
+    this.#metadataSearch.triggerReload();
+  }
 
-  #pageEvent!: PageEvent;
-  pageSize = 10;
   length = computed(() => this.#metadataSearch.searchResults().count);
+
   /**
    * Function to handle a change in pagination
    * @param e PageEvent instance
@@ -67,6 +110,8 @@ export class MetadataBrowserComponent implements OnInit {
       this.#className,
       this.pageSize,
       this.#skip,
+      this.searchTerm,
+      this.facetData,
     );
   }
 
@@ -76,5 +121,38 @@ export class MetadataBrowserComponent implements OnInit {
     }
   });
 
-  searchResults = this.#metadataSearch.searchResults;
+  /**
+   * This function handles the state change of a checkbox in the filter set
+   * The filter status is tracked in the #facetData dictionary
+   * @param input contains all data about the checkbox that has changed
+   */
+  updateFacets(input: MatCheckboxChange) {
+    const facetData = input.source.name?.split('#');
+    if (facetData?.length != 2) {
+      return;
+    }
+    const facetKey = facetData[0];
+    const facetOption = facetData[1];
+    const isChecked = input.checked;
+    if (isChecked) {
+      // The value has been checked so we need to add it
+      if (!this.facetData[facetKey]) {
+        this.facetData[facetKey] = [facetOption];
+      } else {
+        if (this.facetData[facetKey].indexOf(facetOption) == -1) {
+          this.facetData[facetKey].push(facetOption);
+        }
+      }
+    } else {
+      // The box has been deselected so we need to remove it
+      if (this.facetData[facetKey]) {
+        this.facetData[facetKey] = this.facetData[facetKey].filter(
+          (item) => item != facetOption,
+        );
+        if (this.facetData[facetKey].length == 0) {
+          delete this.facetData[facetKey];
+        }
+      }
+    }
+  }
 }

@@ -4,9 +4,16 @@
   </div>
   <aside class="col-span-3">
     <div class="rounded-lg border p-3">
-      <form>
+      <form (submit)="submit()" #form="ngForm">
         <mat-form-field class="w-full">
-          <input type="search" matInput placeholder="Search" />
+          <input
+            type="search"
+            matInput
+            placeholder="Search"
+            name="searchTerm"
+            [(ngModel)]="searchTerm"
+            (keyup.enter)="submit()"
+          />
         </mat-form-field>
         @for (facet of searchResults().facets; track facet.key) {
           <div>
@@ -14,15 +21,22 @@
             <ul class="mb-5 mt-1 rounded-lg border">
               @for (option of facet.options; track option.value) {
                 <li>
-                  <mat-checkbox>{{ option.value }} ({{ option.count }})</mat-checkbox>
+                  <mat-checkbox
+                    name="{{ facet.key }}#{{ option.value }}"
+                    (change)="updateFacets($event)"
+                    [checked]="
+                      facet.key + '#' + option.value | facetActivity: facetData
+                    "
+                    >{{ option.value }} ({{ option.count }})</mat-checkbox
+                  >
                 </li>
               }
             </ul>
           </div>
         }
         <div class="mt-8 grid grid-cols-2 gap-5">
-          <button mat-stroked-button>Clear</button>
-          <button mat-flat-button type="submit">Filter</button>
+          <button mat-stroked-button (click)="clear()">Clear</button>
+          <button mat-flat-button (click)="submit()" type="submit">Filter</button>
         </div>
       </form>
     </div>
@@ -32,19 +46,23 @@
     <div class="mb-4 grid grid-cols-12 bg-primary px-6 py-2 text-white">
       <span class="col-span-2">Dataset ID</span><span class="col-span-10">Title</span>
     </div>
-    <mat-accordion multi>
-      @for (hit of searchResults().hits; track hit.id_) {
-        <app-dataset-expansion-panel [hit]="hit" />
-      }
-    </mat-accordion>
+    @if (searchIsLoading()) {
+      ... Loading ...
+    } @else {
+      <mat-accordion multi>
+        @for (hit of searchResults().hits; track hit.id_) {
+          <app-dataset-expansion-panel [hit]="hit" />
+        }
+      </mat-accordion>
 
-    <mat-paginator
-      (page)="handlePageEvent($event)"
-      [length]="length()"
-      [pageSize]="pageSize"
-      [pageSizeOptions]="[5, 10, 25, 50]"
-      aria-label="Select page"
-    >
-    </mat-paginator>
+      <mat-paginator
+        (page)="handlePageEvent($event)"
+        [length]="length()"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="[5, 10, 25, 50]"
+        aria-label="Select page"
+      >
+      </mat-paginator>
+    }
   </div>
 </div>
