@@ -41,10 +41,10 @@ export class MetadataSearchService {
     request: computed(() => ({
       url: this.#massQueryUrl(),
     })),
-    loader: (param) => {
-      if (param.request.url !== '') {
+    loader: ({ request }) => {
+      if (request.url !== '') {
         return Promise.resolve(
-          firstValueFrom(this.#http.get<SearchResults>(param.request.url)),
+          firstValueFrom(this.#http.get<SearchResults>(request.url)),
         );
       } else {
         return Promise.resolve(emptySearchResults);

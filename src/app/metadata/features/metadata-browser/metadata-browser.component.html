@@ -9,7 +9,6 @@
             placeholder="Search"
             name="searchTerm"
             [formControl]="searchFormControl"
-            [(ngModel)]="searchTerm"
             (keyup.enter)="submit($event)"
           />
           <mat-icon matSuffix>search</mat-icon>
