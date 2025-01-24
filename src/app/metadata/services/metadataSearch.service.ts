@@ -144,16 +144,13 @@ export class MetadataSearchService {
       }
     }
     if (query) {
-      massQueryUrl += '&';
-      massQueryUrl += `query=${encodeURIComponent(query)}`;
+      massQueryUrl += `&query=${encodeURIComponent(query)}`;
     }
     if (limit) {
-      massQueryUrl += '&';
-      massQueryUrl += `limit=${limit}`;
+      massQueryUrl += `&limit=${limit}`;
     }
     if (skip) {
-      massQueryUrl += '&';
-      massQueryUrl += `skip=${skip}`;
+      massQueryUrl += `&skip=${skip}`;
     }
     return massQueryUrl;
   }
