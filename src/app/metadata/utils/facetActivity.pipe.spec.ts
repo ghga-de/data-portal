@@ -11,4 +11,22 @@ describe('FacetActivityPipe', () => {
     const pipe = new FacetActivityPipe();
     expect(pipe).toBeTruthy();
   });
+
+  it('can find an active facet', () => {
+    const pipe = new FacetActivityPipe();
+    const facetState = { name: ['value'] };
+    expect(pipe.transform('name#value', facetState)).toBe(true);
+  });
+
+  it('can find an active facet', () => {
+    const pipe = new FacetActivityPipe();
+    const facetState = { name1: ['value1'], name2: ['value2', 'value3'] };
+    expect(pipe.transform('name3#value4', facetState)).toBe(false);
+  });
+
+  it('returns false for an incorrect facet request', () => {
+    const pipe = new FacetActivityPipe();
+    const facetState = { name: ['value'] };
+    expect(pipe.transform('bad_value', facetState)).toBe(false);
+  });
 });

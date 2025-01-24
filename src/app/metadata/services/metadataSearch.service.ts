@@ -31,12 +31,17 @@ export class MetadataSearchService {
   #query = signal<string | undefined>(undefined);
   #facets = signal<FacetFilterSetting>({});
 
+  facets = computed(() => this.#facets());
+  query = computed(() => {
+    if (!this.#query()) return '';
+    return this.#query();
+  });
+
   #searchResults = resource({
     request: computed(() => ({
       url: this.#massQueryUrl(),
     })),
     loader: (param) => {
-      console.log(param.request.url);
       if (param.request.url !== '') {
         return Promise.resolve(
           firstValueFrom(this.#http.get<SearchResults>(param.request.url)),
@@ -62,7 +67,6 @@ export class MetadataSearchService {
     query?: string,
     facets?: FacetFilterSetting,
   ): void {
-    console.log('Received the new');
     this.#className.set(className);
     this.#limit.set(limit);
     this.#skip.set(skip);
@@ -97,7 +101,6 @@ export class MetadataSearchService {
   searchResultsError: Signal<unknown> = this.#searchResults.error;
 
   #massQueryUrl: Signal<string> = computed(() => {
-    console.log('recompute');
     const baseUrl = this.#searchUrl;
     const query = this.#query();
     const className = this.#className();
@@ -135,8 +138,6 @@ export class MetadataSearchService {
       return '';
     }
     massQueryUrl += `class_name=${className}`;
-    console.log('facets');
-    console.log(facets);
     for (let facetKey in facets) {
       for (let option in facets[facetKey]) {
         massQueryUrl += `&filter_by=${facetKey}&value=${facets[facetKey][option]}`;

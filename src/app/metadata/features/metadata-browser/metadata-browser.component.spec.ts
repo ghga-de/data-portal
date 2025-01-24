@@ -21,6 +21,8 @@ class MockMetadataSearchService {
   searchResultsError = signal(undefined);
   searchResultsAreLoading = signal(false);
   loadQueryParameters = () => undefined;
+  query = signal('');
+  facets = signal({});
 }
 
 describe('BrowseComponent', () => {

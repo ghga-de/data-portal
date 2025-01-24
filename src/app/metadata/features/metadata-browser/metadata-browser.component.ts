@@ -11,6 +11,7 @@ import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox
 import { MatChipsModule } from '@angular/material/chips';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { FacetFilterSetting } from '@app/metadata/models/facet-filter';
@@ -31,6 +32,7 @@ import { DatasetExpansionPanelComponent } from '../dataset-expansion-panel/datas
     MatPaginatorModule,
     MatChipsModule,
     MatFormFieldModule,
+    MatIconModule,
     MatInputModule,
     MatButtonModule,
     FormsModule,
@@ -53,6 +55,8 @@ export class MetadataBrowserComponent implements OnInit {
   searchTerm = '';
   searchResults = this.#metadataSearch.searchResults;
 
+  lastSearchQuery = this.#metadataSearch.query;
+  lastSearchFilterFacets = this.#metadataSearch.facets;
   /**
    * On init, define the default values of the search variables
    */
@@ -81,6 +85,39 @@ export class MetadataBrowserComponent implements OnInit {
   }
 
   /**
+   * Handles the click event on a facet filter that was active in the last search (as shown above the search results)
+   * @param facetToRemove The facet name and option to remove.
+   */
+  removeFacet(facetToRemove: string): void {
+    const facetToRemoveSplit = facetToRemove.split('#');
+    if (facetToRemoveSplit.length !== 2) return;
+    this.updateFacets(facetToRemoveSplit[0], facetToRemoveSplit[1], false);
+    this.#metadataSearch.loadQueryParameters(
+      this.#className,
+      this.pageSize,
+      this.#skip,
+      this.searchTerm,
+      this.facetData,
+    );
+    this.#metadataSearch.triggerReload();
+  }
+
+  /**
+   * Resets the search query and triggers a reload of the results.
+   */
+  clearSearchQuery(): void {
+    this.searchTerm = '';
+    this.#metadataSearch.loadQueryParameters(
+      this.#className,
+      this.pageSize,
+      this.#skip,
+      this.searchTerm,
+      this.facetData,
+    );
+    this.#metadataSearch.triggerReload();
+  }
+
+  /**
    * Clears the search field input and triggers a result update
    */
   clear(): void {
@@ -88,8 +125,8 @@ export class MetadataBrowserComponent implements OnInit {
     this.facetData = {};
     this.#metadataSearch.loadQueryParameters(
       this.#className,
-      10,
-      0,
+      this.pageSize,
+      this.#skip,
       this.searchTerm,
       this.facetData,
     );
@@ -122,35 +159,43 @@ export class MetadataBrowserComponent implements OnInit {
   });
 
   /**
-   * This function handles the state change of a checkbox in the filter set
-   * The filter status is tracked in the #facetData dictionary
-   * @param input contains all data about the checkbox that has changed
+   * This function transforms the checkbox change event to the data required in updateFacet(...) and calls it
+   * @param input the Event from the checkbox
    */
-  updateFacets(input: MatCheckboxChange) {
+  onFacetFilterChanged(input: MatCheckboxChange) {
     const facetData = input.source.name?.split('#');
     if (facetData?.length != 2) {
       return;
     }
     const facetKey = facetData[0];
     const facetOption = facetData[1];
-    const isChecked = input.checked;
-    if (isChecked) {
+    const newValue = input.checked;
+    this.updateFacets(facetKey, facetOption, newValue);
+  }
+
+  /**
+   * This function handles the state change of facets filter value
+   * The filter status is tracked in the #facetData dictionary
+   * @param key The key of the facet to update.
+   * @param option The option of the facet to update
+   * @param newValue The new value of the option of the facet
+   */
+  updateFacets(key: string, option: string, newValue: boolean) {
+    if (newValue) {
       // The value has been checked so we need to add it
-      if (!this.facetData[facetKey]) {
-        this.facetData[facetKey] = [facetOption];
+      if (!this.facetData[key]) {
+        this.facetData[key] = [option];
       } else {
-        if (this.facetData[facetKey].indexOf(facetOption) == -1) {
-          this.facetData[facetKey].push(facetOption);
+        if (this.facetData[key].indexOf(option) == -1) {
+          this.facetData[key].push(option);
         }
       }
     } else {
       // The box has been deselected so we need to remove it
-      if (this.facetData[facetKey]) {
-        this.facetData[facetKey] = this.facetData[facetKey].filter(
-          (item) => item != facetOption,
-        );
-        if (this.facetData[facetKey].length == 0) {
-          delete this.facetData[facetKey];
+      if (this.facetData[key]) {
+        this.facetData[key] = this.facetData[key].filter((item) => item != option);
+        if (this.facetData[key].length == 0) {
+          delete this.facetData[key];
         }
       }
     }
