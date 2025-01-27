@@ -89,13 +89,6 @@ export class MetadataSearchService {
   );
 
   /**
-   * This triggers the search Service to reload the search results
-   */
-  triggerReload = () => {
-    this.#searchResults.reload();
-  };
-
-  /**
    * The search results error as a signal
    */
   searchResultsError: Signal<unknown> = this.#searchResults.error;

@@ -64,20 +64,20 @@ export class MetadataBrowserComponent implements OnInit {
    * On init, define the default values of the search variables
    */
   ngOnInit(): void {
-    this.updateMetadataServiceSearchTerms();
+    this.#updateMetadataServiceSearchTerms();
   }
 
   /**
    * Syncs the data between this component and the search service and initiates a new search.
    */
-  private performSearch(): void {
-    this.updateMetadataServiceSearchTerms();
+  #performSearch(): void {
+    this.#updateMetadataServiceSearchTerms();
   }
 
   /**
    * Pushes the local filters, search term and page setup to the search service.
    */
-  private updateMetadataServiceSearchTerms(): void {
+  #updateMetadataServiceSearchTerms(): void {
     this.#metadataSearch.loadQueryParameters(
       this.#className,
       this.pageSize,
@@ -94,7 +94,7 @@ export class MetadataBrowserComponent implements OnInit {
   submit(event: MouseEvent | SubmitEvent | Event): void {
     event.preventDefault();
     this.searchTerm = this.searchFormControl.value ? this.searchFormControl.value : '';
-    this.performSearch();
+    this.#performSearch();
   }
 
   /**
@@ -104,8 +104,8 @@ export class MetadataBrowserComponent implements OnInit {
   removeFacet(facetToRemove: string): void {
     const facetToRemoveSplit = facetToRemove.split('#');
     if (facetToRemoveSplit.length !== 2) return;
-    this.updateFacets(facetToRemoveSplit[0], facetToRemoveSplit[1], false);
-    this.performSearch();
+    this.#updateFacets(facetToRemoveSplit[0], facetToRemoveSplit[1], false);
+    this.#performSearch();
   }
 
   /**
@@ -114,7 +114,7 @@ export class MetadataBrowserComponent implements OnInit {
   clearSearchQuery(): void {
     this.searchTerm = '';
     this.searchFormControl.setValue('');
-    this.performSearch();
+    this.#performSearch();
   }
 
   /**
@@ -137,7 +137,7 @@ export class MetadataBrowserComponent implements OnInit {
     this.#pageEvent = e;
     this.pageSize = e.pageSize;
     this.#skip = e.pageSize * e.pageIndex;
-    this.performSearch();
+    this.#performSearch();
   }
 
   #errorEffect = effect(() => {
@@ -157,7 +157,7 @@ export class MetadataBrowserComponent implements OnInit {
     }
     const [facetKey, facetOption] = facetData;
     const newValue = input.checked;
-    this.updateFacets(facetKey, facetOption, newValue);
+    this.#updateFacets(facetKey, facetOption, newValue);
   }
 
   /**
@@ -167,7 +167,7 @@ export class MetadataBrowserComponent implements OnInit {
    * @param option The option of the facet to update
    * @param newValue The new value of the option of the facet
    */
-  private updateFacets(key: string, option: string, newValue: boolean) {
+  #updateFacets(key: string, option: string, newValue: boolean) {
     if (newValue) {
       // The value has been checked so we need to add it
       if (!this.facetData[key]) {
