@@ -40,11 +40,8 @@
     </div>
   </aside>
   <div class="col-span-9 col-start-4">
-    <div class="inline-block w-full pb-4">
-      <mat-chip class="float-right m-1"
-        >Total Datasets: {{ searchResults().count }}</mat-chip
-      >
-      <mat-chip-set aria-label="search and filters">
+    <div class="inline-block grid w-full grid-cols-12 pb-4">
+      <mat-chip-set aria-label="search and filters" class="col-span-10">
         @if (lastSearchQuery() !== '') {
           <mat-chip (removed)="clearSearchQuery()">
             Keyword: {{ lastSearchQuery() }}
@@ -68,6 +65,11 @@
           }
         }
       </mat-chip-set>
+      <div class="col-span-2 col-start-11">
+        <mat-chip class="float-right m-1"
+          >Total Datasets: {{ searchResults().count }}</mat-chip
+        >
+      </div>
     </div>
     <div class="mb-4 grid w-full grid-cols-12 bg-primary px-6 py-2 text-white">
       <span class="col-span-2">Dataset ID</span><span class="col-span-10">Title</span>
