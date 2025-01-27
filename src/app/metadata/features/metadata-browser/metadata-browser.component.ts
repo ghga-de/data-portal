@@ -142,7 +142,7 @@ export class MetadataBrowserComponent implements OnInit {
 
   #errorEffect = effect(() => {
     if (this.#metadataSearch.searchResultsError()) {
-      this.#notify.showError('Error fetching search results');
+      this.#notify.showError('Error fetching search results.');
     }
   });
 
@@ -187,4 +187,8 @@ export class MetadataBrowserComponent implements OnInit {
       }
     }
   }
+
+  searchResults = this.#metadataSearch.searchResults;
+
+  facets = computed(() => this.searchResults().facets);
 }
