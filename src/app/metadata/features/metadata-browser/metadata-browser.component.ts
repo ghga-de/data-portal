@@ -59,6 +59,7 @@ export class MetadataBrowserComponent implements OnInit {
   searchResults = this.#metadataSearch.searchResults;
   lastSearchQuery = this.#metadataSearch.query;
   lastSearchFilterFacets = this.#metadataSearch.facets;
+  facets = computed(() => this.searchResults().facets);
 
   /**
    * On init, define the default values of the search variables
@@ -187,8 +188,4 @@ export class MetadataBrowserComponent implements OnInit {
       }
     }
   }
-
-  searchResults = this.#metadataSearch.searchResults;
-
-  facets = computed(() => this.searchResults().facets);
 }
