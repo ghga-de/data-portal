@@ -72,7 +72,6 @@ export class MetadataBrowserComponent implements OnInit {
    */
   private performSearch(): void {
     this.updateMetadataServiceSearchTerms();
-    this.#metadataSearch.triggerReload();
   }
 
   /**
