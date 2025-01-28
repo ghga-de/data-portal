@@ -14,11 +14,15 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FacetFilterSetting } from '@app/metadata/models/facet-filter';
 import { MetadataSearchService } from '@app/metadata/services/metadataSearch.service';
 import { FacetActivityPipe } from '@app/metadata/utils/facetActivity.pipe';
 import { NotificationService } from '@app/shared/services/notification.service';
 import { DatasetExpansionPanelComponent } from '../dataset-expansion-panel/dataset-expansion-panel.component';
+
+const DEFAULT_PAGE_SIZE = 10;
+const DEFAULT_SKIP_VALUE = 0;
 
 /**
  * This is the metadata browser component
@@ -44,12 +48,14 @@ import { DatasetExpansionPanelComponent } from '../dataset-expansion-panel/datas
 export class MetadataBrowserComponent implements OnInit {
   #notify = inject(NotificationService);
   #metadataSearch = inject(MetadataSearchService);
+  #route = inject(ActivatedRoute);
+  #router = inject(Router);
   #className = 'EmbeddedDataset';
-  #skip = 0;
+  #skip = DEFAULT_SKIP_VALUE;
   #pageEvent!: PageEvent;
 
   facetData: FacetFilterSetting = {};
-  pageSize = 10;
+  pageSize = DEFAULT_PAGE_SIZE;
   searchFormControl = new FormControl('');
   searchFormGroup = new FormGroup({
     searchTerm: this.searchFormControl,
@@ -65,20 +71,40 @@ export class MetadataBrowserComponent implements OnInit {
    * On init, define the default values of the search variables
    */
   ngOnInit(): void {
-    this.#updateMetadataServiceSearchTerms();
+    const { pageSize, search, filters, skip } =
+      this.#router.routerState.snapshot.root.queryParams;
+    if (pageSize) {
+      this.pageSize = parseInt(pageSize);
+    } else {
+      this.pageSize = DEFAULT_PAGE_SIZE;
+    }
+    if (search) {
+      this.searchTerm = search;
+    }
+    if (filters) {
+      const paramVals = JSON.parse(decodeURIComponent(filters));
+      if (paramVals) {
+        this.facetData = paramVals;
+      }
+    }
+    if (skip) {
+      this.#skip = parseInt(skip);
+    }
+
+    this.#updateMetadataServiceSearchTermsAndRoute();
   }
 
   /**
    * Syncs the data between this component and the search service and initiates a new search.
    */
   #performSearch(): void {
-    this.#updateMetadataServiceSearchTerms();
+    this.#updateMetadataServiceSearchTermsAndRoute();
   }
 
   /**
    * Pushes the local filters, search term and page setup to the search service.
    */
-  #updateMetadataServiceSearchTerms(): void {
+  #updateMetadataServiceSearchTermsAndRoute(): void {
     this.#metadataSearch.loadQueryParameters(
       this.#className,
       this.pageSize,
@@ -86,6 +112,18 @@ export class MetadataBrowserComponent implements OnInit {
       this.searchTerm,
       this.facetData,
     );
+    this.#router.navigate([], {
+      relativeTo: this.#route,
+      queryParams: {
+        skip: this.#skip !== DEFAULT_SKIP_VALUE ? this.#skip : undefined,
+        search: this.searchTerm !== '' ? this.searchTerm : undefined,
+        filters:
+          Object.keys(this.facetData).length !== 0
+            ? encodeURIComponent(JSON.stringify(this.facetData))
+            : undefined,
+        pageSize: this.pageSize !== DEFAULT_PAGE_SIZE ? this.pageSize : undefined,
+      },
+    });
   }
 
   /**
