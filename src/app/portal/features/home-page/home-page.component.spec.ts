@@ -9,13 +9,13 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { metadataGlobalSummary } from '@app/../mocks/data';
-import { MetadataService } from '@app/metadata/services/metadata.service';
+import { MetadataStatsService } from '@app/metadata/services/metadataStats.service';
 import { HomePageComponent } from './home-page.component';
 
 /**
  * Mock the metadata service as needed for the global stats
  */
-class MockMetadataService {
+class MockMetadataStatsService {
   globalSummary = signal(metadataGlobalSummary.resource_stats);
   globalSummaryError = signal(undefined);
   globalSummaryIsLoading = signal(false);
@@ -33,7 +33,7 @@ describe('HomePageComponent', () => {
     await TestBed.configureTestingModule({
       imports: [HomePageComponent],
       providers: [
-        { provide: MetadataService, useClass: MockMetadataService },
+        { provide: MetadataStatsService, useClass: MockMetadataStatsService },
         {
           provide: ActivatedRoute,
           useValue: fakeActivatedRoute,

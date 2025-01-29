@@ -10,12 +10,12 @@ import { signal } from '@angular/core';
 import { GlobalStatsComponent } from './global-summary.component';
 
 import { metadataGlobalSummary } from '@app/../mocks/data';
-import { MetadataService } from '@app/metadata/services/metadata.service';
+import { MetadataStatsService } from '@app/metadata/services/metadataStats.service';
 
 /**
  * Mock the metadata service as needed for the global stats
  */
-class MockMetadataService {
+class MockMetadataStatsService {
   globalSummary = signal(metadataGlobalSummary.resource_stats);
   globalSummaryError = signal(undefined);
   globalSummaryIsLoading = signal(false);
@@ -28,7 +28,9 @@ describe('GlobalStatsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [GlobalStatsComponent],
-      providers: [{ provide: MetadataService, useClass: MockMetadataService }],
+      providers: [
+        { provide: MetadataStatsService, useClass: MockMetadataStatsService },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(GlobalStatsComponent);
