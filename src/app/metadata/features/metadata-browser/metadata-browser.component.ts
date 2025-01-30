@@ -71,18 +71,18 @@ export class MetadataBrowserComponent implements OnInit {
    * On init, define the default values of the search variables
    */
   ngOnInit(): void {
-    const { pageSize, search, filters, skip } =
-      this.#router.routerState.snapshot.root.queryParams;
+    const { pageSize, s, f, skip } = this.#router.routerState.snapshot.root.queryParams;
     if (pageSize) {
       this.pageSize = parseInt(pageSize);
     } else {
       this.pageSize = DEFAULT_PAGE_SIZE;
     }
-    if (search) {
-      this.searchTerm = search;
+    if (s) {
+      this.searchTerm = s;
     }
-    if (filters) {
-      const paramVals = JSON.parse(decodeURIComponent(filters));
+    if (f) {
+      const paramVals = this.#facetDataFromString(decodeURIComponent(f));
+      console.log(paramVals);
       if (paramVals) {
         this.facetData = paramVals;
       }
@@ -116,10 +116,10 @@ export class MetadataBrowserComponent implements OnInit {
       relativeTo: this.#route,
       queryParams: {
         skip: this.#skip !== DEFAULT_SKIP_VALUE ? this.#skip : undefined,
-        search: this.searchTerm !== '' ? this.searchTerm : undefined,
-        filters:
+        q: this.searchTerm !== '' ? this.searchTerm : undefined,
+        f:
           Object.keys(this.facetData).length !== 0
-            ? encodeURIComponent(JSON.stringify(this.facetData))
+            ? encodeURIComponent(this.#facetDataToString(this.facetData))
             : undefined,
         pageSize: this.pageSize !== DEFAULT_PAGE_SIZE ? this.pageSize : undefined,
       },
@@ -197,6 +197,55 @@ export class MetadataBrowserComponent implements OnInit {
     const [facetKey, facetOption] = facetData;
     const newValue = input.checked;
     this.#updateFacets(facetKey, facetOption, newValue);
+  }
+
+  /**
+   * Turns a FacetFilterSetting dictionary into a string for usage in the url f parameter
+   * This is the inverse operation to the #facetDataFromString function
+   * @param facetData the dictionary to turn into a string
+   * @returns the string representation
+   */
+  #facetDataToString(facetData: FacetFilterSetting): string {
+    console.log(facetData);
+    if (Object.keys(facetData).length === 0) {
+      return '';
+    }
+    let facetStrings = [];
+    for (const key in facetData) {
+      for (const index in facetData[key]) {
+        facetStrings.push(key + ':' + facetData[key][index]);
+      }
+    }
+    const ret = facetStrings.join(';');
+    console.log(ret);
+    return ret;
+  }
+
+  /**
+   * This function takes a string (as used in the f argument of the url) and turns it into a FacetFilterSetting dictionary.
+   * This is the inverse operation of #facetDataToString.
+   * @param input the string to parse
+   * @returns The FacetFilterSetting dictionary format
+   */
+  #facetDataFromString(input: string): FacetFilterSetting {
+    console.log(input);
+    if (input.indexOf(':') == -1) {
+      return {};
+    }
+    const filterStrings = input.split(';');
+    const ret: FacetFilterSetting = {};
+    for (const facet of filterStrings) {
+      if (facet.indexOf(':') !== -1) {
+        const [facetName, facetValue] = facet.split(':');
+        if (ret[facetName]) {
+          ret[facetName].push(facetValue);
+        } else {
+          ret[facetName] = [facetValue];
+        }
+      }
+    }
+    console.log(ret);
+    return ret;
   }
 
   /**
