@@ -5,6 +5,7 @@
  */
 
 import { DatasetDetails } from '@app/metadata/models/dataset-details';
+import { DatasetInformation } from '@app/metadata/models/dataset-information';
 import { DatasetSummary } from '@app/metadata/models/dataset-summary';
 import { BaseGlobalSummary } from '@app/metadata/models/global-summary';
 import { SearchResults } from '@app/metadata/models/search-results';
@@ -17,6 +18,13 @@ import { SearchResults } from '@app/metadata/models/search-results';
 export const getDatasetSummary = (accession: string) => ({
   ...datasetSummary,
   accession: accession,
+});
+
+// get embedded datasets with arbitrary accessions
+export const getDatasetDetails = (accession: string) => ({
+  ...datasetDetails,
+  accession: accession,
+  ega_accession: accession.replace('GHGA', 'EGA'),
 });
 
 export const metadataGlobalSummary: BaseGlobalSummary = {
@@ -243,6 +251,18 @@ export const datasetDetails: DatasetDetails = {
       },
       biospecimen_type: 'Test biospeciment type 1',
       biospecimen_tissue_term: 'Test tissue',
+    },
+  ],
+};
+
+export const datasetInformation: DatasetInformation = {
+  accession: 'GHGAD588887988',
+  file_information: [
+    {
+      accession: 'GHGASF956121331',
+      sha256_hash: '58b2e5a09936322db4ab1b921847d0f3b83027e0255cd24d7e58c420845286dc',
+      size: 123456789,
+      storage_alias: 'TUE01',
     },
   ],
 };

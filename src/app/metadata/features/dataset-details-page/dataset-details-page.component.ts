@@ -5,7 +5,15 @@
  */
 
 import { Location } from '@angular/common';
-import { Component, computed, effect, inject, input, OnInit } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  OnInit,
+  Signal,
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -13,9 +21,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
+import { File } from '@app/metadata/models/dataset-details';
+import { DatasetInformationService } from '@app/metadata/services/datasetInformation.service';
 import { MetadataService } from '@app/metadata/services/metadata.service';
+import { StorageAlias } from '@app/metadata/utils/storage-alias.pipe';
 import { NotificationService } from '@app/shared/services/notification.service';
 import { AddPluralS } from '@app/shared/utils/add-plural-s.pipe';
+import { ParseBytes } from '@app/shared/utils/parse-bytes.pipe';
 import { UnderscoreToSpace } from '@app/shared/utils/underscore-to-space.pipe';
 
 /**
@@ -33,6 +45,8 @@ import { UnderscoreToSpace } from '@app/shared/utils/underscore-to-space.pipe';
     MatExpansionModule,
     AddPluralS,
     MatSortModule,
+    ParseBytes,
+    StorageAlias,
   ],
   templateUrl: './dataset-details-page.component.html',
   styleUrl: './dataset-details-page.component.scss',
@@ -41,39 +55,71 @@ export class DatasetDetailsPageComponent implements OnInit {
   id = input.required<string>();
   #notify = inject(NotificationService);
   #metadata = inject(MetadataService);
+  #dins = inject(DatasetInformationService);
 
-  details = this.#metadata.datasetDetails;
-  dap = computed(() => this.details().data_access_policy);
+  datasetDetails = this.#metadata.datasetDetails;
+  dap = computed(() => this.datasetDetails().data_access_policy);
   dac = computed(() => this.dap().data_access_committee);
-  study = computed(() => this.details().study);
+  study = computed(() => this.datasetDetails().study);
   publications = computed(() => this.study().publications);
-  files = computed(() =>
-    [
-      this.details().process_data_files,
-      this.details().experiment_method_supporting_files,
-      this.details().analysis_method_supporting_files,
-      this.details().individual_supporting_files,
-      this.details().research_data_files,
-    ].flatMap((x) => x),
-  );
-  experiments = computed(() => this.details().experiments);
-  samples = computed(() => this.details().samples);
+  experiments = computed(() => this.datasetDetails().experiments);
+  samples = computed(() => this.datasetDetails().samples);
 
+  datasetInformation = this.#dins.datasetInformation;
+  allFiles: Signal<File[]> = computed(() =>
+    Object.keys(this.datasetDetails())
+      .filter((key: string) => key.endsWith('_files'))
+      .flatMap((key: string) => {
+        const files: Signal<File[]> = computed(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          () => (this.datasetDetails() as any)[key],
+        );
+        const fileCategory = key.slice(0, -1).replace(' ', '_');
+        const fileInfoMap = new Map();
+        this.datasetInformation().file_information.forEach((fileInFo) =>
+          fileInfoMap.set(fileInFo.accession, fileInFo),
+        );
+        return files().map((file: File) => {
+          const fileInfo = fileInfoMap.get(file.accession);
+          file.file_information = fileInfo;
+          file.file_category = fileCategory;
+          return { ...file };
+        });
+      }),
+  );
+
+  /**
+   * On component initialisation, load the dataset ID to the injectable services to prepare for the backend queries
+   */
   ngOnInit(): void {
     this.#metadata.loadDatasetDetailsID(this.id());
+    this.#dins.loadDatasetID(this.id());
   }
 
   location: Location;
+  /**
+   * Constructor to create a new instance of browser history
+   * @param location A Location object
+   */
   constructor(location: Location) {
     this.location = location;
   }
+  /**
+   * Function to go back to previous page
+   */
   goBack() {
     this.location.historyGo(-1);
   }
 
-  #errorEffect = effect(() => {
+  #datasetDetailsErrorEffect = effect(() => {
     if (this.#metadata.datasetDetailsError()) {
       this.#notify.showError('Error fetching dataset details.');
+    }
+  });
+
+  #datasetInformationErrorEffect = effect(() => {
+    if (this.#dins.datasetInformationError()) {
+      this.#notify.showError('Error fetching dataset file information.');
     }
   });
 

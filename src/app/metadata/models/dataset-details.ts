@@ -4,6 +4,8 @@
  * @license Apache-2.0
  */
 
+import { FileInformation } from './dataset-information';
+
 export interface DatasetDetails {
   accession: string;
   title: string;
@@ -49,11 +51,13 @@ interface Publication {
   doi: string;
 }
 
-interface File {
+export interface File {
   accession: string;
   format: string;
   name: string;
   ega_accession: string;
+  file_information?: FileInformation;
+  file_category?: string;
 }
 
 export interface Experiment {

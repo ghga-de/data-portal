@@ -12,7 +12,7 @@ import { DatasetDetails, emptyDatasetDetails } from '../models/dataset-details';
 import { DatasetSummary, emptyDatasetSummary } from '../models/dataset-summary';
 
 /**
- * Metadata Query service
+ * Metadata query service
  *
  * This service provides the functionality to fetch dataset summaries and details from the server.
  */

@@ -16,7 +16,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { FacetFilterSetting } from '@app/metadata/models/facet-filter';
 import { MetadataSearchService } from '@app/metadata/services/metadataSearch.service';
-import { FacetActivityPipe } from '@app/metadata/utils/facetActivity.pipe';
+import { FacetActivityPipe } from '@app/metadata/utils/facet-activity.pipe';
 import { NotificationService } from '@app/shared/services/notification.service';
 import { DatasetExpansionPanelComponent } from '../dataset-expansion-panel/dataset-expansion-panel.component';
 
