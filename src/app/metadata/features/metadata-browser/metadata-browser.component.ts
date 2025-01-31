@@ -71,27 +71,34 @@ export class MetadataBrowserComponent implements OnInit {
    * On init, define the default values of the search variables
    */
   ngOnInit(): void {
-    const { pageSize, s, f, skip } = this.#router.routerState.snapshot.root.queryParams;
-    if (pageSize) {
-      this.pageSize = parseInt(pageSize);
-    } else {
-      this.pageSize = DEFAULT_PAGE_SIZE;
-    }
-    if (s) {
-      this.searchTerm = s;
+    this.#loadSearchTermsFromRoute();
+  }
+
+  /**
+   * This function takes the current URL, determines the query parameters and sets them accordingly in the metadata search service.
+   */
+  #loadSearchTermsFromRoute(): void {
+    const { s, q, f, p } = this.#router.routerState.snapshot.root.queryParams;
+    this.pageSize = parseInt(p) || DEFAULT_PAGE_SIZE;
+    if (q) {
+      this.searchTerm = q;
     }
     if (f) {
       const paramVals = this.#facetDataFromString(decodeURIComponent(f));
-      console.log(paramVals);
       if (paramVals) {
         this.facetData = paramVals;
       }
     }
-    if (skip) {
-      this.#skip = parseInt(skip);
+    if (s) {
+      this.#skip = parseInt(s);
     }
-
-    this.#updateMetadataServiceSearchTermsAndRoute();
+    this.#metadataSearch.loadQueryParameters(
+      this.#className,
+      this.pageSize,
+      this.#skip,
+      this.searchTerm,
+      this.facetData,
+    );
   }
 
   /**
@@ -104,26 +111,20 @@ export class MetadataBrowserComponent implements OnInit {
   /**
    * Pushes the local filters, search term and page setup to the search service.
    */
-  #updateMetadataServiceSearchTermsAndRoute(): void {
-    this.#metadataSearch.loadQueryParameters(
-      this.#className,
-      this.pageSize,
-      this.#skip,
-      this.searchTerm,
-      this.facetData,
-    );
-    this.#router.navigate([], {
+  async #updateMetadataServiceSearchTermsAndRoute(): Promise<void> {
+    await this.#router.navigate([], {
       relativeTo: this.#route,
       queryParams: {
-        skip: this.#skip !== DEFAULT_SKIP_VALUE ? this.#skip : undefined,
+        s: this.#skip !== DEFAULT_SKIP_VALUE ? this.#skip : undefined,
         q: this.searchTerm !== '' ? this.searchTerm : undefined,
         f:
           Object.keys(this.facetData).length !== 0
             ? encodeURIComponent(this.#facetDataToString(this.facetData))
             : undefined,
-        pageSize: this.pageSize !== DEFAULT_PAGE_SIZE ? this.pageSize : undefined,
+        p: this.pageSize !== DEFAULT_PAGE_SIZE ? this.pageSize : undefined,
       },
     });
+    this.#loadSearchTermsFromRoute();
   }
 
   /**
@@ -206,7 +207,6 @@ export class MetadataBrowserComponent implements OnInit {
    * @returns the string representation
    */
   #facetDataToString(facetData: FacetFilterSetting): string {
-    console.log(facetData);
     if (Object.keys(facetData).length === 0) {
       return '';
     }
@@ -216,9 +216,7 @@ export class MetadataBrowserComponent implements OnInit {
         facetStrings.push(key + ':' + facetData[key][index]);
       }
     }
-    const ret = facetStrings.join(';');
-    console.log(ret);
-    return ret;
+    return facetStrings.join(';');
   }
 
   /**
@@ -228,15 +226,14 @@ export class MetadataBrowserComponent implements OnInit {
    * @returns The FacetFilterSetting dictionary format
    */
   #facetDataFromString(input: string): FacetFilterSetting {
-    console.log(input);
     if (input.indexOf(':') == -1) {
       return {};
     }
     const filterStrings = input.split(';');
     const ret: FacetFilterSetting = {};
     for (const facet of filterStrings) {
-      if (facet.indexOf(':') !== -1) {
-        const [facetName, facetValue] = facet.split(':');
+      const [facetName, facetValue] = facet.split(':', 2);
+      if (facetValue !== undefined) {
         if (ret[facetName]) {
           ret[facetName].push(facetValue);
         } else {
@@ -244,7 +241,6 @@ export class MetadataBrowserComponent implements OnInit {
         }
       }
     }
-    console.log(ret);
     return ret;
   }
 
