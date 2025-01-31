@@ -26,11 +26,12 @@ describe('GlobalStatsComponent', () => {
   let fixture: ComponentFixture<GlobalSummaryComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [GlobalSummaryComponent],
-      providers: [
-        { provide: MetadataStatsService, useClass: MockMetadataStatsService },
-      ],
+    await TestBed.overrideComponent(GlobalSummaryComponent, {
+      set: {
+        providers: [
+          { provide: MetadataStatsService, useClass: MockMetadataStatsService },
+        ],
+      },
     }).compileComponents();
 
     fixture = TestBed.createComponent(GlobalSummaryComponent);
