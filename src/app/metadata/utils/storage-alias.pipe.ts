@@ -6,6 +6,16 @@
 
 import { Pipe, PipeTransform } from '@angular/core';
 
+const STORAGE_LOCATIONS: { [key: string]: string } = {
+  B: 'Berlin',
+  DD: 'Dresden',
+  HD: 'Heidelberg',
+  K: 'Cologne',
+  KI: 'Kiel',
+  M: 'Munich',
+  TUE: 'Tübingen',
+};
+
 /**
  * Pipe to convert the storage locations aliases to a human-readable alias
  */
@@ -19,15 +29,6 @@ export class StorageAlias implements PipeTransform {
    * @returns Human readable storage location, returns the original string if not known, with the first group of letters separated by a space
    */
   transform(storageAlias: string): string {
-    const STORAGE_LOCATIONS: { [key: string]: string } = {
-      B: 'Berlin',
-      DD: 'Dresden',
-      HD: 'Heidelberg',
-      K: 'Cologne',
-      KI: 'Kiel',
-      M: 'Munich',
-      TUE: 'Tübingen',
-    };
     return storageAlias.replace(
       /^[A-Z]+/,
       (m: string) => (STORAGE_LOCATIONS[m] ?? m) + ' ',

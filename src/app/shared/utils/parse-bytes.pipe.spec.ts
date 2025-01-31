@@ -1,5 +1,5 @@
 /**
- * These are the unit tests for the DateToYear (example) pipe.
+ * These are the unit tests for the ParseBytes pipe.
  * @copyright The GHGA Authors
  * @license Apache-2.0
  */
@@ -15,12 +15,12 @@ describe('ParseBytesPipe', () => {
   it('should return 25 KB for 25000 Bytes', () => {
     const pipe = new ParseBytes();
     const result = pipe.transform(25000);
-    expect(result).toBe('25 kB');
+    expect(result).toBe('25\u00A0kB');
   });
 
   it('should return 2.5 MB for 25000000 Bytes', () => {
     const pipe = new ParseBytes();
     const result = pipe.transform(2500000);
-    expect(result).toBe('2.5 MB');
+    expect(result).toBe('2.5\u00A0MB');
   });
 });

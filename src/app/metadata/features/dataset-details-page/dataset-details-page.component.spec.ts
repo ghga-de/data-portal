@@ -1,5 +1,5 @@
 /**
- * Short module description
+ * Dataset details page
  * @copyright The GHGA Authors
  * @license Apache-2.0
  */
@@ -9,7 +9,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { datasetDetails, datasetInformation } from '@app/../mocks/data';
-import { DatasetInformationService } from '@app/metadata/services/datasetInformation.service';
+import { DatasetInformationService } from '@app/metadata/services/dataset-information.service';
 import { MetadataService } from '@app/metadata/services/metadata.service';
 import { DatasetDetailsPageComponent } from './dataset-details-page.component';
 

@@ -1,13 +1,14 @@
 /**
- * Short module description
+ * Dataset Information Query Service
  * @copyright The GHGA Authors
  * @license Apache-2.0
  */
 
 import { HttpClient } from '@angular/common/http';
-import { computed, inject, Injectable, resource, Signal, signal } from '@angular/core';
+import { computed, inject, Injectable, Signal, signal } from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
 import { ConfigService } from '@app/shared/services/config.service';
-import { firstValueFrom } from 'rxjs';
+import { of } from 'rxjs';
 import {
   DatasetInformation,
   emptyDatasetInformation,
@@ -31,25 +32,13 @@ export class DatasetInformationService {
 
   #datasetID = signal<string | undefined>(undefined);
 
-  #datasetInformation = resource({
-    request: computed(() => ({
-      id_: this.#datasetID(),
-    })),
-    loader: (param) => {
-      const id_ = param.request.id_;
-      console.log(`${this.#datasetInformationUrl}/${id_}`);
-
-      if (id_) {
-        return Promise.resolve(
-          firstValueFrom(
-            this.#http.get<DatasetInformation>(`${this.#datasetInformationUrl}/${id_}`),
-          ),
-        );
-      } else {
-        return Promise.resolve(emptyDatasetInformation);
-      }
+  #datasetInformation = rxResource({
+    request: this.#datasetID,
+    loader: ({ request: id }) => {
+      if (!id) return of(undefined);
+      return this.#http.get<DatasetInformation>(`${this.#datasetInformationUrl}/${id}`);
     },
-  });
+  }).asReadonly();
 
   /**
    * The dataset information (empty while loading) as a signal
@@ -69,7 +58,7 @@ export class DatasetInformationService {
   datasetInformationError: Signal<unknown> = this.#datasetInformation.error;
 
   /**
-   * Load the dataset with the given ID for the dataset information call
+   * Load the dataset information for the given dataset ID
    * @param id Dataset ID
    */
   loadDatasetID(id: string): void {

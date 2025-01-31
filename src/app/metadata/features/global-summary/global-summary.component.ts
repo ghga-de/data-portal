@@ -8,7 +8,7 @@ import { Component, computed, effect, inject } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MetadataStatsService } from '@app/metadata/services/metadataStats.service';
+import { MetadataStatsService } from '@app/metadata/services/metadata-stats.service';
 import { NotificationService } from '@app/shared/services/notification.service';
 import { UnderscoreToSpace } from '@app/shared/utils/underscore-to-space.pipe';
 
@@ -20,8 +20,9 @@ import { UnderscoreToSpace } from '@app/shared/utils/underscore-to-space.pipe';
   imports: [MatCardModule, MatIconModule, UnderscoreToSpace, MatProgressSpinnerModule],
   templateUrl: './global-summary.component.html',
   styleUrl: './global-summary.component.scss',
+  providers: [MetadataStatsService],
 })
-export class GlobalStatsComponent {
+export class GlobalSummaryComponent {
   #notify = inject(NotificationService);
   #metadata = inject(MetadataStatsService);
 

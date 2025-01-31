@@ -7,10 +7,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { signal } from '@angular/core';
-import { GlobalStatsComponent } from './global-summary.component';
+import { GlobalSummaryComponent } from './global-summary.component';
 
 import { metadataGlobalSummary } from '@app/../mocks/data';
-import { MetadataStatsService } from '@app/metadata/services/metadataStats.service';
+import { MetadataStatsService } from '@app/metadata/services/metadata-stats.service';
 
 /**
  * Mock the metadata service as needed for the global stats
@@ -22,18 +22,18 @@ class MockMetadataStatsService {
 }
 
 describe('GlobalStatsComponent', () => {
-  let component: GlobalStatsComponent;
-  let fixture: ComponentFixture<GlobalStatsComponent>;
+  let component: GlobalSummaryComponent;
+  let fixture: ComponentFixture<GlobalSummaryComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GlobalStatsComponent],
+      imports: [GlobalSummaryComponent],
       providers: [
         { provide: MetadataStatsService, useClass: MockMetadataStatsService },
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(GlobalStatsComponent);
+    fixture = TestBed.createComponent(GlobalSummaryComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

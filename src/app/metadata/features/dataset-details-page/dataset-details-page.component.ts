@@ -22,7 +22,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { File } from '@app/metadata/models/dataset-details';
-import { DatasetInformationService } from '@app/metadata/services/datasetInformation.service';
+import { DatasetInformationService } from '@app/metadata/services/dataset-information.service';
 import { MetadataService } from '@app/metadata/services/metadata.service';
 import { StorageAlias } from '@app/metadata/utils/storage-alias.pipe';
 import { NotificationService } from '@app/shared/services/notification.service';
@@ -67,19 +67,15 @@ export class DatasetDetailsPageComponent implements OnInit {
 
   datasetInformation = this.#dins.datasetInformation;
   allFiles: Signal<File[]> = computed(() =>
-    Object.keys(this.datasetDetails())
-      .filter((key: string) => key.endsWith('_files'))
-      .flatMap((key: string) => {
-        const files: Signal<File[]> = computed(
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          () => (this.datasetDetails() as any)[key],
-        );
+    Object.entries(this.datasetDetails())
+      .filter(([key]) => key.endsWith('_files'))
+      .flatMap(([key, files]) => {
         const fileCategory = key.slice(0, -1).replace(' ', '_');
         const fileInfoMap = new Map();
         this.datasetInformation().file_information.forEach((fileInFo) =>
           fileInfoMap.set(fileInFo.accession, fileInFo),
         );
-        return files().map((file: File) => {
+        return files.map((file: File) => {
           const fileInfo = fileInfoMap.get(file.accession);
           file.file_information = fileInfo;
           file.file_category = fileCategory;
@@ -96,19 +92,13 @@ export class DatasetDetailsPageComponent implements OnInit {
     this.#dins.loadDatasetID(this.id());
   }
 
-  location: Location;
-  /**
-   * Constructor to create a new instance of browser history
-   * @param location A Location object
-   */
-  constructor(location: Location) {
-    this.location = location;
-  }
+  location = inject(Location);
+
   /**
    * Function to go back to previous page
    */
   goBack() {
-    this.location.historyGo(-1);
+    this.location.back();
   }
 
   #datasetDetailsErrorEffect = effect(() => {

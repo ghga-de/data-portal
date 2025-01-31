@@ -33,7 +33,7 @@ export const routes: Routes = [
       import(
         './metadata/features/dataset-details-page/dataset-details-page.component'
       ).then((m) => m.DatasetDetailsPageComponent),
-    title: 'Details for Dataset #id',
+    title: 'Dataset Details',
   },
   // routes used in the authentication flows
   {

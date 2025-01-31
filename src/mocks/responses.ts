@@ -57,7 +57,7 @@ export const responses: { [endpoint: string]: ResponseValue } = {
   'GET /api/metldata/artifacts/stats_public/classes/DatasetStats/resources/GHGAD588887989':
     getDatasetSummary('GHGAD588887989'),
 
-  // Get Dataset details (embedded) Metadata Repository Service
+  // Get dataset details (embedded)
   'GET /api/metldata/artifacts/embedded_public/classes/EmbeddedDataset/resources/GHGAD588887987':
     getDatasetDetails('GHGAD588887987'),
   'GET /api/metldata/artifacts/embedded_public/classes/EmbeddedDataset/resources/GHGAD588887988':

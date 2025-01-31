@@ -9,17 +9,17 @@ import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ConfigService } from '@app/shared/services/config.service';
-import { MetadataStatsService } from './metadataStats.service';
+import { DatasetInformationService } from './dataset-information.service';
 
 /**
  * Mock the config service as needed by the metadata service
  */
 class MockConfigService {
-  metldataUrl = 'http://mock.dev/metldata';
+  dinsUrl = 'http://mock.dev/dins';
 }
 
-describe('MetadataStatsService', () => {
-  let service: MetadataStatsService;
+describe('MetadataService', () => {
+  let service: DatasetInformationService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -29,7 +29,7 @@ describe('MetadataStatsService', () => {
         { provide: ConfigService, useClass: MockConfigService },
       ],
     });
-    service = TestBed.inject(MetadataStatsService);
+    service = TestBed.inject(DatasetInformationService);
   });
 
   it('should be created', () => {

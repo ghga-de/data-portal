@@ -9,7 +9,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { metadataGlobalSummary } from '@app/../mocks/data';
-import { MetadataStatsService } from '@app/metadata/services/metadataStats.service';
+import { MetadataStatsService } from '@app/metadata/services/metadata-stats.service';
 import { HomePageComponent } from './home-page.component';
 
 /**

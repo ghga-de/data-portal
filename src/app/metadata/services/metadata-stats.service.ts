@@ -1,13 +1,14 @@
 /**
- * Short module description
+ * Global metadata summary stats service
  * @copyright The GHGA Authors
  * @license Apache-2.0
  */
 
 import { HttpClient } from '@angular/common/http';
-import { computed, inject, Injectable, resource, Signal } from '@angular/core';
+import { computed, inject, Signal } from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
 import { ConfigService } from '@app/shared/services/config.service';
-import { firstValueFrom, map } from 'rxjs';
+import { map } from 'rxjs';
 import {
   BaseGlobalSummary,
   emptyGlobalSummary,
@@ -19,9 +20,6 @@ import {
  *
  * This service provides the functionality to fetch the global metadata summary stats from the server.
  */
-@Injectable({
-  providedIn: 'root',
-})
 export class MetadataStatsService {
   #http = inject(HttpClient);
 
@@ -30,13 +28,11 @@ export class MetadataStatsService {
 
   #globalSummaryUrl = `${this.#metldataUrl}/stats`;
 
-  #globalSummary = resource<GlobalSummary, void>({
+  #globalSummary = rxResource<GlobalSummary, void>({
     loader: () =>
-      firstValueFrom(
-        this.#http
-          .get<BaseGlobalSummary>(this.#globalSummaryUrl)
-          .pipe(map((value) => value.resource_stats)),
-      ),
+      this.#http
+        .get<BaseGlobalSummary>(this.#globalSummaryUrl)
+        .pipe(map((value) => value.resource_stats)),
   }).asReadonly();
 
   /**

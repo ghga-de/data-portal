@@ -5,9 +5,10 @@
  */
 
 import { HttpClient } from '@angular/common/http';
-import { computed, inject, Injectable, resource, signal, Signal } from '@angular/core';
+import { computed, inject, Injectable, signal, Signal } from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
 import { ConfigService } from '@app/shared/services/config.service';
-import { firstValueFrom } from 'rxjs';
+import { of } from 'rxjs';
 import { DatasetDetails, emptyDatasetDetails } from '../models/dataset-details';
 import { DatasetSummary, emptyDatasetSummary } from '../models/dataset-summary';
 
@@ -31,22 +32,11 @@ export class MetadataService {
   #summaryID = signal<string | undefined>(undefined);
   #detailsID = signal<string | undefined>(undefined);
 
-  #datasetSummary = resource({
-    request: computed(() => ({
-      id_: this.#summaryID(),
-    })),
-    loader: (param) => {
-      const id_ = param.request.id_;
-
-      if (id_) {
-        return Promise.resolve(
-          firstValueFrom(
-            this.#http.get<DatasetSummary>(`${this.#datasetSummaryUrl}/${id_}`),
-          ),
-        );
-      } else {
-        return Promise.resolve(emptyDatasetSummary);
-      }
+  #datasetSummary = rxResource({
+    request: this.#summaryID,
+    loader: ({ request: id }) => {
+      if (!id) return of(undefined);
+      return this.#http.get<DatasetSummary>(`${this.#datasetSummaryUrl}/${id}`);
     },
   });
 
@@ -68,34 +58,23 @@ export class MetadataService {
   datasetSummaryError: Signal<unknown> = this.#datasetSummary.error;
 
   /**
-   * Load the dataset with the given ID for the dataset summary call
+   * Load the dataset summary for the given dataset ID
    * @param id Dataset ID
    */
   loadDatasetSummaryID(id: string): void {
     this.#summaryID.set(id);
   }
 
-  #datasetDetails = resource({
-    request: computed(() => ({
-      id_: this.#detailsID(),
-    })),
-    loader: (param) => {
-      const id_ = param.request.id_;
-
-      if (id_) {
-        return Promise.resolve(
-          firstValueFrom(
-            this.#http.get<DatasetDetails>(`${this.#datasetDetailsUrl}/${id_}`),
-          ),
-        );
-      } else {
-        return Promise.resolve(emptyDatasetDetails);
-      }
+  #datasetDetails = rxResource({
+    request: this.#summaryID,
+    loader: ({ request: id }) => {
+      if (!id) return of(undefined);
+      return this.#http.get<DatasetDetails>(`${this.#datasetDetailsUrl}/${id}`);
     },
   });
 
   /**
-   * Load the dataset with the given ID for the dataset details call
+   * Load the dataset details for the given dataset ID
    * @param id Dataset ID
    */
   loadDatasetDetailsID(id: string): void {

@@ -80,8 +80,8 @@ export class ConfigService {
   }
 
   /**
-   * Gets the MASS URL from the config object.
-   * @returns the MASS URL sans end slash
+   * Gets the dataset information service URL from the config object.
+   * @returns the dataset information service URL sans end slash
    */
   get dinsUrl(): string {
     return sansEndSlash(this.#config.dins_url);
