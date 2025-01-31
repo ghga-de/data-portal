@@ -6,20 +6,9 @@
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { metadataGlobalSummary } from '@app/../mocks/data';
-import { MetadataStatsService } from '@app/metadata/services/metadata-stats.service';
+import { GlobalSummaryComponent } from '@app/metadata/features/global-summary/global-summary.component';
 import { HomePageComponent } from './home-page.component';
-
-/**
- * Mock the metadata service as needed for the global stats
- */
-class MockMetadataStatsService {
-  globalSummary = signal(metadataGlobalSummary.resource_stats);
-  globalSummaryError = signal(undefined);
-  globalSummaryIsLoading = signal(false);
-}
 
 describe('HomePageComponent', () => {
   let component: HomePageComponent;
@@ -33,13 +22,16 @@ describe('HomePageComponent', () => {
     await TestBed.configureTestingModule({
       imports: [HomePageComponent],
       providers: [
-        { provide: MetadataStatsService, useClass: MockMetadataStatsService },
         {
           provide: ActivatedRoute,
           useValue: fakeActivatedRoute,
         },
       ],
-    }).compileComponents();
+    })
+      .overrideComponent(HomePageComponent, {
+        remove: { imports: [GlobalSummaryComponent] },
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(HomePageComponent);
     component = fixture.componentInstance;
