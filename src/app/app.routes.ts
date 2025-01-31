@@ -27,6 +27,15 @@ export const routes: Routes = [
       ),
     title: 'Browse Datasets',
   },
+  {
+    path: 'work-package',
+    canActivate: [() => inject(AuthService).guardAuthenticated()],
+    loadComponent: () =>
+      import('./work-packages/features/work-package/work-package.component').then(
+        (m) => m.WorkPackageComponent,
+      ),
+    title: 'Download or Upload Datasets',
+  },
   // routes used in the authentication flows
   {
     path: 'oauth/callback',
