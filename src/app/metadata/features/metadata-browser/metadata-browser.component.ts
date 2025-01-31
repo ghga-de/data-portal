@@ -80,18 +80,14 @@ export class MetadataBrowserComponent implements OnInit {
   #loadSearchTermsFromRoute(): void {
     const { s, q, f, p } = this.#router.routerState.snapshot.root.queryParams;
     this.pageSize = parseInt(p) || DEFAULT_PAGE_SIZE;
-    if (q) {
-      this.searchTerm = q;
-    }
+    this.searchTerm = q || '';
     if (f) {
       const paramVals = this.#facetDataFromString(decodeURIComponent(f));
       if (paramVals) {
         this.facetData = paramVals;
       }
     }
-    if (s) {
-      this.#skip = parseInt(s);
-    }
+    this.#skip = parseInt(s) || DEFAULT_SKIP_VALUE;
     this.#metadataSearch.loadQueryParameters(
       this.#className,
       this.pageSize,
