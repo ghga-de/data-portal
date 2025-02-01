@@ -252,6 +252,32 @@ export const datasetDetails: DatasetDetails = {
       biospecimen_type: 'Test biospeciment type 1',
       biospecimen_tissue_term: 'Test tissue',
     },
+    {
+      accession: 'GHGASA588321316',
+      ega_accession: 'EGASA588321316',
+      description: 'Test Sample 2. Vivamus arcu felis bibendum ut.',
+      name: 'Test anatomical entity 2',
+      case_control_status: 'Test control status 2',
+      individual: {
+        sex: 'Male',
+        phenotypic_features_terms: ['Test phenotypic feature 2'],
+      },
+      biospecimen_type: 'Test biospeciment type 2',
+      biospecimen_tissue_term: 'Test tissue 2',
+    },
+    {
+      accession: 'GHGASA588321317',
+      ega_accession: 'EGASA588321317',
+      description: 'Test Sample 2. Vivamus arcu felis bibendum ut.',
+      name: 'Test anatomical entity 3',
+      case_control_status: 'Test control status 3',
+      individual: {
+        sex: 'Female',
+        phenotypic_features_terms: ['Test phenotypic feature 3'],
+      },
+      biospecimen_type: 'Test biospeciment type 3',
+      biospecimen_tissue_term: 'Test tissue 3',
+    },
   ],
 };
 
