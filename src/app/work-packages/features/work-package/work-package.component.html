@@ -81,7 +81,8 @@
   </div>
   @if (pubKey && !pubKeyError) {
     <button mat-raised-button color="primary" class="mb-4 mt-4" (click)="submit()">
-      Generate an access token for {{ dataset.stage }}
+      <mat-icon>{{ dataset.stage }}</mat-icon> Generate an access token for
+      {{ dataset.stage }}
     </button>
   }
 }

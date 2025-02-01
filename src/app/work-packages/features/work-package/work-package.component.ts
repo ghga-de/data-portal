@@ -12,14 +12,16 @@ import {
   MAT_FORM_FIELD_DEFAULT_OPTIONS,
   MatFormFieldModule,
 } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { Dataset } from '@app/work-packages/models/dataset';
+import { WorkPackage } from '@app/work-packages/models/work-package';
 import { WorkPackageService } from '@app/work-packages/services/work-package.service';
 import { Buffer } from 'buffer';
 
 /**
- * Work package creaton page component
+ * Work package creation page component
  */
 @Component({
   selector: 'app-work-package',
@@ -28,6 +30,7 @@ import { Buffer } from 'buffer';
     MatButtonModule,
     MatCardModule,
     MatFormFieldModule,
+    MatIconModule,
     MatInputModule,
     MatSelectModule,
   ],
@@ -97,6 +100,18 @@ export class WorkPackageComponent {
    * Submit the work package creation form
    */
   submit(): void {
-    // TODO
+    const dataset = this.selectedDataset();
+    const pubKey = this.pubKeyError ? '' : this.pubKey;
+    if (!dataset || !pubKey) return;
+    const fileIds = (this.files || '').split(/[,\s]+/).filter((file) => file);
+    const workPackage: WorkPackage = {
+      dataset_id: dataset.id,
+      file_ids: fileIds,
+      type: dataset.stage,
+      user_public_crypt4gh_key: pubKey,
+    };
+    console.log('Work package to be created:', workPackage);
+    // TODO: call the service to create the work package, then show the created token
+    // and an option to copy it (or show an error if there was a problem)
   }
 }
