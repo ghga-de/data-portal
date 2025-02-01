@@ -31,6 +31,13 @@ import { AddPluralS } from '@app/shared/utils/add-plural-s.pipe';
 import { ParseBytes } from '@app/shared/utils/parse-bytes.pipe';
 import { UnderscoreToSpace } from '@app/shared/utils/underscore-to-space.pipe';
 
+const COLUMNS = {
+  experiments: 'accession ega_accession title description method platform',
+  samples:
+    'accession ega_accession description status sex phenotype biospecimen_type tissue',
+  files: 'accession ega_accession name type origin size location hash',
+};
+
 /**
  * Component for the dataset details page
  */
@@ -99,6 +106,10 @@ export class DatasetDetailsPageComponent implements OnInit {
     }
   });
 
+  experimentsColumns: string[] = COLUMNS.experiments.split(' ');
+  samplesColumns: string[] = COLUMNS.samples.split(' ');
+  filesColumns: string[] = COLUMNS.files.split(' ');
+
   /**
    * On component initialisation
    * - update the title according to the ID
@@ -122,34 +133,4 @@ export class DatasetDetailsPageComponent implements OnInit {
   goBack() {
     this.#location.back();
   }
-
-  // TODO: implement sorting and pagination via MatDataSource using signals
-  experimentsColumns: string[] = [
-    'accession',
-    'ega_accession',
-    'title',
-    'description',
-    'method',
-    'platform',
-  ];
-  samplesColumns: string[] = [
-    'accession',
-    'ega_accession',
-    'description',
-    'status',
-    'sex',
-    'phenotype',
-    'biospecimen_type',
-    'tissue',
-  ];
-  filesColumns: string[] = [
-    'accession',
-    'ega_accession',
-    'name',
-    'type',
-    'origin',
-    'size',
-    'location',
-    'hash',
-  ];
 }
