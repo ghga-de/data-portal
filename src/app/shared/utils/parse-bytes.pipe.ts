@@ -26,8 +26,6 @@ export class ParseBytes implements PipeTransform {
         return String(Math.round(calculatedVal * 100) / 100) + `\u00A0${prefix}B`;
       } else return null;
     });
-    var returnValue = parsedBytes.find((parsing) => parsing !== null);
-    if (returnValue === undefined) returnValue = String(bytes) + '\u00A0B';
-    return returnValue;
+    return parsedBytes.find((parsing) => parsing !== null) || String(bytes) + '\u00A0B';
   }
 }
