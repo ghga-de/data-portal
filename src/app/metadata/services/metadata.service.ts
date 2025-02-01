@@ -66,7 +66,7 @@ export class MetadataService {
   }
 
   #datasetDetails = rxResource({
-    request: this.#summaryID,
+    request: this.#detailsID,
     loader: ({ request: id }) => {
       if (!id) return of(undefined);
       return this.#http.get<DatasetDetails>(`${this.#datasetDetailsUrl}/${id}`);
