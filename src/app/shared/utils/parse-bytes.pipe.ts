@@ -18,7 +18,8 @@ export class ParseBytes implements PipeTransform {
    * @param bytes - Bytes as number
    * @returns Human readable size string, e.g. 5 kB
    */
-  transform(bytes: number): string {
+  transform(bytes: number | null): string {
+    if (bytes === null) return '';
     const prefixes = ['', 'k', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
     let parsedBytes = prefixes.flatMap((prefix, index) => {
       let calculatedVal = bytes / Math.pow(1000, index);

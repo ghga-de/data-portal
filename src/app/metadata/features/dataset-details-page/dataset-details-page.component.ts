@@ -6,23 +6,27 @@
 
 import { Location } from '@angular/common';
 import {
+  AfterViewInit,
   Component,
   computed,
   effect,
   inject,
   input,
   OnInit,
+  QueryList,
   Signal,
+  ViewChild,
+  ViewChildren,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSortModule } from '@angular/material/sort';
-import { MatTableModule } from '@angular/material/table';
+import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { Title } from '@angular/platform-browser';
-import { File } from '@app/metadata/models/dataset-details';
+import { Experiment, File, Sample } from '@app/metadata/models/dataset-details';
 import { DatasetInformationService } from '@app/metadata/services/dataset-information.service';
 import { MetadataService } from '@app/metadata/services/metadata.service';
 import { StorageAlias } from '@app/metadata/utils/storage-alias.pipe';
@@ -59,7 +63,7 @@ const COLUMNS = {
   templateUrl: './dataset-details-page.component.html',
   styleUrl: './dataset-details-page.component.scss',
 })
-export class DatasetDetailsPageComponent implements OnInit {
+export class DatasetDetailsPageComponent implements OnInit, AfterViewInit {
   id = input.required<string>();
   #location = inject(Location);
   #title = inject(Title);
@@ -68,15 +72,18 @@ export class DatasetDetailsPageComponent implements OnInit {
   #dins = inject(DatasetInformationService);
 
   datasetDetails = this.#metadata.datasetDetails;
+  datasetInformation = this.#dins.datasetInformation;
+
   dap = computed(() => this.datasetDetails().data_access_policy);
   dac = computed(() => this.dap().data_access_committee);
   study = computed(() => this.datasetDetails().study);
   publications = computed(() => this.study().publications);
-  experiments = computed(() => this.datasetDetails().experiments);
-  samples = computed(() => this.datasetDetails().samples);
 
-  datasetInformation = this.#dins.datasetInformation;
-  allFiles: Signal<File[]> = computed(() =>
+  #experiments: Signal<Experiment[]> = computed(
+    () => this.datasetDetails().experiments,
+  );
+  #samples: Signal<Sample[]> = computed(() => this.datasetDetails().samples);
+  #files: Signal<File[]> = computed(() =>
     Object.entries(this.datasetDetails())
       .filter(([key]) => key.endsWith('_files'))
       .flatMap(([key, files]) => {
@@ -92,6 +99,29 @@ export class DatasetDetailsPageComponent implements OnInit {
           return { ...file };
         });
       }),
+  );
+
+  numExperiments = computed(() => this.#experiments().length);
+  numSamples = computed(() => this.#samples().length);
+  numFiles = computed(() => this.#files().length);
+
+  experimentsDataSource = new MatTableDataSource<Experiment>([]);
+  samplesDataSource = new MatTableDataSource<Sample>([]);
+  filesDataSource = new MatTableDataSource<File>([]);
+
+  @ViewChild('sortExperiments') sortExperiments!: MatSort;
+  @ViewChild('sortSamples') sortSamples!: MatSort;
+  @ViewChild('sortFiles') sortFiles!: MatSort;
+  @ViewChildren(MatSort) matSorts!: QueryList<MatSort>;
+
+  #updateExperimentsDataSourceEffect = effect(
+    () => (this.experimentsDataSource.data = this.#experiments()),
+  );
+  #updateSamplesDataSourceEffect = effect(
+    () => (this.samplesDataSource.data = this.#samples()),
+  );
+  #updateFilesDataSourceEffect = effect(
+    () => (this.filesDataSource.data = this.#files()),
   );
 
   #datasetDetailsErrorEffect = effect(() => {
@@ -110,6 +140,52 @@ export class DatasetDetailsPageComponent implements OnInit {
   samplesColumns: string[] = COLUMNS.samples.split(' ');
   filesColumns: string[] = COLUMNS.files.split(' ');
 
+  #experimentsSortingDataAccessor = (experiment: Experiment, key: string) => {
+    switch (key) {
+      case 'method':
+        return experiment.experiment_method.name;
+      case 'platform':
+        return experiment.experiment_method.instrument_model;
+      default:
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return experiment[key as keyof Experiment] as any;
+    }
+  };
+
+  #samplesSortingDataAccessor = (sample: Sample, key: string) => {
+    switch (key) {
+      case 'status':
+        return sample.case_control_status;
+      case 'sex':
+        return sample.individual.sex;
+      case 'phenotype':
+        return sample.individual.phenotypic_features_terms.join(', ');
+      case 'tissue':
+        return sample.biospecimen_tissue_term;
+      default:
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return sample[key as keyof Sample] as any;
+    }
+  };
+
+  #filesSortingDataAccessor = (file: File, key: string) => {
+    switch (key) {
+      case 'type':
+        return file.format;
+      case 'origin':
+        return file.file_category;
+      case 'size':
+        return file.file_information?.size;
+      case 'location':
+        return file.file_information?.storage_alias;
+      case 'hash':
+        return file.file_information?.sha256_hash;
+      default:
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return file[key as keyof File] as any;
+    }
+  };
+
   /**
    * On component initialisation
    * - update the title according to the ID
@@ -125,6 +201,24 @@ export class DatasetDetailsPageComponent implements OnInit {
       this.#metadata.loadDatasetDetails(id);
       this.#dins.loadDatasetInformation(id);
     }
+  }
+
+  /**
+   * After the view has been initialised
+   * assign the sorting of the tables to the data sources
+   */
+  ngAfterViewInit() {
+    this.experimentsDataSource.sortingDataAccessor =
+      this.#experimentsSortingDataAccessor;
+    this.samplesDataSource.sortingDataAccessor = this.#samplesSortingDataAccessor;
+    this.filesDataSource.sortingDataAccessor = this.#filesSortingDataAccessor;
+    // We need to wait for the tables to become visible before assigning the sorting.
+    // Note: This would be easier if the tables were their own separate components.
+    this.matSorts.changes.subscribe(() => {
+      if (this.sortExperiments) this.experimentsDataSource.sort = this.sortExperiments;
+      if (this.sortSamples) this.samplesDataSource.sort = this.sortSamples;
+      if (this.sortFiles) this.filesDataSource.sort = this.sortFiles;
+    });
   }
 
   /**

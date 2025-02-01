@@ -12,6 +12,11 @@ describe('ParseBytesPipe', () => {
     expect(pipe).toBeTruthy();
   });
 
+  it('should return an empty string for null input', () => {
+    const pipe = new ParseBytes();
+    expect(pipe.transform(null)).toBe('');
+  });
+
   it('should return 750 B for 750 Bytes', () => {
     const pipe = new ParseBytes();
     const result = pipe.transform(750);

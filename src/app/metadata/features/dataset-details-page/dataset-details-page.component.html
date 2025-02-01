@@ -201,12 +201,17 @@
     <div class="grid grid-cols-1 gap-2">
       <mat-expansion-panel>
         <mat-expansion-panel-header>
-          Experiments Summary ({{ experiments().length }} experiment{{
-            experiments().length | addPluralS
+          Experiments Summary ({{ numExperiments() }} experiment{{
+            numExperiments() | addPluralS
           }})</mat-expansion-panel-header
         ><ng-template matExpansionPanelContent
           ><div class="overflow-auto">
-            <table mat-table [dataSource]="experiments()" matSort>
+            <table
+              mat-table
+              [dataSource]="experimentsDataSource"
+              matSort
+              #sortExperiments="matSort"
+            >
               <ng-container matColumnDef="accession">
                 <th mat-header-cell *matHeaderCellDef class="font-bold" mat-sort-header>
                   Experiment ID
@@ -266,12 +271,17 @@
 
       <mat-expansion-panel>
         <mat-expansion-panel-header>
-          Samples Summary ({{ samples().length }} sample{{
-            samples().length | addPluralS
+          Samples Summary ({{ numSamples() }} sample{{
+            numSamples() | addPluralS
           }})</mat-expansion-panel-header
         ><ng-template matExpansionPanelContent
           ><div class="overflow-auto">
-            <table mat-table [dataSource]="samples()" matSort>
+            <table
+              mat-table
+              [dataSource]="samplesDataSource"
+              matSort
+              #sortSamples="matSort"
+            >
               <ng-container matColumnDef="accession">
                 <th mat-header-cell *matHeaderCellDef class="font-bold" mat-sort-header>
                   Sample ID
@@ -355,12 +365,17 @@
 
       <mat-expansion-panel>
         <mat-expansion-panel-header>
-          Files Summary ({{ allFiles().length }} file{{
-            allFiles().length | addPluralS
+          Files Summary ({{ numFiles() }} file{{
+            numFiles() | addPluralS
           }})</mat-expansion-panel-header
         ><ng-template matExpansionPanelContent
           ><div class="overflow-auto">
-            <table mat-table [dataSource]="allFiles()" matSort>
+            <table
+              mat-table
+              [dataSource]="filesDataSource"
+              matSort
+              #sortFiles="matSort"
+            >
               <ng-container matColumnDef="accession">
                 <th mat-header-cell *matHeaderCellDef class="font-bold" mat-sort-header>
                   File ID
