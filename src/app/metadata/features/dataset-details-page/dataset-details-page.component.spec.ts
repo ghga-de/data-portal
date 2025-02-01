@@ -19,7 +19,7 @@ import { DatasetDetailsPageComponent } from './dataset-details-page.component';
 class MockMetadataService {
   datasetDetails = signal(datasetDetails);
   datasetDetailsError = signal(undefined);
-  loadDatasetDetailsID = () => undefined;
+  loadDatasetDetails = () => undefined;
 }
 
 /**
@@ -28,7 +28,7 @@ class MockMetadataService {
 class MockDatasetInformationService {
   datasetInformation = signal(datasetInformation);
   datasetInformationError = signal(undefined);
-  loadDatasetID = () => undefined;
+  loadDatasetInformation = () => undefined;
 }
 
 describe('DatasetDetailsPageComponent', () => {

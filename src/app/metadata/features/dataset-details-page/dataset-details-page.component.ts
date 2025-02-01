@@ -21,6 +21,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
+import { Title } from '@angular/platform-browser';
 import { File } from '@app/metadata/models/dataset-details';
 import { DatasetInformationService } from '@app/metadata/services/dataset-information.service';
 import { MetadataService } from '@app/metadata/services/metadata.service';
@@ -53,6 +54,8 @@ import { UnderscoreToSpace } from '@app/shared/utils/underscore-to-space.pipe';
 })
 export class DatasetDetailsPageComponent implements OnInit {
   id = input.required<string>();
+  #location = inject(Location);
+  #title = inject(Title);
   #notify = inject(NotificationService);
   #metadata = inject(MetadataService);
   #dins = inject(DatasetInformationService);
@@ -84,23 +87,6 @@ export class DatasetDetailsPageComponent implements OnInit {
       }),
   );
 
-  /**
-   * On component initialisation, load the dataset ID to the injectable services to prepare for the backend queries
-   */
-  ngOnInit(): void {
-    this.#metadata.loadDatasetDetailsID(this.id());
-    this.#dins.loadDatasetID(this.id());
-  }
-
-  location = inject(Location);
-
-  /**
-   * Function to go back to previous page
-   */
-  goBack() {
-    this.location.back();
-  }
-
   #datasetDetailsErrorEffect = effect(() => {
     if (this.#metadata.datasetDetailsError()) {
       this.#notify.showError('Error fetching dataset details.');
@@ -112,6 +98,30 @@ export class DatasetDetailsPageComponent implements OnInit {
       this.#notify.showError('Error fetching dataset file information.');
     }
   });
+
+  /**
+   * On component initialisation
+   * - update the title according to the ID
+   * - request the detail information from the services
+   */
+  ngOnInit(): void {
+    const id = this.id();
+    if (id) {
+      const title = this.#title.getTitle();
+      if (title) {
+        this.#title.setTitle(title.replace('Dataset Details', `Dataset ${id}`));
+      }
+      this.#metadata.loadDatasetDetails(id);
+      this.#dins.loadDatasetInformation(id);
+    }
+  }
+
+  /**
+   * Function to go back to previous page
+   */
+  goBack() {
+    this.#location.back();
+  }
 
   // TODO: implement sorting and pagination via MatDataSource using signals
   experimentsColumns: string[] = [

@@ -61,7 +61,7 @@ export class MetadataService {
    * Load the dataset summary for the given dataset ID
    * @param id Dataset ID
    */
-  loadDatasetSummaryID(id: string): void {
+  loadDatasetSummary(id: string): void {
     this.#summaryID.set(id);
   }
 
@@ -77,7 +77,7 @@ export class MetadataService {
    * Load the dataset details for the given dataset ID
    * @param id Dataset ID
    */
-  loadDatasetDetailsID(id: string): void {
+  loadDatasetDetails(id: string): void {
     this.#detailsID.set(id);
   }
 
