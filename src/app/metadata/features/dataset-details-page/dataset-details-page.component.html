@@ -266,7 +266,19 @@
 
               <tr mat-header-row *matHeaderRowDef="experimentsColumns"></tr>
               <tr mat-row *matRowDef="let row; columns: experimentsColumns"></tr>
-            </table></div></ng-template
+            </table>
+
+            @if (numExperiments() > 10) {
+              <mat-paginator
+                [pageSize]="10"
+                [pageSizeOptions]="[5, 10, 25, 50]"
+                showFirstLastButtons
+                itemsPerPageLabel="Experiments per page"
+                aria-label="Select page of experiments"
+                #experimentsPaginator
+              >
+              </mat-paginator>
+            }</div></ng-template
       ></mat-expansion-panel>
 
       <mat-expansion-panel>
@@ -360,7 +372,18 @@
 
               <tr mat-header-row *matHeaderRowDef="samplesColumns"></tr>
               <tr mat-row *matRowDef="let row; columns: samplesColumns"></tr>
-            </table></div></ng-template
+            </table>
+
+            @if (numSamples() > 10) {
+              <mat-paginator
+                [pageSize]="10"
+                [pageSizeOptions]="[5, 10, 25, 50]"
+                showFirstLastButtons
+                aria-label="Select page of samples"
+                #samplesPaginator
+              >
+              </mat-paginator>
+            }</div></ng-template
       ></mat-expansion-panel>
 
       <mat-expansion-panel>
@@ -446,7 +469,18 @@
 
               <tr mat-header-row *matHeaderRowDef="filesColumns"></tr>
               <tr mat-row *matRowDef="let row; columns: filesColumns"></tr>
-            </table></div></ng-template
+            </table>
+
+            @if (numFiles() > 10) {
+              <mat-paginator
+                [pageSize]="10"
+                [pageSizeOptions]="[5, 10, 25, 50]"
+                showFirstLastButtons
+                aria-label="Select page of files"
+                #filesPaginator
+              >
+              </mat-paginator>
+            }</div></ng-template
       ></mat-expansion-panel>
     </div>
   }

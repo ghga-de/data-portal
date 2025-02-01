@@ -22,6 +22,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -51,14 +52,15 @@ const COLUMNS = {
     MatIconModule,
     MatButtonModule,
     MatChipsModule,
-    UnderscoreToSpace,
     MatTabsModule,
-    MatTableModule,
     MatExpansionModule,
-    AddPluralS,
+    MatTableModule,
+    MatPaginatorModule,
     MatSortModule,
-    ParseBytes,
+    AddPluralS,
     StorageAlias,
+    ParseBytes,
+    UnderscoreToSpace,
   ],
   templateUrl: './dataset-details-page.component.html',
   styleUrl: './dataset-details-page.component.scss',
@@ -113,6 +115,11 @@ export class DatasetDetailsPageComponent implements OnInit, AfterViewInit {
   @ViewChild('sortSamples') sortSamples!: MatSort;
   @ViewChild('sortFiles') sortFiles!: MatSort;
   @ViewChildren(MatSort) matSorts!: QueryList<MatSort>;
+
+  @ViewChild('experimentsPaginator') experimentsPaginator!: MatPaginator;
+  @ViewChild('samplesPaginator') samplesPaginator!: MatPaginator;
+  @ViewChild('filesPaginator') filesPaginator!: MatPaginator;
+  @ViewChildren(MatPaginator) matPaginators!: QueryList<MatPaginator>;
 
   #updateExperimentsDataSourceEffect = effect(
     () => (this.experimentsDataSource.data = this.#experiments()),
@@ -212,12 +219,20 @@ export class DatasetDetailsPageComponent implements OnInit, AfterViewInit {
       this.#experimentsSortingDataAccessor;
     this.samplesDataSource.sortingDataAccessor = this.#samplesSortingDataAccessor;
     this.filesDataSource.sortingDataAccessor = this.#filesSortingDataAccessor;
+    // Note: The following would be easier if the tables were their own components.
     // We need to wait for the tables to become visible before assigning the sorting.
-    // Note: This would be easier if the tables were their own separate components.
     this.matSorts.changes.subscribe(() => {
       if (this.sortExperiments) this.experimentsDataSource.sort = this.sortExperiments;
       if (this.sortSamples) this.samplesDataSource.sort = this.sortSamples;
       if (this.sortFiles) this.filesDataSource.sort = this.sortFiles;
+    });
+    // Similarly for assigning the table paginators
+    this.matPaginators.changes.subscribe(() => {
+      if (this.experimentsPaginator)
+        this.experimentsDataSource.paginator = this.experimentsPaginator;
+      if (this.samplesPaginator)
+        this.samplesDataSource.paginator = this.samplesPaginator;
+      if (this.filesPaginator) this.filesDataSource.paginator = this.filesPaginator;
     });
   }
 
