@@ -7,6 +7,13 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 /**
+ * Note: Using 2^10 as multiplier we should strictly speaking also use
+ * the new binary prefixes. But many uses are not familiar with these.
+ */
+const MULTIPLIER = 1024;
+const PREFIXES = ['', 'k', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
+
+/**
  * Pipe to convert number of bytes to a human-readable format
  */
 @Pipe({
@@ -20,9 +27,8 @@ export class ParseBytes implements PipeTransform {
    */
   transform(bytes: number | null): string {
     if (bytes === null) return '';
-    const prefixes = ['', 'k', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
-    let parsedBytes = prefixes.flatMap((prefix, index) => {
-      let calculatedVal = bytes / Math.pow(1000, index);
+    let parsedBytes = PREFIXES.flatMap((prefix, index) => {
+      let calculatedVal = bytes / Math.pow(MULTIPLIER, index);
       if (calculatedVal < 1000 && calculatedVal >= 0.1) {
         return String(Math.round(calculatedVal * 100) / 100) + `\u00A0${prefix}B`;
       } else return null;
