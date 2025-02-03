@@ -35,6 +35,14 @@ export const routes: Routes = [
       ).then((m) => m.DatasetDetailsPageComponent),
     title: 'Dataset Details',
   },
+  {
+    path: 'profile',
+    loadComponent: () =>
+      import('./portal/features/account/account.component').then(
+        (m) => m.AccountComponent,
+      ),
+    title: 'User Profile',
+  },
   // routes used in the authentication flows
   {
     path: 'oauth/callback',

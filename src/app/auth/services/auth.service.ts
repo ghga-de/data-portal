@@ -110,6 +110,11 @@ export class AuthService {
   fullName = computed<string | undefined>(() => this.user()?.full_name);
 
   /**
+   * Get the email of the current user as a signal
+   */
+  email = computed<string | undefined>(() => this.user()?.email);
+
+  /**
    * Initialize the authentication service
    */
   constructor() {
