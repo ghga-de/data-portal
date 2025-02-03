@@ -161,7 +161,7 @@ export class DatasetDetailsPageComponent implements OnInit, AfterViewInit {
         if (typeof value === 'string' || typeof value === 'number') {
           return value;
         }
-        return undefined;
+        return '';
     }
   };
 
@@ -180,7 +180,7 @@ export class DatasetDetailsPageComponent implements OnInit, AfterViewInit {
         if (typeof value === 'string' || typeof value === 'number') {
           return value;
         }
-        return undefined;
+        return '';
     }
   };
 
@@ -189,19 +189,19 @@ export class DatasetDetailsPageComponent implements OnInit, AfterViewInit {
       case 'type':
         return file.format;
       case 'origin':
-        return file.file_category;
+        return file.file_category ?? '';
       case 'size':
-        return file.file_information?.size;
+        return file.file_information?.size ?? '';
       case 'location':
-        return file.file_information?.storage_alias;
+        return file.file_information?.storage_alias ?? '';
       case 'hash':
-        return file.file_information?.sha256_hash;
+        return file.file_information?.sha256_hash ?? '';
       default:
         const value = file[key as keyof File];
         if (typeof value === 'string' || typeof value === 'number') {
           return value;
         }
-        return undefined;
+        return '';
     }
   };
 
