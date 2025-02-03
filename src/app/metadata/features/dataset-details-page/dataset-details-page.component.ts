@@ -157,8 +157,11 @@ export class DatasetDetailsPageComponent implements OnInit, AfterViewInit {
       case 'platform':
         return experiment.experiment_method.instrument_model;
       default:
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return experiment[key as keyof Experiment] as any;
+        const value = experiment[key as keyof Experiment];
+        if (typeof value === 'string' || typeof value === 'number') {
+          return value;
+        }
+        return undefined;
     }
   };
 
@@ -173,8 +176,11 @@ export class DatasetDetailsPageComponent implements OnInit, AfterViewInit {
       case 'tissue':
         return sample.biospecimen_tissue_term;
       default:
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return sample[key as keyof Sample] as any;
+        const value = sample[key as keyof Sample];
+        if (typeof value === 'string' || typeof value === 'number') {
+          return value;
+        }
+        return undefined;
     }
   };
 
@@ -191,8 +197,11 @@ export class DatasetDetailsPageComponent implements OnInit, AfterViewInit {
       case 'hash':
         return file.file_information?.sha256_hash;
       default:
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return file[key as keyof File] as any;
+        const value = file[key as keyof File];
+        if (typeof value === 'string' || typeof value === 'number') {
+          return value;
+        }
+        return undefined;
     }
   };
 
