@@ -270,8 +270,8 @@
 
             @if (numExperiments() > 10) {
               <mat-paginator
-                [pageSize]="10"
-                [pageSizeOptions]="[5, 10, 25, 50]"
+                [pageSize]="defaultTablePageSize"
+                [pageSizeOptions]="tablePageSizeOptions"
                 showFirstLastButtons
                 itemsPerPageLabel="Experiments per page"
                 aria-label="Select page of experiments"
@@ -376,8 +376,8 @@
 
             @if (numSamples() > 10) {
               <mat-paginator
-                [pageSize]="10"
-                [pageSizeOptions]="[5, 10, 25, 50]"
+                [pageSize]="defaultTablePageSize"
+                [pageSizeOptions]="tablePageSizeOptions"
                 showFirstLastButtons
                 aria-label="Select page of samples"
                 #samplesPaginator
@@ -473,8 +473,8 @@
 
             @if (numFiles() > 10) {
               <mat-paginator
-                [pageSize]="10"
-                [pageSizeOptions]="[5, 10, 25, 50]"
+                [pageSize]="defaultTablePageSize"
+                [pageSizeOptions]="tablePageSizeOptions"
                 showFirstLastButtons
                 aria-label="Select page of files"
                 #filesPaginator

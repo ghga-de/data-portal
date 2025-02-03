@@ -111,6 +111,9 @@ export class DatasetDetailsPageComponent implements OnInit, AfterViewInit {
   samplesDataSource = new MatTableDataSource<Sample>([]);
   filesDataSource = new MatTableDataSource<File>([]);
 
+  defaultTablePageSize = 10;
+  tablePageSizeOptions = [5, 10, 25, 50];
+
   @ViewChild('sortExperiments') sortExperiments!: MatSort;
   @ViewChild('sortSamples') sortSamples!: MatSort;
   @ViewChild('sortFiles') sortFiles!: MatSort;
