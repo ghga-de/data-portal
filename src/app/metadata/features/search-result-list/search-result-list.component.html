@@ -4,7 +4,13 @@
 @if (error) {
   <p class="text-red-500">Cannot browse datasets. Please try again later.</p>
 } @else if (loading()) {
-  ... Loading ...
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+
+  <mat-accordion>
+    @for (stencil of stencils(); track stencil) {
+      <mat-expansion-panel hideToggle></mat-expansion-panel>
+    }
+  </mat-accordion>
 } @else {
   <mat-accordion multi>
     @for (hit of results().hits; track hit.id_) {
@@ -15,7 +21,8 @@
   <mat-paginator
     (page)="handlePageEvent($event)"
     [length]="numResults()"
-    [pageSize]="pageSize"
+    [pageIndex]="pageIndex()"
+    [pageSize]="pageSize()"
     [pageSizeOptions]="pageSizeOptions"
     aria-label="Select page"
   >
