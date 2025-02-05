@@ -11,13 +11,20 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MetadataStatsService } from '@app/metadata/services/metadata-stats.service';
 import { NotificationService } from '@app/shared/services/notification.service';
 import { UnderscoreToSpace } from '@app/shared/utils/underscore-to-space.pipe';
+import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
 
 /**
  * Component for the global summary cards
  */
 @Component({
   selector: 'app-global-stats',
-  imports: [MatCardModule, MatIconModule, UnderscoreToSpace, MatProgressSpinnerModule],
+  imports: [
+    MatCardModule,
+    MatIconModule,
+    UnderscoreToSpace,
+    MatProgressSpinnerModule,
+    NgxSkeletonLoaderComponent,
+  ],
   templateUrl: './global-summary.component.html',
   styleUrl: './global-summary.component.scss',
   providers: [MetadataStatsService],
