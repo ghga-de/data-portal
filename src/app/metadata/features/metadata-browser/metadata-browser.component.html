@@ -10,7 +10,7 @@
             </button></mat-chip
           >
         }
-        @for (facet of searchResults().facets; track facet.key) {
+        @for (facet of facets(); track facet.key) {
           @if (lastSearchFilterFacets()[facet.key]) {
             @for (option of facet.options; track option.value) {
               @if (lastSearchFilterFacets()[facet.key].indexOf(option.value) !== -1) {
@@ -26,9 +26,7 @@
         }
       </mat-chip-set>
       <div class="col-span-2 col-start-11">
-        <mat-chip class="float-right m-1"
-          >Total Datasets: {{ searchResults().count }}</mat-chip
-        >
+        <mat-chip class="float-right m-1">Total Datasets: {{ numResults() }}</mat-chip>
       </div>
     </div>
   </div>
@@ -73,26 +71,6 @@
     </div>
   </aside>
   <div class="col-span-9 col-start-4">
-    <div class="mb-4 grid w-full grid-cols-12 bg-primary px-6 py-2 text-white">
-      <span class="col-span-2">Dataset ID</span><span class="col-span-10">Title</span>
-    </div>
-    @if (searchIsLoading()) {
-      ... Loading ...
-    } @else {
-      <mat-accordion multi>
-        @for (hit of searchResults().hits; track hit.id_) {
-          <app-dataset-expansion-panel [hit]="hit" />
-        }
-      </mat-accordion>
-
-      <mat-paginator
-        (page)="handlePageEvent($event)"
-        [length]="length()"
-        [pageSize]="pageSize"
-        [pageSizeOptions]="[5, 10, 25, 50]"
-        aria-label="Select page"
-      >
-      </mat-paginator>
-    }
+    <app-search-result-list (paginate)="paginate($event)"></app-search-result-list>
   </div>
 </div>

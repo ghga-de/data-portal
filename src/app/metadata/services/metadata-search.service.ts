@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, Signal, computed, inject, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { ConfigService } from '@app/shared/services/config.service';
-import { of } from 'rxjs';
+import { delay, of } from 'rxjs';
 import { FacetFilterSetting } from '../models/facet-filter';
 import { SearchResults, emptySearchResults } from '../models/search-results';
 
@@ -55,7 +55,7 @@ export class MetadataSearchService {
   #searchResults = rxResource<SearchResults | undefined, string>({
     request: this.#massQueryUrl,
     loader: ({ request: url }) =>
-      url ? this.#http.get<SearchResults>(url) : of(undefined),
+      url ? this.#http.get<SearchResults>(url).pipe(delay(5000)) : of(undefined),
   });
 
   /**

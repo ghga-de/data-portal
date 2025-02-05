@@ -1,0 +1,23 @@
+<div class="mb-4 grid w-full grid-cols-12 bg-primary px-6 py-2 text-white">
+  <span class="col-span-2">Dataset ID</span><span class="col-span-10">Title</span>
+</div>
+@if (error) {
+  <p class="text-red-500">Cannot browse datasets. Please try again later.</p>
+} @else if (loading()) {
+  ... Loading ...
+} @else {
+  <mat-accordion multi>
+    @for (hit of results().hits; track hit.id_) {
+      <app-dataset-expansion-panel [hit]="hit" />
+    }
+  </mat-accordion>
+
+  <mat-paginator
+    (page)="handlePageEvent($event)"
+    [length]="numResults()"
+    [pageSize]="pageSize"
+    [pageSizeOptions]="pageSizeOptions"
+    aria-label="Select page"
+  >
+  </mat-paginator>
+}
