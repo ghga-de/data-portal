@@ -165,7 +165,6 @@ export class MetadataBrowserComponent implements OnInit {
   paginate(e: PageEvent) {
     this.#pageSize = e.pageSize;
     this.#skip = e.pageSize * e.pageIndex;
-    console.log('PAGINIERE IM parent', e);
     this.#performSearch();
   }
 

@@ -11,7 +11,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { searchResults } from '@app/../mocks/data';
 import { MetadataSearchService } from '../../services/metadata-search.service';
-import { DatasetExpansionPanelComponent } from '../dataset-expansion-panel/dataset-expansion-panel.component';
+import { DatasetExpansionPanelComponent } from '../search-result/search-result.component';
 import { MetadataBrowserComponent } from './metadata-browser.component';
 
 /**
