@@ -4,11 +4,18 @@
 @if (error) {
   <p class="text-red-500">Cannot browse datasets. Please try again later.</p>
 } @else if (loading()) {
-  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  <mat-progress-bar mode="indeterminate" class="mb-6"></mat-progress-bar>
 
   <mat-accordion>
     @for (stencil of stencils(); track stencil) {
-      <mat-expansion-panel hideToggle></mat-expansion-panel>
+      <div class="mb-4">
+        <mat-expansion-panel hideToggle>
+          <mat-expansion-panel-header class="h24- w-full">
+            <br />
+            <br />
+          </mat-expansion-panel-header>
+        </mat-expansion-panel>
+      </div>
     }
   </mat-accordion>
 } @else {
