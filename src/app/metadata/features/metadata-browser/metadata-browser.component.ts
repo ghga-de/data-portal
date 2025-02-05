@@ -13,6 +13,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { PageEvent } from '@angular/material/paginator';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FacetFilterSetting } from '@app/metadata/models/facet-filter';
 import { MetadataSearchService } from '@app/metadata/services/metadata-search.service';
@@ -35,6 +36,7 @@ const DEFAULT_SKIP_VALUE = 0;
     MatIconModule,
     MatInputModule,
     MatButtonModule,
+    MatProgressSpinnerModule,
     ReactiveFormsModule,
     FacetActivityPipe,
     SearchResultListComponent,
@@ -61,6 +63,7 @@ export class MetadataBrowserComponent implements OnInit {
   lastSearchFilterFacets = this.#metadataSearch.facets;
   facets = computed(() => this.#metadataSearch.searchResults().facets);
   numResults = computed(() => this.#metadataSearch.searchResults().count);
+  loading = computed(() => this.#metadataSearch.searchResultsAreLoading());
 
   /**
    * On init, define the default values of the search variables

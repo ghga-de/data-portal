@@ -1,7 +1,7 @@
 <div class="grid grid-cols-12 grid-rows-none gap-x-5">
   <div class="col-span-9 col-start-4">
-    <div class="inline-block grid w-full grid-cols-12 pb-4">
-      <mat-chip-set aria-label="search and filters" class="col-span-10">
+    <div class="flex w-full justify-between pb-4">
+      <mat-chip-set aria-label="search and filters">
         @if (lastSearchQuery() !== '') {
           <mat-chip (removed)="clearSearchQuery()">
             Keyword: {{ lastSearchQuery() }}
@@ -25,8 +25,22 @@
           }
         }
       </mat-chip-set>
-      <div class="col-span-2 col-start-11">
-        <mat-chip class="float-right m-1">Total Datasets: {{ numResults() }}</mat-chip>
+      <div>
+        <mat-chip>
+          <div class="flex content-around">
+            <span class="mr-1">Total Datasets:</span>
+
+            @if (loading()) {
+              <mat-spinner
+                class="inline-block"
+                class="mt-0.5"
+                [diameter]="15"
+              ></mat-spinner>
+            } @else {
+              <span>{{ numResults() }}</span>
+            }
+          </div>
+        </mat-chip>
       </div>
     </div>
   </div>
