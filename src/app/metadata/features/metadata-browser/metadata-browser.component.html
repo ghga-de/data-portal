@@ -76,8 +76,13 @@
     <div class="mb-4 grid w-full grid-cols-12 bg-primary px-6 py-2 text-white">
       <span class="col-span-2">Dataset ID</span><span class="col-span-10">Title</span>
     </div>
+
     @if (searchIsLoading()) {
-      ... Loading ...
+      <mat-accordion multi>
+        <app-dataset-expansion-panel-skeleton />
+        <app-dataset-expansion-panel-skeleton />
+        <app-dataset-expansion-panel-skeleton />
+      </mat-accordion>
     } @else {
       <mat-accordion multi>
         @for (hit of searchResults().hits; track hit.id_) {
@@ -91,8 +96,7 @@
         [pageSize]="pageSize"
         [pageSizeOptions]="[5, 10, 25, 50]"
         aria-label="Select page"
-      >
-      </mat-paginator>
+      ></mat-paginator>
     }
   </div>
 </div>

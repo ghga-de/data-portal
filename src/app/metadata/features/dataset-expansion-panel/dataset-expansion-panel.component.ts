@@ -9,12 +9,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterLink } from '@angular/router';
 import { Hit } from '@app/metadata/models/search-results';
 import { MetadataService } from '@app/metadata/services/metadata.service';
 import { NotificationService } from '@app/shared/services/notification.service';
-import { AddPluralS } from '@app/shared/utils/add-plural-s.pipe';
-import { UnderscoreToSpace } from '@app/shared/utils/underscore-to-space.pipe';
+import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
+import {
+  DatasetExpansionPanelContentComponent,
+  DatasetExpansionPanelContentSkeletonComponent,
+} from '../dataset-expansion-panel-content/dataset-expansion-panel-content.component';
 
 /**
  * Component for the expansion panel for each dataset found in the search results
@@ -26,9 +28,7 @@ import { UnderscoreToSpace } from '@app/shared/utils/underscore-to-space.pipe';
     MatChipsModule,
     MatIconModule,
     MatButtonModule,
-    UnderscoreToSpace,
-    AddPluralS,
-    RouterLink,
+    DatasetExpansionPanelContentComponent,
   ],
   templateUrl: './dataset-expansion-panel.component.html',
   styleUrl: './dataset-expansion-panel.component.scss',
@@ -67,3 +67,18 @@ export class DatasetExpansionPanelComponent {
     }
   });
 }
+
+/**
+ * A skeleton for the component above. This is shown as a loading state.
+ */
+@Component({
+  selector: 'app-dataset-expansion-panel-skeleton',
+  imports: [
+    MatExpansionModule,
+    NgxSkeletonLoaderModule,
+    DatasetExpansionPanelContentSkeletonComponent,
+  ],
+  templateUrl: './dataset-expansion-panel.skeleton.component.html',
+  styleUrl: './dataset-expansion-panel.component.scss',
+})
+export class DatasetExpansionPanelSkeletonComponent {}

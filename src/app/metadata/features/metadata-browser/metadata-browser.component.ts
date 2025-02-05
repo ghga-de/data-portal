@@ -19,7 +19,10 @@ import { FacetFilterSetting } from '@app/metadata/models/facet-filter';
 import { MetadataSearchService } from '@app/metadata/services/metadata-search.service';
 import { FacetActivityPipe } from '@app/metadata/utils/facet-activity.pipe';
 import { NotificationService } from '@app/shared/services/notification.service';
-import { DatasetExpansionPanelComponent } from '../dataset-expansion-panel/dataset-expansion-panel.component';
+import {
+  DatasetExpansionPanelComponent,
+  DatasetExpansionPanelSkeletonComponent,
+} from '../dataset-expansion-panel/dataset-expansion-panel.component';
 
 const DEFAULT_PAGE_SIZE = 10;
 const DEFAULT_SKIP_VALUE = 0;
@@ -41,6 +44,7 @@ const DEFAULT_SKIP_VALUE = 0;
     MatButtonModule,
     ReactiveFormsModule,
     FacetActivityPipe,
+    DatasetExpansionPanelSkeletonComponent,
   ],
   templateUrl: './metadata-browser.component.html',
   styleUrl: './metadata-browser.component.scss',

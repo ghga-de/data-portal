@@ -11,7 +11,7 @@ import { signal } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { datasetSummary, searchResults } from '@app/../mocks/data';
 import { MetadataService } from '@app/metadata/services/metadata.service';
-import { DatasetExpansionPanelComponent } from './dataset-expansion-panel.component';
+import { DatasetExpansionPanelContentComponent } from './dataset-expansion-panel-content.component';
 
 /**
  * Mock the metadata service as needed for the dataset summary
@@ -21,13 +21,13 @@ class MockMetadataService {
   datasetSummaryError = signal(undefined);
 }
 
-describe('DatasetExpansionPanelComponent', () => {
-  let component: DatasetExpansionPanelComponent;
-  let fixture: ComponentFixture<DatasetExpansionPanelComponent>;
+describe('DatasetExpansionPanelContentComponent', () => {
+  let component: DatasetExpansionPanelContentComponent;
+  let fixture: ComponentFixture<DatasetExpansionPanelContentComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DatasetExpansionPanelComponent],
+      imports: [DatasetExpansionPanelContentComponent],
       providers: [
         { provide: MetadataService, useClass: MockMetadataService },
         RouterModule,
@@ -40,7 +40,7 @@ describe('DatasetExpansionPanelComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(DatasetExpansionPanelComponent);
+    fixture = TestBed.createComponent(DatasetExpansionPanelContentComponent);
     component = fixture.componentInstance;
     fixture.componentRef.setInput('hit', searchResults.hits.at(0));
     await fixture.whenStable();
