@@ -10,7 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '@app/auth/services/auth.service';
 
 /**
- * This Component shows data about the current user and allows for modification of the profile (via child components).
+ * This Component shows data about the current user and allows managing their IVAs.
  */
 @Component({
   selector: 'app-account',

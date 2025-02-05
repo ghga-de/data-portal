@@ -47,13 +47,13 @@ export const routes: Routes = [
     title: 'Download or Upload Datasets',
   },
   {
-    path: 'profile',
+    path: 'account',
     canActivate: [() => inject(AuthService).guardAuthenticated()],
     loadComponent: () =>
       import('./portal/features/account/account.component').then(
         (m) => m.AccountComponent,
       ),
-    title: 'User Profile',
+    title: 'User Account',
   },
   // routes used in the authentication flows
   {
