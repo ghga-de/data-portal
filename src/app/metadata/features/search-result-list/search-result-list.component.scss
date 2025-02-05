@@ -2,7 +2,7 @@
 
 mat-expansion-panel {
   margin-bottom: 1em;
-  animation: backgroundColorAnimation 1s infinite;
+  animation: backgroundColorAnimation 2s infinite;
 
   @include mat.expansion-overrides(
     (
