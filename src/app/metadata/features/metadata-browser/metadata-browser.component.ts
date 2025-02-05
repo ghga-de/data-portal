@@ -19,6 +19,7 @@ import { FacetFilterSetting } from '@app/metadata/models/facet-filter';
 import { MetadataSearchService } from '@app/metadata/services/metadata-search.service';
 import { FacetActivityPipe } from '@app/metadata/utils/facet-activity.pipe';
 import { NotificationService } from '@app/shared/services/notification.service';
+import { StencilComponent } from '@app/shared/ui/stencil/stencil/stencil.component';
 import { SearchResultListComponent } from '../search-result-list/search-result-list.component';
 
 const DEFAULT_PAGE_SIZE = 10;
@@ -40,6 +41,7 @@ const DEFAULT_SKIP_VALUE = 0;
     ReactiveFormsModule,
     FacetActivityPipe,
     SearchResultListComponent,
+    StencilComponent,
   ],
   templateUrl: './metadata-browser.component.html',
   styleUrl: './metadata-browser.component.scss',
