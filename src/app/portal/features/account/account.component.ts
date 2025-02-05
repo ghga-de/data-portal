@@ -6,6 +6,7 @@
 
 import { Component, inject } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '@app/auth/services/auth.service';
 
@@ -14,7 +15,7 @@ import { AuthService } from '@app/auth/services/auth.service';
  */
 @Component({
   selector: 'app-account',
-  imports: [MatCardModule, MatIconModule],
+  imports: [MatCardModule, MatIconModule, MatChipsModule],
   templateUrl: './account.component.html',
   styleUrl: './account.component.scss',
 })

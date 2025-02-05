@@ -115,6 +115,11 @@ export class AuthService {
   email = computed<string | undefined>(() => this.user()?.email);
 
   /**
+   * Get the role of the current user as a signal
+   */
+  role = computed<string | undefined>(() => this.user()?.role);
+
+  /**
    * Initialize the authentication service
    */
   constructor() {

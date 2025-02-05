@@ -1,7 +1,14 @@
 <h1 class="text-center">
-  <span class="text-3xl">User Account</span><br />
-  <span class="text-3xl">{{ auth.fullName() }}</span>
+  <span class="text-3xl">User Account</span>
 </h1>
+<h2>
+  <span class="align-middle text-2xl"
+    >{{ auth.fullName() }}
+    @if (auth.role() === 'data_steward') {
+      <mat-chip> Data Steward </mat-chip>
+    }
+  </span>
+</h2>
 
 <mat-card appearance="outlined" class="my-4 min-h-56 p-2 text-primary">
   <mat-card-header>
