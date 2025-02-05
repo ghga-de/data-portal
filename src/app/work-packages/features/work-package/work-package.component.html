@@ -1,22 +1,25 @@
+#
 <h1>Download or upload datasets</h1>
 @if (tokenIsLoading()) {
-  <p>Creating your {{ action() }} token...</p>
+  <p>Creating your {{ tokenAction() }} token...</p>
 } @else if (tokenHasError()) {
   <p class="font-bold text-red-600">
-    Unfortunately, your {{ action() }} token could not be created.
+    Unfortunately, your {{ tokenAction() }} token could not be created.
   </p>
   <p>
     Please <a routerLink="." (click)="reset()">try again</a> later or
     <a href="https://www.ghga.de/about-us/contact">contact us</a> for support.
   </p>
 } @else if (token()) {
-  <p class="font-bold text-green-600">Your {{ action() }} token has been created.</p>
+  <p class="font-bold text-green-600">
+    Your {{ tokenAction() }} token has been created.
+  </p>
   <mat-card appearance="raised" class="mb-4">
     <mat-card-content>
       <button mat-fab color="primary" class="float-right" (click)="copyToken()">
         <mat-icon>content_copy</mat-icon>
       </button>
-      <p>Please use the following token to {{ action() }} the dataset:</p>
+      <p>Please use the following token to {{ tokenAction() }} the dataset:</p>
       <pre class="mb-3 text-green-900">{{ token() }}</pre>
       <p>Make sure to copy the token now as you will not be able to see this again!</p>
     </mat-card-content>

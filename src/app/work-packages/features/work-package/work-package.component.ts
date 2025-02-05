@@ -58,7 +58,7 @@ export class WorkPackageComponent {
 
   selectedDataset = signal<Dataset | undefined>(undefined);
 
-  action = computed<'upload' | 'download' | 'access'>(
+  tokenAction = computed<'upload' | 'download' | 'access'>(
     () => this.selectedDataset()?.stage ?? 'access',
   );
 
