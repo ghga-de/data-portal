@@ -20,7 +20,7 @@
   }
   <p><strong>Full title:</strong> {{ summary().title }}</p>
   <p><strong>Description:</strong> {{ summary().description }}</p>
-  @if (summary().types && summary().types !== []) {
+  @if (summary().types.length) {
     <p>
       <strong>Types: </strong>
       @for (type of summary().types; track type) {
@@ -59,7 +59,7 @@
             <strong>{{ samplesSummary().count }}</strong> Sample{{
               samplesSummary().count | addPluralS
             }}
-            @if (samplesSex() !== []) {
+            @if (samplesSex().length) {
               (Sex:
               @for (sex of samplesSex(); track sex.value; let last = $last) {
                 {{ sex.count }} {{ sex.value }}{{ last ? ')' : ', ' }}
