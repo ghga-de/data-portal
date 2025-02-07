@@ -1,5 +1,5 @@
 /**
- * Component for the individual expansion panels'content for the metadata browser
+ * Component for the individual expansion panels' content for the metadata browser
  * @copyright The GHGA Authors
  * @license Apache-2.0
  */
