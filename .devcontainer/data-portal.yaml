@@ -19,3 +19,5 @@ wps_url: /api/wps
 
 oidc_client_id: ghga-dev-client
 oidc_authority_url: https://login.aai.lifescience-ri.eu/oidc/
+
+ribbon_text: 'Development v$v'
