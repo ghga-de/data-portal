@@ -1,0 +1,9 @@
+@if (isLoggedIn()) {
+  <button mat-icon-button (click)="onLogout()" aria-label="Logout">
+    <mat-icon>logout</mat-icon>
+  </button>
+} @else {
+  <button mat-icon-button (click)="onLogin()" aria-label="Login">
+    <mat-icon>login</mat-icon>
+  </button>
+}
