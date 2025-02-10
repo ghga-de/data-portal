@@ -1,9 +1,69 @@
 @if (isLoggedIn()) {
-  <button mat-icon-button (click)="onLogout()" aria-label="Logout">
+  <button
+    mat-icon-button
+    [matMenuTriggerFor]="logoutMenu"
+    aria-label="Logout"
+    matTooltip="Log out from the GHGA portal"
+  >
     <mat-icon>logout</mat-icon>
   </button>
 } @else {
-  <button mat-icon-button (click)="onLogin()" aria-label="Login">
+  <button
+    mat-icon-button
+    [matMenuTriggerFor]="loginMenu"
+    aria-label="Login"
+    matTooltip="Log in to the GHGA portal"
+  >
     <mat-icon>login</mat-icon>
   </button>
 }
+<mat-menu #loginMenu="matMenu" class="p-3">
+  <h2>Login</h2>
+  <p>
+    You can browse our datasets without an account, but if you wish to access research
+    data, you must log in to the portal via LS Login.
+  </p>
+  <p class="mb-4">
+    LS Login lets you authenticate using your existing accounts at third parties (your
+    home university, research institute or a commercial service) and link it to your LS
+    ID. Alternatively, you can also activate an LS account with username and password.
+  </p>
+  <button (click)="onLogin()" mat-menu-item matTooltip="Log in via LS Login">
+    <mat-icon>login</mat-icon>
+    <img src="assets/images/ls-login.png" alt="LS Login" />
+  </button>
+</mat-menu>
+<mat-menu #logoutMenu="matMenu" class="p-3">
+  @if (isAuthenticated()) {
+    <h4>Hello, {{ fullName() || 'User' }}!</h4>
+    @if (roleName()) {
+      <p>You are logged in as {{ roleName() }}.</p>
+    }
+    <button (click)="gotoAccount()" mat-menu-item>
+      <mat-icon>account_circle</mat-icon>
+      <span>Your GHGA account page</span>
+    </button>
+    <button (click)="manageLsLogin()" mat-menu-item>
+      <mat-icon>open_in_new</mat-icon>
+      <span>Manage LS Login account</span>
+    </button>
+    <button (click)="onLogout()" mat-menu-item>
+      <mat-icon>logout</mat-icon>
+      <span>Log out</span>
+    </button>
+  } @else {
+    <h2>Logout</h2>
+    <p>
+      You need to complete your {{ ongoingProcess() }} with the GHGA Data Portal before
+      you can start using your account.
+    </p>
+    <button (click)="continue()" mat-menu-item>
+      <mat-icon>arrow_forward</mat-icon>
+      <span>Complete {{ ongoingProcess() }} </span>
+    </button>
+    <button (click)="onLogout()" mat-menu-item>
+      <mat-icon>logout</mat-icon>
+      <span>Cancel and log out</span>
+    </button>
+  }
+</mat-menu>

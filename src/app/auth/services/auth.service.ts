@@ -30,7 +30,7 @@ import {
   of,
   timeout,
 } from 'rxjs';
-import { LoginState, User, UserBasicData } from '../models/user';
+import { LoginState, RoleNames, User, UserBasicData } from '../models/user';
 import { CsrfService } from './csrf.service';
 
 /**
@@ -118,6 +118,13 @@ export class AuthService {
    * Get the role of the current user as a signal
    */
   role = computed<string | undefined>(() => this.user()?.role);
+
+  /**
+   * Get the readable name of the role of the current user as a signal
+   */
+  roleName = computed<string | undefined>(() =>
+    this.role() ? RoleNames[this.role() as keyof typeof RoleNames] : undefined,
+  );
 
   /**
    * Initialize the authentication service

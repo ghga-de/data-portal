@@ -4,11 +4,16 @@
  * @license Apache-2.0
  */
 
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { Router } from '@angular/router';
 import { AuthService } from '@app/auth/services/auth.service';
+
+const LS_LOGIN_ACCOUNT_URL = 'https://profile.aai.lifescience-ri.eu/profile';
 
 /**
  * Account button component
@@ -17,25 +22,65 @@ import { AuthService } from '@app/auth/services/auth.service';
  */
 @Component({
   selector: 'app-account-button',
-  imports: [MatIconModule, MatButtonModule],
+  imports: [MatIconModule, MatButtonModule, MatMenuModule, MatTooltipModule],
   templateUrl: './account-button.component.html',
   styleUrl: './account-button.component.scss',
 })
 export class AccountButtonComponent {
-  #authService = inject(AuthService);
-  isLoggedIn = this.#authService.isLoggedIn;
+  #router = inject(Router);
+  #auth = inject(AuthService);
+  isLoggedIn = this.#auth.isLoggedIn;
+  isAuthenticated = this.#auth.isAuthenticated;
+  sessionState = this.#auth.sessionState;
+  fullName = this.#auth.fullName;
+  roleName = this.#auth.roleName;
 
   /**
    * User login
    */
   onLogin(): void {
-    this.#authService.login();
+    this.#auth.login();
   }
 
   /**
    * User logout
    */
   onLogout(): void {
-    this.#authService.logout();
+    this.#auth.logout();
+  }
+
+  /**
+   * Continue ongoing authentication process.
+   * We don't actually need to do anything here.
+   */
+  continue(): void {}
+
+  /**
+   * Get ongoing process when user is logged in with 1st factor, but not with 2nd.
+   * @returns the name of the ongoing process
+   */
+  ongoingProcess = computed(() => {
+    switch (this.sessionState()) {
+      case 'NeedsRegistration':
+        return 'registration';
+      case 'NeedsReRegistration':
+        return 're-registration';
+      default:
+        return 'two-factor authentication setup';
+    }
+  });
+
+  /**
+   * Navigate to the account page
+   */
+  gotoAccount(): void {
+    this.#router.navigate(['/account']);
+  }
+
+  /**
+   * Open the (external) LS login page
+   */
+  manageLsLogin(): void {
+    window.open(LS_LOGIN_ACCOUNT_URL, '_blank');
   }
 }
