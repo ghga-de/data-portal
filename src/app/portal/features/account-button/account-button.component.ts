@@ -12,9 +12,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import { AuthService } from '@app/auth/services/auth.service';
+import { ConfigService } from '@app/shared/services/config.service';
 import { getInitials } from '@app/shared/utils/initials';
-
-const LS_LOGIN_ACCOUNT_URL = 'https://profile.aai.lifescience-ri.eu/profile';
 
 /**
  * Account button component
@@ -29,6 +28,7 @@ const LS_LOGIN_ACCOUNT_URL = 'https://profile.aai.lifescience-ri.eu/profile';
 })
 export class AccountButtonComponent {
   #router = inject(Router);
+  #config = inject(ConfigService);
   #auth = inject(AuthService);
   #user = this.#auth.user;
   isLoggedIn = this.#auth.isLoggedIn;
@@ -88,6 +88,6 @@ export class AccountButtonComponent {
    * Open the (external) LS login page
    */
   manageLsLogin(): void {
-    window.open(LS_LOGIN_ACCOUNT_URL, '_blank');
+    window.open(this.#config.oidcAccountUrl, '_blank');
   }
 }
