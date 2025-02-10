@@ -8,3 +8,10 @@ button {
     )
   );
 }
+
+.with-initials {
+  background-color: var(--mat-sys-tertiary);
+  padding: 0;
+  padding-top: 1px;
+  font-size: 18px;
+}

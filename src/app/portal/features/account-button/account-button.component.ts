@@ -12,6 +12,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import { AuthService } from '@app/auth/services/auth.service';
+import { getInitials } from '@app/shared/utils/initials';
 
 const LS_LOGIN_ACCOUNT_URL = 'https://profile.aai.lifescience-ri.eu/profile';
 
@@ -29,11 +30,17 @@ const LS_LOGIN_ACCOUNT_URL = 'https://profile.aai.lifescience-ri.eu/profile';
 export class AccountButtonComponent {
   #router = inject(Router);
   #auth = inject(AuthService);
+  #user = this.#auth.user;
   isLoggedIn = this.#auth.isLoggedIn;
   isAuthenticated = this.#auth.isAuthenticated;
   sessionState = this.#auth.sessionState;
   fullName = this.#auth.fullName;
   roleName = this.#auth.roleName;
+
+  /**
+   * The initials of the authenticated user
+   */
+  userInitials = computed(() => getInitials(this.#user()?.name));
 
   /**
    * User login

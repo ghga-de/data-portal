@@ -1,11 +1,17 @@
 @if (isAuthenticated()) {
+  @let initials = userInitials();
   <button
     mat-icon-button
+    [class.with-initials]="initials"
     [matMenuTriggerFor]="menu"
     aria-label="Account"
     matTooltip="Your GHGA account"
   >
-    <mat-icon>account_circle</mat-icon>
+    @if (initials) {
+      {{ initials }}
+    } @else {
+      <mat-icon>account_circle</mat-icon>
+    }
   </button>
   <mat-menu #menu="matMenu" class="p-3">
     <h4>Hello, {{ fullName() || 'User' }}!</h4>
