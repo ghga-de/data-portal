@@ -172,7 +172,10 @@ export class UserIvaListComponent implements OnInit {
   safeDelete(iva: Iva): void {
     this.#confirm.confirm({
       title: 'Confirm deletion of contact address',
-      message: `Please confirm deleting the ${this.typeAndValue(iva)}.`,
+      message:
+        `Please confirm deleting the ${this.typeAndValue(iva)}.` +
+        ' Remember that you will lose access to any datasets' +
+        ' whose access was linked to that address.',
       cancelText: 'Cancel',
       confirmText: 'Confirm deletion',
       callback: (confirmed) => {
