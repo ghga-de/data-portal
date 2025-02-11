@@ -25,7 +25,11 @@ class MockConfigService {
   authUrl = 'http://mock.dev/auth';
 }
 
-const currentUserId = signal<string | null>(null); // can be used by the test
+/**
+ * Signal that can be set to initialize the auth service mock
+ * with a specific user ID, or null for not unauthenticated.
+ */
+const currentUserId = signal<string | null>(null);
 
 /**
  * Mock the auth service as needed for the IVA service
