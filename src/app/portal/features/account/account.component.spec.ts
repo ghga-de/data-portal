@@ -16,6 +16,7 @@ class MockAuthService {
   fullName = () => 'Dr. John Doe';
   email = () => 'doe@home.org';
   role = () => 'data_steward';
+  roleName = () => 'Data Steward';
 }
 
 describe('AccountComponent', () => {

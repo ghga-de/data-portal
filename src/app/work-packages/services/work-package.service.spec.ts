@@ -66,7 +66,6 @@ describe('WorkPackageService', () => {
         provideHttpClientTesting(),
         { provide: ConfigService, useClass: MockConfigService },
         { provide: AuthService, useClass: MockAuthService },
-        //WorkPackageService,
       ],
     });
     service = TestBed.inject(WorkPackageService);

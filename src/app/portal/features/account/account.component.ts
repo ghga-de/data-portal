@@ -21,5 +21,8 @@ import { UserIvaListComponent } from '@app/verification-addresses/features/user-
   styleUrl: './account.component.scss',
 })
 export class AccountComponent {
-  auth = inject(AuthService);
+  #auth = inject(AuthService);
+  fullName = this.#auth.fullName;
+  roleName = this.#auth.roleName;
+  email = this.#auth.email;
 }
