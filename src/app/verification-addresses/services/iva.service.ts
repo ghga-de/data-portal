@@ -9,8 +9,8 @@ import { computed, inject, Injectable, Signal, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { AuthService } from '@app/auth/services/auth.service';
 import { ConfigService } from '@app/shared/services/config.service';
-import { map, Observable, throwError } from 'rxjs';
-import { Iva, IvaType, UserWithIva } from '../models/iva';
+import { map, Observable, tap, throwError } from 'rxjs';
+import { Iva, IvaState, IvaType, UserWithIva } from '../models/iva';
 
 /**
  * IVA service
@@ -45,12 +45,24 @@ export class IvaService {
   }
 
   /**
+   * Reload a given user's IVAs
+   * @param userId - the user ID to load the IVAs for (default: current user)
+   */
+  reloadUserIvas(userId: string | undefined = undefined): void {
+    if (!userId) {
+      userId = this.#auth.user()?.id;
+      if (!userId) return;
+    }
+    this.#userIvas.reload();
+  }
+
+  /**
    * Internal resource for loading the current user's IVAs
    */
   #userIvas = rxResource<Iva[], string | undefined>({
     request: this.#userId,
     loader: ({ request: userId }) => this.#http.get<Iva[]>(this.#userIvasUrl(userId)),
-  }).asReadonly();
+  });
 
   /**
    * The list of IVAs of the current user
@@ -80,12 +92,19 @@ export class IvaService {
   }
 
   /**
+   * Reload all users' IVAs
+   */
+  reloadAllIvas(): void {
+    this.#allIvas.reload();
+  }
+
+  /**
    * Internal resource for loading all IVAs
    */
   #allIvas = rxResource<UserWithIva[], null | undefined>({
     request: this.#loadAll,
     loader: () => this.#http.get<UserWithIva[]>(this.#ivasUrl),
-  }).asReadonly();
+  });
 
   /**
    * The list of IVAs with corresponding user data
@@ -133,12 +152,16 @@ export class IvaService {
 
   /**
    * Delete an IVA of the given user
+   * The IVA is deleted in the backend and in our local copy, so no reload required.
    * @param opts - the options for deleting the IVA
    * @param opts.ivaId - the IVA ID to delete
    * @param opts.userId - the user ID to crate the IVAs for (default: current user)
    * @returns a null value as an observable if successful
    */
   deleteIva({ ivaId, userId }: { ivaId: string; userId?: string }): Observable<null> {
+    const updateIvas = <T extends { id: string }>(ivas: T[]): T[] =>
+      ivas.filter((iva) => iva.id !== ivaId);
+
     if (!ivaId) {
       return throwError(() => new Error('IVA ID missing'));
     }
@@ -146,7 +169,12 @@ export class IvaService {
       userId = this.#auth.user()?.id;
       if (!userId) return throwError(() => new Error('Not authenticated'));
     }
-    return this.#http.delete<null>(`${this.#userIvasUrl(userId)}/${ivaId}`);
+    return this.#http.delete<null>(`${this.#userIvasUrl(userId)}/${ivaId}`).pipe(
+      tap(() => {
+        this.#userIvas.value.set(updateIvas(this.userIvas()));
+        this.#allIvas.value.set(updateIvas(this.allIvas()));
+      }),
+    );
   }
 
   #ivasRpcUrl = (ivaId: string) => `${this.#authUrl}/rpc/ivas/${ivaId}`;
@@ -166,7 +194,17 @@ export class IvaService {
    * @returns null as an observable if successful
    */
   requestCodeForIva(ivaId: string): Observable<null> {
-    return this.#http.post<null>(`${this.#ivasRpcUrl(ivaId)}/request-code`, null);
+    const updateIvas = <T extends { id: string; state: IvaState }>(ivas: T[]): T[] =>
+      ivas.map((iva) =>
+        iva.id === ivaId ? { ...iva, state: IvaState.CodeRequested } : iva,
+      );
+
+    return this.#http.post<null>(`${this.#ivasRpcUrl(ivaId)}/request-code`, null).pipe(
+      tap(() => {
+        this.#userIvas.value.set(updateIvas(this.userIvas()));
+        this.#allIvas.value.set(updateIvas(this.allIvas()));
+      }),
+    );
   }
 
   /**
