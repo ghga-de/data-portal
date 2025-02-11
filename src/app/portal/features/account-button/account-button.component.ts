@@ -13,7 +13,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import { AuthService } from '@app/auth/services/auth.service';
 import { ConfigService } from '@app/shared/services/config.service';
-import { getInitials } from '@app/shared/utils/initials';
+import { InitialsPipe } from '@app/shared/utils/initials.pipe';
 
 /**
  * Account button component
@@ -22,7 +22,13 @@ import { getInitials } from '@app/shared/utils/initials';
  */
 @Component({
   selector: 'app-account-button',
-  imports: [MatIconModule, MatButtonModule, MatMenuModule, MatTooltipModule],
+  imports: [
+    MatIconModule,
+    MatButtonModule,
+    MatMenuModule,
+    MatTooltipModule,
+    InitialsPipe,
+  ],
   templateUrl: './account-button.component.html',
   styleUrl: './account-button.component.scss',
 })
@@ -34,13 +40,9 @@ export class AccountButtonComponent {
   isLoggedIn = this.#auth.isLoggedIn;
   isAuthenticated = this.#auth.isAuthenticated;
   sessionState = this.#auth.sessionState;
+  name = this.#auth.name;
   fullName = this.#auth.fullName;
   roleName = this.#auth.roleName;
-
-  /**
-   * The initials of the authenticated user
-   */
-  userInitials = computed(() => getInitials(this.#user()?.name));
 
   /**
    * User login

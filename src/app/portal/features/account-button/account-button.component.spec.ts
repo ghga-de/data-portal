@@ -51,6 +51,7 @@ class MockAuthService {
     this.isAuthenticated() ? 'Authenticated' : 'LoggedOut',
   );
   user = computed(() => (this.isAuthenticated() ? USER : null));
+  name = computed(() => this.user()?.name);
   fullName = computed(() => this.user()?.full_name);
   role = computed(() => this.user()?.role);
   roleName = computed(() =>

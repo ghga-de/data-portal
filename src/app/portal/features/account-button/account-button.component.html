@@ -1,5 +1,5 @@
 @if (isAuthenticated()) {
-  @let initials = userInitials();
+  @let initials = name() | initials;
   <button
     mat-icon-button
     [class.with-initials]="initials"

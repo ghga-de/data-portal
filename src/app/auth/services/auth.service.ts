@@ -105,6 +105,11 @@ export class AuthService {
   });
 
   /**
+   * Get the name of the current user (without title) as a signal
+   */
+  name = computed<string | undefined>(() => this.user()?.name);
+
+  /**
    * Get the full name of the current user (with title) as a signal
    */
   fullName = computed<string | undefined>(() => this.user()?.full_name);
