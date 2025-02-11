@@ -70,8 +70,8 @@ export const allIvas: UserWithIva[] = [
   },
 ];
 
-export const allIvasOfRoe = allIvas.filter((iva) => iva.user_id === 'doe@test.dev');
-export const allIvasOfDoe = allIvas.filter((iva) => iva.user_id === 'roe@test.dev');
+export const allIvasOfDoe = allIvas.filter((iva) => iva.user_id === 'doe@test.dev');
+export const allIvasOfRoe = allIvas.filter((iva) => iva.user_id === 'roe@test.dev');
 
 /**
  * Metldata API

@@ -1,0 +1,35 @@
+@if (ivasAreloading()) {
+  <p class="text-base">Loading your contact addresses..</p>
+} @else if (ivasError()) {
+  <p class="font-bold text-red-600">
+    Your contact addresses could not be loaded. Please try again later.
+  </p>
+} @else if (!ivas().length) {
+  <p class="text-base">
+    You have not yet created any contact addresses. This is needed if you wish to
+    download research data.
+  </p>
+} @else {
+  <p class="text-base">
+    Adding new contact addresses is done via the relevant button at the end of this
+    section. After a new address is added, you must request verification of the address
+    using the provided button. Removing a contact address is done through the red button
+    to the right, but you will lose access to any datasets whose access was linked to
+    that address.
+  </p>
+  <table mat-table [dataSource]="ivaSource" class="mat-elevation-z8">
+    <ng-container matColumnDef="value">
+      <td mat-cell *matCellDef="let iva">{{ iva.type }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="state">
+      <td mat-cell *matCellDef="let iva">{{ iva.state }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="del">
+      <td mat-cell *matCellDef="let iva">Delete-Button</td>
+    </ng-container>
+
+    <tr mat-row *matRowDef="let row; columns: ['value', 'state', 'del']"></tr>
+  </table>
+}
