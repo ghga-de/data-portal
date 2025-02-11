@@ -4,48 +4,62 @@
  * @license Apache-2.0
  */
 
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
-import { AuthService } from './auth/services/auth.service';
 
-import { ActivatedRoute } from '@angular/router';
+import { SiteFooterComponent } from './portal/features/site-footer/site-footer.component';
+import { SiteHeaderComponent } from './portal/features/site-header/site-header.component';
+import { ConfigService } from './shared/services/config.service';
 
 /**
- * Mock the auth service as needed for the main app component
+ * Mock the config service as needed for the main app component
  */
-class MockAuthService {
-  isLoggedIn = () => true;
-  fullName = () => 'Dr. John Doe';
-  sessionState = () => 'Authenticated';
+class MockConfigService {
+  ribbonText = 'Test ribbon';
 }
 
 describe('AppComponent', () => {
-  const fakeActivatedRoute = {
-    snapshot: { data: {} },
-  } as ActivatedRoute;
+  let component: AppComponent;
+  let fixture: ComponentFixture<AppComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AppComponent],
-      providers: [
-        { provide: AuthService, useClass: MockAuthService },
-        {
-          provide: ActivatedRoute,
-          useValue: fakeActivatedRoute,
-        },
-      ],
-    }).compileComponents();
+      providers: [{ provide: ConfigService, useClass: MockConfigService }],
+    })
+      .overrideComponent(AppComponent, {
+        remove: { imports: [SiteHeaderComponent, SiteFooterComponent] },
+      })
+      .compileComponents();
+
+    fixture = TestBed.createComponent(AppComponent);
+    component = fixture.componentInstance;
+    await fixture.whenStable();
   });
 
   it('should create the app component', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
+    expect(component).toBeTruthy();
+  });
+
+  it('should have a header element', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('header')).not.toBeNull();
   });
 
   it('should have a main element', () => {
-    const fixture = TestBed.createComponent(AppComponent);
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('main')).not.toBeNull();
+  });
+
+  it('should have a footer element', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('footer')).not.toBeNull();
+  });
+
+  it('should have a version ribbon', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    const ribbon = compiled.querySelector('.version-ribbon');
+    expect(ribbon).not.toBeNull();
+    expect(ribbon!.textContent).toContain('Test ribbon');
   });
 });
