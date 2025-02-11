@@ -6,13 +6,14 @@
 
 import { Component, effect, inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { ConfirmationService } from '@app/shared/services/confirmation.service';
 import { NotificationService } from '@app/shared/services/notification.service';
 import { Iva, IvaTypePrintable } from '@app/verification-addresses/models/iva';
 import { IvaService } from '@app/verification-addresses/services/iva.service';
+import { VerificationDialogComponent } from '../verification-dialog/verification-dialog.component';
 
 /**
  * Component to manage the list of IVAs belonging to the current user
@@ -24,6 +25,7 @@ import { IvaService } from '@app/verification-addresses/services/iva.service';
   styleUrl: './user-iva-list.component.scss',
 })
 export class UserIvaListComponent implements OnInit {
+  #dialog = inject(MatDialog);
   #confirm = inject(ConfirmationService);
   #notify = inject(NotificationService);
   #ivaService = inject(IvaService);
@@ -95,6 +97,55 @@ export class UserIvaListComponent implements OnInit {
       callback: (confirmed) => {
         if (confirmed) this.requestVerification(iva);
       },
+    });
+  }
+
+  /**
+   * Submit the verification code for the given IVA
+   * @param iva - the IVA to verify
+   * @param code - the verification code
+   */
+  submitVerificationCode(iva: Iva, code: string): void {
+    this.#ivaService.validateCodeForIva(iva.id, code).subscribe({
+      next: () => {
+        this.#notify.showSuccess('Verification was successful');
+      },
+      error: (err) => {
+        switch (err.status) {
+          case 403:
+            this.#notify.showError(
+              'The entered verification code was invalid. Please enter the submitted code correctly.',
+            );
+            break;
+          case 429:
+            this.#notify.showError(
+              'Too many attempts at entering code. Contact address has been reverted to unverified.',
+            );
+            break;
+          default:
+            console.log(err);
+            this.#notify.showError(
+              'Code verification currently not possible. Please try again later.',
+            );
+        }
+      },
+    });
+  }
+
+  /**
+   * Ask the user to enter the verification code for the given IVA
+   * and then continue with the verification process when the code was entered
+   * @param iva - the IVA to verify
+   */
+  enterVerificationCode(iva: Iva): void {
+    const address = this.typeAndValue(iva);
+    const dialogRef = this.#dialog.open(VerificationDialogComponent, {
+      data: { address },
+    });
+    dialogRef.afterClosed().subscribe((code) => {
+      if (code) {
+        this.submitVerificationCode(iva, code);
+      }
     });
   }
 

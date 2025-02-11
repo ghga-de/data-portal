@@ -44,7 +44,11 @@
               </button>
             }
             @case ('CodeTransmitted') {
-              <button class="w-64" mat-stroked-button>
+              <button
+                (click)="enterVerificationCode(iva)"
+                class="w-64"
+                mat-stroked-button
+              >
                 <mat-icon>dialpad</mat-icon>
                 Enter verification code
               </button>

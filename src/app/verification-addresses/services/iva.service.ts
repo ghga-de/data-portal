@@ -237,8 +237,29 @@ export class IvaService {
    * if invalid, yields an error with status code 403 (Forbidden)
    */
   validateCodeForIva(ivaId: string, code: string): Observable<null> {
-    return this.#http.post<null>(`${this.#ivasRpcUrl(ivaId)}/validate-code`, {
-      verification_code: code,
-    });
+    const updateIvas = <T extends { id: string; state: IvaState }>(
+      ivas: T[],
+      state: IvaState = IvaState.Verified,
+    ): T[] => ivas.map((iva) => (iva.id === ivaId ? { ...iva, state } : iva));
+
+    return this.#http
+      .post<null>(`${this.#ivasRpcUrl(ivaId)}/validate-code`, {
+        verification_code: code,
+      })
+      .pipe(
+        tap({
+          next: () => {
+            this.#userIvas.value.set(updateIvas(this.userIvas()));
+            this.#allIvas.value.set(updateIvas(this.allIvas()));
+          },
+          error: (err) => {
+            if (err.status === 429) {
+              const state = IvaState.Unverified;
+              this.#userIvas.value.set(updateIvas(this.userIvas(), state));
+              this.#allIvas.value.set(updateIvas(this.allIvas(), state));
+            }
+          },
+        }),
+      );
   }
 }
