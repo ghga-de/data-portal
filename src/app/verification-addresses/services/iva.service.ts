@@ -151,17 +151,26 @@ export class IvaService {
   }
 
   /**
+   * Delete an IVA locally
+   * @param ivaId - the ID of the IVA to delete
+   */
+  #deleteIvaLocally(ivaId: string): void {
+    const update = <T extends { id: string }>(ivas: T[]): T[] =>
+      ivas.filter((iva) => iva.id !== ivaId);
+
+    this.#userIvas.value.set(update(this.userIvas()));
+    this.#allIvas.value.set(update(this.allIvas()));
+  }
+
+  /**
    * Delete an IVA of the given user
-   * The IVA is deleted in the backend and in our local copy, so no reload required.
+   * and also remove it locally, so that no reload is required.
    * @param opts - the options for deleting the IVA
    * @param opts.ivaId - the IVA ID to delete
    * @param opts.userId - the user ID to crate the IVAs for (default: current user)
    * @returns a null value as an observable if successful
    */
   deleteIva({ ivaId, userId }: { ivaId: string; userId?: string }): Observable<null> {
-    const updateIvas = <T extends { id: string }>(ivas: T[]): T[] =>
-      ivas.filter((iva) => iva.id !== ivaId);
-
     if (!ivaId) {
       return throwError(() => new Error('IVA ID missing'));
     }
@@ -169,46 +178,53 @@ export class IvaService {
       userId = this.#auth.user()?.id;
       if (!userId) return throwError(() => new Error('Not authenticated'));
     }
-    return this.#http.delete<null>(`${this.#userIvasUrl(userId)}/${ivaId}`).pipe(
-      tap(() => {
-        this.#userIvas.value.set(updateIvas(this.userIvas()));
-        this.#allIvas.value.set(updateIvas(this.allIvas()));
-      }),
-    );
+    return this.#http
+      .delete<null>(`${this.#userIvasUrl(userId)}/${ivaId}`)
+      .pipe(tap(() => this.#deleteIvaLocally(ivaId)));
   }
 
   #ivasRpcUrl = (ivaId: string) => `${this.#authUrl}/rpc/ivas/${ivaId}`;
 
   /**
+   * Update the state of all IVAs locally
+   * @param ivaId - the ID of the IVA to update
+   * @param state - the new state of the IVA
+   */
+  #updateIvaStateLocally(ivaId: string, state: IvaState): void {
+    const update = <T extends { id: string }>(ivas: T[]): T[] =>
+      ivas.map((iva) => (iva.id === ivaId ? { ...iva, state } : iva));
+
+    this.#userIvas.value.set(update(this.userIvas()));
+    this.#allIvas.value.set(update(this.allIvas()));
+  }
+
+  /**
    * Unverify an IVA of the current user
+   * and update the IVA state locally if successful.
    * @param ivaId - the ID of the IVA
    * @returns null as an observable if successful
    */
   unverifyIva(ivaId: string): Observable<null> {
-    return this.#http.post<null>(`${this.#ivasRpcUrl(ivaId)}/unverify`, null);
+    return this.#http
+      .post<null>(`${this.#ivasRpcUrl(ivaId)}/unverify`, null)
+      .pipe(tap(() => this.#updateIvaStateLocally(ivaId, IvaState.Unverified)));
   }
 
   /**
    * Request the verification of an IVA of the current user
+   * and update the IVA state locally if successful.
    * @param ivaId - the ID of the IVA
    * @returns null as an observable if successful
    */
   requestCodeForIva(ivaId: string): Observable<null> {
-    const updateIvas = <T extends { id: string; state: IvaState }>(ivas: T[]): T[] =>
-      ivas.map((iva) =>
-        iva.id === ivaId ? { ...iva, state: IvaState.CodeRequested } : iva,
-      );
-
-    return this.#http.post<null>(`${this.#ivasRpcUrl(ivaId)}/request-code`, null).pipe(
-      tap(() => {
-        this.#userIvas.value.set(updateIvas(this.userIvas()));
-        this.#allIvas.value.set(updateIvas(this.allIvas()));
-      }),
-    );
+    return this.#http
+      .post<null>(`${this.#ivasRpcUrl(ivaId)}/request-code`, null)
+      .pipe(tap(() => this.#updateIvaStateLocally(ivaId, IvaState.CodeRequested)));
   }
 
   /**
    * Create verification code for an IVA of the current user
+   * and update the IVA state locally if successful.
    * @param ivaId - the ID of the IVA
    * @returns the verification code as an observable if successful
    */
@@ -217,46 +233,44 @@ export class IvaService {
       .post<{
         verification_code: string;
       }>(`${this.#ivasRpcUrl(ivaId)}/create-code`, null)
-      .pipe(map(({ verification_code }) => verification_code));
+      .pipe(
+        map(({ verification_code }) => verification_code),
+        tap(() => this.#updateIvaStateLocally(ivaId, IvaState.CodeCreated)),
+      );
   }
 
   /**
    * Confirm verification code transmission for an IVA of the current user
+   * and update the IVA state locally if successful.
    * @param ivaId - the ID of the IVA
    * @returns null as an observable if successful
    */
   confirmTransmissionForIva(ivaId: string): Observable<null> {
-    return this.#http.post<null>(`${this.#ivasRpcUrl(ivaId)}/code-transmitted`, null);
+    return this.#http
+      .post<null>(`${this.#ivasRpcUrl(ivaId)}/code-transmitted`, null)
+      .pipe(tap(() => this.#updateIvaStateLocally(ivaId, IvaState.CodeTransmitted)));
   }
 
   /**
    * Validate verification code for an IVA of the current user
+   * and update the IVA state locally if successful or too many attempts.
    * @param ivaId - the ID of the IVA
    * @param code - the verification code to be validated
    * @returns null as an observable if successfully validated,
    * if invalid, yields an error with status code 403 (Forbidden)
+   * if too many attempts, yields an error with status code 429 (Too Many Requests).
    */
   validateCodeForIva(ivaId: string, code: string): Observable<null> {
-    const updateIvas = <T extends { id: string; state: IvaState }>(
-      ivas: T[],
-      state: IvaState = IvaState.Verified,
-    ): T[] => ivas.map((iva) => (iva.id === ivaId ? { ...iva, state } : iva));
-
     return this.#http
       .post<null>(`${this.#ivasRpcUrl(ivaId)}/validate-code`, {
         verification_code: code,
       })
       .pipe(
         tap({
-          next: () => {
-            this.#userIvas.value.set(updateIvas(this.userIvas()));
-            this.#allIvas.value.set(updateIvas(this.allIvas()));
-          },
+          next: () => this.#updateIvaStateLocally(ivaId, IvaState.Verified),
           error: (err) => {
             if (err.status === 429) {
-              const state = IvaState.Unverified;
-              this.#userIvas.value.set(updateIvas(this.userIvas(), state));
-              this.#allIvas.value.set(updateIvas(this.allIvas(), state));
+              this.#updateIvaStateLocally(ivaId, IvaState.Unverified);
             }
           },
         }),
