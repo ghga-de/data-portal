@@ -6,6 +6,8 @@
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { VerificationDialogComponent } from './verification-dialog.component';
 
 describe('VerificationDialogComponent', () => {
@@ -14,7 +16,11 @@ describe('VerificationDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [VerificationDialogComponent],
+      imports: [VerificationDialogComponent, NoopAnimationsModule],
+      providers: [
+        { provide: MAT_DIALOG_DATA, useValue: { address: 'SMS: 123/456' } },
+        { provide: MatDialogRef, useValue: {} },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(VerificationDialogComponent);

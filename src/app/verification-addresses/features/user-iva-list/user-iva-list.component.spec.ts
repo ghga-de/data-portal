@@ -6,7 +6,18 @@
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { IvaService } from '@app/verification-addresses/services/iva.service';
 import { UserIvaListComponent } from './user-iva-list.component';
+
+/**
+ * Mock the IVA service as needed by the user IVA list component
+ */
+class MockIvaService {
+  loadUserIvas = () => undefined;
+  userIvas = () => [];
+  userIvasAreLoading = () => false;
+  userIvasError = () => undefined;
+}
 
 describe('UserIvaListComponent', () => {
   let component: UserIvaListComponent;
@@ -15,6 +26,7 @@ describe('UserIvaListComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [UserIvaListComponent],
+      providers: [{ provide: IvaService, useClass: MockIvaService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(UserIvaListComponent);
@@ -24,5 +36,12 @@ describe('UserIvaListComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should say that there are no user IVAs', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain(
+      'You have not yet created any contact addresses.',
+    );
   });
 });

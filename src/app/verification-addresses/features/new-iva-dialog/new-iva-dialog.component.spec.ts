@@ -6,6 +6,7 @@
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { MatDialogRef } from '@angular/material/dialog';
 import { NewIvaDialogComponent } from './new-iva-dialog.component';
 
 describe('NewIvaDialogComponent', () => {
@@ -15,6 +16,7 @@ describe('NewIvaDialogComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [NewIvaDialogComponent],
+      providers: [{ provide: MatDialogRef, useValue: {} }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(NewIvaDialogComponent);

@@ -23,7 +23,6 @@ import { VerificationDialogComponent } from '../verification-dialog/verification
   selector: 'app-user-iva-list',
   imports: [MatTableModule, MatButtonModule, MatIconModule, MatDialogModule],
   templateUrl: './user-iva-list.component.html',
-  styleUrl: './user-iva-list.component.scss',
 })
 export class UserIvaListComponent implements OnInit {
   #dialog = inject(MatDialog);

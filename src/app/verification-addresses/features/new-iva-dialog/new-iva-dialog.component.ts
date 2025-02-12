@@ -38,7 +38,6 @@ import { IvaType, IvaTypePrintable } from '@app/verification-addresses/models/iv
     MatButtonToggleModule,
   ],
   templateUrl: './new-iva-dialog.component.html',
-  styleUrl: './new-iva-dialog.component.scss',
 })
 export class NewIvaDialogComponent {
   #dialogRef = inject(
