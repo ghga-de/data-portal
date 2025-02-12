@@ -52,13 +52,6 @@ export class VerificationDialogComponent {
   ]);
 
   /**
-   * Cancel the dialog
-   */
-  onCancel(): void {
-    this.#dialogRef.close(undefined);
-  }
-
-  /**
    * On input, modify the code to uppercase
    */
   onInput(): void {
@@ -66,6 +59,13 @@ export class VerificationDialogComponent {
     if (value) {
       this.codeControl.setValue(value.toUpperCase());
     }
+  }
+
+  /**
+   * Cancel the dialog
+   */
+  onCancel(): void {
+    this.#dialogRef.close(undefined);
   }
 
   /**

@@ -11,8 +11,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { ConfirmationService } from '@app/shared/services/confirmation.service';
 import { NotificationService } from '@app/shared/services/notification.service';
-import { Iva, IvaTypePrintable } from '@app/verification-addresses/models/iva';
+import { Iva, IvaType, IvaTypePrintable } from '@app/verification-addresses/models/iva';
 import { IvaService } from '@app/verification-addresses/services/iva.service';
+import { NewIvaDialogComponent } from '../new-iva-dialog/new-iva-dialog.component';
 import { VerificationDialogComponent } from '../verification-dialog/verification-dialog.component';
 
 /**
@@ -181,6 +182,36 @@ export class UserIvaListComponent implements OnInit {
       callback: (confirmed) => {
         if (confirmed) this.delete(iva);
       },
+    });
+  }
+
+  /**
+   * Add a new IVA
+   * @param type - the type of the IVA to be added
+   * @param value - the value of the IVA to be added
+   */
+  add(type: IvaType, value: string): void {
+    this.#ivaService.createIva({ type, value }).subscribe({
+      next: () => {
+        this.#notify.showSuccess('Contact address has been added');
+      },
+      error: (err) => {
+        console.log(err);
+        this.#notify.showError('Contact address could not be added');
+      },
+    });
+  }
+
+  /**
+   * Enter data to create a new IVA
+   */
+  enterNew(): void {
+    const dialogRef = this.#dialog.open(NewIvaDialogComponent);
+
+    dialogRef.afterClosed().subscribe(({ type, value }) => {
+      if (type && value) {
+        this.add(type, value);
+      }
     });
   }
 }

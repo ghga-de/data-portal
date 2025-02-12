@@ -122,6 +122,45 @@ export class IvaService {
   allIvasError: Signal<unknown> = this.#allIvas.error;
 
   /**
+   * Add an IVA locally
+   * The user name is added properly if added for the current user
+   * (the UI does not allow adding IVAs for other users anyway).
+   * @param opts - the options for adding the IVA
+   * @param opts.id - the IVA ID
+   * @param opts.type  - the IVA type
+   * @param opts.value  - the IVA value
+   * @param opts.userId - the user ID to crate the IVAs for
+   */
+  #addIvaLocally({
+    id,
+    type,
+    value,
+    userId,
+  }: {
+    id: string;
+    type: IvaType;
+    value: string;
+    userId?: string;
+  }): void {
+    const iva: Iva = {
+      id,
+      type,
+      value,
+      state: IvaState.Unverified,
+      changed: new Date().toISOString(),
+    };
+    this.#userIvas.value.set([...this.userIvas(), iva]);
+    const user = this.#auth.user();
+    const userWithIva: UserWithIva = {
+      ...iva,
+      user_id: userId ?? user?.id ?? '',
+      user_name: user?.name ?? '',
+      user_email: user?.email ?? '',
+    };
+    this.#allIvas.value.set([...this.allIvas(), userWithIva]);
+  }
+
+  /**
    * Create an IVA for the given user
    * @param opts - the options for creating the IVA
    * @param opts.type  - the IVA type
@@ -147,7 +186,10 @@ export class IvaService {
     }
     return this.#http
       .post<{ id: string }>(this.#userIvasUrl(userId), { type, value })
-      .pipe(map(({ id }) => id));
+      .pipe(
+        map(({ id }) => id),
+        tap((id) => this.#addIvaLocally({ id, type, value, userId })),
+      );
   }
 
   /**
