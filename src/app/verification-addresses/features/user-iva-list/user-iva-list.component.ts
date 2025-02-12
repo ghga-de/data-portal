@@ -75,7 +75,7 @@ export class UserIvaListComponent implements OnInit {
         this.#notify.showSuccess('Verification has been requested');
       },
       error: (err) => {
-        console.log(err);
+        console.debug(err);
         this.#notify.showError('Verification request failed');
       },
     });
@@ -123,7 +123,7 @@ export class UserIvaListComponent implements OnInit {
             );
             break;
           default:
-            console.log(err);
+            console.debug(err);
             this.#notify.showError(
               'Code verification currently not possible. Please try again later.',
             );
@@ -159,7 +159,7 @@ export class UserIvaListComponent implements OnInit {
         this.#notify.showSuccess('Address has been deleted');
       },
       error: (err) => {
-        console.log(err);
+        console.debug(err);
         this.#notify.showError('Address could not be deleted');
       },
     });
@@ -195,7 +195,7 @@ export class UserIvaListComponent implements OnInit {
         this.#notify.showSuccess('Contact address has been added');
       },
       error: (err) => {
-        console.log(err);
+        console.debug(err);
         this.#notify.showError('Contact address could not be added');
       },
     });
