@@ -11,9 +11,10 @@ export interface DatasetInformation {
 
 export interface FileInformation {
   accession: string;
-  size: number;
-  sha256_hash: string;
-  storage_alias: string;
+  // the remaining fields may be undefined
+  size?: number;
+  sha256_hash?: string;
+  storage_alias?: string;
 }
 
 export const emptyDatasetInformation: DatasetInformation = {
