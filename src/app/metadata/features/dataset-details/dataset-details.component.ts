@@ -106,6 +106,9 @@ export class DatasetDetailsComponent implements OnInit, AfterViewInit {
   numExperiments = computed(() => this.#experiments().length);
   numSamples = computed(() => this.#samples().length);
   numFiles = computed(() => this.#files().length);
+  numBytes = computed(() =>
+    this.#files().reduce((acc, file) => acc + (file.file_information?.size ?? 0), 0),
+  );
 
   experimentsDataSource = new MatTableDataSource<Experiment>([]);
   samplesDataSource = new MatTableDataSource<Sample>([]);
