@@ -32,6 +32,35 @@ describe('getBackendErrorMessage', () => {
     ).toBe(msg);
   });
 
+  it('should handle errors created by Pydantic', () => {
+    const msg = 'some detailed error';
+    expect(
+      getBackendErrorMessage({
+        error: { detail: [{ msg }, { msg: 'another error' }] },
+        status: 422,
+        statusText: 'some error',
+        message: 'some error',
+      }),
+    ).toBe(msg);
+  });
+
+  it('should ignore other types of details', () => {
+    expect(
+      getBackendErrorMessage({
+        error: { detail: {} as unknown as string },
+        status: 500,
+        message: 'some error',
+      }),
+    ).toBe('some error');
+    expect(
+      getBackendErrorMessage({
+        error: { detail: {} as unknown as string },
+        status: 500,
+        message: {} as unknown as string,
+      }),
+    ).toBe('');
+  });
+
   it('should return the status text with second highest priority', () => {
     const msg = 'some detailed error';
     expect(
@@ -64,6 +93,38 @@ describe('getBackendErrorMessage', () => {
         error: { detail: '' },
         status: 500,
         statusText: '',
+        message: msg,
+      }),
+    ).toBe(msg);
+  });
+
+  it('should remove superfluous quotes', () => {
+    expect(
+      getBackendErrorMessage({
+        error: { detail: '"some error"' },
+        status: 500,
+      }),
+    ).toBe('some error');
+    expect(
+      getBackendErrorMessage({
+        status: 500,
+        message: "'some error'",
+      }),
+    ).toBe('some error');
+  });
+
+  it('should keep non-matching quotes', () => {
+    let msg = '"some error\'';
+    expect(
+      getBackendErrorMessage({
+        error: { detail: msg },
+        status: 500,
+      }),
+    ).toBe(msg);
+    msg = '\'some error"';
+    expect(
+      getBackendErrorMessage({
+        status: 500,
         message: msg,
       }),
     ).toBe(msg);
