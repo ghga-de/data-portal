@@ -2,5 +2,13 @@
 
 cd /workspace
 
+# Check if there is an option other than --dev, --with-backend, or --with-oidc
+for arg in "$@"; do
+    if ! [[ "$arg" =~ ^--(with-(backend|oidc))$ ]]; then
+        echo "Usage: dev_launcher [--with-backend] [--with-oidc]"
+        exit 1
+    fi
+done
+
 # start the development server
 ./run.js --dev "$@"
