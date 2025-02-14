@@ -18,6 +18,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterLink } from '@angular/router';
 import { NotificationService } from '@app/shared/services/notification.service';
+import { getBackendErrorMessage, MaybeBackendError } from '@app/shared/utils/errors';
 import { Dataset } from '@app/work-packages/models/dataset';
 import { WorkPackage } from '@app/work-packages/models/work-package';
 import { WorkPackageService } from '@app/work-packages/services/work-package.service';
@@ -67,7 +68,7 @@ export class WorkPackageComponent {
 
   token = signal<string>('');
   tokenIsLoading = signal<boolean>(false);
-  tokenHasError = signal<boolean>(false);
+  tokenError = signal<string>('');
 
   /**
    * Select a dataset
@@ -111,6 +112,29 @@ export class WorkPackageComponent {
   }
 
   /**
+   * Handle errors when creating a work package
+   * @param error The error that occurred
+   */
+  #handleCreationError(error: MaybeBackendError): void {
+    // provide detailed error message if possible
+    const detail = getBackendErrorMessage(error);
+    const tokenAction = this.tokenAction();
+    this.tokenIsLoading.set(false);
+    // message shown on the page
+    let msg = `Unfortunately, your ${tokenAction} token could not be created`;
+    if (detail) msg += `: ${detail}`;
+    msg += '.';
+    this.tokenError.set(msg);
+    // message shown in the snackbar
+    msg = `Cannot create ${tokenAction} token`;
+    if (detail) msg += `: ${detail}`;
+    msg += '!';
+    this.#notify.showError(msg);
+    // also log the complete error to the console
+    console.debug(error);
+  }
+
+  /**
    * Submit the work package creation form
    */
   submit(): void {
@@ -127,18 +151,13 @@ export class WorkPackageComponent {
     };
     this.token.set('');
     this.tokenIsLoading.set(true);
-    this.tokenHasError.set(false);
+    this.tokenError.set('');
     this.#wpService.createWorkPackage(workPackage).subscribe({
       next: ({ token }) => {
         this.token.set(token);
         this.tokenIsLoading.set(false);
       },
-      error: (err) => {
-        this.tokenIsLoading.set(false);
-        this.tokenHasError.set(true);
-        this.#notify.showError(`Cannot create ${workPackage.type} token!`);
-        console.debug(err);
-      },
+      error: (err) => this.#handleCreationError(err),
     });
   }
 
@@ -152,7 +171,7 @@ export class WorkPackageComponent {
     this.pubKeyError.set('');
     this.token.set('');
     this.tokenIsLoading.set(false);
-    this.tokenHasError.set(false);
+    this.tokenError.set('');
   }
 
   /**

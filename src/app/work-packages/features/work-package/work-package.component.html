@@ -2,9 +2,9 @@
 <h1>Download or upload datasets</h1>
 @if (tokenIsLoading()) {
   <p>Creating your {{ tokenAction() }} token...</p>
-} @else if (tokenHasError()) {
+} @else if (tokenError()) {
   <p class="font-bold text-red-600">
-    Unfortunately, your {{ tokenAction() }} token could not be created.
+    {{ tokenError() }}
   </p>
   <p>
     Please <a routerLink="." (click)="reset()">try again</a> later or
