@@ -16,11 +16,13 @@
   </p>
   <mat-card appearance="raised" class="mb-4">
     <mat-card-content>
-      <button mat-fab color="primary" class="float-right" (click)="copyToken()">
+      <button mat-fab color="primary" class="float-right ml-4" (click)="copyToken()">
         <mat-icon>content_copy</mat-icon>
       </button>
       <p>Please use the following token to {{ tokenAction() }} the selected dataset:</p>
-      <pre class="mb-3 text-green-900">{{ token() }}</pre>
+      <pre class="mb-3 overflow-auto whitespace-pre-wrap text-green-900">{{
+        token()
+      }}</pre>
       <p>Make sure to copy the token now as you will not be able to see this again!</p>
     </mat-card-content>
   </mat-card>
