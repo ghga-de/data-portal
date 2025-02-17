@@ -12,6 +12,7 @@ import { AuthService } from '@app/auth/services/auth.service';
 
 import { screen } from '@testing-library/angular';
 
+import { fakeActivatedRoute } from '@app/../mocks/route';
 import { SiteHeaderComponent } from './site-header.component';
 
 /**
@@ -38,10 +39,6 @@ class MockAuthService {
 describe('SiteHeaderComponent', () => {
   let component: SiteHeaderComponent;
   let fixture: ComponentFixture<SiteHeaderComponent>;
-
-  const fakeActivatedRoute = {
-    snapshot: { data: {} },
-  } as ActivatedRoute;
 
   beforeEach(() => {
     TestBed.configureTestingModule({

@@ -1,38 +1,26 @@
 /**
- * Unit tests for the account page
+ * This module contains the tests for the GrantedAccessRequestsListComponent.
  * @copyright The GHGA Authors
  * @license Apache-2.0
  */
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ActivatedRoute } from '@angular/router';
 import { fakeActivatedRoute } from '@app/../mocks/route';
-import { AuthService } from '@app/auth/services/auth.service';
 import {
   DataAccessService,
   MockDataAccessService,
 } from '@app/data-access/services/data-access.service';
-import { AccountComponent } from './account.component';
+import { GrantedAccessRequestsListComponent } from './granted-access-requests-list.component';
 
-/**
- * Mock the auth service as needed for the account component
- */
-class MockAuthService {
-  fullName = () => 'Dr. John Doe';
-  email = () => 'j.jdoe@home.org';
-  role = () => 'data_steward';
-}
-
-describe('AccountComponent', () => {
-  let component: AccountComponent;
-  let fixture: ComponentFixture<AccountComponent>;
+describe('GrantedAccessRequestsListComponent', () => {
+  let component: GrantedAccessRequestsListComponent;
+  let fixture: ComponentFixture<GrantedAccessRequestsListComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AccountComponent],
+      imports: [GrantedAccessRequestsListComponent],
       providers: [
-        { provide: AuthService, useClass: MockAuthService },
         { provide: DataAccessService, useClass: MockDataAccessService },
         {
           provide: ActivatedRoute,
@@ -41,7 +29,7 @@ describe('AccountComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AccountComponent);
+    fixture = TestBed.createComponent(GrantedAccessRequestsListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

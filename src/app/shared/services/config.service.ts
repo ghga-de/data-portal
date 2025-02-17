@@ -8,6 +8,7 @@ import { Injectable } from '@angular/core';
 
 interface Config {
   base_url: string;
+  ars_url: string;
   auth_url: string;
   dins_url: string;
   mass_url: string;
@@ -71,6 +72,14 @@ export class ConfigService {
    */
   get baseUrl(): string {
     return sansEndSlash(this.#config.base_url);
+  }
+
+  /**
+   * Gets the access request service URL from the config object.
+   * @returns the access request service URL sans end slash
+   */
+  get arsUrl(): string {
+    return sansEndSlash(this.#config.ars_url);
   }
 
   /**

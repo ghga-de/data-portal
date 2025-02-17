@@ -7,15 +7,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
+import { fakeActivatedRoute } from '@app/../mocks/route';
 import { SiteFooterComponent } from './site-footer.component';
 
 describe('SiteFooterComponent', () => {
   let component: SiteFooterComponent;
   let fixture: ComponentFixture<SiteFooterComponent>;
-
-  const fakeActivatedRoute = {
-    snapshot: { data: {} },
-  } as ActivatedRoute;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

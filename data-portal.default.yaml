@@ -14,6 +14,7 @@ log_level: INFO
 base_url: http://127.0.0.1:8080
 
 auth_url: /api/auth
+ars_url: /api/ars
 dins_url: /api/dins
 mass_url: /api/mass
 metldata_url: /api/metldata
@@ -27,5 +28,6 @@ oidc_authorization_url: authorize
 oidc_token_url: token
 oidc_userinfo_url: userinfo
 oidc_use_discovery: true
+default_data_access_duration_days: 365
 
 ribbon_text: 'Staging v$v'

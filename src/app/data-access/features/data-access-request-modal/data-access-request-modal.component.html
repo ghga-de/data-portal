@@ -1,0 +1,20 @@
+<h2 mat-dialog-title>Request access for dataset {{ datasetID }}</h2>
+
+<mat-label>Details about your request</mat-label>
+<textarea matInput placeholder="I need access for research on..." #details></textarea>
+
+<p>
+  Access requested from
+  <input matInput [matDatepicker]="from_picker" />
+  <mat-hint>MM/DD/YYYY</mat-hint>
+  <mat-datepicker-toggle matIconSuffix [for]="from_picker"></mat-datepicker-toggle>
+  <mat-datepicker #from_picker></mat-datepicker>
+  until
+  <input matInput [matDatepicker]="until_picker" />
+  <mat-hint>MM/DD/YYYY</mat-hint>
+  <mat-datepicker-toggle matIconSuffix [for]="until_picker"></mat-datepicker-toggle>
+  <mat-datepicker #until_picker></mat-datepicker>
+</p>
+
+<mat-label>The contact email address to use for this request</mat-label>
+<input type="email" matInput placeholder="your.email@goes.here" #email />
