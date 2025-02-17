@@ -7,9 +7,12 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal, Signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { MatDialog } from '@angular/material/dialog';
 import { AuthService } from '@app/auth/services/auth.service';
 import { ConfigService } from '@app/shared/services/config.service';
 import { map } from 'rxjs';
+// eslint-disable-next-line boundaries/element-types
+import { DataAccessRequestModalComponent } from '../features/data-access-request-modal/data-access-request-modal.component';
 import { AccessRequest } from '../models/access-requests';
 
 /**
@@ -21,11 +24,23 @@ import { AccessRequest } from '../models/access-requests';
 export class DataAccessService {
   #http = inject(HttpClient);
   #auth = inject(AuthService);
+  #dialog = inject(MatDialog);
   #userId = computed<string | null>(() => this.#auth.user()?.id || null);
   #config = inject(ConfigService);
   #arsBaseUrl = this.#config.arsUrl;
   #arsEndpointUrl = `${this.#arsBaseUrl}/access-requests`;
   constructor() {}
+
+  showNewAccessRequestDialog = (id: string) => {
+    this.#dialog.open(DataAccessRequestModalComponent, {
+      id,
+      height: '400px',
+      width: '600px',
+    });
+    this.#dialog.afterAllClosed.subscribe((event) => {
+      console.log(event);
+    });
+  };
 
   #accessRequests = rxResource<AccessRequest[], string | null>({
     request: this.#userId,

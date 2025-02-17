@@ -6,14 +6,14 @@
 
 import { Component, input } from '@angular/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatFormField, MatHint, MatLabel } from '@angular/material/form-field';
+import { MatHint, MatLabel } from '@angular/material/form-field';
 
 /**
  * This component contains a form for all the data needed for an access request.
  */
 @Component({
   selector: 'app-data-access-request-modal',
-  imports: [MatDatepickerModule, MatFormField, MatHint, MatLabel],
+  imports: [MatDatepickerModule, MatHint, MatLabel],
   templateUrl: './data-access-request-modal.component.html',
   styleUrl: './data-access-request-modal.component.scss',
 })

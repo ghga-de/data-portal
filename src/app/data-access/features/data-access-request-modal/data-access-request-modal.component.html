@@ -1,4 +1,6 @@
-<h2 mat-dialog-title>Request access for dataset {{ datasetID }}</h2>
+<h2 mat-dialog-title>
+  <span class="fa-file-download"></span>Request access for dataset {{ datasetID() }}
+</h2>
 
 <mat-label>Details about your request</mat-label>
 <textarea matInput placeholder="I need access for research on..." #details></textarea>
