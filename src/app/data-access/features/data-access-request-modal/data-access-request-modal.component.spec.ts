@@ -7,6 +7,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { provideNativeDateAdapter } from '@angular/material/core';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogModule,
+  MatDialogRef,
+} from '@angular/material/dialog';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { DataAccessRequestModalComponent } from './data-access-request-modal.component';
 
 describe('DataAccessRequestModalComponent', () => {
@@ -15,8 +21,16 @@ describe('DataAccessRequestModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DataAccessRequestModalComponent],
-      providers: [provideNativeDateAdapter()],
+      imports: [DataAccessRequestModalComponent, MatDialogModule],
+      providers: [
+        provideNativeDateAdapter(),
+        {
+          provide: MatDialogRef,
+          useValue: {},
+        },
+        { provide: MAT_DIALOG_DATA, useValue: {} },
+        provideAnimationsAsync(),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(DataAccessRequestModalComponent);

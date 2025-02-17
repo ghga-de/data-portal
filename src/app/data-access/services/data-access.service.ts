@@ -33,9 +33,9 @@ export class DataAccessService {
 
   showNewAccessRequestDialog = (id: string) => {
     this.#dialog.open(DataAccessRequestModalComponent, {
-      id,
-      height: '400px',
-      width: '600px',
+      data: {
+        datasetID: id,
+      },
     });
     this.#dialog.afterAllClosed.subscribe((event) => {
       console.log(event);

@@ -22,6 +22,10 @@ class MockMetadataService {
   loadDatasetDetails = () => undefined;
 }
 
+import {
+  DataAccessService,
+  MockDataAccessService,
+} from '@app/data-access/services/data-access.service';
 import { screen } from '@testing-library/angular';
 
 /**
@@ -43,6 +47,7 @@ describe('DatasetDetailsPageComponent', () => {
       providers: [
         { provide: MetadataService, useClass: MockMetadataService },
         { provide: DatasetInformationService, useClass: MockDatasetInformationService },
+        { provide: DataAccessService, useClass: MockDataAccessService },
         provideAnimations(),
       ],
     }).compileComponents();
