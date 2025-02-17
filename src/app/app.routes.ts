@@ -55,6 +55,37 @@ export const routes: Routes = [
       ),
     title: 'User Account',
   },
+  // routes that are only available to data stewards
+  {
+    path: 'iva-manager',
+    canActivate: [() => inject(AuthService).guardDataSteward()],
+    loadComponent: () =>
+      import('./portal/features/home-page/home-page.component').then(
+        (m) => m.HomePageComponent,
+      ),
+    /* TODO: once implement, replace redirect with this:
+    loadComponent: () =>
+      import('./verification-addresses/features/iva-manager.component').then(
+        (m) => m.IvaManagerComponent,
+      ),
+    */
+    title: 'IVA Manager',
+  },
+  {
+    path: 'access-request-manager',
+    canActivate: [() => inject(AuthService).guardDataSteward()],
+    loadComponent: () =>
+      import('./portal/features/home-page/home-page.component').then(
+        (m) => m.HomePageComponent,
+      ),
+    /* TODO: once implement, replace redirect with this:
+    loadComponent: () =>
+      import('./access-requests/features/access-request-manager.component').then(
+        (m) => m.AccessRequestManager,
+      ),
+      */
+    title: 'Access Request Manager',
+  },
   // routes used in the authentication flows
   {
     path: 'oauth/callback',
