@@ -102,10 +102,6 @@ export class WorkPackageComponent {
    * @returns an internal error code
    */
   #checkPubKey(key: string): number {
-    key = key.trim();
-    if (!key) {
-      return 1; // key is empty
-    }
     if (key.match(/-.*PRIVATE.*-/)) {
       return 2; // if any kind of private key has been posted
     }
