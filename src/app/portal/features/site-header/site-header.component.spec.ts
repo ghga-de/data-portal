@@ -10,16 +10,13 @@ import { ActivatedRoute } from '@angular/router';
 
 import { screen } from '@testing-library/angular';
 
+import { fakeActivatedRoute } from '@app/../mocks/route';
 import { AccountButtonComponent } from '../account-button/account-button.component';
 import { SiteHeaderComponent } from './site-header.component';
 
 describe('SiteHeaderComponent', () => {
   let component: SiteHeaderComponent;
   let fixture: ComponentFixture<SiteHeaderComponent>;
-
-  const fakeActivatedRoute = {
-    snapshot: { data: {} },
-  } as ActivatedRoute;
 
   beforeEach(() => {
     TestBed.configureTestingModule({

@@ -9,6 +9,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { datasetSummary, searchResults } from '@app/../mocks/data';
+import { fakeActivatedRoute } from '@app/../mocks/route';
+import {
+  DataAccessService,
+  MockDataAccessService,
+} from '@app/data-access/services/data-access.service';
 import { MetadataService } from '@app/metadata/services/metadata.service';
 import { DatasetSummaryComponent } from './dataset-summary.component';
 
@@ -24,10 +29,6 @@ describe('DatasetSummaryComponent', () => {
   let component: DatasetSummaryComponent;
   let fixture: ComponentFixture<DatasetSummaryComponent>;
 
-  const fakeActivatedRoute = {
-    snapshot: { data: {} },
-  } as ActivatedRoute;
-
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [DatasetSummaryComponent],
@@ -37,6 +38,7 @@ describe('DatasetSummaryComponent', () => {
           provide: ActivatedRoute,
           useValue: fakeActivatedRoute,
         },
+        { provide: DataAccessService, useClass: MockDataAccessService },
       ],
     }).compileComponents();
 
