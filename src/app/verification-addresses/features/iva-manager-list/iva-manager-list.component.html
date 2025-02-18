@@ -4,7 +4,7 @@
   @let columns = ['user', 'type', 'value', 'state', 'actions'];
   <table
     mat-table
-    [dataSource]="ivaSource"
+    [dataSource]="source"
     class="mat-elevation-z8"
     matSort
     #sort="matSort"
@@ -47,4 +47,16 @@
       </td>
     </tr>
   </table>
+
+  @if (ivas().length > 10) {
+    <mat-paginator
+      [pageSize]="defaultTablePageSize"
+      [pageSizeOptions]="tablePageSizeOptions"
+      showFirstLastButtons
+      itemsPerPageLabel="IVAs per page"
+      aria-label="Select page of IVAs"
+      #paginator
+    >
+    </mat-paginator>
+  }
 }

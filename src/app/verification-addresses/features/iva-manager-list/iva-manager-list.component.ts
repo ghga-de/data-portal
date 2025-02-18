@@ -15,6 +15,7 @@ import {
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import {
@@ -40,7 +41,13 @@ const IVA_TYPE_ICONS: { [K in keyof typeof IvaType]: string } = {
  */
 @Component({
   selector: 'app-iva-manager-list',
-  imports: [MatTableModule, MatButtonModule, MatIconModule, MatSortModule],
+  imports: [
+    MatTableModule,
+    MatButtonModule,
+    MatIconModule,
+    MatSortModule,
+    MatPaginatorModule,
+  ],
   templateUrl: './iva-manager-list.component.html',
   styleUrl: './iva-manager-list.component.scss',
 })
@@ -51,12 +58,14 @@ export class IvaManagerListComponent implements AfterViewInit {
   ivasAreLoading = this.#ivaService.allIvasAreLoading;
   ivasError = this.#ivaService.allIvasError;
 
-  ivaSource = new MatTableDataSource<UserWithIva>([]);
+  source = new MatTableDataSource<UserWithIva>([]);
 
-  #updateIvaSourceEffect = effect(() => (this.ivaSource.data = this.ivas()));
+  defaultTablePageSize = 10;
+  tablePageSizeOptions = [5, 10, 25, 50, 100, 250, 500];
+
+  #updateSourceEffect = effect(() => (this.source.data = this.ivas()));
 
   #ivaSortingAccessor = (iva: UserWithIva, key: string) => {
-    console.log('ACCESS', iva, key);
     switch (key) {
       case 'user':
         const parts = iva.user_name.split(' ');
@@ -71,13 +80,22 @@ export class IvaManagerListComponent implements AfterViewInit {
   };
 
   @ViewChildren(MatSort) matSorts!: QueryList<MatSort>;
-  @ViewChild('sort') sortIvas!: MatSort;
+  @ViewChildren(MatPaginator) matPaginators!: QueryList<MatPaginator>;
+  @ViewChild('paginator') paginator!: MatPaginator;
+  @ViewChild('sort') sort!: MatSort;
 
   /**
    * Assign sorting
    */
   #addSorting() {
-    if (this.sortIvas) this.ivaSource.sort = this.sortIvas;
+    if (this.sort) this.source.sort = this.sort;
+  }
+
+  /**
+   * Assign pagination
+   */
+  #addPagination() {
+    if (this.paginator) this.source.paginator = this.paginator;
   }
 
   /**
@@ -85,9 +103,11 @@ export class IvaManagerListComponent implements AfterViewInit {
    * assign the sorting of the table to the data source
    */
   ngAfterViewInit() {
-    this.ivaSource.sortingDataAccessor = this.#ivaSortingAccessor;
+    this.source.sortingDataAccessor = this.#ivaSortingAccessor;
     this.#addSorting();
+    this.#addPagination();
     this.matSorts.changes.subscribe(() => this.#addSorting());
+    this.matPaginators.changes.subscribe(() => this.#addPagination());
   }
 
   /**
