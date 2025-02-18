@@ -29,5 +29,6 @@ oidc_token_url: token
 oidc_userinfo_url: userinfo
 oidc_use_discovery: true
 default_data_access_duration_days: 365
+oidc_account_url: https://profile.aai.lifescience-ri.eu/profile
 
 ribbon_text: 'Staging v$v'

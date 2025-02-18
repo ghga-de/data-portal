@@ -20,8 +20,9 @@ import { AccountComponent } from './account.component';
  */
 class MockAuthService {
   fullName = () => 'Dr. John Doe';
-  email = () => 'j.jdoe@home.org';
+  email = () => 'doe@home.org';
   role = () => 'data_steward';
+  roleName = () => 'Data Steward';
 }
 
 describe('AccountComponent', () => {
