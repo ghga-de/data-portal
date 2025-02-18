@@ -5,41 +5,39 @@
     Contact addresses could not be loaded. Please try again later.
   </p>
 } @else if (ivas().length) {
+  @let columns = ['user', 'type', 'value', 'state', 'actions'];
   <table mat-table [dataSource]="ivaSource" class="mat-elevation-z8">
     <ng-container matColumnDef="user">
-      <th mat-header-cell *matHeaderCellDef>User</th>
+      <th mat-header-cell *matHeaderCellDef class="w-64">User</th>
       <td mat-cell class="text-base" *matCellDef="let iva">
-        {{ iva.fullname }}
+        {{ iva.user_name }}
       </td>
     </ng-container>
     <ng-container matColumnDef="type">
-      <th mat-header-cell *matHeaderCellDef>Type</th>
+      <th mat-header-cell *matHeaderCellDef class="w-15">Type</th>
       <td mat-cell class="text-base" *matCellDef="let iva">
-        {{ iva.type }}
+        <mat-icon>{{ typeIconName(iva) }}</mat-icon
+        ><span class="ml-4">{{ typeName(iva) }}</span>
       </td>
     </ng-container>
-    <ng-container matColumnDef="value">
+    <ng-container matColumnDef="value" class="w-64">
       <th mat-header-cell *matHeaderCellDef>Value</th>
       <td mat-cell class="text-base" *matCellDef="let iva">
         {{ iva.value }}
       </td>
     </ng-container>
-    <ng-container matColumnDef="state">
+    <ng-container matColumnDef="state" class="w-12">
       <th mat-header-cell *matHeaderCellDef>Status</th>
-      <td mat-cell class="text-base" *matCellDef="let iva">
-        {{ iva.state }}
+      <td mat-cell class="text-base state{{ iva.state }}" *matCellDef="let iva">
+        {{ statusName(iva) }}
       </td>
     </ng-container>
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef>Actions</th>
-      <td mat-cell class="text-base" *matCellDef="let iva">
-        {{ iva.state }}
-      </td>
+      <td mat-cell class="text-base" *matCellDef="let iva"></td>
     </ng-container>
-    <tr
-      mat-row
-      *matRowDef="let row; columns: ['user', 'type', 'value', 'state', 'actions']"
-    ></tr>
+    <tr mat-header-row *matHeaderRowDef="columns"></tr>
+    <tr mat-row *matRowDef="let row; columns: columns"></tr>
   </table>
 } @else {
   <p class="text-base">

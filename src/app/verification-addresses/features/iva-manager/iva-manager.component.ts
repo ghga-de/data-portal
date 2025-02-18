@@ -4,7 +4,8 @@
  * @license Apache-2.0
  */
 
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { IvaService } from '@app/verification-addresses/services/iva.service';
 import { IvaManagerFilterComponent } from '../iva-manager-filter/iva-manager-filter.component';
 import { IvaManagerListComponent } from '../iva-manager-list/iva-manager-list.component';
 
@@ -24,4 +25,13 @@ import { IvaManagerListComponent } from '../iva-manager-list/iva-manager-list.co
   templateUrl: './iva-manager.component.html',
   styleUrl: './iva-manager.component.scss',
 })
-export class IvaManagerComponent {}
+export class IvaManagerComponent implements OnInit {
+  #ivaService = inject(IvaService);
+
+  /**
+   * Load the IVAs of the current user when the component is initialized
+   */
+  ngOnInit(): void {
+    this.#ivaService.loadAllIvas();
+  }
+}
