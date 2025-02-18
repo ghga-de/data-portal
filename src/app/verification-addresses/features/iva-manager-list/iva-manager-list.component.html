@@ -1,33 +1,35 @@
 @if (ivasAreLoading()) {
   <p class="text-base">Loading your contact addresses..</p>
-} @else if (ivasError()) {
-  <p class="font-bold text-red-600">
-    Contact addresses could not be loaded. Please try again later.
-  </p>
-} @else if (ivas().length) {
+} @else {
   @let columns = ['user', 'type', 'value', 'state', 'actions'];
-  <table mat-table [dataSource]="ivaSource" class="mat-elevation-z8">
+  <table
+    mat-table
+    [dataSource]="ivaSource"
+    class="mat-elevation-z8"
+    matSort
+    #sort="matSort"
+  >
     <ng-container matColumnDef="user">
-      <th mat-header-cell *matHeaderCellDef class="w-64">User</th>
+      <th mat-header-cell *matHeaderCellDef class="w-64" mat-sort-header>User</th>
       <td mat-cell class="text-base" *matCellDef="let iva">
         {{ iva.user_name }}
       </td>
     </ng-container>
     <ng-container matColumnDef="type">
-      <th mat-header-cell *matHeaderCellDef class="w-15">Type</th>
+      <th mat-header-cell *matHeaderCellDef class="w-15" mat-sort-header>Type</th>
       <td mat-cell class="text-base" *matCellDef="let iva">
         <mat-icon>{{ typeIconName(iva) }}</mat-icon
         ><span class="ml-4">{{ typeName(iva) }}</span>
       </td>
     </ng-container>
     <ng-container matColumnDef="value" class="w-64">
-      <th mat-header-cell *matHeaderCellDef>Value</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Value</th>
       <td mat-cell class="text-base" *matCellDef="let iva">
         {{ iva.value }}
       </td>
     </ng-container>
     <ng-container matColumnDef="state" class="w-12">
-      <th mat-header-cell *matHeaderCellDef>Status</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
       <td mat-cell class="text-base state{{ iva.state }}" *matCellDef="let iva">
         {{ statusName(iva) }}
       </td>
@@ -38,9 +40,11 @@
     </ng-container>
     <tr mat-header-row *matHeaderRowDef="columns"></tr>
     <tr mat-row *matRowDef="let row; columns: columns"></tr>
+
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell p-4 text-base" colspan="5">
+        No contact addresses found. Try removing some filter conditions.
+      </td>
+    </tr>
   </table>
-} @else {
-  <p class="text-base">
-    No contact addresses found. Try removing some filter conditions.
-  </p>
 }

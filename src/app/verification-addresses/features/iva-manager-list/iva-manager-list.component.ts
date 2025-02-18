@@ -4,9 +4,18 @@
  * @license Apache-2.0
  */
 
-import { Component, effect, inject } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  effect,
+  inject,
+  QueryList,
+  ViewChild,
+  ViewChildren,
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import {
   IvaStatePrintable,
@@ -31,11 +40,11 @@ const IVA_TYPE_ICONS: { [K in keyof typeof IvaType]: string } = {
  */
 @Component({
   selector: 'app-iva-manager-list',
-  imports: [MatTableModule, MatButtonModule, MatIconModule],
+  imports: [MatTableModule, MatButtonModule, MatIconModule, MatSortModule],
   templateUrl: './iva-manager-list.component.html',
   styleUrl: './iva-manager-list.component.scss',
 })
-export class IvaManagerListComponent {
+export class IvaManagerListComponent implements AfterViewInit {
   #ivaService = inject(IvaService);
 
   ivas = this.#ivaService.allIvas;
@@ -45,6 +54,41 @@ export class IvaManagerListComponent {
   ivaSource = new MatTableDataSource<UserWithIva>([]);
 
   #updateIvaSourceEffect = effect(() => (this.ivaSource.data = this.ivas()));
+
+  #ivaSortingAccessor = (iva: UserWithIva, key: string) => {
+    console.log('ACCESS', iva, key);
+    switch (key) {
+      case 'user':
+        const parts = iva.user_name.split(' ');
+        return parts.reverse().join(',');
+      default:
+        const value = iva[key as keyof UserWithIva];
+        if (typeof value === 'string' || typeof value === 'number') {
+          return value;
+        }
+        return '';
+    }
+  };
+
+  @ViewChildren(MatSort) matSorts!: QueryList<MatSort>;
+  @ViewChild('sort') sortIvas!: MatSort;
+
+  /**
+   * Assign sorting
+   */
+  #addSorting() {
+    if (this.sortIvas) this.ivaSource.sort = this.sortIvas;
+  }
+
+  /**
+   * After the view has been initialised
+   * assign the sorting of the table to the data source
+   */
+  ngAfterViewInit() {
+    this.ivaSource.sortingDataAccessor = this.#ivaSortingAccessor;
+    this.#addSorting();
+    this.matSorts.changes.subscribe(() => this.#addSorting());
+  }
 
   /**
    * Get the type name of an IVA
