@@ -31,7 +31,7 @@ export class UserIvaListComponent implements OnInit {
   #ivaService = inject(IvaService);
 
   ivas = this.#ivaService.userIvas;
-  ivasAreloading = this.#ivaService.userIvasAreLoading;
+  ivasAreLoading = this.#ivaService.userIvasAreLoading;
   ivasError = this.#ivaService.userIvasError;
 
   ivaSource = new MatTableDataSource<Iva>([]);

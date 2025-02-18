@@ -1,4 +1,4 @@
-@if (ivasAreloading()) {
+@if (ivasAreLoading()) {
   <p class="text-base">Loading your contact addresses..</p>
 } @else if (ivasError()) {
   <p class="font-bold text-red-600">
@@ -18,7 +18,7 @@
     button to the right, but you will lose access to any datasets whose access was
     linked to that address.
   </p>
-  @if (ivas()) {
+  @if (ivas().length) {
     <table mat-table [dataSource]="ivaSource" class="mat-elevation-z8">
       <ng-container matColumnDef="value">
         <td mat-cell class="max-w-72 text-base" *matCellDef="let iva">
