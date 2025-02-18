@@ -33,15 +33,17 @@ export class DataAccessService {
   #arsBaseUrl = this.#config.arsUrl;
   #arsEndpointUrl = `${this.#arsBaseUrl}/access-requests`;
 
-  showNewAccessRequestDialog = (id: string) => {
-    if (!this.#auth.isAuthenticated()) {
+  showNewAccessRequestDialog = (datasetID: string) => {
+    const user = this.#auth.user();
+
+    if (!this.#auth.isAuthenticated() || !user) {
       this.#notification.showError('You must be logged in to perform this action');
       return;
     }
 
     const data: AccessRequestDialogData = {
-      datasetID: id,
-      email: '',
+      datasetID,
+      email: user.email,
       description: '',
       fromDate: undefined,
       untilDate: undefined,
@@ -97,7 +99,7 @@ export class DataAccessService {
           ),
       ).then(async () => {
         this.#accessRequests.reload();
-        this.#notification.showSuccess('You have been logged out.');
+        this.#notification.showSuccess('Your request has been submitted successfully.');
       });
     } catch (error) {
       console.error(error);
