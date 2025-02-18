@@ -18,10 +18,7 @@ import {
 } from '@angular/material/dialog';
 import { MatFormField, MatHint, MatLabel } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-
-export interface DialogData {
-  datasetID: string;
-}
+import { AccessRequestDialogData } from '@app/data-access/models/access-requests';
 
 /**
  * This component contains a form for all the data needed for an access request.
@@ -43,19 +40,17 @@ export interface DialogData {
 })
 export class DataAccessRequestModalComponent {
   readonly dialogRef = inject(MatDialogRef<DataAccessRequestModalComponent>);
-  readonly data = inject<DialogData>(MAT_DIALOG_DATA);
+  readonly data = inject<AccessRequestDialogData>(MAT_DIALOG_DATA);
   readonly result = model(this.data);
-  readonly email = model('');
-  readonly description = model('');
-  readonly fromDate = model(undefined);
-  readonly untilDate = model(undefined);
+  readonly email = model(this.data.email);
+  readonly description = model(this.data.description);
+  readonly fromDate = model(this.data.fromDate);
+  readonly untilDate = model(this.data.untilDate);
   minFromDate = new Date();
   minUntilDate = new Date();
   datasetID = input.required<string>();
 
   fromDateChanged = ($event: MatDatepickerInputEvent<Date, string>) => {
-    console.log($event);
-    console.log(typeof $event);
     if ($event.value) {
       this.updateMinUntilDate($event.value);
     }
@@ -65,7 +60,12 @@ export class DataAccessRequestModalComponent {
     this.minUntilDate = newDate;
   };
 
-  cancelClick = () => {};
+  cancelClick = () => {
+    this.data.isCanceled = true;
+  };
 
-  submitClick = () => {};
+  submitClick = () => {
+    this.data.isCanceled = false;
+    this.dialogRef.close(this.data);
+  };
 }

@@ -19,3 +19,13 @@ export interface AccessRequest {
   changed_by: null | string;
   iva_id: null | string;
 }
+
+export interface AccessRequestDialogData {
+  datasetID: string;
+  isCanceled: boolean;
+  email: string;
+  description: string;
+  fromDate: Date | undefined;
+  untilDate: Date | undefined;
+  userId: string;
+}

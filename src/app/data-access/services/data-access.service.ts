@@ -7,13 +7,14 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal, Signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AuthService } from '@app/auth/services/auth.service';
 import { ConfigService } from '@app/shared/services/config.service';
-import { map } from 'rxjs';
+import { NotificationService } from '@app/shared/services/notification.service';
+import { catchError, firstValueFrom, map } from 'rxjs';
 // eslint-disable-next-line boundaries/element-types
 import { DataAccessRequestModalComponent } from '../features/data-access-request-modal/data-access-request-modal.component';
-import { AccessRequest } from '../models/access-requests';
+import { AccessRequest, AccessRequestDialogData } from '../models/access-requests';
 
 /**
  *  This service handles state and management of access requests (to datasets)
@@ -22,24 +23,85 @@ import { AccessRequest } from '../models/access-requests';
   providedIn: 'root',
 })
 export class DataAccessService {
+  #dialogRef: MatDialogRef<DataAccessRequestModalComponent> | undefined;
   #http = inject(HttpClient);
   #auth = inject(AuthService);
+  #notification = inject(NotificationService);
   #dialog = inject(MatDialog);
   #userId = computed<string | null>(() => this.#auth.user()?.id || null);
   #config = inject(ConfigService);
   #arsBaseUrl = this.#config.arsUrl;
   #arsEndpointUrl = `${this.#arsBaseUrl}/access-requests`;
-  constructor() {}
 
   showNewAccessRequestDialog = (id: string) => {
-    this.#dialog.open(DataAccessRequestModalComponent, {
-      data: {
-        datasetID: id,
-      },
+    if (!this.#auth.isAuthenticated()) {
+      this.#notification.showError('You must be logged in to perform this action');
+      return;
+    }
+
+    const data: AccessRequestDialogData = {
+      datasetID: id,
+      email: '',
+      description: '',
+      fromDate: undefined,
+      untilDate: undefined,
+      isCanceled: false,
+      userId: '',
+    };
+
+    this.#dialogRef = this.#dialog.open(DataAccessRequestModalComponent, {
+      data,
     });
-    this.#dialog.afterAllClosed.subscribe((event) => {
-      console.log(event);
-    });
+
+    this.#dialogRef
+      .afterClosed()
+      .subscribe((componentData) => this.#processAccessRequest(componentData));
+  };
+
+  #processAccessRequest = (data: AccessRequestDialogData) => {
+    const userid = this.#auth.user()?.id;
+    if (data.isCanceled || !this.#auth.isAuthenticated() || !userid) {
+      return;
+    }
+    data.userId = userid;
+    this.#performAccessRequest(data);
+  };
+
+  #performAccessRequest = (data: AccessRequestDialogData) => {
+    data.fromDate?.setUTCHours(0);
+    data.fromDate?.setUTCMinutes(0);
+    data.fromDate?.setUTCSeconds(0);
+    data.fromDate?.setUTCMilliseconds(0);
+    data.untilDate?.setHours(23);
+    data.untilDate?.setMinutes(59);
+    data.untilDate?.setSeconds(59);
+    data.untilDate?.setMilliseconds(999);
+    try {
+      firstValueFrom(
+        this.#http
+          .post<void>(this.#arsEndpointUrl, {
+            user_id: data.userId,
+            dataset_id: data.datasetID,
+            email: data.email,
+            request_text: data.description,
+            access_starts: data.fromDate?.toDateString(),
+            access_ends: data.untilDate?.toDateString(),
+          })
+          .pipe(
+            map(console.log),
+            catchError(async () =>
+              this.#notification.showError(
+                'There was an error submitting your access request.',
+              ),
+            ),
+          ),
+      ).then(async () => {
+        this.#accessRequests.reload();
+        this.#notification.showSuccess('You have been logged out.');
+      });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   #accessRequests = rxResource<AccessRequest[], string | null>({
