@@ -1,1 +1,48 @@
-<p>iva-manager-list works!</p>
+@if (ivasAreLoading()) {
+  <p class="text-base">Loading your contact addresses..</p>
+} @else if (ivasError()) {
+  <p class="font-bold text-red-600">
+    Contact addresses could not be loaded. Please try again later.
+  </p>
+} @else if (ivas().length) {
+  <table mat-table [dataSource]="ivaSource" class="mat-elevation-z8">
+    <ng-container matColumnDef="user">
+      <th mat-header-cell *matHeaderCellDef>User</th>
+      <td mat-cell class="text-base" *matCellDef="let iva">
+        {{ iva.fullname }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="type">
+      <th mat-header-cell *matHeaderCellDef>Type</th>
+      <td mat-cell class="text-base" *matCellDef="let iva">
+        {{ iva.type }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="value">
+      <th mat-header-cell *matHeaderCellDef>Value</th>
+      <td mat-cell class="text-base" *matCellDef="let iva">
+        {{ iva.value }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="state">
+      <th mat-header-cell *matHeaderCellDef>Status</th>
+      <td mat-cell class="text-base" *matCellDef="let iva">
+        {{ iva.state }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Actions</th>
+      <td mat-cell class="text-base" *matCellDef="let iva">
+        {{ iva.state }}
+      </td>
+    </ng-container>
+    <tr
+      mat-row
+      *matRowDef="let row; columns: ['user', 'type', 'value', 'state', 'actions']"
+    ></tr>
+  </table>
+} @else {
+  <p class="text-base">
+    No contact addresses found. Try removing some filter conditions.
+  </p>
+}
