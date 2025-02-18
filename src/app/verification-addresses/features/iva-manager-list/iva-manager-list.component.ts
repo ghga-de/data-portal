@@ -141,17 +141,23 @@ export class IvaManagerListComponent implements AfterViewInit {
    * Confirm the transmission of an IVA verification code
    * @param iva - the IVA to confirm the transmission for
    */
-  confirmTransmission(iva: UserWithIva) {}
+  confirmTransmission(iva: UserWithIva) {
+    console.log('confirm', iva);
+  }
 
   /**
    * Create confirmation code for an IVA
    * @param iva - the IVA to create a verification code for
    */
-  createCode(iva: UserWithIva) {}
+  createCode(iva: UserWithIva) {
+    console.log('create code', iva);
+  }
 
   /**
    * Invalidate an IVA after confirmation
    * @param iva - the IVA to invalidate
    */
-  invalidate(iva: UserWithIva) {}
+  invalidate(iva: UserWithIva) {
+    console.log('invalidate', iva);
+  }
 }
