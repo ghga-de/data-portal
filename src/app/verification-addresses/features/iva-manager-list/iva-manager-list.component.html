@@ -36,7 +36,43 @@
     </ng-container>
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef>Actions</th>
-      <td mat-cell class="text-base" *matCellDef="let iva"></td>
+      <td mat-cell class="text-base" *matCellDef="let iva">
+        @if (iva.state === 'CodeRequested' || iva.state === 'CodeCreated') {
+          <button
+            (click)="createCode(iva)"
+            class="create my-2 mr-4 w-40"
+            mat-flat-button
+          >
+            <mat-icon>pin</mat-icon>
+            @if (iva.state === 'CodeCreated') {
+              Recreate
+            } @else {
+              Create
+            }
+            code
+          </button>
+        }
+        @if (iva.state === 'CodeCreated') {
+          <button
+            (click)="confirmTransmission(iva)"
+            class="confirm my-2 mr-4 w-52"
+            mat-flat-button
+          >
+            <mat-icon>check</mat-icon>
+            Confirm transmission
+          </button>
+        }
+        @if (iva.state !== 'Unverified') {
+          <button
+            (click)="invalidate(iva)"
+            class="invalidate my-2 w-36"
+            mat-stroked-button
+          >
+            <mat-icon>close_small</mat-icon>
+            Invalidate
+          </button>
+        }
+      </td>
     </ng-container>
     <tr mat-header-row *matHeaderRowDef="columns"></tr>
     <tr mat-row *matRowDef="let row; columns: columns"></tr>

@@ -136,4 +136,22 @@ export class IvaManagerListComponent implements AfterViewInit {
   statusName(iva: UserWithIva): string {
     return IvaStatePrintable[iva.state];
   }
+
+  /**
+   * Confirm the transmission of an IVA verification code
+   * @param iva - the IVA to confirm the transmission for
+   */
+  confirmTransmission(iva: UserWithIva) {}
+
+  /**
+   * Create confirmation code for an IVA
+   * @param iva - the IVA to create a verification code for
+   */
+  createCode(iva: UserWithIva) {}
+
+  /**
+   * Invalidate an IVA after confirmation
+   * @param iva - the IVA to invalidate
+   */
+  invalidate(iva: UserWithIva) {}
 }
