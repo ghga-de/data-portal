@@ -60,15 +60,9 @@ export const routes: Routes = [
     path: 'iva-manager',
     canActivate: [() => inject(AuthService).guardDataSteward()],
     loadComponent: () =>
-      import('./portal/features/home-page/home-page.component').then(
-        (m) => m.HomePageComponent,
-      ),
-    /* TODO: once implement, replace redirect with this:
-    loadComponent: () =>
-      import('./verification-addresses/features/iva-manager.component').then(
-        (m) => m.IvaManagerComponent,
-      ),
-    */
+      import(
+        './verification-addresses/features/iva-manager/iva-manager.component'
+      ).then((m) => m.IvaManagerComponent),
     title: 'IVA Manager',
   },
   {
