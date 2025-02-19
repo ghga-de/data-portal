@@ -335,7 +335,8 @@ export class AuthService {
     const state = await this.#determineSessionState();
     if (state === 'Authenticated' && this.role() === 'data_steward') return true;
     this.#notify.showWarning(
-      'Please login as data steward to continue the requested action.',
+      (state === 'Authenticated' ? 'Insufficient permissions' : 'Please login') +
+        ' to continue with the requested action.',
     );
     return this.#guardBack();
   }
