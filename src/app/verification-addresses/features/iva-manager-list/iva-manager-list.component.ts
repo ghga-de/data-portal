@@ -18,6 +18,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { ConfirmationService } from '@app/shared/services/confirmation.service';
+import { NotificationService } from '@app/shared/services/notification.service';
 import {
   IvaStatePrintable,
   IvaType,
@@ -52,6 +54,8 @@ const IVA_TYPE_ICONS: { [K in keyof typeof IvaType]: string } = {
   styleUrl: './iva-manager-list.component.scss',
 })
 export class IvaManagerListComponent implements AfterViewInit {
+  #confirm = inject(ConfirmationService);
+  #notify = inject(NotificationService);
   #ivaService = inject(IvaService);
 
   ivas = this.#ivaService.allIvas;
@@ -154,10 +158,37 @@ export class IvaManagerListComponent implements AfterViewInit {
   }
 
   /**
+   * Invalidate the given IVA
+   * @param iva - the IVA to be invalidated
+   */
+  #invalidate(iva: UserWithIva): void {
+    this.#ivaService.unverifyIva(iva.id).subscribe({
+      next: () => {
+        this.#notify.showSuccess('IVA has been invalidated');
+      },
+      error: (err) => {
+        console.debug(err);
+        this.#notify.showError('IVA could not be invalidated');
+      },
+    });
+  }
+
+  /**
    * Invalidate an IVA after confirmation
    * @param iva - the IVA to invalidate
    */
   invalidate(iva: UserWithIva) {
-    console.log('invalidate', iva);
+    this.#confirm.confirm({
+      title: 'Confirm invalidation of IVA',
+      message:
+        `Do you really wish to invalidate the ${this.typeName(iva)} IVA of` +
+        ` ${iva.user_name} with value ${iva.value}?` +
+        ' The user will lose access to any dataset linked to this IVA.',
+      cancelText: 'Cancel',
+      confirmText: 'Confirm invalidation',
+      callback: (confirmed) => {
+        if (confirmed) this.#invalidate(iva);
+      },
+    });
   }
 }
