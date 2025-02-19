@@ -1,5 +1,5 @@
 /**
- * Short module description
+ * Tests for shared confirmation dialog service
  * @copyright The GHGA Authors
  * @license Apache-2.0
  */
