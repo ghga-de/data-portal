@@ -14,6 +14,7 @@ import {
   ViewChildren,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
@@ -27,6 +28,7 @@ import {
   UserWithIva,
 } from '@app/verification-addresses/models/iva';
 import { IvaService } from '@app/verification-addresses/services/iva.service';
+import { CodeCreationDialogComponent } from '../code-creation-dialog/code-creation-dialog.component';
 
 const IVA_TYPE_ICONS: { [K in keyof typeof IvaType]: string } = {
   Phone: 'smartphone',
@@ -54,6 +56,7 @@ const IVA_TYPE_ICONS: { [K in keyof typeof IvaType]: string } = {
   styleUrl: './iva-manager-list.component.scss',
 })
 export class IvaManagerListComponent implements AfterViewInit {
+  #dialog = inject(MatDialog);
   #confirm = inject(ConfirmationService);
   #notify = inject(NotificationService);
   #ivaService = inject(IvaService);
@@ -142,14 +145,6 @@ export class IvaManagerListComponent implements AfterViewInit {
   }
 
   /**
-   * Create confirmation code for an IVA
-   * @param iva - the IVA to create a verification code for
-   */
-  createCode(iva: UserWithIva) {
-    console.log('create code', iva);
-  }
-
-  /**
    * Invalidate the given IVA
    * @param iva - the IVA to be invalidated
    */
@@ -174,7 +169,7 @@ export class IvaManagerListComponent implements AfterViewInit {
       title: 'Confirm invalidation of IVA',
       message:
         `Do you really wish to invalidate the ${this.typeName(iva)} IVA of` +
-        ` ${iva.user_name} with value "${iva.value}"?` +
+        ` ${iva.user_name} with address "${iva.value}"?` +
         ' The user will lose access to any dataset linked to this IVA.',
       cancelText: 'Cancel',
       confirmText: 'Confirm invalidation',
@@ -212,11 +207,35 @@ export class IvaManagerListComponent implements AfterViewInit {
       message:
         'Please confirm the transmission of the verification code' +
         ` the ${this.typeName(iva)} IVA of` +
-        ` ${iva.user_name} with value "${iva.value}".`,
+        ` ${iva.user_name} with address "${iva.value}".`,
       cancelText: 'Cancel',
       confirmText: 'Confirm transmission',
       callback: (confirmed) => {
         if (confirmed) this.#confirmTransmission(iva);
+      },
+    });
+  }
+
+  /**
+   * (Re)create a verification code
+   * @param iva - the IVA for which the code should be created
+   */
+  createCode(iva: UserWithIva) {
+    this.#ivaService.createCodeForIva(iva.id).subscribe({
+      next: (code) => {
+        this.#notify.showSuccess('Verification code has been created');
+        const dialogRef = this.#dialog.open(CodeCreationDialogComponent, {
+          data: { ...iva, code },
+        });
+        dialogRef.afterClosed().subscribe((doConfirm) => {
+          if (doConfirm) {
+            this.#confirmTransmission(iva);
+          }
+        });
+      },
+      error: (err) => {
+        console.debug(err);
+        this.#notify.showError('Verification code could not be created');
       },
     });
   }
