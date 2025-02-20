@@ -142,14 +142,6 @@ export class IvaManagerListComponent implements AfterViewInit {
   }
 
   /**
-   * Confirm the transmission of an IVA verification code
-   * @param iva - the IVA to confirm the transmission for
-   */
-  confirmTransmission(iva: UserWithIva) {
-    console.log('confirm', iva);
-  }
-
-  /**
    * Create confirmation code for an IVA
    * @param iva - the IVA to create a verification code for
    */
@@ -182,12 +174,49 @@ export class IvaManagerListComponent implements AfterViewInit {
       title: 'Confirm invalidation of IVA',
       message:
         `Do you really wish to invalidate the ${this.typeName(iva)} IVA of` +
-        ` ${iva.user_name} with value ${iva.value}?` +
+        ` ${iva.user_name} with value "${iva.value}"?` +
         ' The user will lose access to any dataset linked to this IVA.',
       cancelText: 'Cancel',
       confirmText: 'Confirm invalidation',
       callback: (confirmed) => {
         if (confirmed) this.#invalidate(iva);
+      },
+    });
+  }
+
+  /**
+   * Confirm transmission of a verification code
+   * @param iva - the IVA for which the code was transmitted
+   */
+  #confirmTransmission(iva: UserWithIva): void {
+    this.#ivaService.confirmTransmissionForIva(iva.id).subscribe({
+      next: () => {
+        this.#notify.showSuccess('Transmission of verification code confirmed');
+      },
+      error: (err) => {
+        console.debug(err);
+        this.#notify.showError(
+          'Transmission of verification code could not be confirmed',
+        );
+      },
+    });
+  }
+
+  /**
+   * Confirm transmission of a verification code after confirmation
+   * @param iva - the IVA for which the code was transmitted
+   */
+  confirmTransmission(iva: UserWithIva) {
+    this.#confirm.confirm({
+      title: 'Confirm code transmission',
+      message:
+        'Please confirm the transmission of the verification code' +
+        ` the ${this.typeName(iva)} IVA of` +
+        ` ${iva.user_name} with value "${iva.value}".`,
+      cancelText: 'Cancel',
+      confirmText: 'Confirm transmission',
+      callback: (confirmed) => {
+        if (confirmed) this.#confirmTransmission(iva);
       },
     });
   }
