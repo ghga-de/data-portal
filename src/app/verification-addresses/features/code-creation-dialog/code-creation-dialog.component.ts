@@ -17,7 +17,7 @@ import {
 } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { NotificationService } from '@app/shared/services/notification.service';
-import { UserWithIva } from '@app/verification-addresses/models/iva';
+import { IvaTypePrintable, UserWithIva } from '@app/verification-addresses/models/iva';
 
 type IvaWithCode = UserWithIva & { code: string };
 
@@ -59,6 +59,15 @@ export class CodeCreationDialogComponent {
    */
   onConfirmTransmission(): void {
     this.#dialogRef.close(true);
+  }
+
+  /**
+   * Get the type name of an IVA
+   * @param iva - the IVA in question
+   * @returns the printable type name
+   */
+  typeName(iva: UserWithIva): string {
+    return IvaTypePrintable[iva.type];
   }
 
   /**
