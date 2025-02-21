@@ -15,9 +15,7 @@ import { Iva, IvaState, IvaType, UserWithIva } from '../models/iva';
 /**
  * IVA service
  */
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class IvaService {
   #http = inject(HttpClient);
 
