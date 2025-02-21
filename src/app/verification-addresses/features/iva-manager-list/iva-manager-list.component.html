@@ -1,7 +1,7 @@
 @if (ivasAreLoading()) {
   <p class="text-base">Loading contact addresses..</p>
 } @else {
-  @let columns = ['user', 'type', 'value', 'state', 'actions'];
+  @let columns = ['user', 'type', 'value', 'changed', 'state', 'actions'];
   <table
     mat-table
     [dataSource]="source"
@@ -26,6 +26,14 @@
       <th mat-header-cell *matHeaderCellDef class="w-64" mat-sort-header>Address</th>
       <td mat-cell class="text-base" *matCellDef="let iva">
         {{ iva.value }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="changed">
+      <th mat-header-cell *matHeaderCellDef class="w-36" mat-sort-header>
+        Last change
+      </th>
+      <td mat-cell class="text-base" *matCellDef="let iva">
+        {{ iva.changed | date: 'yyyy-MM-dd' }}
       </td>
     </ng-container>
     <ng-container matColumnDef="state">
@@ -78,7 +86,7 @@
     <tr mat-row *matRowDef="let row; columns: columns"></tr>
 
     <tr class="mat-row" *matNoDataRow>
-      <td class="mat-cell p-4 text-base" colspan="5">
+      <td class="mat-cell p-4 text-base" colspan="6">
         No contact addresses found. Try removing some filter conditions.
       </td>
     </tr>

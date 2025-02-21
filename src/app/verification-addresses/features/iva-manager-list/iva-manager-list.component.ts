@@ -4,6 +4,7 @@
  * @license Apache-2.0
  */
 
+import { DatePipe } from '@angular/common';
 import {
   AfterViewInit,
   Component,
@@ -13,6 +14,7 @@ import {
   ViewChild,
   ViewChildren,
 } from '@angular/core';
+
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -46,6 +48,7 @@ const IVA_TYPE_ICONS: { [K in keyof typeof IvaType]: string } = {
 @Component({
   selector: 'app-iva-manager-list',
   imports: [
+    DatePipe,
     MatTableModule,
     MatButtonModule,
     MatIconModule,
