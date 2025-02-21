@@ -19,6 +19,7 @@
         matInput
         [matDatepicker]="from_picker"
         [min]="minFromDate"
+        [max]="maxFromDate"
         [(ngModel)]="fromDate"
         (dateInput)="fromDateChanged($event)"
       />
@@ -33,6 +34,7 @@
         matInput
         [matDatepicker]="until_picker"
         [min]="minUntilDate"
+        [max]="maxUntilDate"
         [(ngModel)]="untilDate"
       />
       <mat-hint>MM/DD/YYYY</mat-hint>

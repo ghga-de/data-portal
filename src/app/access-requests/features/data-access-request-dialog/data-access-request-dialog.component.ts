@@ -22,6 +22,7 @@ import {
 import { MatFormField, MatHint, MatLabel } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { AccessRequestDialogData } from '@app/access-requests/models/access-requests';
+import { ConfigService } from '@app/shared/services/config.service';
 
 /**
  * This component contains a form for all the data needed for an access request.
@@ -47,23 +48,62 @@ import { AccessRequestDialogData } from '@app/access-requests/models/access-requ
 export class DataAccessRequestDialogComponent {
   readonly dialogRef = inject(MatDialogRef<DataAccessRequestDialogComponent>);
   readonly data = inject<AccessRequestDialogData>(MAT_DIALOG_DATA);
+  #config = inject(ConfigService);
   readonly result = model(this.data);
   readonly email = model(this.data.email);
   readonly description = model(this.data.description);
-  readonly fromDate = model(this.data.fromDate);
-  readonly untilDate = model(this.data.untilDate);
+  fromDate = model(this.data.fromDate);
+  untilDate = model(this.data.untilDate);
   minFromDate = new Date();
   minUntilDate = new Date();
+  maxFromDate = new Date();
+  maxUntilDate = new Date();
   datasetID = input.required<string>();
+
+  constructor() {
+    // Sane defaults for dates.
+    this.fromDate.set(new Date());
+    let d = new Date();
+    d.setDate(d.getDate() + this.#config.default_access_duration_days);
+    this.untilDate.set(d);
+    this.minUntilDate.setDate(
+      this.minUntilDate.getDate() + this.#config.access_grant_min_days,
+    );
+  }
 
   fromDateChanged = ($event: MatDatepickerInputEvent<Date, string>) => {
     if ($event.value) {
-      this.updateMinUntilDate($event.value);
+      this.updateUntilRangeForFromValue($event.value);
     }
   };
 
-  updateMinUntilDate = (newDate: Date) => {
-    this.minUntilDate = newDate;
+  untilDateChanged = ($event: MatDatepickerInputEvent<Date, string>) => {
+    if ($event.value) {
+      this.updateFromRangeForUntilValue($event.value);
+    }
+  };
+
+  updateFromRangeForUntilValue = (date: Date) => {
+    const newUntilDate = date.getDate();
+    const currentDate = new Date().getDate();
+    const newFromMinDate = Math.max(
+      currentDate,
+      newUntilDate - this.#config.access_grant_max_days,
+    );
+    const newFromMaxDate = Math.min(
+      newUntilDate - this.#config.access_grant_min_days,
+      currentDate + this.#config.access_upfront_max_days,
+    );
+    this.minFromDate.setDate(new Date().setDate(newFromMinDate));
+    this.maxFromDate.setDate(new Date().setDate(newFromMaxDate));
+  };
+
+  updateUntilRangeForFromValue = (date: Date) => {
+    const newFromDate = date.getDate();
+    const newUntilMinDate = newFromDate + this.#config.access_grant_min_days;
+    const newUntilMaxDate = newFromDate + this.#config.access_grant_max_days;
+    this.minUntilDate.setDate(new Date().setDate(newUntilMinDate));
+    this.maxUntilDate.setDate(new Date().setDate(newUntilMaxDate));
   };
 
   cancelClick = () => {

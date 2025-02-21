@@ -141,7 +141,7 @@ export class DataAccessService {
  */
 export class MockDataAccessService {
   isLoading = signal(false);
-
+  hasError = signal(false);
   grantedAccessRequests = signal([
     {
       id: 'GHGAD15111403130971',

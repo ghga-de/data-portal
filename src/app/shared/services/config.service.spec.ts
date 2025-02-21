@@ -28,6 +28,10 @@ const mockConfig = {
   mock_api: true,
   mock_oidc: true,
   ribbon_text: 'Test ribbon text',
+  access_upfront_max_days: 180,
+  access_grant_min_days: 7,
+  access_grant_max_days: 730,
+  default_access_duration_days: 365,
 };
 
 describe('ConfigService', () => {

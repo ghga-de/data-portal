@@ -125,12 +125,12 @@ export const responses: { [endpoint: string]: ResponseValue } = {
    */
   // Specific dataset and user access requests
   'GET /api/ars/access-requests?dataset_id=GHGAD588887987&*': getAccessRequests(
-    'j.doe@ghga.de',
+    'doe@test.dev',
     'GHGAD588887987',
   ),
 
   // Specific dataset and user access requests
-  'GET /api/ars/access-requests?*': getAccessRequests('j.doe@ghga.de'),
+  'GET /api/ars/access-requests?*': getAccessRequests('doe@test.dev'),
 
   // All access requests
   'GET /api/ars/access-requests': getAccessRequests(),

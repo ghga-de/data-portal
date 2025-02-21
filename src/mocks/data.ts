@@ -437,10 +437,10 @@ const access_ends = endDate.toISOString();
 export const accessRequests = [
   {
     id: '62bcc452-a70b-47c1-9870-55da40d8e45f',
-    user_id: 'j.doe@ghga.de',
+    user_id: 'doe@test.dev',
     dataset_id: 'GHGAD588887987',
     full_user_name: 'Dr. John Doe',
-    email: 'j.jdoe@home.org',
+    email: 'doe@home.org',
     request_text: 'This is a test request for dataset GHGAD588887987.',
     access_starts: access_starts,
     access_ends: access_ends,
@@ -452,7 +452,7 @@ export const accessRequests = [
 
   {
     id: '4ef4ccac-6c0a-4be6-9637-b33925178cea',
-    user_id: 'j.doe@ghga.de',
+    user_id: 'doe@test.dev',
     dataset_id: 'GHGAD588887988',
     full_user_name: 'Dr. John Doe',
     email: 'j.jdoe@home.org',
@@ -462,38 +462,38 @@ export const accessRequests = [
     request_created: '2023-05-11T12:04:02.000Z',
     status: 'allowed',
     status_changed: '2023-05-19T12:04:03.000Z',
-    changed_by: 'j.doe@ghga.de',
+    changed_by: 'doe@test.dev',
     iva_id: '783d9682-d5e5-4ce7-9157-9eeb53a1e9ba',
   },
 
   {
     id: 'a787d591-4264-4f48-8827-598585db868e',
-    user_id: 'j.doe@ghga.de',
+    user_id: 'doe@test.dev',
     dataset_id: 'GHGAD588887989',
     full_user_name: 'Dr. John Doe',
-    email: 'j.jdoe@home.org',
+    email: 'doe@home.org',
     request_text: 'This is a test request for dataset GHGAD588887989.',
     access_starts: access_starts,
     access_ends: access_ends,
     request_created: '2023-05-18T12:04:03.000Z',
     status: 'denied',
     status_changed: '2023-05-19T12:04:02.000Z',
-    changed_by: 'j.doe@ghga.de',
+    changed_by: 'doe@test.dev',
   },
 
   {
     id: '9409db13-e23e-433e-9afa-544d8f25b720',
-    user_id: 'j.doe@ghga.de',
+    user_id: 'doe@test.dev',
     dataset_id: 'GHGAD588887989',
     full_user_name: 'Dr. John Doe',
-    email: 'j.jdoe@home.org',
+    email: 'doe@home.org',
     request_text: 'This is a test request for dataset GHGAD588887989.',
     access_starts: access_starts,
     access_ends: access_ends,
     request_created: '2023-05-18T12:04:03.000Z',
     status: 'pending',
     status_changed: '2023-05-19T12:04:02.000Z',
-    changed_by: 'j.doe@ghga.de',
+    changed_by: 'doe@test.dev',
   },
 ];
 
