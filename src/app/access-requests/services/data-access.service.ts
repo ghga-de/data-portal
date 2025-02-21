@@ -132,6 +132,8 @@ export class DataAccessService {
   );
 
   isLoading = this.#accessRequests.isLoading;
+
+  hasError = this.#accessRequests.error;
 }
 
 /**
