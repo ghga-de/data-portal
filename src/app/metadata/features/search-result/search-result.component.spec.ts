@@ -13,7 +13,7 @@ import { datasetSummary, searchResults } from '@app/../mocks/data';
 import {
   DataAccessService,
   MockDataAccessService,
-} from '@app/data-access/services/data-access.service';
+} from '@app/access-requests/services/data-access.service';
 import { MetadataService } from '@app/metadata/services/metadata.service';
 import { SearchResultComponent } from './search-result.component';
 

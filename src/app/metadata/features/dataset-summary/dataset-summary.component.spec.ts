@@ -13,7 +13,7 @@ import { fakeActivatedRoute } from '@app/../mocks/route';
 import {
   DataAccessService,
   MockDataAccessService,
-} from '@app/data-access/services/data-access.service';
+} from '@app/access-requests/services/data-access.service';
 import { MetadataService } from '@app/metadata/services/metadata.service';
 import { DatasetSummaryComponent } from './dataset-summary.component';
 

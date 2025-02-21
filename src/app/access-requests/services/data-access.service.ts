@@ -13,7 +13,7 @@ import { ConfigService } from '@app/shared/services/config.service';
 import { NotificationService } from '@app/shared/services/notification.service';
 import { catchError, firstValueFrom, map } from 'rxjs';
 // eslint-disable-next-line boundaries/element-types
-import { DataAccessRequestModalComponent } from '../features/data-access-request-modal/data-access-request-modal.component';
+import { DataAccessRequestDialogComponent } from '../features/data-access-request-dialog/data-access-request-dialog.component';
 import { AccessRequest, AccessRequestDialogData } from '../models/access-requests';
 
 /**
@@ -23,7 +23,7 @@ import { AccessRequest, AccessRequestDialogData } from '../models/access-request
   providedIn: 'root',
 })
 export class DataAccessService {
-  #dialogRef: MatDialogRef<DataAccessRequestModalComponent> | undefined;
+  #dialogRef: MatDialogRef<DataAccessRequestDialogComponent> | undefined;
   #http = inject(HttpClient);
   #auth = inject(AuthService);
   #notification = inject(NotificationService);
@@ -34,16 +34,14 @@ export class DataAccessService {
   #arsEndpointUrl = `${this.#arsBaseUrl}/access-requests`;
 
   showNewAccessRequestDialog = (datasetID: string) => {
-    const user = this.#auth.user();
-
-    if (!this.#auth.isAuthenticated() || !user) {
+    if (!this.#auth.isAuthenticated()) {
       this.#notification.showError('You must be logged in to perform this action');
       return;
     }
 
     const data: AccessRequestDialogData = {
       datasetID,
-      email: user.email,
+      email: this.#auth.email() || '',
       description: '',
       fromDate: undefined,
       untilDate: undefined,
@@ -51,7 +49,7 @@ export class DataAccessService {
       userId: '',
     };
 
-    this.#dialogRef = this.#dialog.open(DataAccessRequestModalComponent, {
+    this.#dialogRef = this.#dialog.open(DataAccessRequestDialogComponent, {
       data,
     });
 

@@ -25,7 +25,7 @@ class MockMetadataService {
 import {
   DataAccessService,
   MockDataAccessService,
-} from '@app/data-access/services/data-access.service';
+} from '@app/access-requests/services/data-access.service';
 import { screen } from '@testing-library/angular';
 
 /**

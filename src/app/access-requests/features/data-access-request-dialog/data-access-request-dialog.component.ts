@@ -6,6 +6,7 @@
 
 import { Component, inject, input, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import {
   MatDatepickerInputEvent,
   MatDatepickerModule,
@@ -14,17 +15,19 @@ import {
   MAT_DIALOG_DATA,
   MatDialogActions,
   MatDialogContent,
+  MatDialogModule,
   MatDialogRef,
+  MatDialogTitle,
 } from '@angular/material/dialog';
 import { MatFormField, MatHint, MatLabel } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { AccessRequestDialogData } from '@app/data-access/models/access-requests';
+import { AccessRequestDialogData } from '@app/access-requests/models/access-requests';
 
 /**
  * This component contains a form for all the data needed for an access request.
  */
 @Component({
-  selector: 'app-data-access-request-modal',
+  selector: 'app-data-access-request-dialog',
   imports: [
     MatDatepickerModule,
     MatHint,
@@ -34,12 +37,15 @@ import { AccessRequestDialogData } from '@app/data-access/models/access-requests
     MatDialogActions,
     FormsModule,
     MatDialogContent,
+    MatDialogModule,
+    MatDialogTitle,
+    MatButtonModule,
   ],
-  templateUrl: './data-access-request-modal.component.html',
-  styleUrl: './data-access-request-modal.component.scss',
+  templateUrl: './data-access-request-dialog.component.html',
+  styleUrl: './data-access-request-dialog.component.scss',
 })
-export class DataAccessRequestModalComponent {
-  readonly dialogRef = inject(MatDialogRef<DataAccessRequestModalComponent>);
+export class DataAccessRequestDialogComponent {
+  readonly dialogRef = inject(MatDialogRef<DataAccessRequestDialogComponent>);
   readonly data = inject<AccessRequestDialogData>(MAT_DIALOG_DATA);
   readonly result = model(this.data);
   readonly email = model(this.data.email);
@@ -62,6 +68,7 @@ export class DataAccessRequestModalComponent {
 
   cancelClick = () => {
     this.data.isCanceled = true;
+    this.dialogRef.close(undefined);
   };
 
   submitClick = () => {

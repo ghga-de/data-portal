@@ -1,5 +1,5 @@
 /**
- * Tests for the Content of the data access request modal.
+ * Tests for the Content of the data access request dialog.
  * @copyright The GHGA Authors
  * @license Apache-2.0
  */
@@ -13,15 +13,15 @@ import {
   MatDialogRef,
 } from '@angular/material/dialog';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { DataAccessRequestModalComponent } from './data-access-request-modal.component';
+import { DataAccessRequestDialogComponent } from './data-access-request-dialog.component';
 
-describe('DataAccessRequestModalComponent', () => {
-  let component: DataAccessRequestModalComponent;
-  let fixture: ComponentFixture<DataAccessRequestModalComponent>;
+describe('DataAccessRequestDialogComponent', () => {
+  let component: DataAccessRequestDialogComponent;
+  let fixture: ComponentFixture<DataAccessRequestDialogComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DataAccessRequestModalComponent, MatDialogModule],
+      imports: [DataAccessRequestDialogComponent, MatDialogModule],
       providers: [
         provideNativeDateAdapter(),
         {
@@ -33,7 +33,7 @@ describe('DataAccessRequestModalComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(DataAccessRequestModalComponent);
+    fixture = TestBed.createComponent(DataAccessRequestDialogComponent);
     component = fixture.componentInstance;
     fixture.componentRef.setInput('datasetID', 'GHGAD588887987');
     fixture.detectChanges();

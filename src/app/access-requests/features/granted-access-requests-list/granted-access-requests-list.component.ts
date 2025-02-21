@@ -1,12 +1,12 @@
 /**
- * Short module description
+ * Show access requests that have been granted.
  * @copyright The GHGA Authors
  * @license Apache-2.0
  */
 
 import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { DataAccessService } from '@app/data-access/services/data-access.service';
+import { DataAccessService } from '@app/access-requests/services/data-access.service';
 
 /**
  * This component shows a list of access requests that have been granted.

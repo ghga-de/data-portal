@@ -11,7 +11,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 // eslint-disable-next-line boundaries/element-types
-import { DataAccessService } from '@app/data-access/services/data-access.service';
+import { DataAccessService } from '@app/access-requests/services/data-access.service';
 import { Hit } from '@app/metadata/models/search-results';
 import { MetadataService } from '@app/metadata/services/metadata.service';
 import { AddPluralS } from '@app/shared/utils/add-plural-s.pipe';

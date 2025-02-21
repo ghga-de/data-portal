@@ -114,12 +114,7 @@ export default [
                 [
                   'features',
                   {
-                    context: [
-                      'metadata',
-                      'verification-addresses',
-                      'access-requests',
-                      'data-access',
-                    ],
+                    context: ['metadata', 'verification-addresses', 'access-requests'],
                   },
                 ],
               ],

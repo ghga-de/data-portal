@@ -28,7 +28,7 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { Title } from '@angular/platform-browser';
 // eslint-disable-next-line boundaries/element-types
-import { DataAccessService } from '@app/data-access/services/data-access.service';
+import { DataAccessService } from '@app/access-requests/services/data-access.service';
 import { Experiment, File, Sample } from '@app/metadata/models/dataset-details';
 import { DatasetInformationService } from '@app/metadata/services/dataset-information.service';
 import { MetadataService } from '@app/metadata/services/metadata.service';

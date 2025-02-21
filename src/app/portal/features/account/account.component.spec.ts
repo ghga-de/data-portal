@@ -8,11 +8,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ActivatedRoute } from '@angular/router';
 import { fakeActivatedRoute } from '@app/../mocks/route';
-import { AuthService } from '@app/auth/services/auth.service';
 import {
   DataAccessService,
   MockDataAccessService,
-} from '@app/data-access/services/data-access.service';
+} from '@app/access-requests/services/data-access.service';
+import { AuthService } from '@app/auth/services/auth.service';
 import { AccountComponent } from './account.component';
 
 /**

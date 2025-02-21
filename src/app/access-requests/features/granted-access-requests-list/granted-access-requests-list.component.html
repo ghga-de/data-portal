@@ -9,9 +9,7 @@
       @for (request of req; track request.id) {
         <li>
           For the dataset
-          <a target="_blank" routerLink="/dataset/{{ request.dataset_id }}">{{
-            request.dataset_id
-          }}</a>
+          <a routerLink="/dataset/{{ request.dataset_id }}">{{ request.dataset_id }}</a>
           from {{ request.access_starts }} to {{ request.access_ends }}.
         </li>
       }

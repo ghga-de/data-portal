@@ -6,7 +6,7 @@
 
 import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { DataAccessService } from '@app/data-access/services/data-access.service';
+import { DataAccessService } from '@app/access-requests/services/data-access.service';
 
 /**
  * This component is used on the accounts page and shows a list of pending access requests the user has
