@@ -167,7 +167,7 @@ export class IvaManagerListComponent implements AfterViewInit {
    * Invalidate an IVA after confirmation
    * @param iva - the IVA to invalidate
    */
-  invalidate(iva: UserWithIva) {
+  invalidateWhenConfirmed(iva: UserWithIva) {
     this.#confirmationService.confirm({
       title: 'Confirm invalidation of IVA',
       message:
@@ -183,10 +183,10 @@ export class IvaManagerListComponent implements AfterViewInit {
   }
 
   /**
-   * Confirm transmission of a verification code
+   * Mark verification code as transmitted
    * @param iva - the IVA for which the code was transmitted
    */
-  #confirmTransmission(iva: UserWithIva): void {
+  #markAsTransmitted(iva: UserWithIva): void {
     this.#ivaService.confirmTransmissionForIva(iva.id).subscribe({
       next: () => {
         this.#notificationService.showSuccess(
@@ -203,10 +203,10 @@ export class IvaManagerListComponent implements AfterViewInit {
   }
 
   /**
-   * Confirm transmission of a verification code after confirmation
+   * Mark verification code as transmitted after confirmation
    * @param iva - the IVA for which the code was transmitted
    */
-  confirmTransmission(iva: UserWithIva) {
+  markAsTransmittedWhenConfirmed(iva: UserWithIva) {
     this.#confirmationService.confirm({
       title: 'Confirm code transmission',
       message:
@@ -216,7 +216,7 @@ export class IvaManagerListComponent implements AfterViewInit {
       cancelText: 'Cancel',
       confirmText: 'Confirm transmission',
       callback: (confirmed) => {
-        if (confirmed) this.#confirmTransmission(iva);
+        if (confirmed) this.#markAsTransmitted(iva);
       },
     });
   }
@@ -234,7 +234,7 @@ export class IvaManagerListComponent implements AfterViewInit {
         });
         dialogRef.afterClosed().subscribe((doConfirm) => {
           if (doConfirm) {
-            this.#confirmTransmission(iva);
+            this.#markAsTransmitted(iva);
           }
         });
       },

@@ -69,7 +69,11 @@
 
       <ng-container matColumnDef="del">
         <td mat-cell *matCellDef="let iva">
-          <button (click)="delete(iva)" mat-icon-button aria-label="Delete">
+          <button
+            (click)="deleteWhenConfirmed(iva)"
+            mat-icon-button
+            aria-label="Delete"
+          >
             <mat-icon>delete</mat-icon>
           </button>
         </td>

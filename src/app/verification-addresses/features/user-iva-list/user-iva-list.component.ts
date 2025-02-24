@@ -169,7 +169,7 @@ export class UserIvaListComponent implements OnInit {
    * Delete the given IVA after confirmation from user
    * @param iva - the IVA to delete
    */
-  delete(iva: Iva): void {
+  deleteWhenConfirmed(iva: Iva): void {
     this.#confirm.confirm({
       title: 'Confirm deletion of contact address',
       message:

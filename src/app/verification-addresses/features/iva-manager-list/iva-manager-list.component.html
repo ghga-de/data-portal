@@ -62,7 +62,7 @@
         }
         @if (iva.state === 'CodeCreated') {
           <button
-            (click)="confirmTransmission(iva)"
+            (click)="markAsTransmittedWhenConfirmed(iva)"
             class="confirm my-2 mr-4 w-52"
             mat-flat-button
           >
@@ -72,7 +72,7 @@
         }
         @if (iva.state !== 'Unverified') {
           <button
-            (click)="invalidate(iva)"
+            (click)="invalidateWhenConfirmed(iva)"
             class="invalidate my-2 w-36"
             mat-stroked-button
           >
