@@ -57,7 +57,6 @@ export class MetadataSearchService {
       skip,
       limit,
     );
-    console.log(newMassQueryUrl);
 
     return newMassQueryUrl;
   });

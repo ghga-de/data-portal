@@ -45,7 +45,6 @@ export class DataAccessService {
       description: '',
       fromDate: undefined,
       untilDate: undefined,
-      isCanceled: false,
       userId: '',
     };
 
@@ -60,7 +59,7 @@ export class DataAccessService {
 
   #processAccessRequest = (data: AccessRequestDialogData) => {
     const userid = this.#auth.user()?.id;
-    if (!data || data.isCanceled || !this.#auth.isAuthenticated() || !userid) {
+    if (!data || !this.#auth.isAuthenticated() || !userid) {
       return;
     }
     data.userId = userid;
@@ -88,7 +87,6 @@ export class DataAccessService {
             access_ends: data.untilDate?.toDateString(),
           })
           .pipe(
-            map(console.log),
             catchError(async () =>
               this.#notification.showError(
                 'There was an error submitting your access request.',
@@ -100,7 +98,9 @@ export class DataAccessService {
         this.#notification.showSuccess('Your request has been submitted successfully.');
       });
     } catch (error) {
-      console.error(error);
+      this.#notification.showError(
+        'There was an error submitting your access request: ' + error,
+      );
     }
   };
 

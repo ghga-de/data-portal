@@ -22,7 +22,6 @@ export interface AccessRequest {
 
 export interface AccessRequestDialogData {
   datasetID: string;
-  isCanceled: boolean;
   email: string;
   description: string;
   fromDate: Date | undefined;

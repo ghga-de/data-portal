@@ -121,12 +121,10 @@ export class DataAccessRequestDialogComponent {
   };
 
   cancelClick = () => {
-    this.data.isCanceled = true;
     this.dialogRef.close(undefined);
   };
 
   submitClick = () => {
-    this.data.isCanceled = false;
     this.dialogRef.close(this.data);
   };
 }
