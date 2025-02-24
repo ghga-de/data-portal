@@ -24,6 +24,8 @@ import { MatInputModule } from '@angular/material/input';
 import { AccessRequestDialogData } from '@app/access-requests/models/access-requests';
 import { ConfigService } from '@app/shared/services/config.service';
 
+const MILLISECONDS_PER_DAY = 86400000;
+
 /**
  * This component contains a form for all the data needed for an access request.
  */
@@ -69,6 +71,8 @@ export class DataAccessRequestDialogComponent {
     this.minUntilDate.setDate(
       this.minUntilDate.getDate() + this.#config.access_grant_min_days,
     );
+    this.updateUntilRangeForFromValue(new Date());
+    this.updateFromRangeForUntilValue(d);
   }
 
   fromDateChanged = ($event: MatDatepickerInputEvent<Date, string>) => {
@@ -84,26 +88,36 @@ export class DataAccessRequestDialogComponent {
   };
 
   updateFromRangeForUntilValue = (date: Date) => {
-    const newUntilDate = date.getDate();
-    const currentDate = new Date().getDate();
-    const newFromMinDate = Math.max(
-      currentDate,
-      newUntilDate - this.#config.access_grant_max_days,
+    const currentDate = new Date();
+
+    const newFromMinDate = new Date(
+      Math.max(
+        currentDate.getTime(),
+        date.getTime() - this.#config.access_grant_max_days * MILLISECONDS_PER_DAY,
+      ),
     );
-    const newFromMaxDate = Math.min(
-      newUntilDate - this.#config.access_grant_min_days,
-      currentDate + this.#config.access_upfront_max_days,
+    const newFromMaxDate = new Date(
+      Math.min(
+        date.getTime() - this.#config.access_grant_min_days * MILLISECONDS_PER_DAY,
+        currentDate.getTime() +
+          this.#config.access_upfront_max_days * MILLISECONDS_PER_DAY,
+      ),
     );
-    this.minFromDate.setDate(new Date().setDate(newFromMinDate));
-    this.maxFromDate.setDate(new Date().setDate(newFromMaxDate));
+
+    this.minFromDate = newFromMinDate;
+    this.maxFromDate = newFromMaxDate;
   };
 
   updateUntilRangeForFromValue = (date: Date) => {
-    const newFromDate = date.getDate();
-    const newUntilMinDate = newFromDate + this.#config.access_grant_min_days;
-    const newUntilMaxDate = newFromDate + this.#config.access_grant_max_days;
-    this.minUntilDate.setDate(new Date().setDate(newUntilMinDate));
-    this.maxUntilDate.setDate(new Date().setDate(newUntilMaxDate));
+    const newUntilMinDate = new Date(
+      date.getTime() + this.#config.access_grant_min_days * MILLISECONDS_PER_DAY,
+    );
+    const newUntilMaxDate = new Date(
+      date.getTime() + this.#config.access_grant_max_days * MILLISECONDS_PER_DAY,
+    );
+
+    this.minUntilDate = newUntilMinDate;
+    this.maxUntilDate = newUntilMaxDate;
   };
 
   cancelClick = () => {

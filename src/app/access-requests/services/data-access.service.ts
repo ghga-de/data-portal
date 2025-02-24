@@ -60,7 +60,7 @@ export class DataAccessService {
 
   #processAccessRequest = (data: AccessRequestDialogData) => {
     const userid = this.#auth.user()?.id;
-    if (data.isCanceled || !this.#auth.isAuthenticated() || !userid) {
+    if (!data || data.isCanceled || !this.#auth.isAuthenticated() || !userid) {
       return;
     }
     data.userId = userid;
