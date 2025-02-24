@@ -13,6 +13,7 @@ import {
   MockDataAccessService,
 } from '@app/access-requests/services/data-access.service';
 import { AuthService } from '@app/auth/services/auth.service';
+import { UserIvaListComponent } from '@app/verification-addresses/features/user-iva-list/user-iva-list.component';
 import { AccountComponent } from './account.component';
 
 /**
@@ -40,7 +41,11 @@ describe('AccountComponent', () => {
           useValue: fakeActivatedRoute,
         },
       ],
-    }).compileComponents();
+    })
+      .overrideComponent(AccountComponent, {
+        remove: { imports: [UserIvaListComponent] },
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(AccountComponent);
     component = fixture.componentInstance;

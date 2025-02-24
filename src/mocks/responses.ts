@@ -38,7 +38,7 @@ export const responses: { [endpoint: string]: ResponseValue } = {
   'GET /api/auth/users/roe@test.dev/ivas': allIvasOfRoe,
 
   // New IVA
-  'POST /api/auth/users/*/ivas': { id: 'TEST123456789' },
+  'POST /api/auth/users/*/ivas': { id: 'ABC123' },
 
   // Delete IVA
   'DELETE /api/auth/users/*/ivas/*': 204,
@@ -48,7 +48,7 @@ export const responses: { [endpoint: string]: ResponseValue } = {
 
   // Create IVA verification code
   'POST /api/auth/rpc/ivas/*/create-code': {
-    verification_code: 'TEST123456789',
+    verification_code: 'ABC123',
   },
 
   // Request IVA verification
@@ -57,8 +57,11 @@ export const responses: { [endpoint: string]: ResponseValue } = {
   // Request IVA verification with correct code
   'POST /api/auth/rpc/ivas/*/validate-code?verification_code=ABC123': 204,
 
-  // Request IVA verification with others codes
-  'POST /api/auth/rpc/ivas/*/validate-code': 401,
+  // Simulate a 2FA verification too many attempts error
+  'POST /api/auth/rpc/ivas/*/validate-code?verification_code=ZZZ999': 429,
+
+  // Request IVA verification with invalid codes
+  'POST /api/auth/rpc/ivas/*/validate-code': 403,
 
   // Get all IVAs
   'GET /api/auth/ivas': allIvas,
