@@ -60,8 +60,8 @@ const IVA_TYPE_ICONS: { [K in keyof typeof IvaType]: string } = {
 })
 export class IvaManagerListComponent implements AfterViewInit {
   #dialog = inject(MatDialog);
-  #confirm = inject(ConfirmationService);
-  #notify = inject(NotificationService);
+  #confirmationService = inject(ConfirmationService);
+  #notificationService = inject(NotificationService);
   #ivaService = inject(IvaService);
 
   ivas = this.#ivaService.allIvas;
@@ -154,11 +154,11 @@ export class IvaManagerListComponent implements AfterViewInit {
   #invalidate(iva: UserWithIva): void {
     this.#ivaService.unverifyIva(iva.id).subscribe({
       next: () => {
-        this.#notify.showSuccess('IVA has been invalidated');
+        this.#notificationService.showSuccess('IVA has been invalidated');
       },
       error: (err) => {
         console.debug(err);
-        this.#notify.showError('IVA could not be invalidated');
+        this.#notificationService.showError('IVA could not be invalidated');
       },
     });
   }
@@ -168,7 +168,7 @@ export class IvaManagerListComponent implements AfterViewInit {
    * @param iva - the IVA to invalidate
    */
   invalidate(iva: UserWithIva) {
-    this.#confirm.confirm({
+    this.#confirmationService.confirm({
       title: 'Confirm invalidation of IVA',
       message:
         `Do you really wish to invalidate the ${this.typeName(iva)} IVA of` +
@@ -189,11 +189,13 @@ export class IvaManagerListComponent implements AfterViewInit {
   #confirmTransmission(iva: UserWithIva): void {
     this.#ivaService.confirmTransmissionForIva(iva.id).subscribe({
       next: () => {
-        this.#notify.showSuccess('Transmission of verification code confirmed');
+        this.#notificationService.showSuccess(
+          'Transmission of verification code confirmed',
+        );
       },
       error: (err) => {
         console.debug(err);
-        this.#notify.showError(
+        this.#notificationService.showError(
           'Transmission of verification code could not be confirmed',
         );
       },
@@ -205,7 +207,7 @@ export class IvaManagerListComponent implements AfterViewInit {
    * @param iva - the IVA for which the code was transmitted
    */
   confirmTransmission(iva: UserWithIva) {
-    this.#confirm.confirm({
+    this.#confirmationService.confirm({
       title: 'Confirm code transmission',
       message:
         'Please confirm the transmission of the verification code' +
@@ -226,7 +228,7 @@ export class IvaManagerListComponent implements AfterViewInit {
   createCode(iva: UserWithIva) {
     this.#ivaService.createCodeForIva(iva.id).subscribe({
       next: (code) => {
-        this.#notify.showSuccess('Verification code has been created');
+        this.#notificationService.showSuccess('Verification code has been created');
         const dialogRef = this.#dialog.open(CodeCreationDialogComponent, {
           data: { ...iva, code },
         });
@@ -238,7 +240,7 @@ export class IvaManagerListComponent implements AfterViewInit {
       },
       error: (err) => {
         console.debug(err);
-        this.#notify.showError('Verification code could not be created');
+        this.#notificationService.showError('Verification code could not be created');
       },
     });
   }
