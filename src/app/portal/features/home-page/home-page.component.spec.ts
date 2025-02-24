@@ -11,10 +11,6 @@ import { fakeActivatedRoute } from '@app/../mocks/route';
 import { GlobalSummaryComponent } from '@app/metadata/features/global-summary/global-summary.component';
 import { HomePageComponent } from './home-page.component';
 
-const fakeActivatedRoute = {
-  snapshot: { data: {} },
-} as ActivatedRoute;
-
 describe('HomePageComponent', () => {
   let component: HomePageComponent;
   let fixture: ComponentFixture<HomePageComponent>;

@@ -25,10 +25,6 @@ class MockMetadataService {
   datasetSummaryError = signal(undefined);
 }
 
-const fakeActivatedRoute = {
-  snapshot: { data: {} },
-} as ActivatedRoute;
-
 describe('DatasetSummaryComponent', () => {
   let component: DatasetSummaryComponent;
   let fixture: ComponentFixture<DatasetSummaryComponent>;
