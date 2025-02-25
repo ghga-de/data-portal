@@ -36,6 +36,7 @@ import { StorageAlias } from '@app/metadata/utils/storage-alias.pipe';
 import { NotificationService } from '@app/shared/services/notification.service';
 import { AddPluralS } from '@app/shared/utils/add-plural-s.pipe';
 import { ParseBytes } from '@app/shared/utils/parse-bytes.pipe';
+import { ShortHash } from '@app/shared/utils/short-hash.pipe';
 import { UnderscoreToSpace } from '@app/shared/utils/underscore-to-space.pipe';
 
 const COLUMNS = {
@@ -63,6 +64,7 @@ const COLUMNS = {
     StorageAlias,
     ParseBytes,
     UnderscoreToSpace,
+    ShortHash,
   ],
   templateUrl: './dataset-details.component.html',
   styleUrl: './dataset-details.component.scss',

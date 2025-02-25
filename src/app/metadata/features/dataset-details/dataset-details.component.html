@@ -467,7 +467,9 @@
                   File hash
                 </th>
                 <td mat-cell *matCellDef="let file">
-                  {{ file.file_information?.sha256_hash }}
+                  <abbr title="{{ file.file_information?.sha256_hash }}">{{
+                    file.file_information?.sha256_hash | shortHash
+                  }}</abbr>
                 </td>
               </ng-container>
 
