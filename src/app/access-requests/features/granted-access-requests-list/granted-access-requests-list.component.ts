@@ -22,7 +22,7 @@ import { StencilComponent } from '../../../shared/ui/stencil/stencil/stencil.com
 export class GrantedAccessRequestsListComponent {
   #ars = inject(AccessRequestService);
 
-  grantedRequests = this.#ars.grantedAccessRequests;
-  isLoading = this.#ars.isLoading;
-  hasError = this.#ars.hasError;
+  grantedRequests = this.#ars.grantedUserAccessRequests;
+  isLoading = this.#ars.userAccessRequestsAreLoading;
+  hasError = this.#ars.userAccessRequestsError;
 }

@@ -34,8 +34,11 @@ export class AccessRequestService {
   #dialog = inject(MatDialog);
   #userId = computed<string | null>(() => this.#auth.user()?.id || null);
   #config = inject(ConfigService);
+
   #arsBaseUrl = this.#config.arsUrl;
   #arsEndpointUrl = `${this.#arsBaseUrl}/access-requests`;
+  #userAccessRequestsUrl = (userId: string) =>
+    `${this.#arsEndpointUrl}?user_id=${userId}`;
 
   showNewAccessRequestDialog = (datasetID: string) => {
     if (!this.#auth.isAuthenticated()) {
@@ -98,7 +101,7 @@ export class AccessRequestService {
             ),
           ),
       ).then(async () => {
-        this.#accessRequests.reload();
+        this.#userAccessRequests.reload();
         this.#notification.showSuccess('Your request has been submitted successfully.');
       });
     } catch (error) {
@@ -108,14 +111,17 @@ export class AccessRequestService {
     }
   };
 
-  #accessRequests = rxResource<AccessRequest[], string | null>({
+  /**
+   * Internal resource for loading the current user's access requests
+   */
+  #userAccessRequests = rxResource<AccessRequest[], string | null>({
     request: this.#userId,
     loader: ({ request: userId }) => {
       if (!userId) {
         throw new Error('User not authenticated');
       }
       return this.#http
-        .get<AccessRequest[]>(`${this.#arsEndpointUrl}?user_id=${userId}`)
+        .get<AccessRequest[]>(this.#userAccessRequestsUrl(userId))
         .pipe(
           map((ar) =>
             ar.filter(({ status }) => status === 'pending' || status === 'allowed'),
@@ -124,11 +130,18 @@ export class AccessRequestService {
     },
   }).asReadonly();
 
-  accessRequests: Signal<AccessRequest[]> = computed(
-    () => this.#accessRequests.value() ?? [],
+  /**
+   * The list of access requests of the current user
+   */
+  userAccessRequests: Signal<AccessRequest[]> = computed(
+    () => this.#userAccessRequests.value() ?? [],
   );
-  grantedAccessRequests = computed(() =>
-    this.accessRequests()
+
+  /**
+   * The list of granted access requests of the current user
+   */
+  grantedUserAccessRequests = computed(() =>
+    this.userAccessRequests()
       .filter((ar: AccessRequest) => ar.status == 'allowed')
       .map((request: AccessRequest) => {
         const expiryDate = new Date(request.access_ends);
@@ -152,13 +165,16 @@ export class AccessRequestService {
     return Math.floor(diffTime / (1000 * 60 * 60 * 24));
   }
 
-  pendingAccessRequests = computed(() =>
-    this.accessRequests().filter((ar: AccessRequest) => ar.status == 'pending'),
+  /**
+   * The list of pending requests of the current user
+   */
+  pendingUserAccessRequests = computed(() =>
+    this.userAccessRequests().filter((ar: AccessRequest) => ar.status == 'pending'),
   );
 
-  isLoading = this.#accessRequests.isLoading;
+  userAccessRequestsAreLoading = this.#userAccessRequests.isLoading;
 
-  hasError = this.#accessRequests.error;
+  userAccessRequestsError = this.#userAccessRequests.error;
 }
 
 let dateInOneYear = new Date();
@@ -175,9 +191,9 @@ dateOneYearAgo.setDate(dateOneYearAgo.getDate() - 365);
  * Mock for the Access Request Service
  */
 export class MockAccessRequestService {
-  isLoading = signal(false);
-  hasError = signal(false);
-  grantedAccessRequests = signal([
+  userAccessRequestsAreLoading = signal(false);
+  userAccessRequestsError = signal(false);
+  grantedUserAccessRequests = signal([
     {
       request: {
         id: 'GHGAD15111403130971',
@@ -218,7 +234,7 @@ export class MockAccessRequestService {
     },
   ]);
 
-  pendingAccessRequests = signal([
+  pendingUserAccessRequests = signal([
     {
       id: 'GHGAD15111403130971',
       user_id: '',

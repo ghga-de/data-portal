@@ -22,7 +22,7 @@ import { StencilComponent } from '../../../shared/ui/stencil/stencil/stencil.com
 export class PendingAccessRequestsListComponent {
   #ars = inject(AccessRequestService);
 
-  pendingRequests = this.#ars.pendingAccessRequests;
-  isLoading = this.#ars.isLoading;
-  hasError = this.#ars.hasError;
+  pendingRequests = this.#ars.pendingUserAccessRequests;
+  isLoading = this.#ars.userAccessRequestsAreLoading;
+  hasError = this.#ars.userAccessRequestsError;
 }
