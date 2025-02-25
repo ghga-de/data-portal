@@ -6,23 +6,52 @@
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { AccessRequestService } from '@app/access-requests/services/access-request.service';
 import { AccessRequestManagerComponent } from './access-request-manager.component';
+
+import { screen } from '@testing-library/angular';
+import { AccessRequestManagerListComponent } from '../access-request-manager-list/access-request-manager-list.component';
+
+/**
+ * Mock the access request service as needed by the IVA manager
+ */
+const mockAccessRequestService = {
+  loadAllAccessRequests: jest.fn(),
+};
 
 describe('AccessRequestManagerComponent', () => {
   let component: AccessRequestManagerComponent;
   let fixture: ComponentFixture<AccessRequestManagerComponent>;
+  let accessRequestService: AccessRequestService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AccessRequestManagerComponent],
-    }).compileComponents();
+      providers: [
+        { provide: AccessRequestService, useValue: mockAccessRequestService },
+      ],
+    })
+      .overrideComponent(AccessRequestManagerComponent, {
+        remove: { imports: [AccessRequestManagerListComponent] }, // TODO: also remove filter component
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(AccessRequestManagerComponent);
+    accessRequestService = TestBed.inject(AccessRequestService);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should show the proper heading', () => {
+    const heading = screen.getByRole('heading', { level: 1 });
+    expect(heading).toHaveTextContent('Access Request Management');
+  });
+
+  it('should load all the access requests upon initialization', () => {
+    expect(accessRequestService.loadAllAccessRequests).toHaveBeenCalled();
   });
 });

@@ -4,7 +4,9 @@
  * @license Apache-2.0
  */
 
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { AccessRequestService } from '@app/access-requests/services/access-request.service';
+import { AccessRequestManagerListComponent } from '../access-request-manager-list/access-request-manager-list.component';
 
 /**
  * Access Request Manager component.
@@ -14,8 +16,17 @@ import { Component } from '@angular/core';
  */
 @Component({
   selector: 'app-access-request-manager',
-  imports: [],
+  imports: [AccessRequestManagerListComponent],
   templateUrl: './access-request-manager.component.html',
   styleUrl: './access-request-manager.component.scss',
 })
-export class AccessRequestManagerComponent {}
+export class AccessRequestManagerComponent implements OnInit {
+  #ars = inject(AccessRequestService);
+
+  /**
+   * Load the access requests when the component is initialized
+   */
+  ngOnInit(): void {
+    this.#ars.loadAllAccessRequests();
+  }
+}

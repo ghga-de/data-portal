@@ -17,6 +17,7 @@ import { AccessRequestDialogComponent } from '../features/access-request-dialog/
 import {
   AccessRequest,
   AccessRequestDialogData,
+  AccessRequestFilter,
   GrantedAccessRequest,
 } from '../models/access-requests';
 
@@ -175,6 +176,97 @@ export class AccessRequestService {
   userAccessRequestsAreLoading = this.#userAccessRequests.isLoading;
 
   userAccessRequestsError = this.#userAccessRequests.error;
+
+  #allAccessRequestsFilter = signal<AccessRequestFilter | undefined>(undefined);
+
+  // signal to load all users' access requests
+  #loadAll = signal<null | undefined>(undefined);
+
+  /**
+   * Load all users' access requests
+   */
+  loadAllAccessRequests(): void {
+    this.#loadAll.set(null);
+  }
+
+  /**
+   * The current filter for the list of all access requests
+   */
+  allAccessRequestsFilter = computed(
+    () =>
+      this.#allAccessRequestsFilter() ?? {
+        name: '',
+        fromDate: undefined,
+        toDate: undefined,
+        state: undefined,
+      },
+  );
+
+  /**
+   * Set a filter for the list of all access requests
+   * @param filter - the filter to apply
+   */
+  setAllAccessRequestsFilter(filter: AccessRequestFilter): void {
+    this.#allAccessRequestsFilter.set(
+      filter.name || filter.fromDate || filter.toDate || filter.state
+        ? filter
+        : undefined,
+    );
+  }
+
+  /**
+   * Internal resource for loading all access requests.
+   * Note: We do the filtering currently only on the client side,
+   * but in principle we can also do some filtering on the sever.
+   */
+  #allAccessRequests = rxResource<AccessRequest[], null | undefined>({
+    request: this.#loadAll,
+    loader: () => this.#http.get<AccessRequest[]>(this.#arsEndpointUrl),
+  });
+
+  /**
+   * The list of access requests
+   */
+  allAccessRequests: Signal<AccessRequest[]> = computed(() => {
+    let requests = this.#allAccessRequests.value() ?? [];
+    const filter = this.#allAccessRequestsFilter();
+    if (requests.length && filter) {
+      const datasetId = filter.datasetId.trim().toLowerCase();
+      if (datasetId) {
+        requests = requests.filter(
+          (ar) => ar.dataset_id.toLowerCase() === filter.datasetId,
+        );
+      }
+      const name = filter.name.trim().toLowerCase();
+      if (name) {
+        requests = requests.filter((ar) =>
+          ar.full_user_name.toLowerCase().includes(name),
+        );
+      }
+      if (filter.fromDate) {
+        const fromDate = filter.fromDate.toISOString();
+        requests = requests.filter((ar) => ar.request_created >= fromDate);
+      }
+      if (filter.toDate) {
+        const toDate = filter.toDate.toISOString();
+        requests = requests.filter((ar) => ar.request_created <= toDate);
+      }
+      if (filter.state) {
+        requests = requests.filter((ar) => ar.status === filter.state);
+      }
+    }
+    return requests;
+  });
+
+  /**
+   * Whether the list of all access requests is loading as a signal
+   */
+  allAccessRequestsAreLoading: Signal<boolean> = this.#allAccessRequests.isLoading;
+
+  /**
+   * The list of all access requests error as a signal
+   */
+  allAccessRequestsError: Signal<unknown> = this.#allAccessRequests.error;
 }
 
 let dateInOneYear = new Date();
