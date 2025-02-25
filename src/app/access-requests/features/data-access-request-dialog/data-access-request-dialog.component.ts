@@ -13,11 +13,8 @@ import {
 } from '@angular/material/datepicker';
 import {
   MAT_DIALOG_DATA,
-  MatDialogActions,
-  MatDialogContent,
   MatDialogModule,
   MatDialogRef,
-  MatDialogTitle,
 } from '@angular/material/dialog';
 import { MatFormField, MatHint, MatLabel } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -37,11 +34,8 @@ const MILLISECONDS_PER_DAY = 86400000;
     MatLabel,
     MatFormField,
     MatInputModule,
-    MatDialogActions,
     FormsModule,
-    MatDialogContent,
     MatDialogModule,
-    MatDialogTitle,
     MatButtonModule,
   ],
   templateUrl: './data-access-request-dialog.component.html',
