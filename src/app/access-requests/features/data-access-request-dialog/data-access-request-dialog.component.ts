@@ -57,7 +57,6 @@ export class DataAccessRequestDialogComponent {
   datasetID = input.required<string>();
 
   constructor() {
-    // Sane defaults for dates.
     this.fromDate.set(new Date());
     let d = new Date();
     d.setDate(d.getDate() + this.#config.default_access_duration_days);
