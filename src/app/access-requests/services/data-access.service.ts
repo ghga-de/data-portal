@@ -142,9 +142,9 @@ export class DataAccessService {
   );
 
   /**
-   * This function computed the number of full days between now and the date provided
+   * This function computes the number of full days between now and the date provided
    * @param dateUntil The reference date.
-   * @returns Will compute the number of days between now and that date and return the  number of full days.
+   * @returns The number of full days.
    */
   daysUntil(dateUntil: Date): number {
     const date = new Date();
