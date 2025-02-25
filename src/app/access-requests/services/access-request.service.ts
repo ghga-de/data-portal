@@ -13,7 +13,7 @@ import { ConfigService } from '@app/shared/services/config.service';
 import { NotificationService } from '@app/shared/services/notification.service';
 import { catchError, firstValueFrom, map } from 'rxjs';
 // eslint-disable-next-line boundaries/element-types
-import { DataAccessRequestDialogComponent } from '../features/data-access-request-dialog/data-access-request-dialog.component';
+import { AccessRequestDialogComponent } from '../features/access-request-dialog/access-request-dialog.component';
 import {
   AccessRequest,
   AccessRequestDialogData,
@@ -26,8 +26,8 @@ import {
 @Injectable({
   providedIn: 'root',
 })
-export class DataAccessService {
-  #dialogRef: MatDialogRef<DataAccessRequestDialogComponent> | undefined;
+export class AccessRequestService {
+  #dialogRef: MatDialogRef<AccessRequestDialogComponent> | undefined;
   #http = inject(HttpClient);
   #auth = inject(AuthService);
   #notification = inject(NotificationService);
@@ -52,7 +52,7 @@ export class DataAccessService {
       userId: '',
     };
 
-    this.#dialogRef = this.#dialog.open(DataAccessRequestDialogComponent, {
+    this.#dialogRef = this.#dialog.open(AccessRequestDialogComponent, {
       data,
     });
 
@@ -172,9 +172,9 @@ let dateOneYearAgo = new Date();
 dateOneYearAgo.setDate(dateOneYearAgo.getDate() - 365);
 
 /**
- * Mock for the Data Access Service
+ * Mock for the Access Request Service
  */
-export class MockDataAccessService {
+export class MockAccessRequestService {
   isLoading = signal(false);
   hasError = signal(false);
   grantedAccessRequests = signal([

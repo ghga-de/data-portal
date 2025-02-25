@@ -7,7 +7,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { DataAccessService } from '@app/access-requests/services/data-access.service';
+import { AccessRequestService } from '@app/access-requests/services/access-request.service';
 import { StencilComponent } from '../../../shared/ui/stencil/stencil/stencil.component';
 
 /**
@@ -20,7 +20,7 @@ import { StencilComponent } from '../../../shared/ui/stencil/stencil/stencil.com
   styleUrl: './granted-access-requests-list.component.scss',
 })
 export class GrantedAccessRequestsListComponent {
-  #ars = inject(DataAccessService);
+  #ars = inject(AccessRequestService);
 
   grantedRequests = this.#ars.grantedAccessRequests;
   isLoading = this.#ars.isLoading;
