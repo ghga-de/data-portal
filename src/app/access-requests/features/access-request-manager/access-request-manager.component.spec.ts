@@ -13,7 +13,7 @@ import { screen } from '@testing-library/angular';
 import { AccessRequestManagerListComponent } from '../access-request-manager-list/access-request-manager-list.component';
 
 /**
- * Mock the access request service as needed by the IVA manager
+ * Mock the access request service as needed by the access request manager
  */
 const mockAccessRequestService = {
   loadAllAccessRequests: jest.fn(),
