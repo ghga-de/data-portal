@@ -113,11 +113,11 @@ export class AccessRequestManagerListComponent implements AfterViewInit {
     if (!ar) return; // dialog was cancelled
     this.#ars.processRequest(ar).subscribe({
       next: () => {
-        this.#notificationService.showSuccess('IVA has been invalidated');
+        this.#notificationService.showSuccess(`Access has been ${ar.status}.`);
       },
       error: (err) => {
         console.debug(err);
-        this.#notificationService.showError('IVA could not be invalidated');
+        this.#notificationService.showError('Access request could not be processed.');
       },
     });
   }
