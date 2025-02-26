@@ -1,7 +1,7 @@
-<div class="h-full w-full p-3">
+<div class="w-full p-3">
   <h2 mat-dialog-title>Access Request Detail</h2>
   <mat-dialog-content>
-    <table class="detail mb-6 w-full">
+    <table class="detail mb-4 w-full">
       <tr>
         <th>Dataset:</th>
         <td>{{ data.dataset_id }}</td>
@@ -38,7 +38,7 @@
         request:
       </label>
       <mat-radio-group [(ngModel)]="ivaId" id="iva-selection-label">
-        <table class="ivas">
+        <table class="ivas mt-2">
           @for (iva of ivas(); track iva.id) {
             <tr>
               <td>
@@ -54,25 +54,26 @@
         </table>
       </mat-radio-group>
     }
+    <br />
   </mat-dialog-content>
   <mat-dialog-actions>
-    <div class="mr-2 mt-4">
+    <div class="mr-2">
       <button mat-stroked-button (click)="cancel()">Cancel</button>
     </div>
     <div class="flex-grow"></div>
-    <div class="ml-2 mt-4">
+    <div class="ml-2">
       <button
-        mat-flat-button
-        class="deny mr-2"
-        (click)="deny()"
+        mat-raised-button
+        class="error mr-2"
+        (click)="safeDeny()"
         [disabled]="!ivaId() || data.status === 'denied'"
       >
         Deny
       </button>
       <button
-        mat-flat-button
-        class="allow ml-2"
-        (click)="allow()"
+        mat-raised-button
+        class="success ml-2"
+        (click)="safeAllow()"
         [disabled]="!ivaId() || data.status === 'allowed'"
       >
         Allow

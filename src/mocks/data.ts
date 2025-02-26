@@ -455,7 +455,6 @@ export const accessRequests = [
     status_changed: null,
     changed_by: null,
   },
-
   {
     id: '4ef4ccac-6c0a-4be6-9637-b33925178cea',
     user_id: 'doe@test.dev',
@@ -471,7 +470,6 @@ export const accessRequests = [
     changed_by: 'doe@test.dev',
     iva_id: '783d9682-d5e5-4ce7-9157-9eeb53a1e9ba',
   },
-
   {
     id: '4ef4ccac-6c0a-4be6-9637-b339251793fb',
     user_id: 'doe@test.dev',
@@ -487,7 +485,6 @@ export const accessRequests = [
     changed_by: 'doe@test.dev',
     iva_id: '783d9682-d5e5-4ce7-9157-9eeb53a1e9ba',
   },
-
   {
     id: 'a787d591-4264-4f48-8827-598585db868e',
     user_id: 'doe@test.dev',
@@ -502,7 +499,6 @@ export const accessRequests = [
     status_changed: '2023-05-19T12:04:02.000Z',
     changed_by: 'doe@test.dev',
   },
-
   {
     id: '9409db13-e23e-433e-9afa-544d8f25b720',
     user_id: 'doe@test.dev',

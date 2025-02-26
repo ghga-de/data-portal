@@ -18,11 +18,13 @@ import {
   AccessRequest,
   AccessRequestStatus,
 } from '@app/access-requests/models/access-requests';
+import { ConfirmationService } from '@app/shared/services/confirmation.service';
 import { NotificationService } from '@app/shared/services/notification.service';
-// in this dialog we need to request the IVAs which belong to another subdomain
-// eslint-disable-next-line boundaries/element-types
-import { Iva, IvaTypePrintable } from '@app/verification-addresses/models/iva';
-// eslint-disable-next-line boundaries/element-types
+import {
+  Iva,
+  IvaState,
+  IvaTypePrintable,
+} from '@app/verification-addresses/models/iva';
 import { IvaService } from '@app/verification-addresses/services/iva.service';
 
 /**
@@ -39,6 +41,7 @@ export class AccessRequestManagerDialogComponent implements OnInit {
   readonly dialogRef = inject(MatDialogRef<AccessRequestManagerDialogComponent>);
   readonly data = inject<AccessRequest>(MAT_DIALOG_DATA);
   #ivaService = inject(IvaService);
+  #confirmationService = inject(ConfirmationService);
   #notificationService = inject(NotificationService);
 
   ivas = this.#ivaService.userIvas;
@@ -53,6 +56,12 @@ export class AccessRequestManagerDialogComponent implements OnInit {
     }
   });
 
+  #ivasLoadedEffect = effect(() => {
+    if (!this.ivasAreLoading() && !this.ivasError() && this.ivas().length) {
+      this.#preSelectBestIva();
+    }
+  });
+
   /**
    * Load the IVAs of the user when the component is initialized
    */
@@ -64,7 +73,44 @@ export class AccessRequestManagerDialogComponent implements OnInit {
     this.dialogRef.close(undefined);
   };
 
-  allow = () => {
+  /**
+   * Allow the access request after confirmation.
+   */
+  safeAllow(): void {
+    if (!this.ivaId) return;
+    this.#confirmationService.confirm({
+      title: 'Confirm approval of the access request',
+      message: 'Please confirm that the access request shall be allowed.',
+      cancelText: 'Cancel',
+      confirmText: 'Confirm approval',
+      confirmClass: 'success',
+      callback: (confirmed) => {
+        if (confirmed) this.#allow();
+      },
+    });
+  }
+
+  /**
+   * Deny the access request after confirmation.
+   */
+  safeDeny(): void {
+    if (!this.ivaId) return;
+    this.#confirmationService.confirm({
+      title: 'Confirm rejection of the access request',
+      message: 'Please confirm that the access request shall be denied.',
+      cancelText: 'Cancel',
+      confirmText: 'Confirm rejection',
+      confirmClass: 'error',
+      callback: (confirmed) => {
+        if (confirmed) this.#deny();
+      },
+    });
+  }
+
+  /**
+   * Allow the access request and close the dialog.
+   */
+  #allow = () => {
     if (!this.ivaId) return;
     const data = {
       ...this.data,
@@ -74,7 +120,10 @@ export class AccessRequestManagerDialogComponent implements OnInit {
     this.dialogRef.close(data);
   };
 
-  deny = () => {
+  /**
+   * Deny the access request and close the dialog.
+   */
+  #deny = () => {
     if (!this.ivaId) return;
     const data = {
       ...this.data,
@@ -95,5 +144,34 @@ export class AccessRequestManagerDialogComponent implements OnInit {
       text += `: ${iva.value}`;
     }
     return text;
+  }
+
+  /**
+   * Pre-select the "best" IVA for the user.
+   * The best IVA is the one which is closest to being verified and latest.
+   */
+  #preSelectBestIva(): void {
+    let bestRank: number | undefined = undefined;
+    let lastChanged: string | undefined = undefined;
+    let ivaId: string | undefined = undefined;
+    for (const iva of this.ivas()) {
+      const rank = {
+        [IvaState.Verified]: 1,
+        [IvaState.CodeTransmitted]: 2,
+        [IvaState.CodeCreated]: 3,
+        [IvaState.CodeRequested]: 4,
+        [IvaState.Unverified]: 5,
+      }[iva.state];
+      const changed = iva.changed;
+      if (!bestRank || rank < bestRank) {
+        bestRank = rank;
+        lastChanged = changed;
+        ivaId = iva.id;
+      } else if (rank === bestRank && (!lastChanged || changed > lastChanged)) {
+        lastChanged = changed;
+        ivaId = iva.id;
+      }
+    }
+    this.ivaId.set(ivaId);
   }
 }
