@@ -1,0 +1,33 @@
+<div class="w-full p-4">
+  <h2 mat-dialog-title>Access Request Detail</h2>
+  <mat-dialog-content>
+    <table>
+      <tr>
+        <th>Dataset:</th>
+        <td>{{ data.dataset_id }}</td>
+      </tr>
+      <tr>
+        <th>Requester:</th>
+        <td>{{ data.full_user_name }}</td>
+      </tr>
+      <tr>
+        <th>Contact e-Mail:</th>
+        <td>{{ data.email }}</td>
+      </tr>
+      <tr>
+        <th>Request details:</th>
+        <td>{{ data.request_text }}</td>
+      </tr>
+    </table>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <div class="mr-2 mt-4">
+      <button mat-stroked-button (click)="cancel()">Cancel</button>
+    </div>
+    <div class="flex-grow"></div>
+    <div class="ml-2 mt-4">
+      <button mat-flat-button class="deny mr-2" (click)="deny()">Deny</button>
+      <button mat-flat-button class="allow ml-2" (click)="allow()">Allow</button>
+    </div>
+  </mat-dialog-actions>
+</div>

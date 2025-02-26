@@ -1,0 +1,19 @@
+@use '@angular/material' as mat;
+
+button.allow {
+  @include mat.button-overrides(
+    (
+      filled-container-color: green,
+      filled-label-text-color: var(--mat-sys-on-secondary),
+    )
+  );
+}
+
+button.deny {
+  @include mat.button-overrides(
+    (
+      filled-container-color: red,
+      filled-label-text-color: var(--mat-sys-on-secondary),
+    )
+  );
+}
