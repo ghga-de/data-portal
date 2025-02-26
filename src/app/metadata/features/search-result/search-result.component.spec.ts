@@ -32,7 +32,7 @@ const fakeActivatedRoute = {
 } as ActivatedRoute;
 
 /**
- * Mock the auth service as needed for the account component
+ * Mock the auth service as needed for the search result component
  */
 class MockAuthService {
   fullName = () => 'Dr. John Doe';

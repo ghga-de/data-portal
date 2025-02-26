@@ -39,26 +39,23 @@ export class DynamicAccessRequestButtonComponent {
   #pendingAccessRequests = computed(() =>
     this.#accessRequestService
       .pendingUserAccessRequests()
-      .filter((ar: AccessRequest) => ar.dataset_id == this.datasetID()),
+      .some((ar: AccessRequest) => ar.dataset_id == this.datasetID()),
   );
   #activeGrantedAccessRequests = computed(() =>
     this.#accessRequestService
       .grantedUserAccessRequests()
-      .filter((grantedAccessRequest: GrantedAccessRequest) => {
+      .some((grantedAccessRequest: GrantedAccessRequest) => {
         const hasSameId = grantedAccessRequest.request.dataset_id == this.datasetID();
         const isValid = grantedAccessRequest.daysRemaining > 0;
         return hasSameId && isValid;
       }),
   );
-  status = computed(() => {
-    let newStatus = 'ok';
-    for (let ar of this.#pendingAccessRequests()) {
-      newStatus = ar.status;
-    }
-    for (let gar of this.#activeGrantedAccessRequests()) {
-      newStatus = gar.request.status;
-    }
-    return newStatus;
+  status = computed<AccessRequestStatus>(() => {
+    if (this.#activeGrantedAccessRequests())
+      return AccessRequestStatus.allowed;
+    if (this.#pendingAccessRequests())
+      return AccessRequestStatus.pending;
+    return AccessRequestStatus.denied;
   });
 
   showNewAccessRequestDialog = () => {
@@ -76,11 +73,9 @@ export class DynamicAccessRequestButtonComponent {
       userId: this.#userId() ?? '',
     };
 
-    this.#dialogRef = this.#dialog.open(AccessRequestDialogComponent, {
+    this.#dialog.open(AccessRequestDialogComponent, {
       data,
-    });
-
-    this.#dialogRef.afterClosed().subscribe((componentData) => {
+    }).afterClosed().subscribe((componentData) => {
       if (componentData) {
         this.#processAccessRequest(componentData);
       }
