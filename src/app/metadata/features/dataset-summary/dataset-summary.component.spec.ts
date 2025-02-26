@@ -14,6 +14,7 @@ import {
   DataAccessService,
   MockDataAccessService,
 } from '@app/access-requests/services/data-access.service';
+import { AuthService } from '@app/auth/services/auth.service';
 import { MetadataService } from '@app/metadata/services/metadata.service';
 import { DatasetSummaryComponent } from './dataset-summary.component';
 
@@ -23,6 +24,16 @@ import { DatasetSummaryComponent } from './dataset-summary.component';
 class MockMetadataService {
   datasetSummary = signal(datasetSummary);
   datasetSummaryError = signal(undefined);
+}
+
+/**
+ * Mock the auth service as needed for the Dataset Summary Component
+ */
+class MockAuthService {
+  fullName = () => 'Dr. John Doe';
+  email = () => 'doe@home.org';
+  role = () => 'data_steward';
+  roleName = () => 'Data Steward';
 }
 
 describe('DatasetSummaryComponent', () => {
@@ -38,6 +49,7 @@ describe('DatasetSummaryComponent', () => {
           provide: ActivatedRoute,
           useValue: fakeActivatedRoute,
         },
+        { provide: AuthService, useClass: MockAuthService },
         { provide: DataAccessService, useClass: MockDataAccessService },
       ],
     }).compileComponents();

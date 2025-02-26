@@ -7,13 +7,10 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal, Signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AuthService } from '@app/auth/services/auth.service';
 import { ConfigService } from '@app/shared/services/config.service';
 import { NotificationService } from '@app/shared/services/notification.service';
 import { catchError, firstValueFrom, map } from 'rxjs';
-// eslint-disable-next-line boundaries/element-types
-import { DataAccessRequestDialogComponent } from '../features/data-access-request-dialog/data-access-request-dialog.component';
 import {
   AccessRequest,
   AccessRequestDialogData,
@@ -27,58 +24,15 @@ import {
   providedIn: 'root',
 })
 export class DataAccessService {
-  #dialogRef: MatDialogRef<DataAccessRequestDialogComponent> | undefined;
   #http = inject(HttpClient);
   #auth = inject(AuthService);
   #notification = inject(NotificationService);
-  #dialog = inject(MatDialog);
   #userId = computed<string | null>(() => this.#auth.user()?.id || null);
   #config = inject(ConfigService);
   #arsBaseUrl = this.#config.arsUrl;
   #arsEndpointUrl = `${this.#arsBaseUrl}/access-requests`;
 
-  showNewAccessRequestDialog = (datasetID: string) => {
-    if (!this.#auth.isAuthenticated()) {
-      this.#notification.showError('You must be logged in to perform this action');
-      return;
-    }
-
-    const data: AccessRequestDialogData = {
-      datasetID,
-      email: this.#auth.email() || '',
-      description: '',
-      fromDate: undefined,
-      untilDate: undefined,
-      userId: '',
-    };
-
-    this.#dialogRef = this.#dialog.open(DataAccessRequestDialogComponent, {
-      data,
-    });
-
-    this.#dialogRef
-      .afterClosed()
-      .subscribe((componentData) => this.#processAccessRequest(componentData));
-  };
-
-  #processAccessRequest = (data: AccessRequestDialogData) => {
-    const userid = this.#auth.user()?.id;
-    if (!data || !this.#auth.isAuthenticated() || !userid) {
-      return;
-    }
-    data.userId = userid;
-    this.#performAccessRequest(data);
-  };
-
-  #performAccessRequest = (data: AccessRequestDialogData) => {
-    data.fromDate?.setUTCHours(0);
-    data.fromDate?.setUTCMinutes(0);
-    data.fromDate?.setUTCSeconds(0);
-    data.fromDate?.setUTCMilliseconds(0);
-    data.untilDate?.setHours(23);
-    data.untilDate?.setMinutes(59);
-    data.untilDate?.setSeconds(59);
-    data.untilDate?.setMilliseconds(999);
+  performAccessRequest = (data: AccessRequestDialogData) => {
     try {
       firstValueFrom(
         this.#http

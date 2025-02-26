@@ -26,7 +26,18 @@ import {
   DataAccessService,
   MockDataAccessService,
 } from '@app/access-requests/services/data-access.service';
+import { AuthService } from '@app/auth/services/auth.service';
 import { screen } from '@testing-library/angular';
+
+/**
+ * Mock a basic version of the auth service
+ */
+export class MockAuthService {
+  fullName = () => 'Dr. John Doe';
+  email = () => 'doe@home.org';
+  role = () => 'data_steward';
+  roleName = () => 'Data Steward';
+}
 
 /**
  * Mock the dataset information service as needed for the dataset details
@@ -47,6 +58,7 @@ describe('DatasetDetailsComponent', () => {
       providers: [
         { provide: MetadataService, useClass: MockMetadataService },
         { provide: DatasetInformationService, useClass: MockDatasetInformationService },
+        { provide: AuthService, useClass: MockAuthService },
         { provide: DataAccessService, useClass: MockDataAccessService },
         provideAnimations(),
       ],
