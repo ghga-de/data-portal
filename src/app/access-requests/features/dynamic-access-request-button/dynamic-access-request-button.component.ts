@@ -6,12 +6,13 @@
 
 import { Component, computed, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import {
   AccessRequest,
   AccessRequestDialogData,
+  AccessRequestStatus,
   GrantedAccessRequest,
 } from '@app/access-requests/models/access-requests';
 import { AccessRequestService } from '@app/access-requests/services/access-request.service';
@@ -33,7 +34,6 @@ export class DynamicAccessRequestButtonComponent {
   #accessRequestService = inject(AccessRequestService);
   #auth = inject(AuthService);
   #notification = inject(NotificationService);
-  #dialogRef: MatDialogRef<AccessRequestDialogComponent> | undefined;
   #dialog = inject(MatDialog);
   #userId = computed<string | null>(() => this.#auth.user()?.id || null);
   #pendingAccessRequests = computed(() =>
@@ -51,10 +51,8 @@ export class DynamicAccessRequestButtonComponent {
       }),
   );
   status = computed<AccessRequestStatus>(() => {
-    if (this.#activeGrantedAccessRequests())
-      return AccessRequestStatus.allowed;
-    if (this.#pendingAccessRequests())
-      return AccessRequestStatus.pending;
+    if (this.#activeGrantedAccessRequests()) return AccessRequestStatus.allowed;
+    if (this.#pendingAccessRequests()) return AccessRequestStatus.pending;
     return AccessRequestStatus.denied;
   });
 
@@ -73,13 +71,16 @@ export class DynamicAccessRequestButtonComponent {
       userId: this.#userId() ?? '',
     };
 
-    this.#dialog.open(AccessRequestDialogComponent, {
-      data,
-    }).afterClosed().subscribe((componentData) => {
-      if (componentData) {
-        this.#processAccessRequest(componentData);
-      }
-    });
+    this.#dialog
+      .open(AccessRequestDialogComponent, {
+        data,
+      })
+      .afterClosed()
+      .subscribe((componentData) => {
+        if (componentData) {
+          this.#processAccessRequest(componentData);
+        }
+      });
   };
 
   #processAccessRequest = (data: AccessRequestDialogData) => {
