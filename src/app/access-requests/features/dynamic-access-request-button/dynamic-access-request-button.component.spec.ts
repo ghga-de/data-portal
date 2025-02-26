@@ -13,6 +13,7 @@ import {
   MockAccessRequestService,
 } from '@app/access-requests/services/access-request.service';
 import { AuthService } from '@app/auth/services/auth.service';
+import { screen } from '@testing-library/angular';
 import { DynamicAccessRequestButtonComponent } from './dynamic-access-request-button.component';
 
 /**
@@ -40,12 +41,17 @@ describe('DynamicAccessRequestButtonComponent', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(DynamicAccessRequestButtonComponent);
-    fixture.componentRef.setInput('datasetID', 'GHGAD588887987');
+    fixture.componentRef.setInput('datasetID', 'GHGAD588887989');
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should show offer option to request access', () => {
+    const button = screen.getByText('Request Access');
+    expect(button).toBeVisible();
   });
 });
