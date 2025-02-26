@@ -14,7 +14,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class AddPluralS implements PipeTransform {
   /**
-   * This function will get the number of items and returns an s if it is different than 1 (e.g. 1 method vs. 0 methods)
+   * This method will get the number of items and returns an s if it is different than 1 (e.g. 1 method vs. 0 methods)
    * @param count The number of elements in the object
    * @returns An s or an empty string, depending on the number of items
    */

@@ -4,6 +4,7 @@
  * @license Apache-2.0
  */
 
+import { ClipboardModule } from '@angular/cdk/clipboard';
 import { Location } from '@angular/common';
 import {
   AfterViewInit,
@@ -36,7 +37,7 @@ import { StorageAlias } from '@app/metadata/utils/storage-alias.pipe';
 import { NotificationService } from '@app/shared/services/notification.service';
 import { AddPluralS } from '@app/shared/utils/add-plural-s.pipe';
 import { ParseBytes } from '@app/shared/utils/parse-bytes.pipe';
-import { ShortHash } from '@app/shared/utils/short-hash.pipe';
+import { TruncateString } from '@app/shared/utils/truncate-string.pipe';
 import { UnderscoreToSpace } from '@app/shared/utils/underscore-to-space.pipe';
 
 const COLUMNS = {
@@ -64,7 +65,9 @@ const COLUMNS = {
     StorageAlias,
     ParseBytes,
     UnderscoreToSpace,
-    ShortHash,
+    TruncateString,
+    MatIconModule,
+    ClipboardModule,
   ],
   templateUrl: './dataset-details.component.html',
   styleUrl: './dataset-details.component.scss',
@@ -261,5 +264,12 @@ export class DatasetDetailsComponent implements OnInit, AfterViewInit {
    */
   goBack() {
     this.#location.back();
+  }
+
+  /**
+   * Function to notify user that full hash was copied to clipboard
+   */
+  notifyCopied() {
+    this.#notify.showInfo('Complete file hash copied to clipboard', 1000);
   }
 }

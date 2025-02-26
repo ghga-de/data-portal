@@ -467,9 +467,18 @@
                   File hash
                 </th>
                 <td mat-cell *matCellDef="let file">
-                  <abbr title="{{ file.file_information?.sha256_hash }}">{{
-                    file.file_information?.sha256_hash | shortHash
-                  }}</abbr>
+                  @if (file.file_information?.sha256_hash.length > 0) {
+                    <abbr title="{{ file.file_information?.sha256_hash }}">{{
+                      file.file_information?.sha256_hash | truncateString
+                    }}</abbr>
+                    <button
+                      mat-icon-button
+                      [cdkCopyToClipboard]="file.file_information?.sha256_hash"
+                      (click)="notifyCopied()"
+                    >
+                      <mat-icon>content_copy</mat-icon>
+                    </button>
+                  }
                 </td>
               </ng-container>
 
