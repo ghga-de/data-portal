@@ -65,7 +65,7 @@
         mat-flat-button
         class="deny mr-2"
         (click)="deny()"
-        [disabled]="!ivaId || data.status === 'denied'"
+        [disabled]="!ivaId() || data.status === 'denied'"
       >
         Deny
       </button>
@@ -73,7 +73,7 @@
         mat-flat-button
         class="allow ml-2"
         (click)="allow()"
-        [disabled]="!ivaId || data.status === 'allowed'"
+        [disabled]="!ivaId() || data.status === 'allowed'"
       >
         Allow
       </button>
