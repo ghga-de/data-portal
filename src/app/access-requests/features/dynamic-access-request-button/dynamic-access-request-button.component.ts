@@ -14,10 +14,10 @@ import {
   AccessRequestDialogData,
   GrantedAccessRequest,
 } from '@app/access-requests/models/access-requests';
-import { DataAccessService } from '@app/access-requests/services/data-access.service';
+import { AccessRequestService } from '@app/access-requests/services/access-request.service';
 import { AuthService } from '@app/auth/services/auth.service';
 import { NotificationService } from '@app/shared/services/notification.service';
-import { DataAccessRequestDialogComponent } from '../data-access-request-dialog/data-access-request-dialog.component';
+import { AccessRequestDialogComponent } from '../access-request-dialog/access-request-dialog.component';
 
 /**
  * This component wraps some logic about access requests by only showing and controlling the dialog to create one if none exists so far.
@@ -30,20 +30,20 @@ import { DataAccessRequestDialogComponent } from '../data-access-request-dialog/
 })
 export class DynamicAccessRequestButtonComponent {
   datasetID = input.required<string>();
-  #accessRequestService = inject(DataAccessService);
+  #accessRequestService = inject(AccessRequestService);
   #auth = inject(AuthService);
   #notification = inject(NotificationService);
-  #dialogRef: MatDialogRef<DataAccessRequestDialogComponent> | undefined;
+  #dialogRef: MatDialogRef<AccessRequestDialogComponent> | undefined;
   #dialog = inject(MatDialog);
   #userId = computed<string | null>(() => this.#auth.user()?.id || null);
   #pendingAccessRequests = computed(() =>
     this.#accessRequestService
-      .pendingAccessRequests()
+      .pendingUserAccessRequests()
       .filter((ar: AccessRequest) => ar.dataset_id == this.datasetID()),
   );
   #activeGrantedAccessRequests = computed(() =>
     this.#accessRequestService
-      .grantedAccessRequests()
+      .grantedUserAccessRequests()
       .filter((grantedAccessRequest: GrantedAccessRequest) => {
         const hasSameId = grantedAccessRequest.request.dataset_id == this.datasetID();
         const isValid = grantedAccessRequest.daysRemaining > 0;
@@ -76,7 +76,7 @@ export class DynamicAccessRequestButtonComponent {
       userId: this.#userId() ?? '',
     };
 
-    this.#dialogRef = this.#dialog.open(DataAccessRequestDialogComponent, {
+    this.#dialogRef = this.#dialog.open(AccessRequestDialogComponent, {
       data,
     });
 

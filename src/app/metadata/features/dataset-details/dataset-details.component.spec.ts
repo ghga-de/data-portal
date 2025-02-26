@@ -23,9 +23,9 @@ class MockMetadataService {
 }
 
 import {
-  DataAccessService,
-  MockDataAccessService,
-} from '@app/access-requests/services/data-access.service';
+  AccessRequestService,
+  MockAccessRequestService,
+} from '@app/access-requests/services/access-request.service';
 import { AuthService } from '@app/auth/services/auth.service';
 import { screen } from '@testing-library/angular';
 
@@ -59,7 +59,7 @@ describe('DatasetDetailsComponent', () => {
         { provide: MetadataService, useClass: MockMetadataService },
         { provide: DatasetInformationService, useClass: MockDatasetInformationService },
         { provide: AuthService, useClass: MockAuthService },
-        { provide: DataAccessService, useClass: MockDataAccessService },
+        { provide: AccessRequestService, useClass: MockAccessRequestService },
         provideAnimations(),
       ],
     }).compileComponents();

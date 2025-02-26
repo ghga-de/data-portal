@@ -7,9 +7,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import {
-  DataAccessService,
-  MockDataAccessService,
-} from '@app/access-requests/services/data-access.service';
+  AccessRequestService,
+  MockAccessRequestService,
+} from '@app/access-requests/services/access-request.service';
 import { AuthService } from '@app/auth/services/auth.service';
 import { DynamicAccessRequestButtonComponent } from './dynamic-access-request-button.component';
 
@@ -31,7 +31,7 @@ describe('DynamicAccessRequestButtonComponent', () => {
     await TestBed.configureTestingModule({
       imports: [DynamicAccessRequestButtonComponent],
       providers: [
-        { provide: DataAccessService, useClass: MockDataAccessService },
+        { provide: AccessRequestService, useClass: MockAccessRequestService },
         { provide: AuthService, useClass: MockAuthService },
       ],
     }).compileComponents();
