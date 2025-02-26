@@ -20,6 +20,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { AccessRequest } from '@app/access-requests/models/access-requests';
 import { AccessRequestService } from '@app/access-requests/services/access-request.service';
+import { NotificationService } from '@app/shared/services/notification.service';
 import { AccessRequestManagerDialogComponent } from '../access-request-manager-dialog/access-request-manager-dialog.component';
 
 /**
@@ -37,6 +38,7 @@ import { AccessRequestManagerDialogComponent } from '../access-request-manager-d
 export class AccessRequestManagerListComponent implements AfterViewInit {
   #ars = inject(AccessRequestService);
   #dialog = inject(MatDialog);
+  #notificationService = inject(NotificationService);
 
   accessRequests = this.#ars.allAccessRequests;
   accessRequestsAreLoading = this.#ars.allAccessRequestsAreLoading;
@@ -104,11 +106,20 @@ export class AccessRequestManagerListComponent implements AfterViewInit {
 
   /**
    * Process the result from the detail request dialog
+   * Currently, we can only process the status and the IVA selection.
    * @param ar - the access request with potentially modified data
    */
   #processDialog(ar: AccessRequest | undefined) {
     if (!ar) return; // dialog was cancelled
-    console.log('AR=', ar);
+    this.#ars.processRequest(ar).subscribe({
+      next: () => {
+        this.#notificationService.showSuccess('IVA has been invalidated');
+      },
+      error: (err) => {
+        console.debug(err);
+        this.#notificationService.showError('IVA could not be invalidated');
+      },
+    });
   }
 
   /**
