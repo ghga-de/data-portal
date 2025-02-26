@@ -37,7 +37,6 @@ import { StorageAlias } from '@app/metadata/utils/storage-alias.pipe';
 import { NotificationService } from '@app/shared/services/notification.service';
 import { AddPluralS } from '@app/shared/utils/add-plural-s.pipe';
 import { ParseBytes } from '@app/shared/utils/parse-bytes.pipe';
-import { TruncateString } from '@app/shared/utils/truncate-string.pipe';
 import { UnderscoreToSpace } from '@app/shared/utils/underscore-to-space.pipe';
 
 const COLUMNS = {
@@ -65,7 +64,6 @@ const COLUMNS = {
     StorageAlias,
     ParseBytes,
     UnderscoreToSpace,
-    TruncateString,
     MatIconModule,
     ClipboardModule,
   ],

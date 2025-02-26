@@ -468,9 +468,11 @@
                 </th>
                 <td mat-cell *matCellDef="let file">
                   @if (file.file_information?.sha256_hash.length > 0) {
-                    <abbr title="{{ file.file_information?.sha256_hash }}">{{
-                      file.file_information?.sha256_hash | truncateString
-                    }}</abbr>
+                    <span
+                      class="inline-block max-w-[8ex] overflow-hidden text-ellipsis whitespace-nowrap"
+                      title="{{ file.file_information?.sha256_hash }}"
+                      >{{ file.file_information?.sha256_hash }}</span
+                    >
                     <button
                       mat-icon-button
                       [cdkCopyToClipboard]="file.file_information?.sha256_hash"
