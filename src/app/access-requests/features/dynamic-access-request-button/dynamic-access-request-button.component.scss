@@ -1,0 +1,9 @@
+@use '@angular/material' as mat;
+
+button {
+    @include mat.button-overrides(
+      (
+        protected-container-color: var(--mat-sys-quaternary),
+      )
+    );
+  }
