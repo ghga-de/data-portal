@@ -5,7 +5,7 @@
  */
 
 import { DatePipe } from '@angular/common';
-import { Component, inject, model, OnInit } from '@angular/core';
+import { Component, effect, inject, model, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import {
@@ -18,6 +18,7 @@ import {
   AccessRequest,
   AccessRequestStatus,
 } from '@app/access-requests/models/access-requests';
+import { NotificationService } from '@app/shared/services/notification.service';
 // in this dialog we need to request the IVAs which belong to another subdomain
 // eslint-disable-next-line boundaries/element-types
 import { Iva, IvaTypePrintable } from '@app/verification-addresses/models/iva';
@@ -38,12 +39,19 @@ export class AccessRequestManagerDialogComponent implements OnInit {
   readonly dialogRef = inject(MatDialogRef<AccessRequestManagerDialogComponent>);
   readonly data = inject<AccessRequest>(MAT_DIALOG_DATA);
   #ivaService = inject(IvaService);
+  #notificationService = inject(NotificationService);
 
   ivas = this.#ivaService.userIvas;
   ivasAreLoading = this.#ivaService.userIvasAreLoading;
   ivasError = this.#ivaService.userIvasError;
 
   ivaId = model<string | undefined>(undefined);
+
+  #ivasErrorEffect = effect(() => {
+    if (this.ivasError()) {
+      this.#notificationService.showError('Error fetching verification addresses.');
+    }
+  });
 
   /**
    * Load the IVAs of the user when the component is initialized
