@@ -23,7 +23,7 @@
         [(ngModel)]="fromDate"
         (dateInput)="fromDateChanged($event)"
       />
-      <mat-hint>MM/DD/YYYY</mat-hint>
+      <mat-hint>DD/MM/YYYY</mat-hint>
       <mat-datepicker-toggle matIconSuffix [for]="from_picker"></mat-datepicker-toggle>
       <mat-datepicker #from_picker></mat-datepicker>
     </mat-form-field>
@@ -37,7 +37,7 @@
         [max]="maxUntilDate"
         [(ngModel)]="untilDate"
       />
-      <mat-hint>MM/DD/YYYY</mat-hint>
+      <mat-hint>DD/MM/YYYY</mat-hint>
       <mat-datepicker-toggle matIconSuffix [for]="until_picker"></mat-datepicker-toggle>
       <mat-datepicker #until_picker></mat-datepicker>
     </mat-form-field>
