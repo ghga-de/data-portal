@@ -11,9 +11,10 @@ import { ActivatedRoute } from '@angular/router';
 import { datasetSummary, searchResults } from '@app/../mocks/data';
 import { fakeActivatedRoute } from '@app/../mocks/route';
 import {
-  DataAccessService,
-  MockDataAccessService,
-} from '@app/access-requests/services/data-access.service';
+  AccessRequestService,
+  MockAccessRequestService,
+} from '@app/access-requests/services/access-request.service';
+import { AuthService } from '@app/auth/services/auth.service';
 import { MetadataService } from '@app/metadata/services/metadata.service';
 import { DatasetSummaryComponent } from './dataset-summary.component';
 
@@ -23,6 +24,16 @@ import { DatasetSummaryComponent } from './dataset-summary.component';
 class MockMetadataService {
   datasetSummary = signal(datasetSummary);
   datasetSummaryError = signal(undefined);
+}
+
+/**
+ * Mock the auth service as needed for the Dataset Summary Component
+ */
+class MockAuthService {
+  fullName = () => 'Dr. John Doe';
+  email = () => 'doe@home.org';
+  role = () => 'data_steward';
+  roleName = () => 'Data Steward';
 }
 
 describe('DatasetSummaryComponent', () => {
@@ -38,7 +49,8 @@ describe('DatasetSummaryComponent', () => {
           provide: ActivatedRoute,
           useValue: fakeActivatedRoute,
         },
-        { provide: DataAccessService, useClass: MockDataAccessService },
+        { provide: AuthService, useClass: MockAuthService },
+        { provide: AccessRequestService, useClass: MockAccessRequestService },
       ],
     }).compileComponents();
 

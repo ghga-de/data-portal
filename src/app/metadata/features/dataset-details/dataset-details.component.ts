@@ -29,7 +29,7 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { Title } from '@angular/platform-browser';
 // eslint-disable-next-line boundaries/element-types
-import { DataAccessService } from '@app/access-requests/services/data-access.service';
+import { DynamicAccessRequestButtonComponent } from '@app/access-requests/features/dynamic-access-request-button/dynamic-access-request-button.component';
 import { Experiment, File, Sample } from '@app/metadata/models/dataset-details';
 import { DatasetInformationService } from '@app/metadata/services/dataset-information.service';
 import { MetadataService } from '@app/metadata/services/metadata.service';
@@ -66,6 +66,7 @@ const COLUMNS = {
     UnderscoreToSpace,
     MatIconModule,
     ClipboardModule,
+    DynamicAccessRequestButtonComponent,
   ],
   templateUrl: './dataset-details.component.html',
   styleUrl: './dataset-details.component.scss',
@@ -78,7 +79,6 @@ export class DatasetDetailsComponent implements OnInit, AfterViewInit {
   #metadata = inject(MetadataService);
   #dins = inject(DatasetInformationService);
 
-  accessService = inject(DataAccessService);
   datasetDetails = this.#metadata.datasetDetails;
   datasetInformation = this.#dins.datasetInformation;
 
