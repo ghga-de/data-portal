@@ -4,24 +4,24 @@
  * @license Apache-2.0
  */
 
-import { DateToYearPipe } from './date-to-year.pipe';
+import { isoDatePipe } from './iso-date.pipe';
 
-describe('DateToYearPipe', () => {
+describe('isoDate', () => {
   it('can create an instance', () => {
-    const pipe = new DateToYearPipe();
+    const pipe = new isoDatePipe();
     expect(pipe).toBeTruthy();
   });
 
-  it('should return 2025 for a date in 2025', () => {
-    const date = new Date('2025-05-12');
-    const pipe = new DateToYearPipe();
+  it('should return 2025-05-11 for the date 11 May 2025', () => {
+    const date = new Date('11 May 2025');
+    const pipe = new isoDatePipe();
     const result = pipe.transform(date);
-    expect(result).toBe('2025');
+    expect(result).toBe('2025-05-11');
   });
 
   it('should return an empty string for an invalid date', () => {
     const date = new Date('invalid input data from somewhere...');
-    const pipe = new DateToYearPipe();
+    const pipe = new isoDatePipe();
     const result = pipe.transform(date);
     expect(result).toBe('');
   });

@@ -10,17 +10,19 @@ import { Pipe, PipeTransform } from '@angular/core';
  * This pipe can be used to display a year as a string from a Date object.
  */
 @Pipe({
-  name: 'dateToYear',
+  name: 'isoDate',
 })
-export class DateToYearPipe implements PipeTransform {
+export class isoDatePipe implements PipeTransform {
   /**
    * The transform method executes the business logic of the Pipe
    * @param date This function will get the year for the provided date and return it as a string
    * @returns the year as a string
    */
-  transform(date: Date): string {
+  transform(date: Date | string): string {
+    console.log(typeof date === 'string');
+    if (typeof date === 'string') date = new Date(date);
     if (date instanceof Date && !isNaN(date.getTime())) {
-      return date.getFullYear().toString();
+      return date.toISOString().substring(0, 10);
     }
     return '';
   }
