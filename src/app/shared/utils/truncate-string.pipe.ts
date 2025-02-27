@@ -16,16 +16,11 @@ export class TruncateString implements PipeTransform {
   /**
    * The transform method executes the business logic of the Pipe
    * @param str The string to shorten
-   * @param output_max_length The number of characters from the original string to return (excluding ellipses)
-   * @param input_max_length The minimum length of string from which to start shortening
+   * @param size The number of characters from the original string to return (excluding ellipses)
    * @returns The shortened string
    */
-  transform(
-    str: string,
-    output_max_length: number = 7,
-    input_max_length: number = 10,
-  ): string {
-    if (str.length > input_max_length) return str.substring(0, output_max_length) + '…';
+  transform(str: string, size: number = 7): string {
+    if (str.length > size) return str.substring(0, size) + '…';
     else return str;
   }
 }
