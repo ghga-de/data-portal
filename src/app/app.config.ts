@@ -22,11 +22,11 @@ import { withFetch } from '@angular/common/http';
 import { provideDateFnsAdapter } from '@angular/material-date-fns-adapter';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { csrfInterceptor } from '@app/auth/services/csrf.service';
-import { enGB } from 'date-fns/locale';
 import { routes, TemplatePageTitleStrategy } from './app.routes';
 
 import {
   DEFAULT_DATE_FORMATS,
+  DEFAULT_DATE_LOCALE,
   DEFAULT_DATE_OUTPUT_FORMAT,
 } from '@app/shared/utils/date-formats';
 
@@ -42,7 +42,7 @@ export const appConfig: ApplicationConfig = {
     // cache all GET requests by default
     provideHttpCache({ strategy: 'implicit' }),
     provideAnimationsAsync(),
-    { provide: MAT_DATE_LOCALE, useValue: enGB },
+    { provide: MAT_DATE_LOCALE, useValue: DEFAULT_DATE_LOCALE },
     {
       provide: DATE_PIPE_DEFAULT_OPTIONS,
       useValue: { dateFormat: DEFAULT_DATE_OUTPUT_FORMAT },

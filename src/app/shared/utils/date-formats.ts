@@ -5,6 +5,9 @@
  */
 
 import { MatDateFormats } from '@angular/material/core';
+import { enGB } from 'date-fns/locale';
+
+export const DEFAULT_DATE_LOCALE = enGB;
 
 export const DEFAULT_DATE_OUTPUT_FORMAT = 'yyyy-MM-dd';
 export const DEFAULT_DATE_INPUT_FORMAT = 'yyyy-MM-dd';
