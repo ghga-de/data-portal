@@ -41,7 +41,7 @@ export class AccessRequestManagerFilterComponent {
 
   #filter = this.#ars.allAccessRequestsFilter;
 
-  dateInputFormat = DEFAULT_DATE_INPUT_FORMAT;
+  readonly dateInputFormat = DEFAULT_DATE_INPUT_FORMAT;
 
   /**
    * The model for the filter properties
