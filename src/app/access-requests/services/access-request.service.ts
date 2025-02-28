@@ -238,7 +238,9 @@ export class AccessRequestService {
     if (requests.length && filter) {
       const datasetId = filter.datasetId.trim().toLowerCase();
       if (datasetId) {
-        requests = requests.filter((ar) => ar.dataset_id.toLowerCase() === datasetId);
+        requests = requests.filter((ar) =>
+          ar.dataset_id.toLowerCase().includes(datasetId),
+        );
       }
       const name = filter.name.trim().toLowerCase();
       if (name) {
