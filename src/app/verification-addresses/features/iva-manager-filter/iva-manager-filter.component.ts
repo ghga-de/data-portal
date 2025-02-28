@@ -12,6 +12,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { DEFAULT_DATE_INPUT_FORMAT } from '@app/shared/utils/date-formats';
 import { IvaState, IvaStatePrintable } from '@app/verification-addresses/models/iva';
 import { IvaService } from '@app/verification-addresses/services/iva.service';
 
@@ -39,6 +40,8 @@ export class IvaManagerFilterComponent {
   #ivaService = inject(IvaService);
 
   #filter = this.#ivaService.allIvasFilter;
+
+  dateInputFormat = DEFAULT_DATE_INPUT_FORMAT;
 
   /**
    * The model for the filter properties

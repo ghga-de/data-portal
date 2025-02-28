@@ -25,8 +25,10 @@ import { csrfInterceptor } from '@app/auth/services/csrf.service';
 import { enGB } from 'date-fns/locale';
 import { routes, TemplatePageTitleStrategy } from './app.routes';
 
-const DEFAULT_INPUT_DATE_FORMAT = 'yyyy-MM-dd';
-const DEFAULT_OUTPUT_DATE_FORMAT = 'yyyy-MM-dd';
+import {
+  DEFAULT_DATE_FORMATS,
+  DEFAULT_DATE_OUTPUT_FORMAT,
+} from '@app/shared/utils/date-formats';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -43,29 +45,8 @@ export const appConfig: ApplicationConfig = {
     { provide: MAT_DATE_LOCALE, useValue: enGB },
     {
       provide: DATE_PIPE_DEFAULT_OPTIONS,
-      useValue: { dateFormat: DEFAULT_OUTPUT_DATE_FORMAT },
+      useValue: { dateFormat: DEFAULT_DATE_OUTPUT_FORMAT },
     },
-    provideDateFnsAdapter({
-      parse: {
-        dateInput: [
-          DEFAULT_INPUT_DATE_FORMAT,
-          'yyyy-MM-dd',
-          'dd.MM.yyyy',
-          'dd/MM/yyyy',
-          'd.M.yyyy',
-          'd/M/yyyy',
-          'dd.M.yyyy',
-          'dd/M/yyyy',
-          'd.MM.yyyy',
-          'd/MM/yyyy',
-        ],
-      },
-      display: {
-        dateInput: DEFAULT_INPUT_DATE_FORMAT,
-        monthYearLabel: 'MMM yyyy',
-        dateA11yLabel: 'LL',
-        monthYearA11yLabel: 'MMMM yyyy',
-      },
-    }),
+    provideDateFnsAdapter(DEFAULT_DATE_FORMATS),
   ],
 };

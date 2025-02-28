@@ -20,6 +20,7 @@ import {
 } from '@app/access-requests/models/access-requests';
 import { ConfirmationService } from '@app/shared/services/confirmation.service';
 import { NotificationService } from '@app/shared/services/notification.service';
+import { DEFAULT_DATE_INPUT_FORMAT } from '@app/shared/utils/date-formats';
 import {
   Iva,
   IvaState,
@@ -43,6 +44,8 @@ export class AccessRequestManagerDialogComponent implements OnInit {
   #ivaService = inject(IvaService);
   #confirmationService = inject(ConfirmationService);
   #notificationService = inject(NotificationService);
+
+  dateInputFormat = DEFAULT_DATE_INPUT_FORMAT;
 
   ivas = this.#ivaService.userIvas;
   ivasAreLoading = this.#ivaService.userIvasAreLoading;
