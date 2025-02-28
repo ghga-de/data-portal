@@ -77,10 +77,15 @@ export class AccessRequestManagerDialogComponent implements OnInit {
    * Allow the access request after confirmation.
    */
   safeAllow(): void {
-    if (!this.ivaId) return;
+    if (!this.ivaId()) return;
+    const iva = this.ivas().find((iva) => iva.id === this.ivaId());
+    if (!iva) return;
+    const typeAndValue = this.typeAndValue(iva);
     this.#confirmationService.confirm({
       title: 'Confirm approval of the access request',
-      message: 'Please confirm that the access request shall be allowed.',
+      message:
+        'Please confirm that the access request shall be allowed' +
+        ` and coupled to ${typeAndValue}.`,
       cancelText: 'Cancel',
       confirmText: 'Confirm approval',
       confirmClass: 'success',
@@ -94,7 +99,7 @@ export class AccessRequestManagerDialogComponent implements OnInit {
    * Deny the access request after confirmation.
    */
   safeDeny(): void {
-    if (!this.ivaId) return;
+    if (!this.ivaId()) return;
     this.#confirmationService.confirm({
       title: 'Confirm rejection of the access request',
       message: 'Please confirm that the access request shall be denied.',
@@ -111,7 +116,7 @@ export class AccessRequestManagerDialogComponent implements OnInit {
    * Allow the access request and close the dialog.
    */
   #allow = () => {
-    if (!this.ivaId) return;
+    if (!this.ivaId()) return;
     const data = {
       ...this.data,
       iva_id: this.ivaId,
@@ -124,7 +129,7 @@ export class AccessRequestManagerDialogComponent implements OnInit {
    * Deny the access request and close the dialog.
    */
   #deny = () => {
-    if (!this.ivaId) return;
+    if (!this.ivaId()) return;
     const data = {
       ...this.data,
       iva_id: this.ivaId,
