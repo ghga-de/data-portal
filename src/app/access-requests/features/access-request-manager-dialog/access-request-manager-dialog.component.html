@@ -19,10 +19,10 @@
         <td>{{ data.request_text }}</td>
       </tr>
     </table>
-    <p>The request has been made on {{ data.request_created | date }}.</p>
+    <p>The request has been made on {{ data.request_created | date: 'mediumDate' }}.</p>
     <p>
-      Acess has been requested from {{ data.access_starts | date }} until
-      {{ data.access_ends | date }}.
+      Access has been requested from {{ data.access_starts | date: 'mediumDate' }} until
+      {{ data.access_ends | date: 'mediumDate' }}.
     </p>
     <p>
       Access request is currently <strong>{{ data.status }}</strong
