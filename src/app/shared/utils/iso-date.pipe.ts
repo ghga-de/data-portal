@@ -1,5 +1,5 @@
 /**
- * This pipe takes a js Date object and transforms it to a string of the year. This can be used in the page header but also in data views.
+ * This pipe takes a js Date object or a string and transforms it to an ISO-formatted date.
  * @copyright The GHGA Authors
  * @license Apache-2.0
  */
@@ -15,8 +15,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class isoDatePipe implements PipeTransform {
   /**
    * The transform method executes the business logic of the Pipe
-   * @param date This function will get the year for the provided date and return it as a string
-   * @returns the year as a string
+   * @param date The js Date object or string of the date to convert to an ISO-formatted date
+   * @returns the ISO-formatted date as a string
    */
   transform(date: Date | string): string {
     console.log(typeof date === 'string');

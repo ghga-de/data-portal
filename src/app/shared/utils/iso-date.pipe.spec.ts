@@ -12,18 +12,18 @@ describe('isoDate', () => {
     expect(pipe).toBeTruthy();
   });
 
-  it('should return 2025-05-11 for the date 11 May 2025', () => {
-    const date = new Date('11 May 2025');
+  it('should return 2025-05-11 for the date 29 May 2025', () => {
+    const date = new Date('29 May 2025');
     const pipe = new isoDatePipe();
     const result = pipe.transform(date);
-    expect(result).toBe('2025-05-11');
+    expect(result).toBe('2025-05-29');
   });
 
-  it('should return 2025-05-12 for the string 12 May 2025', () => {
-    const date = '12 May 2025';
+  it('should return 2025-05-12 for the string 29 May 2025', () => {
+    const date = '29 May 2025';
     const pipe = new isoDatePipe();
     const result = pipe.transform(date);
-    expect(result).toBe('2025-05-12');
+    expect(result).toBe('2025-05-29');
   });
 
   it('should return an empty string for an invalid date', () => {
