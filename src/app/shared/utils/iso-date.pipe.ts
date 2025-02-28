@@ -19,7 +19,6 @@ export class isoDatePipe implements PipeTransform {
    * @returns the ISO-formatted date as a string
    */
   transform(date: Date | string): string {
-    console.log(typeof date === 'string');
     if (typeof date === 'string') date = new Date(date);
     if (date instanceof Date && !isNaN(date.getTime())) {
       return date.toISOString().substring(0, 10);

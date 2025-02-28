@@ -18,8 +18,10 @@ import {
 import { provideHttpCache, withHttpCacheInterceptor } from '@ngneat/cashew';
 
 import { withFetch } from '@angular/common/http';
-import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
+import { provideDateFnsAdapter } from '@angular/material-date-fns-adapter';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { csrfInterceptor } from '@app/auth/services/csrf.service';
+import { enGB } from 'date-fns/locale';
 import { routes, TemplatePageTitleStrategy } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
@@ -34,15 +36,26 @@ export const appConfig: ApplicationConfig = {
     // cache all GET requests by default
     provideHttpCache({ strategy: 'implicit' }),
     provideAnimationsAsync(),
-    provideMomentDateAdapter({
+    { provide: MAT_DATE_LOCALE, useValue: enGB },
+    provideDateFnsAdapter({
       parse: {
-        dateInput: ['DD.MM.YYYY'],
+        dateInput: [
+          'yyyy-MM-dd',
+          'dd.MM.yyyy',
+          'dd/MM/yyyy',
+          'd.M.yyyy',
+          'd/M/yyyy',
+          'dd.M.yyyy',
+          'dd/M/yyyy',
+          'd.MM.yyyy',
+          'd/MM/yyyy',
+        ],
       },
       display: {
-        dateInput: 'DD.MM.YYYY',
-        monthYearLabel: 'MMM YYYY',
+        dateInput: 'yyyy-MM-dd',
+        monthYearLabel: 'MMM yyyy',
         dateA11yLabel: 'LL',
-        monthYearA11yLabel: 'MMMM YYYY',
+        monthYearA11yLabel: 'MMMM yyyy',
       },
     }),
   ],
