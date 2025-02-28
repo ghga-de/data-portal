@@ -55,6 +55,14 @@ export class AccessRequestDialogComponent {
     Validators.email,
   ]);
   readonly descriptionFormControl = new FormControl('', [Validators.required]);
+  readonly fromFormControl = new FormControl('', [
+    Validators.required,
+    (control) => this.fromDateValidator(control),
+  ]);
+  readonly untilFormControl = new FormControl('', [
+    Validators.required,
+    (control) => this.untilDateValidator(control),
+  ]);
   readonly dialogRef = inject(MatDialogRef<AccessRequestDialogComponent>);
   readonly data = inject<AccessRequestDialogData>(MAT_DIALOG_DATA);
   #config = inject(ConfigService);
@@ -96,7 +104,7 @@ export class AccessRequestDialogComponent {
   }
 
   /**
-   * This function takes a From Control to validate it against the constraints of the from date
+   * This function takes a Form Control and validates it against the constraints of the from date
    * @param control The form Control to validate
    * @returns a validation error or null
    */
@@ -113,7 +121,7 @@ export class AccessRequestDialogComponent {
   };
 
   /**
-   * This function takes a From Control to validate it against the constraints of the until date
+   * This function takes a Form Control and validates it against the constraints of the until date
    * @param control The form Control to validate
    * @returns a validation error or null
    */
@@ -159,18 +167,6 @@ export class AccessRequestDialogComponent {
     }
     return null;
   };
-
-  /**
-   * The form controls need to be defined AFTER the previous functions because of the scope binding of this.
-   */
-  readonly fromFormControl = new FormControl('', [
-    Validators.required,
-    this.fromDateValidator.bind(this),
-  ]);
-  readonly untilFormControl = new FormControl('', [
-    Validators.required,
-    this.untilDateValidator.bind(this),
-  ]);
 
   updateDescriptionErrorMessage = () => {
     if (this.descriptionFormControl.hasError('required')) {
