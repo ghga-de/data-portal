@@ -18,7 +18,7 @@ import {
 import { provideHttpCache, withHttpCacheInterceptor } from '@ngneat/cashew';
 
 import { withFetch } from '@angular/common/http';
-import { MAT_DATE_LOCALE, provideNativeDateAdapter } from '@angular/material/core';
+import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
 import { csrfInterceptor } from '@app/auth/services/csrf.service';
 import { routes, TemplatePageTitleStrategy } from './app.routes';
 
@@ -34,7 +34,16 @@ export const appConfig: ApplicationConfig = {
     // cache all GET requests by default
     provideHttpCache({ strategy: 'implicit' }),
     provideAnimationsAsync(),
-    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
-    provideNativeDateAdapter(),
+    provideMomentDateAdapter({
+      parse: {
+        dateInput: ['DD.MM.YYYY'],
+      },
+      display: {
+        dateInput: 'DD.MM.YYYY',
+        monthYearLabel: 'MMM YYYY',
+        dateA11yLabel: 'LL',
+        monthYearA11yLabel: 'MMMM YYYY',
+      },
+    }),
   ],
 };
