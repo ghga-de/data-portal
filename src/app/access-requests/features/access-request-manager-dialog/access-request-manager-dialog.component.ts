@@ -89,8 +89,8 @@ export class AccessRequestManagerDialogComponent implements OnInit {
       cancelText: 'Cancel',
       confirmText: 'Confirm approval',
       confirmClass: 'success',
-      callback: (confirmed) => {
-        if (confirmed) this.#allow();
+      callback: (approvalConfirmed) => {
+        if (approvalConfirmed) this.#allow();
       },
     });
   }
@@ -106,8 +106,8 @@ export class AccessRequestManagerDialogComponent implements OnInit {
       cancelText: 'Cancel',
       confirmText: 'Confirm rejection',
       confirmClass: 'error',
-      callback: (confirmed) => {
-        if (confirmed) this.#deny();
+      callback: (denialConfirmed) => {
+        if (denialConfirmed) this.#deny();
       },
     });
   }
