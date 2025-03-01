@@ -11,7 +11,7 @@
       download research data.
     </p>
   }
-  <p class="text-base">
+  <p class="mt-1 text-sm text-neutral-500">
     Adding new contact addresses is done via the button at the end of this section.
     After a new address is added, you must request verification of the address using the
     button next to the address. Removing a contact address is done through the deletion
@@ -82,6 +82,10 @@
       <tr mat-row *matRowDef="let row; columns: ['value', 'state', 'del']"></tr>
     </table>
   }
+  <p class="mt-3 text-sm text-neutral-500">
+    The addresses listed above are used to verify your account's identity. Please ensure
+    they are up-to-date.
+  </p>
   <button (click)="enterNew()" mat-raised-button class="mt-4">
     <mat-icon>add</mat-icon>Add contact address
   </button>

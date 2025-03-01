@@ -1,78 +1,130 @@
-<h1 class="text-center">
-  <span class="text-3xl">User Account</span>
-</h1>
-<h2>
-  <span class="align-middle text-2xl"
-    >{{ fullName() }}
-    @if (roleName()) {
-      <mat-chip> {{ roleName() }} </mat-chip>
-    }
-  </span>
-</h2>
-
-<mat-card appearance="outlined" class="my-4 min-h-56 p-2 text-primary">
-  <mat-card-header>
-    <mat-card-title>Email</mat-card-title>
-    <mat-card-subtitle
-      >Contact e-mail address taken from the LS Login account logged in
-      with.</mat-card-subtitle
+<div class="container mx-auto px-4">
+  <div class="mb-6 mt-4 flex items-center justify-center">
+    <mat-icon
+      class="mr-3 align-middle text-primary"
+      style="font-size: 40px; height: 40px; width: 40px; line-height: 40px"
+      >account_circle</mat-icon
     >
-  </mat-card-header>
-  <mat-card-content class="my-4 text-base">
-    <p class="text-base">
-      We will communicate with you via this email address:
-      <span class="font-bold">{{ email() }}</span>
-    </p>
-    <p>
-      You can change this email address in your
-      <a href="https://profile.aai.lifescience-ri.eu/profile" target="_blank"
-        >LS Login profile<mat-icon [inline]="true" class="align-middle"
-          >open_in_new</mat-icon
-        ></a
-      >.
-    </p>
-  </mat-card-content>
-</mat-card>
+    <h1 class="m-0 text-3xl">User Account</h1>
+  </div>
 
-<mat-card appearance="outlined" class="my-4 min-h-56 p-2 text-primary">
-  <mat-card-header>
-    <mat-card-title>Contact addresses for account verification </mat-card-title>
-    <mat-card-subtitle
-      >Addresses used to verify your account's identity in order to access and request
-      access to datasets.</mat-card-subtitle
-    >
-  </mat-card-header>
-  <mat-card-content class="my-4 text-base">
-    <app-user-iva-list></app-user-iva-list
-  ></mat-card-content>
-</mat-card>
+  <h2 class="mb-4">
+    <span class="align-middle text-2xl">
+      {{ fullName() }}
+      @if (roleName()) {
+        <mat-chip> {{ roleName() }} </mat-chip>
+      }
+    </span>
+  </h2>
 
-<mat-card appearance="outlined" class="my-4 min-h-56 p-2 text-primary">
-  <mat-card-header>
-    <mat-card-title>Dataset Access</mat-card-title>
-    <mat-card-subtitle
-      >If you have been granted access to any datasets, these will appear below. In
-      order to download data from these datasets (if you have been granted access to
-      one), you will need to create download tokens through the respective button, which
-      will take you to the download token management page.</mat-card-subtitle
-    >
-  </mat-card-header>
-  <mat-card-content class="my-4 text-base">
-    <app-granted-access-requests-list></app-granted-access-requests-list>
-  </mat-card-content>
-</mat-card>
+  <mat-card appearance="outlined" class="my-6 min-h-56 rounded-t-lg shadow-sm">
+    <mat-card-header class="rounded-t-lg border-l-4 border-tertiary px-4 py-3">
+      <div class="flex">
+        <div class="mr-3 h-6 w-6 flex-shrink-0 pt-1">
+          <mat-icon class="text-xl text-tertiary">email</mat-icon>
+        </div>
+        <div>
+          <mat-card-title class="mb-2">Email</mat-card-title>
+          <mat-card-subtitle class="mb-1"
+            >Contact e-mail address taken from the LS Login account.</mat-card-subtitle
+          >
+          <p class="mt-1 text-sm text-neutral-500">
+            This email address is associated with your LS Login account and is used for
+            all communications.
+          </p>
+        </div>
+      </div>
+    </mat-card-header>
+    <mat-card-content class="mt-3 rounded-t-lg p-5 text-base">
+      <p class="text-base">
+        We will communicate with you via this email address:
+        <span class="font-bold">{{ email() }}</span>
+      </p>
+      <p class="mt-3 text-sm text-neutral-600">
+        You can change this email address in your
+        <a href="https://profile.aai.lifescience-ri.eu/profile" target="_blank">
+          LS Login profile<mat-icon [inline]="true" class="ml-1 align-middle text-xs"
+            >open_in_new</mat-icon
+          > </a
+        >.
+      </p>
+    </mat-card-content>
+  </mat-card>
 
-<mat-card appearance="outlined" class="my-4 min-h-56 p-2 text-primary">
-  <mat-card-header>
-    <mat-card-title>Pending Access Requests</mat-card-title>
-    <mat-card-subtitle
-      >If you have any pending access requests to any datasets, these will appear below.
-      Any request that is granted will be moved to the section above (Dataset Access).
-      If an access request is denied, it will no longer be displayed here, and a new
-      access request can be created by going to the desired dataset.</mat-card-subtitle
-    >
-  </mat-card-header>
-  <mat-card-content class="my-4 text-base">
-    <app-pending-access-requests-list></app-pending-access-requests-list>
-  </mat-card-content>
-</mat-card>
+  <mat-card appearance="outlined" class="my-6 min-h-56 rounded-t-lg shadow-sm">
+    <mat-card-header class="rounded-t-lg border-l-4 border-tertiary px-4 py-3">
+      <div class="flex">
+        <div class="mr-3 h-6 w-6 flex-shrink-0 pt-1">
+          <mat-icon class="text-xl text-tertiary">verified_user</mat-icon>
+        </div>
+        <div>
+          <mat-card-title class="mb-2"
+            >Contact addresses for account verification</mat-card-title
+          >
+          <mat-card-subtitle class="mb-1"
+            >Addresses used to verify your account's identity.</mat-card-subtitle
+          >
+          <p class="mt-1 text-sm text-neutral-500">
+            These addresses are used in order to access and request access to datasets.
+            Verification helps ensure secure and authorized data access.
+          </p>
+        </div>
+      </div>
+    </mat-card-header>
+    <mat-card-content class="mt-3 rounded-t-lg p-5 text-base">
+      <app-user-iva-list></app-user-iva-list>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card appearance="outlined" class="my-6 min-h-56 rounded-t-lg shadow-sm">
+    <mat-card-header class="rounded-t-lg border-l-4 border-tertiary px-4 py-3">
+      <div class="flex">
+        <div class="mr-3 h-6 w-6 flex-shrink-0 pt-1">
+          <mat-icon class="text-xl text-tertiary">folder_shared</mat-icon>
+        </div>
+        <div>
+          <mat-card-title class="mb-2">Dataset Access</mat-card-title>
+          <mat-card-subtitle class="mb-1"
+            >If you have been granted access to any datasets, these will appear
+            below.</mat-card-subtitle
+          >
+          <p class="mt-1 text-sm text-neutral-500">
+            In order to download data from these datasets (if you have been granted
+            access to one), you will need to create download tokens through the
+            respective button, which will take you to the download token management
+            page.
+          </p>
+        </div>
+      </div>
+    </mat-card-header>
+    <mat-card-content class="mt-3 rounded-t-lg p-5 text-base">
+      <app-granted-access-requests-list></app-granted-access-requests-list>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card appearance="outlined" class="my-6 min-h-56 rounded-t-lg shadow-sm">
+    <mat-card-header class="rounded-t-lg border-l-4 border-tertiary px-4 py-3">
+      <div class="flex">
+        <div class="mr-3 h-6 w-6 flex-shrink-0 pt-1">
+          <mat-icon class="text-xl text-tertiary">hourglass_bottom</mat-icon>
+        </div>
+        <div>
+          <mat-card-title class="mb-2">Pending Access Requests</mat-card-title>
+          <mat-card-subtitle class="mb-1"
+            >If you have any pending access requests to any datasets, these will appear
+            below.</mat-card-subtitle
+          >
+          <p class="mt-1 text-sm text-neutral-500">
+            Any request that is granted will be moved to the section above (Dataset
+            Access). If an access request is denied, it will no longer be displayed
+            here, and a new access request can be created by going to the desired
+            dataset.
+          </p>
+        </div>
+      </div>
+    </mat-card-header>
+    <mat-card-content class="mt-3 rounded-t-lg p-5 text-base">
+      <app-pending-access-requests-list></app-pending-access-requests-list>
+    </mat-card-content>
+  </mat-card>
+</div>
