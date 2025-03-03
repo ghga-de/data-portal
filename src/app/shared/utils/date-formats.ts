@@ -11,6 +11,7 @@ export const DEFAULT_DATE_LOCALE = enGB;
 
 export const DEFAULT_DATE_OUTPUT_FORMAT = 'yyyy-MM-dd';
 export const DEFAULT_DATE_INPUT_FORMAT = 'yyyy-MM-dd';
+export const DATE_INPUT_FORMAT_HINT = 'YYYY-MM-DD';
 
 export const DEFAULT_DATE_FORMATS: MatDateFormats = {
   parse: {
