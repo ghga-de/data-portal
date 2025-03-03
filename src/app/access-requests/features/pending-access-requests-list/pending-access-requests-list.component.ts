@@ -8,6 +8,7 @@ import { DatePipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AccessRequestService } from '@app/access-requests/services/access-request.service';
+import { FRIENDLY_DATE_FORMAT } from '@app/shared/utils/date-formats';
 import { StencilComponent } from '../../../shared/ui/stencil/stencil/stencil.component';
 
 /**
@@ -20,6 +21,7 @@ import { StencilComponent } from '../../../shared/ui/stencil/stencil/stencil.com
   styleUrl: './pending-access-requests-list.component.scss',
 })
 export class PendingAccessRequestsListComponent {
+  readonly friendlyDateFormat = FRIENDLY_DATE_FORMAT;
   #ars = inject(AccessRequestService);
 
   pendingRequests = this.#ars.pendingUserAccessRequests;
