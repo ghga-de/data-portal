@@ -4,7 +4,7 @@
  * @license Apache-2.0
  */
 
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink, RouterModule } from '@angular/router';
@@ -31,7 +31,9 @@ import { StencilComponent } from '../../../shared/ui/stencil/stencil/stencil.com
 export class GrantedAccessRequestsListComponent {
   #ars = inject(AccessRequestService);
 
-  grantedRequests = this.#ars.grantedUserAccessRequests;
+  grantedRequests = computed(() =>
+    this.#ars.grantedUserAccessRequests().filter((r) => !r.isExpired),
+  );
   isLoading = this.#ars.userAccessRequestsAreLoading;
   hasError = this.#ars.userAccessRequestsError;
 }
