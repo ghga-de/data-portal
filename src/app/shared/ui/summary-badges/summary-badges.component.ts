@@ -12,12 +12,12 @@ import { UnderscoreToSpace } from '@app/shared/utils/underscore-to-space.pipe';
  * A stencil component for dataset summaries used as a loading state
  */
 @Component({
-  selector: 'app-dataset-summary-badges',
+  selector: 'app-summary-badges',
   imports: [MatChipsModule, UnderscoreToSpace],
-  templateUrl: './dataset-summary.badges.component.html',
-  styleUrl: './dataset-summary.badges.component.scss',
+  templateUrl: './summary-badges.component.html',
+  styleUrl: './summary-badges.component.scss',
 })
-export class DatasetSummaryBadgesComponent {
+export class SummaryBadgesComponent {
   data = input.required<
     {
       value: string;

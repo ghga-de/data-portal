@@ -15,7 +15,7 @@ import { DynamicAccessRequestButtonComponent } from '@app/access-requests/featur
 import { Hit } from '@app/metadata/models/search-results';
 import { MetadataService } from '@app/metadata/services/metadata.service';
 import { AddPluralS } from '@app/shared/utils/add-plural-s.pipe';
-import { DatasetSummaryBadgesComponent } from './dataset-summary.badges.component';
+import { SummaryBadgesComponent } from '../../../shared/ui/summary-badges/summary-badges.component';
 
 /**
  * Component for the content of the expansion panel for each dataset found in the search results
@@ -30,7 +30,7 @@ import { DatasetSummaryBadgesComponent } from './dataset-summary.badges.componen
     AddPluralS,
     RouterLink,
     DynamicAccessRequestButtonComponent,
-    DatasetSummaryBadgesComponent,
+    SummaryBadgesComponent,
   ],
   templateUrl: './dataset-summary.component.html',
   styleUrl: './dataset-summary.component.scss',

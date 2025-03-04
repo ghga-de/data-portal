@@ -71,14 +71,14 @@
             Tissue{{ samplesTissues().length | addPluralS }}
           </p>
           @if (samplesTissues().length > 0) {
-            <app-dataset-summary-badges [data]="samplesTissues()" />
+            <app-summary-badges [data]="samplesTissues()" />
           }
           <p>
             <strong>{{ samplesPhenotypes().length }}</strong>
             Phenotypic Feature{{ samplesPhenotypes().length | addPluralS }}
           </p>
           @if (samplesPhenotypes().length > 0) {
-            <app-dataset-summary-badges [data]="samplesPhenotypes()" />
+            <app-summary-badges [data]="samplesPhenotypes()" />
           }
         </div>
       </div>
@@ -96,7 +96,7 @@
             }}
           </p>
           @if (filesSummary().count > 0) {
-            <app-dataset-summary-badges [data]="filesFormats()" />
+            <app-summary-badges [data]="filesFormats()" />
           }
         </div>
       </div>
@@ -117,7 +117,7 @@
             Platform{{ experimentsPlatforms().length | addPluralS }}
           </p>
           @if (experimentsPlatforms().length > 0) {
-            <app-dataset-summary-badges [data]="experimentsPlatforms()" />
+            <app-summary-badges [data]="experimentsPlatforms()" />
           }
         </div>
       </div>
