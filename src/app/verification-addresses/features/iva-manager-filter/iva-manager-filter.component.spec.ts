@@ -79,11 +79,11 @@ describe('IvaManagerFilterComponent', () => {
   it('should set the filter after selecting a state', async () => {
     const combobox = screen.getByRole('combobox', { name: 'All status values' });
 
-    userEvent.click(combobox);
+    await userEvent.click(combobox);
     await fixture.whenStable();
 
     const option = screen.getByRole('option', { name: 'Code Requested' });
-    userEvent.click(option);
+    await userEvent.click(option);
     await fixture.whenStable();
 
     expect(ivaService.setAllIvasFilter).toHaveBeenCalledWith({
