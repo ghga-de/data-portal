@@ -17,11 +17,11 @@ ul li mat-chip {
   );
 }
 
-.see_more ~ li,
-.see_more:checked + label {
+.show_more ~ li,
+.show_more:checked + label {
   display: none;
 }
 
-.see_more:checked ~ li {
+.show_more:checked ~ li {
   display: list-item;
 }
