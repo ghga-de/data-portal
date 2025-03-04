@@ -59,7 +59,7 @@
     "@playwright/test": "^1.50.1",
     "@testing-library/angular": "^17.3.6",
     "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/user-event": "^13.5.0",
+    "@testing-library/user-event": "^14.6.1",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.13.9",
     "@typescript-eslint/eslint-plugin": "^8.26.0",
@@ -78,12 +78,12 @@
     "jest-preset-angular": "^14.5.3",
     "msw": "^2.7.3",
     "postcss": "^8.5.3",
-    "prettier": "3.4.2",
+    "prettier": "3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
     "tailwindcss": "^3.4.17",
     "ts-jest": "^29.2.6",
     "ts-node": "^10.9.2",
-    "typescript": "~5.6.3",
+    "typescript": "~5.8.2",
     "typescript-eslint": "^8.26.0"
   },
   "msw": {

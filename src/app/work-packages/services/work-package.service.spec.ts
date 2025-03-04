@@ -81,7 +81,7 @@ describe('WorkPackageService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should return an error when not logged in and datasets are fetched', async () => {
+  it('should return an error when not logged in and datasets are fetched', () => {
     userId.set(null);
     testBed.flushEffects();
     expect(service.datasetsAreLoading()).toBe(false);

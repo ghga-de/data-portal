@@ -67,7 +67,7 @@ describe('AccessRequestManagerFilterComponent', () => {
   it('should set the filter after typing a name', async () => {
     const textbox = screen.getByRole('textbox', { name: 'User name' });
 
-    userEvent.type(textbox, 'Doe');
+    await userEvent.type(textbox, 'Doe');
     await fixture.whenStable();
 
     expect(accessRequestService.setAllAccessRequestsFilter).toHaveBeenCalledWith({
