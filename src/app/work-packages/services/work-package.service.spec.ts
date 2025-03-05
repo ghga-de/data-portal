@@ -81,18 +81,16 @@ describe('WorkPackageService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should return an error when not logged in and datasets are fetched', () => {
+  it('should return an empty list when not logged in and datasets are fetched', () => {
     userId.set(null);
     testBed.flushEffects();
     expect(service.datasets.isLoading()).toBe(false);
-    const error = service.datasets.error();
-    expect(error).toBeInstanceOf(Error);
-    expect((error as Error).message).toBe('User not authenticated');
+    expect(service.datasets.error()).toBeUndefined();
     expect(service.datasets.value()).toEqual([]);
   });
 
   it('should get the datasets of an authenticated user', async () => {
-    expect(service.datasets.isLoading()).toBe(true);
+    expect(service.datasets.isLoading()).toBe(false);
     expect(service.datasets.error()).toBeUndefined();
     expect(service.datasets.value()).toEqual([]);
     userId.set('test-user-id');
