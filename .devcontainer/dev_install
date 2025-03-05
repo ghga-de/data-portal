@@ -3,11 +3,9 @@
 
 cd /workspace
 
+echo "Install pnpm..."
 npm install --global corepack@0.32.0
-
 corepack prepare pnpm@10.5.2 --activate
-echo "Updating pnpm..."
-npm install -g pnpm
 
 echo "Add markdown-toc for Readme"
 npm install -g markdown-toc
