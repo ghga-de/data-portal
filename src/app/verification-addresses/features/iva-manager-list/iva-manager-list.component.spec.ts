@@ -14,9 +14,7 @@ import { IvaManagerListComponent } from './iva-manager-list.component';
  * Mock the IVA service as needed by the IVA Manager list component
  */
 class MockIvaService {
-  allIvas = () => allIvas;
-  allIvasAreLoading = () => false;
-  allIvasError = () => undefined;
+  allIvas = { value: () => allIvas, isLoading: () => false, error: () => undefined };
 }
 
 describe('IvaManagerListComponent', () => {

@@ -4,9 +4,8 @@
  * @license Apache-2.0
  */
 
-import { HttpClient } from '@angular/common/http';
-import { computed, inject, Injectable, Signal, signal } from '@angular/core';
-import { rxResource } from '@angular/core/rxjs-interop';
+import { HttpClient, httpResource } from '@angular/common/http';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { AuthService } from '@app/auth/services/auth.service';
 import { ConfigService } from '@app/shared/services/config.service';
 import { map, Observable, tap, throwError } from 'rxjs';
@@ -51,51 +50,41 @@ export class IvaService {
       userId = this.#auth.user()?.id;
       if (!userId) return;
     }
-    this.#userIvas.reload();
+    this.userIvas.reload();
   }
 
   /**
-   * Internal resource for loading the current user's IVAs
+   * Resource for loading an array with the IVAs of the selected user
    */
-  #userIvas = rxResource<Iva[], string | undefined>({
-    request: this.#userId,
-    loader: ({ request: userId }) => this.#http.get<Iva[]>(this.#userIvasUrl(userId)),
-  });
-
-  /**
-   * The list of IVAs of the current user
-   */
-  userIvas: Signal<Iva[]> = computed(() => this.#userIvas.value() ?? []);
-
-  /**
-   * Whether the list of IVAs of the currents user is loading as a signal
-   */
-  userIvasAreLoading: Signal<boolean> = this.#userIvas.isLoading;
-
-  /**
-   * The list of IVAs of the current user as a signal
-   */
-  userIvasError: Signal<unknown> = this.#userIvas.error;
+  userIvas = httpResource<Iva[]>(
+    () => {
+      const userId = this.#userId();
+      return userId ? this.#userIvasUrl(userId) : undefined;
+    },
+    {
+      defaultValue: [],
+    },
+  );
 
   #ivasUrl = `${this.#authUrl}/ivas`;
 
   #allIvasFilter = signal<IvaFilter | undefined>(undefined);
 
   // signal to load all users' IVAs
-  #loadAll = signal<null | undefined>(undefined);
+  #loadAll = signal<boolean>(false);
 
   /**
    * Load all users' IVAs
    */
   loadAllIvas(): void {
-    this.#loadAll.set(null);
+    this.#loadAll.set(true);
   }
 
   /**
    * Reload all users' IVAs
    */
   reloadAllIvas(): void {
-    this.#allIvas.reload();
+    this.allIvas.reload();
   }
 
   /**
@@ -124,48 +113,36 @@ export class IvaService {
   }
 
   /**
-   * Internal resource for loading all IVAs
+   * Resource for loading all IVAs
    */
-  #allIvas = rxResource<UserWithIva[], null | undefined>({
-    request: this.#loadAll,
-    loader: () => this.#http.get<UserWithIva[]>(this.#ivasUrl),
-  });
-
-  /**
-   * The list of IVAs with corresponding user data
-   */
-  allIvas: Signal<UserWithIva[]> = computed(() => {
-    let ivas = this.#allIvas.value() ?? [];
-    const filter = this.#allIvasFilter();
-    if (ivas.length && filter) {
-      const name = filter.name.trim().toLowerCase();
-      if (name) {
-        ivas = ivas.filter((iva) => iva.user_name.toLowerCase().includes(name));
-      }
-      if (filter.fromDate) {
-        const fromDate = filter.fromDate.toISOString();
-        ivas = ivas.filter((iva) => iva.changed >= fromDate);
-      }
-      if (filter.toDate) {
-        const toDate = filter.toDate.toISOString();
-        ivas = ivas.filter((iva) => iva.changed <= toDate);
-      }
-      if (filter.state) {
-        ivas = ivas.filter((iva) => iva.state === filter.state);
-      }
-    }
-    return ivas;
-  });
-
-  /**
-   * Whether the list of all IVAs is loading as a signal
-   */
-  allIvasAreLoading: Signal<boolean> = this.#allIvas.isLoading;
-
-  /**
-   * The list of all IVAs error as a signal
-   */
-  allIvasError: Signal<unknown> = this.#allIvas.error;
+  allIvas = httpResource<UserWithIva[]>(
+    () => (this.#loadAll() ? this.#ivasUrl : undefined),
+    {
+      defaultValue: [],
+      parse: (raw: unknown) => {
+        let ivas = raw as UserWithIva[];
+        const filter = this.#allIvasFilter();
+        if (ivas.length && filter) {
+          const name = filter.name.trim().toLowerCase();
+          if (name) {
+            ivas = ivas.filter((iva) => iva.user_name.toLowerCase().includes(name));
+          }
+          if (filter.fromDate) {
+            const fromDate = filter.fromDate.toISOString();
+            ivas = ivas.filter((iva) => iva.changed >= fromDate);
+          }
+          if (filter.toDate) {
+            const toDate = filter.toDate.toISOString();
+            ivas = ivas.filter((iva) => iva.changed <= toDate);
+          }
+          if (filter.state) {
+            ivas = ivas.filter((iva) => iva.state === filter.state);
+          }
+        }
+        return ivas;
+      },
+    },
+  );
 
   /**
    * Add an IVA locally
@@ -195,7 +172,7 @@ export class IvaService {
       state: IvaState.Unverified,
       changed: new Date().toISOString(),
     };
-    this.#userIvas.value.set([...this.userIvas(), iva]);
+    this.userIvas.value.set([...this.userIvas.value(), iva]);
     const user = this.#auth.user();
     const userWithIva: UserWithIva = {
       ...iva,
@@ -203,7 +180,7 @@ export class IvaService {
       user_name: user?.name ?? '',
       user_email: user?.email ?? '',
     };
-    this.#allIvas.value.set([...this.allIvas(), userWithIva]);
+    this.allIvas.value.set([...this.allIvas.value(), userWithIva]);
   }
 
   /**
@@ -246,8 +223,8 @@ export class IvaService {
     const update = <T extends { id: string }>(ivas: T[]): T[] =>
       ivas.filter((iva) => iva.id !== ivaId);
 
-    this.#userIvas.value.set(update(this.userIvas()));
-    this.#allIvas.value.set(update(this.allIvas()));
+    this.userIvas.value.set(update(this.userIvas.value()));
+    this.allIvas.value.set(update(this.allIvas.value()));
   }
 
   /**
@@ -282,8 +259,8 @@ export class IvaService {
     const update = <T extends { id: string }>(ivas: T[]): T[] =>
       ivas.map((iva) => (iva.id === ivaId ? { ...iva, state } : iva));
 
-    this.#userIvas.value.set(update(this.userIvas()));
-    this.#allIvas.value.set(update(this.allIvas()));
+    this.userIvas.value.set(update(this.userIvas.value()));
+    this.allIvas.value.set(update(this.allIvas.value()));
   }
 
   /**
