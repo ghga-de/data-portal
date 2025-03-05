@@ -71,10 +71,7 @@ export class AccessRequestService {
   userAccessRequests = httpResource<AccessRequest[]>(
     () => {
       const userId = this.#userId();
-      if (!userId) {
-        throw new Error('User not authenticated');
-      }
-      return this.#userAccessRequestsUrl(userId);
+      return userId ? this.#userAccessRequestsUrl(userId) : undefined;
     },
     {
       parse: (raw) =>

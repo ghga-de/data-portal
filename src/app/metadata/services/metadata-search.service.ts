@@ -4,11 +4,9 @@
  * @license Apache-2.0
  */
 
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, httpResource } from '@angular/common/http';
 import { Injectable, Signal, computed, inject, signal } from '@angular/core';
-import { rxResource } from '@angular/core/rxjs-interop';
 import { ConfigService } from '@app/shared/services/config.service';
-import { of } from 'rxjs';
 import { FacetFilterSetting } from '../models/facet-filter';
 import { SearchResults, emptySearchResults } from '../models/search-results';
 
@@ -38,11 +36,11 @@ export class MetadataSearchService {
     return this.#query();
   });
 
-  #massQueryUrl: Signal<string> = computed(() => {
+  #massQueryUrl: Signal<string | undefined> = computed(() => {
     const baseUrl = this.#searchUrl;
     const className = this.#className();
 
-    if (!baseUrl || !className) return '';
+    if (!baseUrl || !className) return undefined;
 
     const query = this.#query();
     const limit = this.#limit();
@@ -61,11 +59,12 @@ export class MetadataSearchService {
     return newMassQueryUrl;
   });
 
-  #searchResults = rxResource<SearchResults | undefined, string>({
-    request: this.#massQueryUrl,
-    loader: ({ request: url }) =>
-      url ? this.#http.get<SearchResults>(url) : of(undefined),
-  });
+  /**
+   * The search results (empty while loading) as a resource
+   */
+  searchResults = httpResource<SearchResults>(this.#massQueryUrl, {
+    defaultValue: emptySearchResults,
+  }).asReadonly();
 
   /**
    * Function to set some data into the local private variables
@@ -88,25 +87,6 @@ export class MetadataSearchService {
     this.#query.set(query);
     this.#facets.set({ ...facets });
   }
-
-  /**
-   * The search results (empty while loading) as a signal
-   */
-  searchResults: Signal<SearchResults> = computed(
-    () => this.#searchResults.value() ?? emptySearchResults,
-  );
-
-  /**
-   * The search results loading state as a signal
-   */
-  searchResultsAreLoading: Signal<boolean> = computed(
-    () => this.#searchResults.isLoading() ?? false,
-  );
-
-  /**
-   * The search results error as a signal
-   */
-  searchResultsError: Signal<unknown> = this.#searchResults.error;
 
   /**
    * The current search results skip value
