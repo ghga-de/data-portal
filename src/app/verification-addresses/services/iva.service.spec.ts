@@ -46,7 +46,6 @@ describe('IvaService', () => {
   beforeEach(() => {
     testBed = TestBed.configureTestingModule({
       providers: [
-        IvaService,
         { provide: AuthService, useClass: MockAuthService },
         { provide: ConfigService, useClass: MockConfigService },
         provideHttpClient(),
