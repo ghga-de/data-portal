@@ -119,7 +119,7 @@ export class IvaService {
     () => (this.#loadAll() ? this.#ivasUrl : undefined),
     {
       defaultValue: [],
-      parse: (raw: unknown) => {
+      parse: (raw) => {
         let ivas = raw as UserWithIva[];
         const filter = this.#allIvasFilter();
         if (ivas.length && filter) {
