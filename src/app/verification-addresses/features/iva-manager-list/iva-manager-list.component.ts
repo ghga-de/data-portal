@@ -65,7 +65,7 @@ export class IvaManagerListComponent implements AfterViewInit {
   #ivaService = inject(IvaService);
 
   #ivas = this.#ivaService.allIvas;
-  ivas = this.#ivas.value;
+  ivas = this.#ivaService.allIvasFiltered;
   ivasAreLoading = this.#ivas.isLoading;
   ivasError = this.#ivas.error;
 

@@ -119,30 +119,34 @@ export class IvaService {
     () => (this.#loadAll() ? this.#ivasUrl : undefined),
     {
       defaultValue: [],
-      parse: (raw) => {
-        let ivas = raw as UserWithIva[];
-        const filter = this.#allIvasFilter();
-        if (ivas.length && filter) {
-          const name = filter.name.trim().toLowerCase();
-          if (name) {
-            ivas = ivas.filter((iva) => iva.user_name.toLowerCase().includes(name));
-          }
-          if (filter.fromDate) {
-            const fromDate = filter.fromDate.toISOString();
-            ivas = ivas.filter((iva) => iva.changed >= fromDate);
-          }
-          if (filter.toDate) {
-            const toDate = filter.toDate.toISOString();
-            ivas = ivas.filter((iva) => iva.changed <= toDate);
-          }
-          if (filter.state) {
-            ivas = ivas.filter((iva) => iva.state === filter.state);
-          }
-        }
-        return ivas;
-      },
     },
   );
+
+  /**
+   * Signal that gets all IVAs filtered by the current filter
+   */
+  allIvasFiltered = computed(() => {
+    let ivas = this.allIvas.value();
+    const filter = this.#allIvasFilter();
+    if (ivas.length && filter) {
+      const name = filter.name.trim().toLowerCase();
+      if (name) {
+        ivas = ivas.filter((iva) => iva.user_name.toLowerCase().includes(name));
+      }
+      if (filter.fromDate) {
+        const fromDate = filter.fromDate.toISOString();
+        ivas = ivas.filter((iva) => iva.changed >= fromDate);
+      }
+      if (filter.toDate) {
+        const toDate = filter.toDate.toISOString();
+        ivas = ivas.filter((iva) => iva.changed <= toDate);
+      }
+      if (filter.state) {
+        ivas = ivas.filter((iva) => iva.state === filter.state);
+      }
+    }
+    return ivas;
+  });
 
   /**
    * Add an IVA locally

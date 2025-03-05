@@ -171,38 +171,42 @@ export class AccessRequestService {
     () => (this.#loadAll() ? this.#arsEndpointUrl : undefined),
     {
       defaultValue: [],
-      parse: (raw) => {
-        let requests = raw as AccessRequest[];
-        const filter = this.#allAccessRequestsFilter();
-        if (requests.length && filter) {
-          const datasetId = filter.datasetId.trim().toLowerCase();
-          if (datasetId) {
-            requests = requests.filter((ar) =>
-              ar.dataset_id.toLowerCase().includes(datasetId),
-            );
-          }
-          const name = filter.name.trim().toLowerCase();
-          if (name) {
-            requests = requests.filter((ar) =>
-              ar.full_user_name.toLowerCase().includes(name),
-            );
-          }
-          if (filter.fromDate) {
-            const fromDate = filter.fromDate.toISOString();
-            requests = requests.filter((ar) => ar.request_created >= fromDate);
-          }
-          if (filter.toDate) {
-            const toDate = filter.toDate.toISOString();
-            requests = requests.filter((ar) => ar.request_created <= toDate);
-          }
-          if (filter.status) {
-            requests = requests.filter((ar) => ar.status === filter.status);
-          }
-        }
-        return requests;
-      },
     },
   );
+
+  /**
+   * Signal that gets all access requests filtered by the current filter
+   */
+  allAccessRequestsFiltered = computed(() => {
+    let requests = this.allAccessRequests.value();
+    const filter = this.#allAccessRequestsFilter();
+    if (requests.length && filter) {
+      const datasetId = filter.datasetId.trim().toLowerCase();
+      if (datasetId) {
+        requests = requests.filter((ar) =>
+          ar.dataset_id.toLowerCase().includes(datasetId),
+        );
+      }
+      const name = filter.name.trim().toLowerCase();
+      if (name) {
+        requests = requests.filter((ar) =>
+          ar.full_user_name.toLowerCase().includes(name),
+        );
+      }
+      if (filter.fromDate) {
+        const fromDate = filter.fromDate.toISOString();
+        requests = requests.filter((ar) => ar.request_created >= fromDate);
+      }
+      if (filter.toDate) {
+        const toDate = filter.toDate.toISOString();
+        requests = requests.filter((ar) => ar.request_created <= toDate);
+      }
+      if (filter.status) {
+        requests = requests.filter((ar) => ar.status === filter.status);
+      }
+    }
+    return requests;
+  });
 
   /**
    * Update the lists of access requests locally

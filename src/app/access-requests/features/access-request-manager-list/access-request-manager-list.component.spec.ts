@@ -20,6 +20,7 @@ class MockAccessRequestService {
     isLoading: () => false,
     error: () => undefined,
   };
+  allAccessRequestsFiltered = () => this.allAccessRequests.value();
 }
 
 describe('AccessRequestManagerListComponent', () => {

@@ -41,7 +41,7 @@ export class AccessRequestManagerListComponent implements AfterViewInit {
   #notificationService = inject(NotificationService);
 
   #accessRequests = this.#ars.allAccessRequests;
-  accessRequests = this.#accessRequests.value;
+  accessRequests = this.#ars.allAccessRequestsFiltered;
   accessRequestsAreLoading = this.#accessRequests.isLoading;
   accessRequestsError = this.#accessRequests.error;
 
