@@ -1,5 +1,5 @@
 /**
- * Test the confirm dialog component
+ * Test the summary badges component
  * @copyright The GHGA Authors
  * @license Apache-2.0
  */

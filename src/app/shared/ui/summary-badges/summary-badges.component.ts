@@ -1,5 +1,5 @@
 /**
- * A stencil component for dataset summaries in the metadata browser
+ * A component for displaying collapsible badges in the dataset summaries in the metadata browser
  * @copyright The GHGA Authors
  * @license Apache-2.0
  */
@@ -9,7 +9,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { UnderscoreToSpace } from '@app/shared/utils/underscore-to-space.pipe';
 
 /**
- * A stencil component for dataset summaries used as a loading state
+ * A component for badges for dataset summaries
  */
 @Component({
   selector: 'app-summary-badges',
