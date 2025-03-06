@@ -4,7 +4,7 @@
  * @license Apache-2.0
  */
 
-import { HttpClient, httpResource } from '@angular/common/http';
+import { httpResource } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { ConfigService } from '@app/shared/services/config.service';
 import {
@@ -21,8 +21,6 @@ import {
   providedIn: 'root',
 })
 export class DatasetInformationService {
-  #http = inject(HttpClient);
-
   #config = inject(ConfigService);
   #dinsUrl = this.#config.dinsUrl;
 

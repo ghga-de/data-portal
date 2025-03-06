@@ -4,7 +4,7 @@
  * @license Apache-2.0
  */
 
-import { HttpClient, httpResource } from '@angular/common/http';
+import { httpResource } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { ConfigService } from '@app/shared/services/config.service';
 import { DatasetDetails, emptyDatasetDetails } from '../models/dataset-details';
@@ -19,8 +19,6 @@ import { DatasetSummary, emptyDatasetSummary } from '../models/dataset-summary';
   providedIn: 'root',
 })
 export class MetadataService {
-  #http = inject(HttpClient);
-
   #config = inject(ConfigService);
   #metldataUrl = this.#config.metldataUrl;
 

@@ -4,7 +4,7 @@
  * @license Apache-2.0
  */
 
-import { HttpClient, httpResource } from '@angular/common/http';
+import { httpResource } from '@angular/common/http';
 import { Injectable, Signal, computed, inject, signal } from '@angular/core';
 import { ConfigService } from '@app/shared/services/config.service';
 import { FacetFilterSetting } from '../models/facet-filter';
@@ -19,8 +19,6 @@ import { SearchResults, emptySearchResults } from '../models/search-results';
   providedIn: 'root',
 })
 export class MetadataSearchService {
-  #http = inject(HttpClient);
-
   #config = inject(ConfigService);
   #massUrl = this.#config.massUrl;
   #searchUrl = `${this.#massUrl}/search`;
