@@ -8,9 +8,7 @@
 @use './assets/scss/fontawesome-brands';
 
 // Add Tailwind CSS
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@use "tailwind";
 
 // Add Lexend font
 @font-face {
