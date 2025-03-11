@@ -1,1 +1,14 @@
 @import 'tailwindcss';
+
+@theme {
+  --color-primary: #00393f;
+  --color-secondary: #005a5a;
+  --color-tertiary: #e84614;
+  --color-quaternary: #007e8c;
+  --color-quinary: #cfe7cd;
+  --color-error: #ba1a1a;
+  --color-warning: var(--color-amber-500);
+  --color-success: var(--color-green-500);
+  --color-info: var(--color-indigo-500);
+  --color-outline: #e5e7eb;
+}

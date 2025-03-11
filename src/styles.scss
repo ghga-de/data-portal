@@ -10,6 +10,15 @@
 // Add Tailwind CSS
 @use "tailwind";
 
+hr {
+  border-color: var(--color-outline, #e5e7eb);
+}
+
+.border {
+  border-color: var(--color-outline, #e5e7eb);
+}
+
+
 // Add Lexend font
 @font-face {
   font-family: 'Lexend';
