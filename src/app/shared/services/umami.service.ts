@@ -75,7 +75,7 @@ export class UmamiService {
 
   /**
    * This method tracks events manually with Umami by subscribing to click events.
-   * We need to do this manually since we switched of auto-tracking in the script tag.
+   * We need to do this manually since we switched off auto-tracking in the script tag.
    */
   #trackEvents() {
     document.addEventListener('click', (event): event is MouseEvent => {
