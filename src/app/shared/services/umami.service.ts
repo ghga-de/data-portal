@@ -27,6 +27,10 @@ export class UmamiService {
    * This method initializes the Umami tracker by creating a script tag and adding it to the DOM.
    */
   #initializeUmami() {
+    if (!this.#server_url || !this.#website_id) {
+      console.warn('Umami is not configured. Skipping initialization.');
+      return;
+    }
     const script = document.createElement('script');
     script.src = this.#server_url;
     script.setAttribute('data-website-id', this.#website_id);
