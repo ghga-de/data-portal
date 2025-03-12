@@ -53,7 +53,7 @@ export interface User extends UserRegisteredData {
   id?: string;
   full_name: string;
   state: LoginState;
-  role?: keyof typeof RoleNames;
+  roles: (keyof typeof RoleNames)[];
   csrf: string;
   timeout?: number;
   extends?: number;
