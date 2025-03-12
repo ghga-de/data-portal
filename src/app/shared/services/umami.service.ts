@@ -5,7 +5,17 @@
  */
 
 import { inject, Injectable } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs/operators';
 import { ConfigService } from './config.service';
+
+declare global {
+  interface Window {
+    umami?: {
+      track: (event_name: string, event_data: object) => void;
+    };
+  }
+}
 
 /**
  * Umami is a user analytics tool that generates user behavior data that we can monitor in real time in a dashboard.
@@ -16,6 +26,7 @@ import { ConfigService } from './config.service';
 })
 export class UmamiService {
   #config = inject(ConfigService);
+  #router = inject(Router);
   #server_url = this.#config.umami_url;
   #website_id = this.#config.umami_website_id;
 
@@ -37,5 +48,23 @@ export class UmamiService {
     script.setAttribute('data-auto-track', 'false');
     script.setAttribute('data-website-id', this.#website_id);
     document.head.appendChild(script);
+    this.#trackPageViews();
+  }
+
+  /**
+   * This method tracks navigation events with Umami by subscribing to NavigationEnd events.
+   */
+  #trackPageViews() {
+    this.#router.events
+      .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
+      .subscribe((event) => {
+        const umami = window.umami;
+        if (umami) {
+          umami.track('navigation', {
+            url: event.urlAfterRedirects,
+            timestamp: new Date().toISOString(),
+          });
+        }
+      });
   }
 }
