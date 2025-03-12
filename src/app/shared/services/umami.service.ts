@@ -15,8 +15,8 @@ import { ConfigService } from './config.service';
 })
 export class UmamiService {
   #config = inject(ConfigService);
-  private serverUrl = this.#config.umami_url;
-  private websiteId = this.#config.umami_website_id;
+  #server_url = this.#config.umami_url;
+  #website_id = this.#config.umami_website_id;
 
   constructor() {
     this.initializeUmami();
@@ -27,8 +27,8 @@ export class UmamiService {
    */
   private initializeUmami() {
     const script = document.createElement('script');
-    script.src = `${this.serverUrl}/umami.js`;
-    script.setAttribute('data-website-id', this.websiteId);
+    script.src = this.#server_url;
+    script.setAttribute('data-website-id', this.#website_id);
     document.head.appendChild(script);
   }
 }
