@@ -30,7 +30,7 @@ import {
   of,
   timeout,
 } from 'rxjs';
-import { LoginState, RoleNames, User, UserBasicData } from '../models/user';
+import { LoginState, RoleNames, User, UserBasicData, UserRole } from '../models/user';
 import { CsrfService } from './csrf.service';
 
 /**
@@ -122,7 +122,7 @@ export class AuthService {
   /**
    * Get the roles of the current user as a signal
    */
-  roles = computed<(keyof typeof RoleNames)[]>(() => this.user()?.roles ?? []);
+  roles = computed<UserRole[]>(() => this.user()?.roles ?? []);
 
   /**
    * Get the readable name of the role of the current user as a signal
