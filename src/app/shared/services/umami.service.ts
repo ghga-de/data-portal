@@ -12,7 +12,8 @@ import { ConfigService } from './config.service';
 declare global {
   interface Window {
     umami?: {
-      track: (payload: object) => void;
+      track(payload: object): void;
+      track(event_name: string, event_data: object): void;
     };
   }
 }
@@ -49,6 +50,7 @@ export class UmamiService {
     script.setAttribute('data-website-id', this.#website_id);
     document.head.appendChild(script);
     this.#trackPageViews();
+    this.#trackEvents();
   }
 
   /**
@@ -59,16 +61,39 @@ export class UmamiService {
       .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
       .subscribe((event) => {
         const umami = window.umami;
-        if (umami) {
-          umami.track({
-            website: this.#website_id,
-            url: event.urlAfterRedirects,
-            timestamp: new Date().toISOString(),
-            title:
-              this.#router.routerState.snapshot.root.firstChild?.routeConfig?.title ||
-              document.title,
-          });
-        }
+        if (!umami) return;
+        umami.track({
+          website: this.#website_id,
+          url: event.urlAfterRedirects,
+          timestamp: new Date().toISOString(),
+          title:
+            this.#router.routerState.snapshot.root.firstChild?.routeConfig?.title ||
+            document.title,
+        });
       });
+  }
+
+  /**
+   * This method tracks events manually with Umami by subscribing to click events.
+   * We need to do this manually since we switched of auto-tracking in the script tag.
+   */
+  #trackEvents() {
+    document.addEventListener('click', (event): event is MouseEvent => {
+      const umami = window.umami;
+      if (!umami) return true;
+      const target = (event.target as Element)?.closest('[data-umami-event]');
+      if (!target) return true;
+      const eventName = target.getAttribute('data-umami-event');
+      if (!eventName) return true;
+      const eventData: { [key: string]: string } = {};
+      for (let attr of target.attributes) {
+        if (attr.name.startsWith('data-umami-event-')) {
+          const key = attr.name.slice('data-umami-event-'.length);
+          eventData[key] = attr.value;
+        }
+      }
+      umami.track(eventName, eventData);
+      return true;
+    });
   }
 }
