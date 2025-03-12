@@ -32,6 +32,7 @@ export class UmamiService {
       return;
     }
     const script = document.createElement('script');
+    script.async = true;
     script.src = this.#server_url;
     script.setAttribute('data-website-id', this.#website_id);
     document.head.appendChild(script);
