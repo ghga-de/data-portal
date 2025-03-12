@@ -22,3 +22,6 @@ oidc_client_id: ghga-dev-client
 oidc_authority_url: https://login.aai.lifescience-ri.eu/oidc/
 
 ribbon_text: 'Development v$v'
+
+umami_url: https://umami.foundational.testing.ghga.dev/umami
+umami_website_id: 9b8be8ec-ff79-4dda-9af4-f695787e0610
