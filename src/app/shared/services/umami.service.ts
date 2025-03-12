@@ -12,7 +12,7 @@ import { ConfigService } from './config.service';
 declare global {
   interface Window {
     umami?: {
-      track: (event_name: string, event_data: object) => void;
+      track: (payload: object) => void;
     };
   }
 }
@@ -60,9 +60,13 @@ export class UmamiService {
       .subscribe((event) => {
         const umami = window.umami;
         if (umami) {
-          umami.track('navigation', {
+          umami.track({
+            website: this.#website_id,
             url: event.urlAfterRedirects,
             timestamp: new Date().toISOString(),
+            title:
+              this.#router.routerState.snapshot.root.firstChild?.routeConfig?.title ||
+              document.title,
           });
         }
       });
