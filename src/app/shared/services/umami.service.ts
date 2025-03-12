@@ -20,13 +20,13 @@ export class UmamiService {
   #website_id = this.#config.umami_website_id;
 
   constructor() {
-    this.initializeUmami();
+    this.#initializeUmami();
   }
 
   /**
    * This method initializes the Umami tracker by creating a script tag and adding it to the DOM.
    */
-  private initializeUmami() {
+  #initializeUmami() {
     const script = document.createElement('script');
     script.src = this.#server_url;
     script.setAttribute('data-website-id', this.#website_id);
