@@ -3,7 +3,7 @@
 @theme {
   --color-primary: #00393f;
   --color-secondary: #005a5a;
-  --color-tertiary: #e84614;
+  --color-tertiary: var(--mat-sys-tertiary);
   --color-quaternary: #007e8c;
   --color-quinary: #cfe7cd;
   --color-error: #ba1a1a;
