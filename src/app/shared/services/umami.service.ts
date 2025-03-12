@@ -34,6 +34,7 @@ export class UmamiService {
     const script = document.createElement('script');
     script.async = true;
     script.src = this.#server_url;
+    script.setAttribute('data-auto-track', 'false');
     script.setAttribute('data-website-id', this.#website_id);
     document.head.appendChild(script);
   }
