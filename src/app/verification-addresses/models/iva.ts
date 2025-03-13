@@ -54,3 +54,18 @@ export interface IvaFilter {
   toDate: Date | undefined;
   state: IvaState | undefined;
 }
+
+export const IVA_TYPE_ICONS: { [K in keyof typeof IvaType]: string } = {
+  Phone: 'smartphone',
+  Fax: 'fax',
+  PostalAddress: 'local_post_office',
+  InPerson: 'handshakes',
+};
+
+export const IVA_STATUS_CLASS: { [K in keyof typeof IvaState]: string } = {
+  Unverified: 'text-error',
+  CodeRequested: 'text-warning',
+  CodeCreated: 'text-quaternary',
+  CodeTransmitted: '',
+  Verified: 'text-success',
+};

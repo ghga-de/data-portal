@@ -5,7 +5,7 @@
  */
 
 import { DatePipe } from '@angular/common';
-import { Component, effect, inject, model, OnInit } from '@angular/core';
+import { Component, effect, inject, model, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import {
@@ -14,7 +14,9 @@ import {
   MatDialogRef,
 } from '@angular/material/dialog';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import {
+  ACCESS_REQUEST_STATUS_CLASS,
   AccessRequest,
   AccessRequestStatus,
 } from '@app/access-requests/models/access-requests';
@@ -23,7 +25,9 @@ import { NotificationService } from '@app/shared/services/notification.service';
 import { FRIENDLY_DATE_FORMAT } from '@app/shared/utils/date-formats';
 import {
   Iva,
+  IVA_STATUS_CLASS,
   IvaState,
+  IvaStatePrintable,
   IvaTypePrintable,
 } from '@app/verification-addresses/models/iva';
 import { IvaService } from '@app/verification-addresses/services/iva.service';
@@ -34,7 +38,14 @@ import { IvaService } from '@app/verification-addresses/services/iva.service';
  */
 @Component({
   selector: 'app-access-request-manager-dialog',
-  imports: [FormsModule, MatDialogModule, MatButtonModule, MatRadioModule, DatePipe],
+  imports: [
+    FormsModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatRadioModule,
+    DatePipe,
+    MatTooltipModule,
+  ],
   templateUrl: './access-request-manager-dialog.component.html',
   styleUrl: './access-request-manager-dialog.component.scss',
 })
@@ -51,7 +62,8 @@ export class AccessRequestManagerDialogComponent implements OnInit {
   ivasAreLoading = this.#ivas.isLoading;
   ivasError = this.#ivas.error;
 
-  ivaId = model<string | undefined>(undefined);
+  selectedIvaId = model<string | undefined>(undefined);
+  accessRequestIvaId = signal<string | undefined>(undefined);
 
   #ivasErrorEffect = effect(() => {
     if (this.ivasError()) {
@@ -61,7 +73,7 @@ export class AccessRequestManagerDialogComponent implements OnInit {
 
   #ivasLoadedEffect = effect(() => {
     if (!this.ivasAreLoading() && !this.ivasError() && this.ivas().length) {
-      this.#preSelectBestIva();
+      this.#preSelectIva();
     }
   });
 
@@ -80,8 +92,8 @@ export class AccessRequestManagerDialogComponent implements OnInit {
    * Allow the access request after confirmation.
    */
   safeAllow(): void {
-    if (!this.ivaId()) return;
-    const iva = this.ivas().find((iva) => iva.id === this.ivaId());
+    if (!this.selectedIvaId()) return;
+    const iva = this.ivas().find((iva) => iva.id === this.selectedIvaId());
     if (!iva) return;
     const typeAndValue = this.typeAndValue(iva);
     this.#confirmationService.confirm({
@@ -102,12 +114,11 @@ export class AccessRequestManagerDialogComponent implements OnInit {
    * Deny the access request after confirmation.
    */
   safeDeny(): void {
-    if (!this.ivaId()) return;
     this.#confirmationService.confirm({
-      title: 'Confirm rejection of the access request',
+      title: 'Confirm denial of the access request',
       message: 'Please confirm that the access request shall be denied.',
       cancelText: 'Cancel',
-      confirmText: 'Confirm rejection',
+      confirmText: 'Confirm denial',
       confirmClass: 'error',
       callback: (denialConfirmed) => {
         if (denialConfirmed) this.#deny();
@@ -119,10 +130,10 @@ export class AccessRequestManagerDialogComponent implements OnInit {
    * Allow the access request and close the dialog.
    */
   #allow = () => {
-    if (!this.ivaId()) return;
+    if (!this.selectedIvaId()) return;
     const data = {
       ...this.data,
-      iva_id: this.ivaId,
+      iva_id: this.selectedIvaId,
       status: AccessRequestStatus.allowed,
     };
     this.dialogRef.close(data);
@@ -132,26 +143,24 @@ export class AccessRequestManagerDialogComponent implements OnInit {
    * Deny the access request and close the dialog.
    */
   #deny = () => {
-    if (!this.ivaId()) return;
     const data = {
       ...this.data,
-      iva_id: this.ivaId,
+      iva_id: this.selectedIvaId,
       status: AccessRequestStatus.denied,
     };
     this.dialogRef.close(data);
   };
 
   /**
-   * Combine type and value of an IVA to display to the user
-   * @param iva - the IVA of which you want to get the type and value
-   * @returns a string that combines the type and value of the IVA
+   * Pre-select the IVA used for an existing access request.
    */
-  typeAndValue(iva: Iva): string {
-    let text = IvaTypePrintable[iva.type];
-    if (iva.value) {
-      text += `: ${iva.value}`;
+  #preSelectIva(): void {
+    if (this.data.iva_id) {
+      this.accessRequestIvaId.set(this.data.iva_id);
+      this.selectedIvaId.set(this.data.iva_id);
+    } else {
+      this.#preSelectBestIva();
     }
-    return text;
   }
 
   /**
@@ -180,6 +189,46 @@ export class AccessRequestManagerDialogComponent implements OnInit {
         ivaId = iva.id;
       }
     }
-    this.ivaId.set(ivaId);
+    this.selectedIvaId.set(ivaId);
+  }
+
+  /**
+   * Combine type and value of an IVA to display to the user
+   * @param iva - the IVA of which you want to get the type and value
+   * @returns a string that combines the type and value of the IVA
+   */
+  typeAndValue(iva: Iva): string {
+    let text = IvaTypePrintable[iva.type];
+    if (iva.value) {
+      text += `: ${iva.value}`;
+    }
+    return text;
+  }
+
+  /**
+   * Get the status name of an IVA
+   * @param iva - the IVA in question
+   * @returns the printable status name
+   */
+  statusName(iva: Iva): string {
+    return IvaStatePrintable[iva.state];
+  }
+
+  /**
+   * Get a suitable CSS class for an IVA state's status
+   * @param iva - the IVA in question
+   * @returns the class corresponding to the state
+   */
+  statusTextClass(iva: Iva): string {
+    return IVA_STATUS_CLASS[iva.state];
+  }
+
+  /**
+   * Get a suitable CSS class for an access request's status
+   * @param access_request - the access request in question
+   * @returns the class corresponding to the state
+   */
+  accessRequestStatusTextClass(access_request: AccessRequest): string {
+    return ACCESS_REQUEST_STATUS_CLASS[access_request.status];
   }
 }

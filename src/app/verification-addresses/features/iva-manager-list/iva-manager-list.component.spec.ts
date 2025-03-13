@@ -41,6 +41,8 @@ describe('IvaManagerListComponent', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const text = compiled.textContent;
     expect(text).toContain('+441234567890004');
-    expect(text).toContain('Wilhelmstr. 123');
+    expect(text).toContain(
+      'Wilhelmstraße 123, 72072 Tübingen, Baden-Württemberg, Deutschland',
+    );
   });
 });

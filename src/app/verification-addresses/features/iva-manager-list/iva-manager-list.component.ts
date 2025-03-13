@@ -24,20 +24,14 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { ConfirmationService } from '@app/shared/services/confirmation.service';
 import { NotificationService } from '@app/shared/services/notification.service';
 import {
+  IVA_STATUS_CLASS,
+  IVA_TYPE_ICONS,
   IvaStatePrintable,
-  IvaType,
   IvaTypePrintable,
   UserWithIva,
 } from '@app/verification-addresses/models/iva';
 import { IvaService } from '@app/verification-addresses/services/iva.service';
 import { CodeCreationDialogComponent } from '../code-creation-dialog/code-creation-dialog.component';
-
-const IVA_TYPE_ICONS: { [K in keyof typeof IvaType]: string } = {
-  Phone: 'smartphone',
-  Fax: 'fax',
-  PostalAddress: 'local_post_office',
-  InPerson: 'handshakes',
-};
 
 /**
  * IVA Manager List component.
@@ -137,6 +131,15 @@ export class IvaManagerListComponent implements AfterViewInit {
    */
   typeIconName(iva: UserWithIva): string {
     return IVA_TYPE_ICONS[iva.type];
+  }
+
+  /**
+   * Get a suitable CSS class for an IVA state's status
+   * @param iva - the IVA in question
+   * @returns the class corresponding to the state
+   */
+  statusTextClass(iva: UserWithIva): string {
+    return IVA_STATUS_CLASS[iva.state];
   }
 
   /**

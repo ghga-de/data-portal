@@ -16,6 +16,8 @@ import {
   MatDialogTitle,
 } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { NotificationService } from '@app/shared/services/notification.service';
 import { IvaTypePrintable, UserWithIva } from '@app/verification-addresses/models/iva';
 
@@ -36,6 +38,8 @@ type IvaWithCode = UserWithIva & { code: string };
     MatDialogActions,
     MatButtonModule,
     MatIconModule,
+    MatInputModule,
+    MatTooltipModule,
   ],
   templateUrl: './code-creation-dialog.component.html',
   styleUrl: './code-creation-dialog.component.scss',

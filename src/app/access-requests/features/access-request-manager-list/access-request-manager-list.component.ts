@@ -18,7 +18,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { AccessRequest } from '@app/access-requests/models/access-requests';
+import {
+  ACCESS_REQUEST_STATUS_CLASS,
+  AccessRequest,
+} from '@app/access-requests/models/access-requests';
 import { AccessRequestService } from '@app/access-requests/services/access-request.service';
 import { NotificationService } from '@app/shared/services/notification.service';
 import { AccessRequestManagerDialogComponent } from '../access-request-manager-dialog/access-request-manager-dialog.component';
@@ -134,5 +137,14 @@ export class AccessRequestManagerListComponent implements AfterViewInit {
       })
       .afterClosed()
       .subscribe((ar) => this.#processDialog(ar));
+  }
+
+  /**
+   * Get a suitable CSS class for an access request's status
+   * @param access_request - the access request in question
+   * @returns the class corresponding to the state
+   */
+  statusTextClass(access_request: AccessRequest): string {
+    return ACCESS_REQUEST_STATUS_CLASS[access_request.status];
   }
 }
