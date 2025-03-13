@@ -47,7 +47,6 @@ import { IvaService } from '@app/verification-addresses/services/iva.service';
     MatTooltipModule,
   ],
   templateUrl: './access-request-manager-dialog.component.html',
-  styleUrl: './access-request-manager-dialog.component.scss',
 })
 export class AccessRequestManagerDialogComponent implements OnInit {
   readonly dialogRef = inject(MatDialogRef<AccessRequestManagerDialogComponent>);
