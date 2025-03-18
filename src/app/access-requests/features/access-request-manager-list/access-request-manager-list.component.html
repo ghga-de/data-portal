@@ -43,7 +43,11 @@
       <th mat-header-cell *matHeaderCellDef class="min-w-40 capitalize" mat-sort-header>
         Status
       </th>
-      <td mat-cell class="{{ statusTextClass(ar) }} capitalize" *matCellDef="let ar">
+      <td
+        mat-cell
+        class="{{ ar.status | AccessRequestStatusClassPipe }} capitalize"
+        *matCellDef="let ar"
+      >
         {{ ar.status }}
       </td>
     </ng-container>

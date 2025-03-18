@@ -79,7 +79,7 @@ describe('AccessRequestManagerDialogComponent', () => {
 
   it('should show the third IVA as a radio button and not selected', () => {
     const button = screen.getByRole('radio', {
-      name: 'Postal Address: Wilhelmstraße 123, 72072 Tübingen, Baden-Württemberg, Deutschland',
+      name: 'Postal Address: c/o Weird Al Yankovic, Dr. John Doe, Wilhelmstraße 123, Apartment 25, Floor 2, 72072 Tübingen, Baden-Württemberg, Deutschland',
     });
     expect(button).not.toBeChecked();
   });

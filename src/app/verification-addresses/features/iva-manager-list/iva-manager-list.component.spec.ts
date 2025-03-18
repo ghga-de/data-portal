@@ -42,7 +42,7 @@ describe('IvaManagerListComponent', () => {
     const text = compiled.textContent;
     expect(text).toContain('+441234567890004');
     expect(text).toContain(
-      'Wilhelmstraße 123, 72072 Tübingen, Baden-Württemberg, Deutschland',
+      'c/o Weird Al Yankovic, Dr. John Doe, Wilhelmstraße 123, Apartment 25, Floor 2, 72072 Tübingen, Baden-Württemberg, Deutschland',
     );
   });
 });

@@ -14,22 +14,17 @@ import {
   MatDialogRef,
 } from '@angular/material/dialog';
 import { MatRadioModule } from '@angular/material/radio';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import {
-  ACCESS_REQUEST_STATUS_CLASS,
   AccessRequest,
   AccessRequestStatus,
 } from '@app/access-requests/models/access-requests';
+import { AccessRequestStatusClassPipe } from '@app/access-requests/utils/access-request-status-class.pipe';
 import { ConfirmationService } from '@app/shared/services/confirmation.service';
 import { NotificationService } from '@app/shared/services/notification.service';
 import { FRIENDLY_DATE_FORMAT } from '@app/shared/utils/date-formats';
-import {
-  Iva,
-  IVA_STATUS_CLASS,
-  IvaState,
-  IvaStatePrintable,
-  IvaTypePrintable,
-} from '@app/verification-addresses/models/iva';
+import { IvaStatePipe } from '@app/shared/utils/iva-state.pipe';
+import { IvaTypePipe } from '@app/shared/utils/iva-type.pipe';
+import { IvaState } from '@app/verification-addresses/models/iva';
 import { IvaService } from '@app/verification-addresses/services/iva.service';
 
 /**
@@ -44,7 +39,9 @@ import { IvaService } from '@app/verification-addresses/services/iva.service';
     MatButtonModule,
     MatRadioModule,
     DatePipe,
-    MatTooltipModule,
+    AccessRequestStatusClassPipe,
+    IvaTypePipe,
+    IvaStatePipe,
   ],
   templateUrl: './access-request-manager-dialog.component.html',
 })
@@ -94,7 +91,7 @@ export class AccessRequestManagerDialogComponent implements OnInit {
     if (!this.selectedIvaId()) return;
     const iva = this.ivas().find((iva) => iva.id === this.selectedIvaId());
     if (!iva) return;
-    const typeAndValue = this.typeAndValue(iva);
+    const typeAndValue = new IvaTypePipe().transform(iva.type, iva.value).typeAndValue;
     this.#confirmationService.confirm({
       title: 'Confirm approval of the access request',
       message:
@@ -104,7 +101,7 @@ export class AccessRequestManagerDialogComponent implements OnInit {
       confirmText: 'Confirm approval',
       confirmClass: 'success',
       callback: (approvalConfirmed) => {
-        if (approvalConfirmed) this.#allow();
+        if (approvalConfirmed) this.#allowRequestAndCloseDialog();
       },
     });
   }
@@ -128,7 +125,7 @@ export class AccessRequestManagerDialogComponent implements OnInit {
   /**
    * Allow the access request and close the dialog.
    */
-  #allow = () => {
+  #allowRequestAndCloseDialog = () => {
     if (!this.selectedIvaId()) return;
     const data = {
       ...this.data,
@@ -189,45 +186,5 @@ export class AccessRequestManagerDialogComponent implements OnInit {
       }
     }
     this.selectedIvaId.set(ivaId);
-  }
-
-  /**
-   * Combine type and value of an IVA to display to the user
-   * @param iva - the IVA of which you want to get the type and value
-   * @returns a string that combines the type and value of the IVA
-   */
-  typeAndValue(iva: Iva): string {
-    let text = IvaTypePrintable[iva.type];
-    if (iva.value) {
-      text += `: ${iva.value}`;
-    }
-    return text;
-  }
-
-  /**
-   * Get the status name of an IVA
-   * @param iva - the IVA in question
-   * @returns the printable status name
-   */
-  statusName(iva: Iva): string {
-    return IvaStatePrintable[iva.state];
-  }
-
-  /**
-   * Get a suitable CSS class for an IVA state's status
-   * @param iva - the IVA in question
-   * @returns the class corresponding to the state
-   */
-  statusTextClass(iva: Iva): string {
-    return IVA_STATUS_CLASS[iva.state];
-  }
-
-  /**
-   * Get a suitable CSS class for an access request's status
-   * @param access_request - the access request in question
-   * @returns the class corresponding to the state
-   */
-  accessRequestStatusTextClass(access_request: AccessRequest): string {
-    return ACCESS_REQUEST_STATUS_CLASS[access_request.status];
   }
 }

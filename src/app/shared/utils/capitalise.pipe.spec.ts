@@ -1,5 +1,5 @@
 /**
- * These are the unit tests for the AddPluralS pipe.
+ * These are the unit tests for the Capitalise pipe.
  * @copyright The GHGA Authors
  * @license Apache-2.0
  */
@@ -22,5 +22,11 @@ describe('CapitalisePipe', () => {
     const pipe = new Capitalise();
     const result = pipe.transform('24');
     expect(result).toBe('24');
+  });
+
+  it('should return "" for ""', () => {
+    const pipe = new Capitalise();
+    const result = pipe.transform('');
+    expect(result).toBe('');
   });
 });

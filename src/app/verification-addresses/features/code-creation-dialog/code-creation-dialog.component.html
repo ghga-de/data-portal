@@ -13,7 +13,7 @@
       </tr>
       <tr>
         <th class="pe-1 text-right">Via:</th>
-        <td>{{ typeName(iva) }}</td>
+        <td>{{ (iva.type.toString() | IvaTypePipe).display }}</td>
       </tr>
       <tr>
         <th class="pe-1 text-right">Address:</th>

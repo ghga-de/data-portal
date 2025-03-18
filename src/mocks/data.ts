@@ -51,7 +51,8 @@ export const allIvas: UserWithIva[] = [
   {
     id: 'fc3c0ad8-01a4-4eb1-b8f3-40b04bb4bcb2',
     type: IvaType.PostalAddress,
-    value: 'Wilhelmstraße 123, 72072 Tübingen, Baden-Württemberg, Deutschland',
+    value:
+      'c/o Weird Al Yankovic, Dr. John Doe, Wilhelmstraße 123, Apartment 25, Floor 2, 72072 Tübingen, Baden-Württemberg, Deutschland',
     changed: '2024-04-01T00:00:00',
     state: IvaState.CodeTransmitted,
     user_id: 'doe@test.dev',

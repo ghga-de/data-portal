@@ -48,11 +48,3 @@ export interface AccessRequestFilter {
   toDate: Date | undefined;
   status: AccessRequestStatus | undefined;
 }
-
-export const ACCESS_REQUEST_STATUS_CLASS: {
-  [K in keyof typeof AccessRequestStatus]: string;
-} = {
-  denied: 'text-error',
-  pending: 'text-info',
-  allowed: 'text-success',
-};

@@ -19,7 +19,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NotificationService } from '@app/shared/services/notification.service';
-import { IvaTypePrintable, UserWithIva } from '@app/verification-addresses/models/iva';
+import { IvaTypePipe } from '@app/shared/utils/iva-type.pipe';
+import { UserWithIva } from '@app/verification-addresses/models/iva';
 
 type IvaWithCode = UserWithIva & { code: string };
 
@@ -40,6 +41,7 @@ type IvaWithCode = UserWithIva & { code: string };
     MatIconModule,
     MatInputModule,
     MatTooltipModule,
+    IvaTypePipe,
   ],
   templateUrl: './code-creation-dialog.component.html',
   styleUrl: './code-creation-dialog.component.scss',
@@ -63,15 +65,6 @@ export class CodeCreationDialogComponent {
    */
   onConfirmTransmission(): void {
     this.#dialogRef.close(true);
-  }
-
-  /**
-   * Get the type name of an IVA
-   * @param iva - the IVA in question
-   * @returns the printable type name
-   */
-  typeName(iva: UserWithIva): string {
-    return IvaTypePrintable[iva.type];
   }
 
   /**
