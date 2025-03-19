@@ -31,7 +31,7 @@ function setVersion(settings) {
   if (!text || !text.includes('$v')) return;
   const packageJsonPath = path.join(__dirname, 'package.json');
   const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
-  settings.ribbon_text = text.replace('$v', packageJson.version);
+  settings.ribbon_text = text.replace('$v', packageJson.version || '?');
 }
 
 /**
@@ -284,6 +284,8 @@ function main() {
     basic_auth: basicAuth,
   } = settings;
 
+  setVersion(settings);
+
   let msg = 'Running';
   let adapted = false;
   if (DEV) {
@@ -319,7 +321,6 @@ function main() {
   console.log(msg);
   console.log(`Runtime settings${adapted ? ' (adapted)' : ''}:`);
 
-  setVersion(settings);
   console.table(settings);
 
   if (!host || !port) {
