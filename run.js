@@ -313,13 +313,13 @@ function main() {
     } else {
       msg += ' and mock authentication';
     }
-    setVersion(settings);
   } else {
     msg += ' in production mode';
   }
   console.log(msg);
   console.log(`Runtime settings${adapted ? ' (adapted)' : ''}:`);
 
+  setVersion(settings);
   console.table(settings);
 
   if (!host || !port) {
