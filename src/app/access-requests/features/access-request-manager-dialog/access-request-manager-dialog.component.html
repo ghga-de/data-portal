@@ -41,7 +41,7 @@
       <p>No corresponding verification addresses found, cannot process request.</p>
     } @else {
       <label for="iva-selection-group" class="text-lg">
-        @if (accessRequestIvaId()) {
+        @if (allowedAccessRequestIvaId()) {
           If you wish to change the verification address used for this access request,
           please select it below:
         } @else {
@@ -49,7 +49,7 @@
           access request:
         }
       </label>
-      <mat-radio-group [(ngModel)]="selectedIvaId" id="iva-selection-group">
+      <mat-radio-group [(ngModel)]="selectedIvaIdRadioButton" id="iva-selection-group">
         <table class="ivas mt-2">
           @for (iva of ivas(); track iva.id) {
             <tr>
@@ -87,7 +87,7 @@
         data-umami-event="Access Request Manager Deny Clicked"
         [disabled]="data.status === 'denied'"
       >
-        @if (accessRequestIvaId()) {
+        @if (allowedAccessRequestIvaId()) {
           Revoke access
         } @else if (this.data.status === 'denied') {
           Denied
@@ -101,11 +101,12 @@
         (click)="safeAllow()"
         data-umami-event="Access Request Manager Allow Clicked"
         [disabled]="
-          !selectedIvaId() ||
-          (data.status === 'allowed' && selectedIvaId() === accessRequestIvaId())
+          !selectedIvaIdRadioButton() ||
+          (data.status === 'allowed' &&
+            selectedIvaIdRadioButton() === allowedAccessRequestIvaId())
         "
       >
-        @if (accessRequestIvaId()) {
+        @if (allowedAccessRequestIvaId()) {
           Change address
         } @else {
           Allow
