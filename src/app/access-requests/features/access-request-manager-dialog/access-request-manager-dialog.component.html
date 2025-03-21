@@ -30,7 +30,7 @@
     </p>
     <p class="mb-5">
       Access request is currently
-      <strong class="{{ data.status.toString() | AccessRequestStatusClassPipe }}">{{
+      <strong class="{{ data.status | AccessRequestStatusClassPipe }}">{{
         data.status
       }}</strong
       >.
@@ -55,11 +55,11 @@
             <tr>
               <td>
                 <mat-radio-button [value]="iva.id">
-                  {{ (iva.type.toString() | IvaTypePipe: iva.value).typeAndValue }}
+                  {{ (iva.type | IvaTypePipe: iva.value).typeAndValue }}
                 </mat-radio-button>
               </td>
-              <td class="{{ (iva.state.toString() | IvaStatePipe).class }} w-40 ps-4">
-                {{ (iva.state.toString() | IvaStatePipe).display }}
+              <td class="{{ (iva.state | IvaStatePipe).class }} w-40 ps-4">
+                {{ (iva.state | IvaStatePipe).display }}
               </td>
             </tr>
           }

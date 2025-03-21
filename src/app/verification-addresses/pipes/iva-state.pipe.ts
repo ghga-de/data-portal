@@ -5,6 +5,11 @@
  */
 
 import { Pipe, PipeTransform } from '@angular/core';
+import {
+  IvaState,
+  IvaStateClass,
+  IvaStatePrintable,
+} from '@app/verification-addresses/models/iva';
 
 /**
  * This pipe is used to provide state-specific display names and classes for IVAs.
@@ -18,21 +23,7 @@ export class IvaStatePipe implements PipeTransform {
    * @param state The IVA state to process
    * @returns The display name and class based on the state of the IVA state sent in an object of shape { display: string; class: string }
    */
-  transform(state: string): { display: string; class: string } {
-    switch (state) {
-      case 'Unverified':
-        return { display: state, class: 'text-error' };
-      case 'CodeRequested':
-        return { display: 'Code Requested', class: 'text-warning' };
-      case 'CodeCreated':
-        return { display: 'Code Created', class: 'text-quaternary' };
-      case 'CodeTransmitted':
-        return { display: 'Code Transmitted', class: '' };
-      case 'Verified':
-        return { display: state, class: 'text-success' };
-
-      default:
-        return { display: state, class: '' };
-    }
+  transform(state: IvaState): { display: string; class: string } {
+    return { display: IvaStatePrintable[state], class: IvaStateClass[state] };
   }
 }

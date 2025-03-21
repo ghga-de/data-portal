@@ -5,6 +5,10 @@
  */
 
 import { Pipe, PipeTransform } from '@angular/core';
+import {
+  AccessRequestStatus,
+  AccessRequestStatusClass,
+} from '../models/access-requests';
 
 /**
  * This pipe is used to provide status-specific classes for access request.
@@ -18,17 +22,7 @@ export class AccessRequestStatusClassPipe implements PipeTransform {
    * @param status The access request status to process
    * @returns The class based on the status of the access request status sent
    */
-  transform(status: string): string {
-    switch (status) {
-      case 'denied':
-        return 'text-error';
-      case 'pending':
-        return 'text-info';
-      case 'allowed':
-        return 'text-success';
-
-      default:
-        return '';
-    }
+  transform(status: AccessRequestStatus): string {
+    return AccessRequestStatusClass[status];
   }
 }

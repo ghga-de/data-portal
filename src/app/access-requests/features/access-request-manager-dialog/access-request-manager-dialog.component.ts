@@ -18,13 +18,13 @@ import {
   AccessRequest,
   AccessRequestStatus,
 } from '@app/access-requests/models/access-requests';
-import { AccessRequestStatusClassPipe } from '@app/access-requests/utils/access-request-status-class.pipe';
+import { AccessRequestStatusClassPipe } from '@app/access-requests/pipes/access-request-status-class.pipe';
 import { ConfirmationService } from '@app/shared/services/confirmation.service';
 import { NotificationService } from '@app/shared/services/notification.service';
 import { FRIENDLY_DATE_FORMAT } from '@app/shared/utils/date-formats';
-import { IvaStatePipe } from '@app/shared/utils/iva-state.pipe';
-import { IvaTypePipe } from '@app/shared/utils/iva-type.pipe';
 import { IvaState } from '@app/verification-addresses/models/iva';
+import { IvaStatePipe } from '@app/verification-addresses/pipes/iva-state.pipe';
+import { IvaTypePipe } from '@app/verification-addresses/pipes/iva-type.pipe';
 import { IvaService } from '@app/verification-addresses/services/iva.service';
 
 /**

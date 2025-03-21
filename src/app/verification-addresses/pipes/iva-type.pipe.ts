@@ -5,6 +5,7 @@
  */
 
 import { Pipe, PipeTransform } from '@angular/core';
+import { IvaType, IvaTypeIcon, IvaTypePrintable } from '../models/iva';
 
 /**
  * This pipe is used to provide type-specific display names and classes for IVAs.
@@ -20,32 +21,16 @@ export class IvaTypePipe implements PipeTransform {
    * @returns The display name and class based on the type of the IVA type sent in an object of shape { display: string; class: string }
    */
   transform(
-    type: string,
+    type: IvaType,
     value?: string | undefined,
   ): { display: string; typeAndValue: string; icon: string } {
     if (!value) {
       value = '';
     }
-    switch (type) {
-      case 'Phone':
-        return { display: 'SMS', typeAndValue: `SMS: ${value}`, icon: 'smartphone' };
-      case 'Fax':
-        return { display: type, typeAndValue: `${type}: ${value}`, icon: 'fax' };
-      case 'PostalAddress':
-        return {
-          display: 'Postal Address',
-          typeAndValue: `Postal Address: ${value}`,
-          icon: 'local_post_office',
-        };
-      case 'InPerson':
-        return {
-          display: 'In Person',
-          typeAndValue: `In Person: ${value}`,
-          icon: 'handshakes',
-        };
-
-      default:
-        return { display: type, typeAndValue: '', icon: '' };
-    }
+    return {
+      display: IvaTypePrintable[type],
+      typeAndValue: `${IvaTypePrintable[type]}: ${value}`,
+      icon: IvaTypeIcon[type],
+    };
   }
 }

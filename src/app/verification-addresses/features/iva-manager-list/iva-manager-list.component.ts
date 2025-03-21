@@ -23,9 +23,9 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { ConfirmationService } from '@app/shared/services/confirmation.service';
 import { NotificationService } from '@app/shared/services/notification.service';
-import { IvaStatePipe } from '@app/shared/utils/iva-state.pipe';
-import { IvaTypePipe } from '@app/shared/utils/iva-type.pipe';
 import { UserWithIva } from '@app/verification-addresses/models/iva';
+import { IvaStatePipe } from '@app/verification-addresses/pipes/iva-state.pipe';
+import { IvaTypePipe } from '@app/verification-addresses/pipes/iva-type.pipe';
 import { IvaService } from '@app/verification-addresses/services/iva.service';
 import { CodeCreationDialogComponent } from '../code-creation-dialog/code-creation-dialog.component';
 
@@ -135,7 +135,7 @@ export class IvaManagerListComponent implements AfterViewInit {
     this.#confirmationService.confirm({
       title: 'Confirm invalidation of IVA',
       message:
-        `Do you really wish to invalidate the ${new IvaTypePipe().transform(iva.type.toString()).display} IVA of` +
+        `Do you really wish to invalidate the ${new IvaTypePipe().transform(iva.type).display} IVA of` +
         ` ${iva.user_name} with address "${iva.value}"?` +
         ' The user will lose access to any dataset linked to this IVA.',
       cancelText: 'Cancel',
@@ -175,7 +175,7 @@ export class IvaManagerListComponent implements AfterViewInit {
       title: 'Confirm code transmission',
       message:
         'Please confirm the transmission of the verification code' +
-        ` the ${new IvaTypePipe().transform(iva.type.toString()).display} IVA of` +
+        ` the ${new IvaTypePipe().transform(iva.type).display} IVA of` +
         ` ${iva.user_name} with address "${iva.value}".`,
       cancelText: 'Cancel',
       confirmText: 'Confirm transmission',

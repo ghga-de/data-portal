@@ -19,8 +19,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NotificationService } from '@app/shared/services/notification.service';
-import { IvaTypePipe } from '@app/shared/utils/iva-type.pipe';
 import { UserWithIva } from '@app/verification-addresses/models/iva';
+import { IvaTypePipe } from '@app/verification-addresses/pipes/iva-type.pipe';
 
 type IvaWithCode = UserWithIva & { code: string };
 

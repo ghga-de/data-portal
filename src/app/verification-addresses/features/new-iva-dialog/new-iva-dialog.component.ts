@@ -18,8 +18,8 @@ import {
 } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { IvaTypePipe } from '@app/shared/utils/iva-type.pipe';
 import { IvaType } from '@app/verification-addresses/models/iva';
+import { IvaTypePipe } from '@app/verification-addresses/pipes/iva-type.pipe';
 
 /**
  * IVA creation dialog component
