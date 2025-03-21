@@ -4,7 +4,7 @@
  * @license Apache-2.0
  */
 
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
@@ -24,4 +24,5 @@ export class SiteHeaderNavButtonsComponent {
   #baseRoute = inject(BaseRouteService);
 
   route = this.#baseRoute.route;
+  browseInRoute = computed(() => ['browse', 'dataset'].includes(this.route()));
 }
