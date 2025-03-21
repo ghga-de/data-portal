@@ -4,6 +4,7 @@
  * @license Apache-2.0
  */
 
+import { IvaType } from '../models/iva';
 import { IvaTypePipe } from './iva-type.pipe';
 
 describe('IvaTypePipe', () => {
@@ -12,9 +13,9 @@ describe('IvaTypePipe', () => {
     expect(pipe).toBeTruthy();
   });
 
-  it('should return {display: "SMS",typeAndValue: "SMS: +49123456789",icon: "smartphone"} for "unverified"', () => {
+  it('should return {display: "SMS",typeAndValue: "SMS: +49123456789",icon: "smartphone"} for type Phone and value "49123456789"', () => {
     const pipe = new IvaTypePipe();
-    const result = pipe.transform('Phone', '+49123456789');
+    const result = pipe.transform(IvaType['Phone'], '+49123456789');
     expect(result).toStrictEqual({
       display: 'SMS',
       typeAndValue: 'SMS: +49123456789',
@@ -22,23 +23,13 @@ describe('IvaTypePipe', () => {
     });
   });
 
-  it('should return {display:"error",class:""} for "error"', () => {
+  it('should return {display: "In Person",typeAndValue: "In Person: ",icon: "handshakes"} for type InPerson', () => {
     const pipe = new IvaTypePipe();
-    const result = pipe.transform('error', 'error');
+    const result = pipe.transform(IvaType['InPerson']);
     expect(result).toStrictEqual({
-      display: 'error',
-      typeAndValue: '',
-      icon: '',
-    });
-  });
-
-  it('should return {display:"",class:""} for ""', () => {
-    const pipe = new IvaTypePipe();
-    const result = pipe.transform('');
-    expect(result).toStrictEqual({
-      display: '',
-      typeAndValue: '',
-      icon: '',
+      display: 'In Person',
+      typeAndValue: 'In Person: ',
+      icon: 'handshakes',
     });
   });
 });

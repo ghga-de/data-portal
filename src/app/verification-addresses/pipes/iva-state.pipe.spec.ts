@@ -4,6 +4,7 @@
  * @license Apache-2.0
  */
 
+import { IvaState } from '../models/iva';
 import { IvaStatePipe } from './iva-state.pipe';
 
 describe('IvaStatePipe', () => {
@@ -12,21 +13,9 @@ describe('IvaStatePipe', () => {
     expect(pipe).toBeTruthy();
   });
 
-  it('should return {display:"Code Requested",class:"text-warning"} for "CodeRequested"', () => {
+  it('should return {display:"Code Requested",class:"text-warning"} for CodeRequested', () => {
     const pipe = new IvaStatePipe();
-    const result = pipe.transform('CodeRequested');
+    const result = pipe.transform(IvaState['CodeRequested']);
     expect(result).toStrictEqual({ display: 'Code Requested', class: 'text-warning' });
-  });
-
-  it('should return {display:"error",class:""} for "error"', () => {
-    const pipe = new IvaStatePipe();
-    const result = pipe.transform('error');
-    expect(result).toStrictEqual({ display: 'error', class: '' });
-  });
-
-  it('should return {display:"",class:""} for ""', () => {
-    const pipe = new IvaStatePipe();
-    const result = pipe.transform('');
-    expect(result).toStrictEqual({ display: '', class: '' });
   });
 });

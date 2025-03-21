@@ -1,5 +1,5 @@
 /**
- * This pipe takes an IVA state string and returns an object with the display name and text class for the specified state
+ * This pipe takes an IVA state and returns an object with the display name and text class for the specified state
  * @copyright The GHGA Authors
  * @license Apache-2.0
  */
@@ -19,7 +19,7 @@ import {
 })
 export class IvaStatePipe implements PipeTransform {
   /**
-   * This method will return an object containing a display name and classes based on the IVA state provided, or an empty string for an invalid state
+   * This method will return an object containing a display name and classes based on the IVA state provided
    * @param state The IVA state to process
    * @returns The display name and class based on the state of the IVA state sent in an object of shape { display: string; class: string }
    */
