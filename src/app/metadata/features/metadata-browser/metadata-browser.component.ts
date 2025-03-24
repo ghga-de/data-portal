@@ -7,6 +7,7 @@
 import { Component, computed, effect, inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -16,8 +17,8 @@ import { PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FacetFilterSetting } from '@app/metadata/models/facet-filter';
+import { FacetActivityPipe } from '@app/metadata/pipes/facet-activity.pipe';
 import { MetadataSearchService } from '@app/metadata/services/metadata-search.service';
-import { FacetActivityPipe } from '@app/metadata/utils/facet-activity.pipe';
 import { NotificationService } from '@app/shared/services/notification.service';
 import { StencilComponent } from '@app/shared/ui/stencil/stencil/stencil.component';
 import { SearchResultListComponent } from '../search-result-list/search-result-list.component';
@@ -42,6 +43,7 @@ const DEFAULT_SKIP_VALUE = 0;
     FacetActivityPipe,
     SearchResultListComponent,
     StencilComponent,
+    MatCardModule,
   ],
   templateUrl: './metadata-browser.component.html',
   styleUrl: './metadata-browser.component.scss',
