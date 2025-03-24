@@ -12,7 +12,9 @@ jobs:
         uses: actions/checkout@v4
       - name: Install pnpm
         uses: pnpm/action-setup@v4
-      - name: Setup node
+        with:
+          run_install: false
+      - name: Install node
         uses: actions/setup-node@v4
         with:
           node-version: 22
