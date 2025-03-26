@@ -70,6 +70,7 @@ const COLUMNS = {
     DynamicAccessRequestButtonComponent,
     MatTooltipModule,
   ],
+  providers: [MetadataService],
   templateUrl: './dataset-details.component.html',
   styleUrl: './dataset-details.component.scss',
 })
