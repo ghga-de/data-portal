@@ -42,8 +42,8 @@ export class AccessRequestService {
             dataset_id: data.datasetID,
             email: data.email,
             request_text: data.description,
-            access_starts: data.fromDate?.toDateString(),
-            access_ends: data.untilDate?.toDateString(),
+            access_starts: data.fromDate?.toISOString(),
+            access_ends: data.untilDate?.toISOString(),
           })
           .pipe(
             catchError(async () =>
