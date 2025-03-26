@@ -55,11 +55,11 @@
             <tr>
               <td>
                 <mat-radio-button [value]="iva.id">
-                  {{ (iva.type | IvaTypePipe: iva.value).typeAndValue }}
+                  {{ (iva.type | IvaTypePipe).name }}: {{ iva.value }}
                 </mat-radio-button>
               </td>
-              <td class="{{ (iva.state | IvaStatePipe).class }} w-40 ps-4">
-                {{ (iva.state | IvaStatePipe).display }}
+              <td [class]="(iva.state | IvaStatePipe).class" class="w-40 ps-4">
+                {{ (iva.state | IvaStatePipe).name }}
               </td>
             </tr>
           }
