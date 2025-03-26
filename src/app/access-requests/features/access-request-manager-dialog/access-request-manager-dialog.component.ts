@@ -141,7 +141,7 @@ export class AccessRequestManagerDialogComponent implements OnInit {
     if (!this.selectedIvaIdRadioButton()) return;
     const data = {
       ...this.data,
-      iva_id: this.selectedIvaIdRadioButton,
+      iva_id: this.selectedIvaIdRadioButton(),
       status: AccessRequestStatus.allowed,
     };
     this.dialogRef.close(data);
@@ -153,7 +153,7 @@ export class AccessRequestManagerDialogComponent implements OnInit {
   #deny = () => {
     const data = {
       ...this.data,
-      iva_id: this.selectedIvaIdRadioButton,
+      iva_id: this.selectedIvaIdRadioButton(),
       status: AccessRequestStatus.denied,
     };
     this.dialogRef.close(data);
