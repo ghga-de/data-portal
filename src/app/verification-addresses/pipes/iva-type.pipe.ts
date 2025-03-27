@@ -15,7 +15,7 @@ export class IvaTypePipe implements PipeTransform {
   /**
    * This method will return an object containing a display name and icon for the IVA type provided
    * @param type The IVA type to process
-   * @returns The display name and icon based on the type of the IVA type
+   * @returns The display name and icon based on the given IVA type
    */
   transform(type: IvaType): { name: string; icon: string } {
     return {

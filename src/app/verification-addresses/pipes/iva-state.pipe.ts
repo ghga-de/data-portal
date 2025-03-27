@@ -19,7 +19,7 @@ export class IvaStatePipe implements PipeTransform {
   /**
    * This method will return an object containing a display name and classes based on the IVA state provided
    * @param state The IVA state to process
-   * @returns The display name and class based on the state of the IVA state
+   * @returns The display name and class based on the given IVA state
    */
   transform(state: IvaState): { name: string; class: string } {
     return {

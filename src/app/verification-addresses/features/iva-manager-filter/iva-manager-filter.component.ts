@@ -70,7 +70,7 @@ export class IvaManagerFilterComponent {
   /**
    * Get the display name for the IVA state
    * @param state the IVA state in question
-   * @returns the display name for the type
+   * @returns the display name for the state
    */
   #ivaStateName(state: IvaState): string {
     return this.#ivaStatePipe.transform(state).name;
