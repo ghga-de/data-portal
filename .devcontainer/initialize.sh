@@ -13,7 +13,7 @@ fi
 
 if [ ! -f docker-compose.local.env ]; then
     echo "Initializing docker-compose.local.env - please check and adapt."
-    echo "This is mainly needed to integrate the X-Server for e2e tests with UI."
+    echo "This is mainly needed to integrate the X11 Server for e2e tests with UI."
 
     X11_DIR="/tmp/.X11-unix"
     AUTH_DIR=""
@@ -23,12 +23,12 @@ if [ ! -f docker-compose.local.env ]; then
     shopt -s nocasematch
     if [[ "$UNAME" =~ macos|darwin ]]; then
         echo "You seem to be using macOS."
-        echo "It is recommended to install XQuartz as X-Server."
+        echo "It is recommended to install XQuartz as X11 server."
         AUTH_DIR="~/.Xauthority"
         DISPLAY="host.docker.internal:0"
     elif [[ "$UNAME" =~ microsoft|windows|wsl ]]; then
         echo "You seem to be using WSL."
-        echo "This already contains an X-Server as part of WSLg."
+        echo "This already contains an X11 server as part of WSLg."
         X11_DIR="/mnt/wslg/.X11-unix"
     else
         echo "No specific host environment detected."

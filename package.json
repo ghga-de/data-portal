@@ -25,7 +25,7 @@
     "compodoc:serve": "compodoc -s",
     "toc": "markdown-toc -i README.md"
   },
-  "packageManager": "pnpm@10.6.5",
+  "packageManager": "pnpm@10.7.0",
   "type": "module",
   "private": true,
   "dependencies": {
