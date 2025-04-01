@@ -15,10 +15,6 @@ services:
     # Comment out the next line to use the root user for all processes.
     user: node
 
-    # preset environment variables
-    environment:
-      - DISPLAY=:0
-
     # also set environment variables from local file (useful for secrets)
     env_file:
       - local.env
