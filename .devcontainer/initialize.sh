@@ -6,12 +6,12 @@ if [ ! -f local.env ]; then
     echo "Initializing local.env - please check and adapt."
     echo "This is mainly needed to setup secrets for running with the staging backend."
     F=local.env
-    echo "data_portal_base_url=https://data.staging.ghga.dev" > $F
-    echo "data_portal_basic_auth=user:passwd" >>$F
-    echo "data_portal_oidc_client_id=ghga-dev-client" >>$F
+    echo "# data_portal_base_url=https://data.staging.ghga.dev" > $F
+    echo "# data_portal_basic_auth=user:passwd" >>$F
+    echo "# data_portal_oidc_client_id=ghga-dev-client" >>$F
 fi
 
-if [ ! -f docker-compose.local.env ]; then
+if [ ! -f docker-compose.local.yml ]; then
     echo "Initializing docker-compose.local.env - please check and adapt."
     echo "This is mainly needed to integrate the X11 Server for e2e tests with UI."
 
