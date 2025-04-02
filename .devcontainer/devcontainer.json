@@ -2,7 +2,10 @@
 // README at: https://github.com/devcontainers/templates/tree/main/src/typescript-node
 {
   "name": "Data Portal",
-  "dockerComposeFile": "docker-compose.yml",
+  "dockerComposeFile": [
+    "docker-compose.yml",
+    "docker-compose.local.yml"
+  ],
   "service": "app",
   "workspaceFolder": "/workspace",
   // Features to add to the dev container. More info: https://containers.dev/features.
@@ -12,8 +15,8 @@
     8080,
     443
   ],
-  // Create an empty local env file if it does not yet exist
-  "initializeCommand": "touch .devcontainer/local.env",
+  // Initialize the local.env and docker-compose.override.yml files.
+  "initializeCommand": "bash .devcontainer/initialize.sh",
   // Use 'postCreateCommand' to run commands after the container is created.
   "postCreateCommand": "dev_install",
   // Configure tool-specific properties.
