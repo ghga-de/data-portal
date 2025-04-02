@@ -18,9 +18,9 @@ interface Config {
   oidc_redirect_url: string;
   oidc_scope: string;
   oidc_authority_url: string;
-  oidc_authorization_url: string;
-  oidc_token_url: string;
-  oidc_userinfo_url: string;
+  oidc_authorization_url: string | null;
+  oidc_token_url: string | null;
+  oidc_userinfo_url: string | null;
   oidc_use_discovery: boolean;
   oidc_account_url: string;
   mock_api: boolean;
@@ -161,31 +161,29 @@ export class ConfigService {
 
   /**
    * Gets the OIDC authorization URL from the config object
-   * @returns the OIDC authorization URL
+   * @returns the OIDC authorization URL or null (use oidcUseDiscovery)
    */
-  get oidcAuthorizationUrl(): string {
-    return new URL(
-      this.#config.oidc_authorization_url,
-      withEndSlash(this.oidcAuthorityUrl),
-    ).href;
+  get oidcAuthorizationUrl(): string | null {
+    const url = this.#config.oidc_authorization_url;
+    return url ? new URL(url, withEndSlash(this.oidcAuthorityUrl)).href : null;
   }
 
   /**
    * Gets the OIDC token URL from the config object
-   * @returns the OIDC token URL
+   * @returns the OIDC token URL or null (use oidcUseDiscovery)
    */
-  get oidcTokenUrl(): string {
-    return new URL(this.#config.oidc_token_url, withEndSlash(this.oidcAuthorityUrl))
-      .href;
+  get oidcTokenUrl(): string | null {
+    const url = this.#config.oidc_token_url;
+    return url ? new URL(url, withEndSlash(this.oidcAuthorityUrl)).href : null;
   }
 
   /**
    * Gets the OIDC userinfo URL from the config object
    * @returns the OIDC userinfo URL
    */
-  get oidcUserInfoUrl(): string {
-    return new URL(this.#config.oidc_userinfo_url, withEndSlash(this.oidcAuthorityUrl))
-      .href;
+  get oidcUserInfoUrl(): string | null {
+    const url = this.#config.oidc_userinfo_url;
+    return url ? new URL(url, withEndSlash(this.oidcAuthorityUrl)).href : null;
   }
 
   /**
