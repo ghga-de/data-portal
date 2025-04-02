@@ -9,6 +9,8 @@ if [ ! -f local.env ]; then
     echo "# data_portal_base_url=https://data.staging.ghga.dev" > $F
     echo "# data_portal_basic_auth=user:passwd" >>$F
     echo "# data_portal_oidc_client_id=ghga-dev-client" >>$F
+    echo "# data_portal_umami_url=https://umami.foundational.staging.ghga.dev/umami" >>$F
+    echo "# data_portal_umami_website_id=the-website-id" >>$F
 fi
 
 if [ ! -f docker-compose.local.yml ]; then

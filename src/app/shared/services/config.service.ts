@@ -30,8 +30,8 @@ interface Config {
   access_grant_min_days: number;
   access_grant_max_days: number;
   default_access_duration_days: number;
-  umami_url: string;
-  umami_website_id: string;
+  umami_url: string | null;
+  umami_website_id: string | null;
 }
 
 declare global {
@@ -236,18 +236,18 @@ export class ConfigService {
 
   /**
    * Gets the URL of the Umami backend that the analytics data will be reported to
-   * @returns the URL of the Umami backend
+   * @returns the URL of the Umami backend or null if not configured
    */
-  get umami_url(): string {
-    return this.#config.umami_url;
+  get umami_url(): string | null {
+    return this.#config.umami_url || null;
   }
 
   /**
    * Gets the key used to identify the website in the Umami backend
-   * @returns the website ID
+   * @returns the website ID or null if not configured
    */
-  get umami_website_id(): string {
-    return this.#config.umami_website_id;
+  get umami_website_id(): string | null {
+    return this.#config.umami_website_id || null;
   }
 
   /**
