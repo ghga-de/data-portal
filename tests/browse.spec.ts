@@ -69,7 +69,7 @@ test('can navigate to dataset details', async ({ page }) => {
   await expect(main).not.toContainText('File ID');
   await expect(main).not.toContainText('GHGAF956121333');
   await expect(main).not.toContainText('Research data file 3');
-  await expect(main).not.toContainText('Tübingen 03');
+  await expect(main).not.toContainText('Tübingen 3');
 
   const openFile = main.getByRole('button', { name: 'Files Summary' });
   await expect(openFile).toBeVisible();
@@ -79,7 +79,7 @@ test('can navigate to dataset details', async ({ page }) => {
   await expect(main).toContainText('File ID');
   await expect(main).toContainText('GHGAF956121333');
   await expect(main).toContainText('Research data file 3');
-  await expect(main).toContainText('Tübingen 03');
+  await expect(main).toContainText('Tübingen 3');
 
   // last file should bot yet be visible
   await expect(main).not.toContainText('EGAF956121335');
