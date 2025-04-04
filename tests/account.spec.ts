@@ -33,9 +33,9 @@ test('show account page when logged in', async ({ loggedInPage }) => {
 
   const main = page.locator('main');
 
-  const heading = page.getByRole('heading', { level: 1 });
+  const heading = main.getByRole('heading', { level: 1 });
   await expect(heading).toHaveText('User Account');
-  const subHeading = page.getByRole('heading', { level: 2 });
+  const subHeading = main.getByRole('heading', { level: 2 });
   await expect(subHeading).toContainText('Dr. John Doe');
 
   // add more tests after adding arial labels
