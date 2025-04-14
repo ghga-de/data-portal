@@ -210,7 +210,7 @@ export const datasetDetails: DatasetDetails = {
   },
   study: {
     accession: 'GHGAS12345678901234',
-    ega_accession: 'EGAS123456789012',
+    ega_accession: 'EGAS12345678901',
     types: ['test_genomics'],
     title: 'Test Study',
     description:
@@ -230,31 +230,31 @@ export const datasetDetails: DatasetDetails = {
   process_data_files: [
     {
       accession: 'GHGAF12345678901234',
-      ega_accession: 'EGAF123456789012',
+      ega_accession: 'EGAF12345678901',
       name: 'Process data file 1',
       format: 'BAM',
     },
     {
       accession: 'GHGAF12345678901235',
-      ega_accession: 'EGAF123456789013',
+      ega_accession: 'EGAF12345678902',
       name: 'Process data file 2',
       format: 'BAM',
     },
     {
       accession: 'GHGAF12345678901236',
-      ega_accession: 'EGAF123456789014',
+      ega_accession: 'EGAF12345678903',
       name: 'Process data file 3',
       format: 'BAM',
     },
     {
       accession: 'GHGAF12345678901237',
-      ega_accession: 'EGAF123456789015',
+      ega_accession: 'EGAF12345678904',
       name: 'Process data file 4',
       format: 'BAM',
     },
     {
       accession: 'GHGAF12345678901238',
-      ega_accession: 'EGAF123456789016',
+      ega_accession: 'EGAF12345678905',
       name: 'Process data file 5',
       format: 'BAM',
     },
@@ -264,13 +264,13 @@ export const datasetDetails: DatasetDetails = {
   individual_supporting_files: [
     {
       accession: 'GHGAF12345678901239',
-      ega_accession: 'EGAF123456789017',
+      ega_accession: 'EGAF12345678906',
       name: 'Supporting file 1',
       format: 'PDF',
     },
     {
       accession: 'GHGAF12345678901240',
-      ega_accession: 'EGAF123456789018',
+      ega_accession: 'EGAF12345678907',
       name: 'Supporting file 2',
       format: 'PDF',
     },
@@ -278,31 +278,31 @@ export const datasetDetails: DatasetDetails = {
   research_data_files: [
     {
       accession: 'GHGAF12345678901241',
-      ega_accession: 'EGAF123456789019',
+      ega_accession: 'EGAF12345678908',
       name: 'Research data file 1',
       format: 'FASTQ',
     },
     {
       accession: 'GHGAF12345678901242',
-      ega_accession: 'EGAF123456789010',
+      ega_accession: 'EGAF12345678909',
       name: 'Research data file 2',
       format: 'FASTQ',
     },
     {
       accession: 'GHGAF12345678901243',
-      ega_accession: 'EGAF123456789011',
+      ega_accession: 'EGAF12345678910',
       name: 'Research data file 3',
       format: 'FASTQ',
     },
     {
       accession: 'GHGAF12345678901244',
-      ega_accession: 'EGAF123456789011',
+      ega_accession: 'EGAF12345678911',
       name: 'Research data file 4',
       format: 'FASTQ',
     },
     {
       accession: 'GHGAF12345678901245',
-      ega_accession: 'EGAF123456789012',
+      ega_accession: 'EGAF12345678912',
       name: 'Research data file 5',
       format: 'FASTQ',
     },
@@ -310,7 +310,7 @@ export const datasetDetails: DatasetDetails = {
   experiments: [
     {
       accession: 'GHGAE12345678901234',
-      ega_accession: 'EGAE123456789012',
+      ega_accession: 'EGAE12345678901',
       title: 'Text Experiment 1',
       description:
         'Test Experiment 1. Sagittis purus sit amet volutpat. Tellus cras adipiscing enim eu turpis egestas pretium. Vitae suscipit tellus mauris a diam maecenas sed enim ut. Vulputate enim nulla aliquet porttitor lacus luctus. Egestas sed sed risus pretium quam vulputate dignissim. Netus et malesuada fames ac turpis egestas maecenas. Nisl condimentum id venenatis a condimentum vitae sapien. Commodo quis imperdiet massa tincidunt nunc pulvinar sapien et. Vitae sapien pellentesque habitant morbi tristique senectus. Leo vel fringilla est ullamcorper eget nulla. Tempus egestas sed sed risus.',
@@ -323,7 +323,7 @@ export const datasetDetails: DatasetDetails = {
     },
     {
       accession: 'GHGAE12345678901235',
-      ega_accession: 'EGAE123456789013',
+      ega_accession: 'EGAE12345678902',
       title: 'Text Experiment 2',
       description: 'Test Experiment 2. Sagittis purus sit amet volutpat.',
       experiment_method: {
@@ -337,7 +337,7 @@ export const datasetDetails: DatasetDetails = {
   samples: [
     {
       accession: 'GHGAN12345678901234',
-      ega_accession: 'EGAN123456789012',
+      ega_accession: 'EGAN12345678903',
       description:
         'Test Sample 1. Vivamus arcu felis bibendum ut. Eget mi proin sed libero enim. Metus dictum at tempor commodo ullamcorper a lacus. Tincidunt tortor aliquam nulla facilisi cras. Nullam vehicula ipsum a arcu. Malesuada proin libero nunc consequat. Purus faucibus ornare suspendisse sed nisi lacus sed viverra tellus. Elementum eu facilisis sed odio morbi quis. Condimentum id venenatis a condimentum vitae sapien pellentesque habitant. Purus sit amet volutpat consequat mauris nunc. Ultricies mi quis hendrerit dolor magna eget est lorem. Fermentum leo vel orci porta non pulvinar. Integer malesuada nunc vel risus commodo viverra maecenas.',
       name: 'Test anatomical entity',
@@ -351,7 +351,7 @@ export const datasetDetails: DatasetDetails = {
     },
     {
       accession: 'GHGAN12345678901235',
-      ega_accession: 'EGAN123456789013',
+      ega_accession: 'EGAN12345678904',
       description: 'Test Sample 2. Vivamus arcu felis bibendum ut.',
       name: 'Test anatomical entity 2',
       case_control_status: 'Test control status 2',
@@ -364,7 +364,7 @@ export const datasetDetails: DatasetDetails = {
     },
     {
       accession: 'GHGAN12345678901236',
-      ega_accession: 'EGAN123456789014',
+      ega_accession: 'EGAN12345678905',
       description: 'Test Sample 3. Vivamus arcu felis bibendum ut.',
       name: 'Test anatomical entity 3',
       case_control_status: 'Test control status 3',
@@ -414,14 +414,14 @@ export const searchResults: SearchResults = {
     {
       id_: 'GHGAD12345678901235',
       content: {
-        alias: 'EGAD12345678903',
+        alias: 'EGAD12345678902',
         title: 'Test dataset for details',
       },
     },
     {
       id_: 'GHGAD12345678901236',
       content: {
-        alias: 'EGAD12345678904',
+        alias: 'EGAD12345678903',
         title:
           'Test dataset for details and this is also testing whether more than two lines of text actually appear correctly on the expansion panel headers or not at least at a resolution of one thousand nine hundred and twenty pixels wide especially since this can cause issues with the layout of the expansion panels',
       },
@@ -566,31 +566,31 @@ export const datasetInformation: DatasetInformation = {
       storage_alias: 'TUE05',
     },
     {
-      accession: 'GHGAF12345678901239',
+      accession: 'GHGAF12345678901241',
       sha256_hash: '47b2e5a09936322db4ab1b921847d0f3b83027e0255cd24d7e58c420845286e1',
       size: 87654321,
       storage_alias: 'HD01',
     },
     {
-      accession: 'GHGAF12345678901240',
+      accession: 'GHGAF12345678901242',
       sha256_hash: '47b2e5a09936322db4ab1b921847d0f3b83027e0255cd24d7e58c420845286e2',
       size: 87654322,
       storage_alias: 'HD02',
     },
     {
-      accession: 'GHGAF12345678901241',
+      accession: 'GHGAF12345678901243',
       sha256_hash: '47b2e5a09936322db4ab1b921847d0f3b83027e0255cd24d7e58c420845286e3',
       size: 87654323,
       storage_alias: 'HD03',
     },
     {
-      accession: 'GHGAF12345678901242',
+      accession: 'GHGAF12345678901244',
       sha256_hash: '47b2e5a09936322db4ab1b921847d0f3b83027e0255cd24d7e58c420845286e4',
       size: 87654324,
       storage_alias: 'HD04',
     },
     {
-      accession: 'GHGAF12345678901243',
+      accession: 'GHGAF12345678901245',
       sha256_hash: '47b2e5a09936322db4ab1b921847d0f3b83027e0255cd24d7e58c420845286e5',
       size: 87654325,
       storage_alias: 'HD05',
