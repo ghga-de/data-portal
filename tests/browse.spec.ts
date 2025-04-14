@@ -17,7 +17,7 @@ test('can browse data', async ({ page }) => {
 
   const main = page.locator('main');
   await expect(main).toContainText('Total Datasets:25');
-  await expect(main).toContainText('GHGAD588887989');
+  await expect(main).toContainText('GHGAD123456789012347');
   await expect(main).toContainText('Test dataset for details');
 });
 
@@ -27,14 +27,14 @@ test('can view a dataset summary', async ({ page }) => {
   const main = page.locator('main');
   await expect(main).toContainText('Total Datasets:25');
 
-  await expect(main).toContainText('GHGAD588887989');
+  await expect(main).toContainText('GHGAD123456789012347');
   await expect(main).toContainText('Test dataset for details');
 
   // description and dataset summary are not yet visible
   await expect(main).not.toContainText('This is the test dataset description');
   await expect(main).not.toContainText('14 Experiments');
 
-  const openSummary = page.getByRole('button', { name: 'GHGAD588887989' });
+  const openSummary = page.getByRole('button', { name: 'GHGAD123456789012347' });
   await expect(openSummary).toBeVisible();
   await openSummary.click();
 
@@ -47,19 +47,19 @@ test('can navigate to dataset details', async ({ page }) => {
   await page.goto('/browse');
   const main = page.locator('main');
 
-  await main.getByText('GHGAD588887989').click();
+  await main.getByText('GHGAD123456789012347').click();
 
   await expect(page).toHaveURL('/browse');
 
-  const button = page.getByLabel('GHGAD588887989').getByText('Dataset Details');
+  const button = page.getByLabel('GHGAD123456789012347').getByText('Dataset Details');
   await expect(button).toBeVisible();
   await button.click();
 
-  await expect(page).toHaveURL('/dataset/GHGAD588887989');
+  await expect(page).toHaveURL('/dataset/GHGAD123456789012347');
 
-  await expect(page).toHaveTitle('Dataset GHGAD588887989 | GHGA Data Portal');
+  await expect(page).toHaveTitle('Dataset GHGAD123456789012347 | GHGA Data Portal');
 
-  await expect(main).toContainText('Dataset ID | GHGAD588887989');
+  await expect(main).toContainText('Dataset ID | GHGAD123456789012347');
   await expect(main).toContainText('Test dataset with some details for testing.');
 
   await expect(main).toContainText('Test study description.');

@@ -76,22 +76,22 @@ export const responses: { [endpoint: string]: ResponseValue } = {
   'GET /api/metldata/stats': metadataGlobalSummary,
 
   // Get summary data from a single dataset
-  'GET /api/metldata/artifacts/stats_public/classes/DatasetStats/resources/GHGAD588887987':
-    getDatasetSummary('GHGAD588887987'),
+  'GET /api/metldata/artifacts/stats_public/classes/DatasetStats/resources/GHGAD123456789012345':
+    getDatasetSummary('GHGAD123456789012345'),
   // Get summary data from a single dataset
-  'GET /api/metldata/artifacts/stats_public/classes/DatasetStats/resources/GHGAD588887988':
-    getDatasetSummary('GHGAD588887988'),
+  'GET /api/metldata/artifacts/stats_public/classes/DatasetStats/resources/GHGAD123456789012346':
+    getDatasetSummary('GHGAD123456789012346'),
   // Get summary data from a single dataset
-  'GET /api/metldata/artifacts/stats_public/classes/DatasetStats/resources/GHGAD588887989':
-    getDatasetSummary('GHGAD588887989'),
+  'GET /api/metldata/artifacts/stats_public/classes/DatasetStats/resources/GHGAD123456789012347':
+    getDatasetSummary('GHGAD123456789012347'),
 
   // Get dataset details (embedded)
-  'GET /api/metldata/artifacts/embedded_public/classes/EmbeddedDataset/resources/GHGAD588887987':
-    getDatasetDetails('GHGAD588887987'),
-  'GET /api/metldata/artifacts/embedded_public/classes/EmbeddedDataset/resources/GHGAD588887988':
-    getDatasetDetails('GHGAD588887988'),
-  'GET /api/metldata/artifacts/embedded_public/classes/EmbeddedDataset/resources/GHGAD588887989':
-    getDatasetDetails('GHGAD588887989'),
+  'GET /api/metldata/artifacts/embedded_public/classes/EmbeddedDataset/resources/GHGAD123456789012345':
+    getDatasetDetails('GHGAD123456789012345'),
+  'GET /api/metldata/artifacts/embedded_public/classes/EmbeddedDataset/resources/GHGAD123456789012346':
+    getDatasetDetails('GHGAD123456789012346'),
+  'GET /api/metldata/artifacts/embedded_public/classes/EmbeddedDataset/resources/GHGAD123456789012347':
+    getDatasetDetails('GHGAD123456789012347'),
 
   /**
    * MASS API
@@ -127,9 +127,9 @@ export const responses: { [endpoint: string]: ResponseValue } = {
    * ARS API
    */
   // Specific dataset and user access requests
-  'GET /api/ars/access-requests?dataset_id=GHGAD588887987&*': getAccessRequests(
+  'GET /api/ars/access-requests?dataset_id=GHGAD123456789012345&*': getAccessRequests(
     'doe@test.dev',
-    'GHGAD588887987',
+    'GHGAD123456789012345',
   ),
 
   // Specific dataset and user access requests

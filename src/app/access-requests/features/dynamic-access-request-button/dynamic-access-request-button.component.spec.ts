@@ -41,7 +41,7 @@ describe('DynamicAccessRequestButtonComponent', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(DynamicAccessRequestButtonComponent);
-    fixture.componentRef.setInput('datasetID', 'GHGAD588887989');
+    fixture.componentRef.setInput('datasetID', 'GHGAD123456789012347');
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

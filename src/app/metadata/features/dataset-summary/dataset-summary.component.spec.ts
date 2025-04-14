@@ -57,7 +57,7 @@ describe('DatasetSummaryComponent', () => {
   it('should show accession and title', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const text = compiled.textContent;
-    expect(text).toContain('GHGAD588887987');
+    expect(text).toContain('GHGAD123456789012345');
     expect(text).toContain('Test dataset for details');
   });
 });
