@@ -94,14 +94,12 @@ describe('DatasetDetailsComponent', () => {
 
   it('should show GHGA ID', () => {
     expect(
-      screen.queryAllByText('Dataset ID | GHGAD123456789012345').length,
+      screen.queryAllByText('Dataset ID | GHGAD12345678901234').length,
     ).toBeGreaterThan(0);
   });
 
   it('should show EGA ID', () => {
-    expect(screen.queryAllByText('EGA ID | EGAD123456789012').length).toBeGreaterThan(
-      0,
-    );
+    expect(screen.queryAllByText('EGA ID | EGAD12345678901').length).toBeGreaterThan(0);
   });
 
   it('should show dataset type', () => {

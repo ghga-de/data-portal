@@ -60,7 +60,7 @@ describe('AccessRequestDialogComponent', () => {
 
     fixture = TestBed.createComponent(AccessRequestDialogComponent);
     component = fixture.componentInstance;
-    fixture.componentRef.setInput('datasetID', 'GHGAD123456789012345');
+    fixture.componentRef.setInput('datasetID', 'GHGAD12345678901234');
     fixture.detectChanges();
   });
 
