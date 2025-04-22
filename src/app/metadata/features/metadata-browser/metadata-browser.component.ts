@@ -160,7 +160,11 @@ export class MetadataBrowserComponent implements OnInit {
    * Resets the search query and triggers a reload of the results.
    */
   clearSearchQuery(): void {
-    if (this.searchTerm !== '' || this.#facetDataChanged()) {
+    if (
+      this.searchTerm !== '' ||
+      this.searchFormControl.value ||
+      this.#facetDataChanged()
+    ) {
       this.searchTerm = '';
       this.searchFormControl.setValue('');
       this.#skip = DEFAULT_SKIP_VALUE;
@@ -174,7 +178,6 @@ export class MetadataBrowserComponent implements OnInit {
    */
   clear(event: MouseEvent): void {
     event.preventDefault();
-    this.searchFormControl.setValue('');
     this.facetData.set({});
     this.clearSearchQuery();
   }
