@@ -136,8 +136,9 @@ export class MetadataBrowserComponent implements OnInit {
    */
   submit(event: MouseEvent | SubmitEvent | Event): void {
     event.preventDefault();
-    const searchTerm = this.searchFormControl.value ? this.searchFormControl.value : '';
-    if (searchTerm !== this.searchTerm) {
+    const searchTerm = this.searchFormControl.value || '';
+    if (searchTerm !== this.searchTerm || this.#facetDataChanged()) {
+      this.searchTerm = searchTerm;
       this.#skip = DEFAULT_SKIP_VALUE;
       this.#performSearch();
     }
@@ -159,7 +160,7 @@ export class MetadataBrowserComponent implements OnInit {
    * Resets the search query and triggers a reload of the results.
    */
   clearSearchQuery(): void {
-    if (this.searchTerm) {
+    if (this.searchTerm !== '' || this.#facetDataChanged()) {
       this.searchTerm = '';
       this.searchFormControl.setValue('');
       this.#skip = DEFAULT_SKIP_VALUE;
@@ -224,6 +225,21 @@ export class MetadataBrowserComponent implements OnInit {
       }
     }
     return facetStrings.join(';');
+  }
+
+  /**
+   * Check whether the facet data is different from the last search
+   * @returns true if the facet data has changed
+   */
+  #facetDataChanged(): boolean {
+    console.log('FACETDATA', this.facetData);
+    console.log('FACETS', this.#metadataSearch.facets());
+    console.log('FACEDTATASTRING', this.#facetDataToString(this.facetData));
+    console.log('FACETSSTRING', this.#facetDataToString(this.#metadataSearch.facets()));
+    return (
+      this.#facetDataToString(this.facetData) !==
+      this.#facetDataToString(this.#metadataSearch.facets())
+    );
   }
 
   /**
