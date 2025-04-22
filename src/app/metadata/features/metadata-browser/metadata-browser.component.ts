@@ -121,7 +121,7 @@ export class MetadataBrowserComponent implements OnInit {
         s: this.#skip !== DEFAULT_SKIP_VALUE ? this.#skip : undefined,
         q: this.searchTerm !== '' ? this.searchTerm : undefined,
         f:
-          Object.keys(this.facetData).length !== 0
+          Object.keys(this.facetData()).length !== 0
             ? encodeURIComponent(this.#facetDataToString(this.facetData()))
             : undefined,
         p: this.#pageSize !== DEFAULT_PAGE_SIZE ? this.#pageSize : undefined,
