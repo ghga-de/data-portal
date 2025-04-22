@@ -136,6 +136,7 @@ export class MetadataBrowserComponent implements OnInit {
   submit(event: MouseEvent | SubmitEvent | Event): void {
     event.preventDefault();
     this.searchTerm = this.searchFormControl.value ? this.searchFormControl.value : '';
+    this.#skip = 0;
     this.#performSearch();
   }
 
@@ -147,6 +148,7 @@ export class MetadataBrowserComponent implements OnInit {
     const facetToRemoveSplit = facetToRemove.split('#');
     if (facetToRemoveSplit.length !== 2) return;
     this.#updateFacets(facetToRemoveSplit[0], facetToRemoveSplit[1], false);
+    this.#skip = 0;
     this.#performSearch();
   }
 
@@ -156,6 +158,7 @@ export class MetadataBrowserComponent implements OnInit {
   clearSearchQuery(): void {
     this.searchTerm = '';
     this.searchFormControl.setValue('');
+    this.#skip = 0;
     this.#performSearch();
   }
 

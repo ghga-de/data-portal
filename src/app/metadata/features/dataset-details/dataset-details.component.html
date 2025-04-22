@@ -128,13 +128,20 @@
                   <span
                     class="bg-primary/15 text-primary inline-flex items-center rounded p-1 text-4xl"
                     ><mat-icon inline>article</mat-icon></span
-                  >&nbsp;{{ pub.title }}
+                  >&nbsp;{{ pub.title ?? 'Unknown publication title' }}
                 </h4>
-                <p class="text-base"><strong>Author(s):</strong> {{ pub.author }}</p>
-                <p class="text-base"><strong>Journal:</strong> {{ pub.journal }}</p>
-                <p class="text-base"><strong>Year:</strong> {{ pub.year }}</p>
+                <p class="text-base">
+                  <strong>Author(s):</strong> {{ pub.author ?? 'Unknown authors' }}
+                </p>
+                @if (pub.journal) {
+                  <p class="text-base"><strong>Journal:</strong> {{ pub.journal }}</p>
+                }
+                @if (pub.year) {
+                  <p class="text-base"><strong>Year:</strong> {{ pub.year }}</p>
+                }
+                <p class="text-base"><strong>DOI:</strong> {{ pub.doi }}</p>
                 @for (
-                  par of pub.abstract.split('\\n');
+                  par of pub.abstract?.split('\\n');
                   track $index;
                   let first = $first
                 ) {
