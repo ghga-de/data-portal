@@ -174,6 +174,7 @@ export class MetadataBrowserComponent implements OnInit {
    */
   clear(event: MouseEvent): void {
     event.preventDefault();
+    this.searchFormControl.setValue('');
     this.facetData.set({});
     this.clearSearchQuery();
   }
