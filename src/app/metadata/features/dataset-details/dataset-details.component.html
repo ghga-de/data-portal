@@ -117,7 +117,7 @@
                   <a
                     mat-stroked-button
                     class="mb-4 w-full sm:float-right sm:mb-0 sm:w-auto"
-                    [href]="'https://www.doi.org/' + pub.doi"
+                    [href]="'https://www.doi.org/' + pub.doi | validateDOI"
                     target="_blank"
                     rel="noopener noreferrer"
                     data-umami-event="Dataset Details Publication DOI Clicked"
@@ -139,7 +139,9 @@
                 @if (pub.year) {
                   <p class="text-base"><strong>Year:</strong> {{ pub.year }}</p>
                 }
-                <p class="text-base"><strong>DOI:</strong> {{ pub.doi }}</p>
+                <p class="text-base">
+                  <strong>DOI:</strong> {{ pub.doi | validateDOI }}
+                </p>
                 @if (pub.abstract) {
                   @for (
                     par of pub.abstract.split('\\n');
