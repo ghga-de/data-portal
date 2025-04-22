@@ -4,7 +4,7 @@
  * @license Apache-2.0
  */
 
-import { Component, computed, effect, inject, OnInit } from '@angular/core';
+import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -57,7 +57,7 @@ export class MetadataBrowserComponent implements OnInit {
   #skip = DEFAULT_SKIP_VALUE;
   #pageSize = DEFAULT_PAGE_SIZE;
 
-  facetData: FacetFilterSetting = {};
+  facetData = signal<FacetFilterSetting>({});
   searchFormControl = new FormControl('');
   searchFormGroup = new FormGroup({
     searchTerm: this.searchFormControl,
@@ -90,7 +90,7 @@ export class MetadataBrowserComponent implements OnInit {
     if (f) {
       const paramVals = this.#facetDataFromString(decodeURIComponent(f));
       if (paramVals) {
-        this.facetData = paramVals;
+        this.facetData.set(paramVals);
       }
     }
     this.#skip = parseInt(s) || DEFAULT_SKIP_VALUE;
@@ -99,7 +99,7 @@ export class MetadataBrowserComponent implements OnInit {
       this.#pageSize,
       this.#skip,
       this.searchTerm,
-      this.facetData,
+      this.facetData(),
     );
     this.searchFormControl.setValue(this.searchTerm);
   }
@@ -122,7 +122,7 @@ export class MetadataBrowserComponent implements OnInit {
         q: this.searchTerm !== '' ? this.searchTerm : undefined,
         f:
           Object.keys(this.facetData).length !== 0
-            ? encodeURIComponent(this.#facetDataToString(this.facetData))
+            ? encodeURIComponent(this.#facetDataToString(this.facetData()))
             : undefined,
         p: this.#pageSize !== DEFAULT_PAGE_SIZE ? this.#pageSize : undefined,
       },
@@ -174,7 +174,7 @@ export class MetadataBrowserComponent implements OnInit {
    */
   clear(event: MouseEvent): void {
     event.preventDefault();
-    this.facetData = {};
+    this.facetData.set({});
     this.clearSearchQuery();
   }
 
@@ -233,7 +233,7 @@ export class MetadataBrowserComponent implements OnInit {
    */
   #facetDataChanged(): boolean {
     return (
-      this.#facetDataToString(this.facetData) !==
+      this.#facetDataToString(this.facetData()) !==
       this.#facetDataToString(this.#metadataSearch.facets())
     );
   }
@@ -271,23 +271,25 @@ export class MetadataBrowserComponent implements OnInit {
    * @param newValue The new value of the option of the facet
    */
   #updateFacets(key: string, option: string, newValue: boolean) {
+    const facetData = this.facetData();
     if (newValue) {
       // The value has been checked so we need to add it
-      if (!this.facetData[key]) {
-        this.facetData[key] = [option];
+      if (!facetData[key]) {
+        facetData[key] = [option];
       } else {
-        if (this.facetData[key].indexOf(option) == -1) {
-          this.facetData[key].push(option);
+        if (facetData[key].indexOf(option) == -1) {
+          facetData[key].push(option);
         }
       }
     } else {
       // The box has been deselected so we need to remove it
-      if (this.facetData[key]) {
-        this.facetData[key] = this.facetData[key].filter((item) => item != option);
-        if (this.facetData[key].length == 0) {
-          delete this.facetData[key];
+      if (facetData[key]) {
+        facetData[key] = facetData[key].filter((item) => item != option);
+        if (facetData[key].length == 0) {
+          delete facetData[key];
         }
       }
     }
+    this.facetData.set({ ...facetData });
   }
 }
