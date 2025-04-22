@@ -21,7 +21,7 @@ export class ValidateDOI implements PipeTransform {
   transform(doi: string): string {
     let cleanDOI = doi.trim();
     cleanDOI = cleanDOI.replace(/https?:\/\/.*?doi\.org\//i, '');
-    cleanDOI = cleanDOI.replace(/doi: /i, '');
+    cleanDOI = cleanDOI.replace(/doi:\s*/i, '');
     if (!cleanDOI.startsWith('10.')) {
       return '';
     }
