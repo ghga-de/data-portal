@@ -101,6 +101,7 @@ export class MetadataBrowserComponent implements OnInit {
       this.searchTerm,
       this.facetData,
     );
+    this.searchFormControl.setValue(this.searchTerm);
   }
 
   /**
