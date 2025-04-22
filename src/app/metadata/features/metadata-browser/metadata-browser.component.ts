@@ -232,10 +232,6 @@ export class MetadataBrowserComponent implements OnInit {
    * @returns true if the facet data has changed
    */
   #facetDataChanged(): boolean {
-    console.log('FACETDATA', this.facetData);
-    console.log('FACETS', this.#metadataSearch.facets());
-    console.log('FACEDTATASTRING', this.#facetDataToString(this.facetData));
-    console.log('FACETSSTRING', this.#facetDataToString(this.#metadataSearch.facets()));
     return (
       this.#facetDataToString(this.facetData) !==
       this.#facetDataToString(this.#metadataSearch.facets())
