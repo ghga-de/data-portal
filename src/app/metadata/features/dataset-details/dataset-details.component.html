@@ -140,15 +140,17 @@
                   <p class="text-base"><strong>Year:</strong> {{ pub.year }}</p>
                 }
                 <p class="text-base"><strong>DOI:</strong> {{ pub.doi }}</p>
-                @for (
-                  par of pub.abstract?.split('\\n');
-                  track $index;
-                  let first = $first
-                ) {
-                  <p class="text-base">
-                    <strong>{{ first ? 'Abstract: ' : '' }}</strong
-                    >{{ par }}
-                  </p>
+                @if (pub.abstract) {
+                  @for (
+                    par of pub.abstract.split('\\n');
+                    track $index;
+                    let first = $first
+                  ) {
+                    <p class="text-base">
+                      <strong>{{ first ? 'Abstract: ' : '' }}</strong
+                      >{{ par }}
+                    </p>
+                  }
                 }
                 @if (!last) {
                   <hr class="mx-14 my-6" />

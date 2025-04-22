@@ -135,9 +135,11 @@ export class MetadataBrowserComponent implements OnInit {
    */
   submit(event: MouseEvent | SubmitEvent | Event): void {
     event.preventDefault();
-    this.searchTerm = this.searchFormControl.value ? this.searchFormControl.value : '';
-    this.#skip = 0;
-    this.#performSearch();
+    const searchTerm = this.searchFormControl.value ? this.searchFormControl.value : '';
+    if (searchTerm !== this.searchTerm) {
+      this.#skip = DEFAULT_SKIP_VALUE;
+      this.#performSearch();
+    }
   }
 
   /**
@@ -148,7 +150,7 @@ export class MetadataBrowserComponent implements OnInit {
     const facetToRemoveSplit = facetToRemove.split('#');
     if (facetToRemoveSplit.length !== 2) return;
     this.#updateFacets(facetToRemoveSplit[0], facetToRemoveSplit[1], false);
-    this.#skip = 0;
+    this.#skip = DEFAULT_SKIP_VALUE;
     this.#performSearch();
   }
 
@@ -156,10 +158,12 @@ export class MetadataBrowserComponent implements OnInit {
    * Resets the search query and triggers a reload of the results.
    */
   clearSearchQuery(): void {
-    this.searchTerm = '';
-    this.searchFormControl.setValue('');
-    this.#skip = 0;
-    this.#performSearch();
+    if (this.searchTerm) {
+      this.searchTerm = '';
+      this.searchFormControl.setValue('');
+      this.#skip = DEFAULT_SKIP_VALUE;
+      this.#performSearch();
+    }
   }
 
   /**
