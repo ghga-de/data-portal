@@ -44,7 +44,7 @@
         <mat-icon>description</mat-icon><strong>&nbsp;Description</strong>
       </p>
       <div class="border-primary border-y pt-2">
-        @for (par of datasetDetails().description.split('\\n'); track $index) {
+        @for (par of datasetDetails().description | newlineSplit; track $index) {
           <p class="text-sm">{{ par }}</p>
         }
       </div>
@@ -144,7 +144,7 @@
                 </p>
                 @if (pub.abstract) {
                   @for (
-                    par of pub.abstract.split('\\n');
+                    par of pub.abstract | newlineSplit;
                     track $index;
                     let first = $first
                   ) {
@@ -201,7 +201,7 @@
           <p class="text-base"><strong>e-Mail:</strong> {{ dac().email }}</p>
           <p class="text-base"><strong>Data Access Policy:</strong> {{ dap().name }}</p>
           @for (
-            par of dap().policy_text.split('\\n');
+            par of dap().policy_text | newlineSplit;
             track $index;
             let first = $first
           ) {
