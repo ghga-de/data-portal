@@ -47,4 +47,10 @@ describe('NewlineSplit', () => {
     const result = pipe.transform('hello \tworld\n\thow are you?');
     expect(result).toStrictEqual(['hello \tworld', 'how are you?']);
   });
+
+  it('should not remove backslashes at the start or end of lines', () => {
+    const pipe = new NewlineSplitPipe();
+    const result = pipe.transform('\\hello world\\');
+    expect(result).toStrictEqual(['\\hello world\\']);
+  });
 });
