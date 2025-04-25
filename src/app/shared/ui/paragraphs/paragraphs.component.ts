@@ -4,7 +4,7 @@
  * @license Apache-2.0
  */
 
-import { Component, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { SplitLinesPipe } from '@app/shared/pipes/split-lines.pipe';
 
 /**
@@ -17,6 +17,7 @@ import { SplitLinesPipe } from '@app/shared/pipes/split-lines.pipe';
 })
 export class ParagraphsComponent {
   text = input.required<string>();
-  header = input<string>();
+  label = input<string>();
+  computedLabel = computed(() => (this.label() ? `${this.label()}: ` : undefined));
   pClasses = input<string>();
 }

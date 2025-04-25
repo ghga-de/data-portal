@@ -36,6 +36,12 @@ describe('NewlineSplit', () => {
     expect(result).toStrictEqual(['hello', 'world']);
   });
 
+  it('should split all instances of newlines in a text', () => {
+    const pipe = new SplitLinesPipe();
+    const result = pipe.transform('hello\nworld\\r\\nhow\r\nare\r\\nyou?');
+    expect(result).toStrictEqual(['hello', 'world', 'how', 'are', 'you?']);
+  });
+
   it('should discard duplicate newlines, and carriage return sequences', () => {
     const pipe = new SplitLinesPipe();
     const result = pipe.transform('hello\r\n\\r\\n\n\rworld');

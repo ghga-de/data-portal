@@ -26,4 +26,19 @@ describe('ParagraphsComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should show the text in multiple p tags', () => {
+    const par = fixture.nativeElement.querySelectorAll('p');
+    expect(par.length).toBe(2);
+    expect(par[0].textContent).toContain('Hello');
+    expect(par[1].textContent).toContain('World');
+  });
+
+  it('should show the label when defined', () => {
+    fixture.componentRef.setInput('label', 'Test');
+    fixture.detectChanges();
+    const strong = fixture.nativeElement.querySelector('strong');
+    expect(strong).not.toBeNull();
+    expect(strong.textContent).toContain('Test: ');
+  });
 });
