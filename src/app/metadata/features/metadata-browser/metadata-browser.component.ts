@@ -67,7 +67,7 @@ export class MetadataBrowserComponent implements OnInit {
   lastSearchQuery = this.#metadataSearch.query;
   lastSearchFilterFacets = this.#metadataSearch.facets;
   #searchResults = this.#metadataSearch.searchResults;
-  #error = this.#searchResults.error;
+  #searchResultsError = this.#searchResults.error;
   status = this.#searchResults.status;
   searchResults = this.#searchResults.value;
   facets = computed(() =>
@@ -79,12 +79,14 @@ export class MetadataBrowserComponent implements OnInit {
   loading = computed(() => this.#searchResults.isLoading());
 
   errorMessage = computed(() => {
-    switch (this.#error()) {
-      case undefined:
-        return undefined;
-      default:
-        return 'There was an error loading the datasets. Please try again later.';
-    }
+    if (this.#searchResultsError()) {
+      switch ((this.#searchResultsError() as { status: number | undefined }).status) {
+        case undefined:
+          return undefined;
+        default:
+          return 'There was an error browsing the datasets. Please try again later.';
+      }
+    } else return undefined;
   });
 
   displayFilters = false;
