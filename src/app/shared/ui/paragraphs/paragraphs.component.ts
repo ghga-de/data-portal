@@ -18,6 +18,6 @@ import { SplitLinesPipe } from '@app/shared/pipes/split-lines.pipe';
 export class ParagraphsComponent {
   text = input.required<string>();
   label = input<string>();
-  computedLabel = computed(() => (this.label() ? `${this.label()}: ` : undefined));
+  labelWithColon = computed(() => (this.label() ? `${this.label()}: ` : undefined));
   pClasses = input<string>();
 }

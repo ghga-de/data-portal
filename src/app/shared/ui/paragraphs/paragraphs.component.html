@@ -1,7 +1,7 @@
 @for (par of text() | splitLines; track $index; let first = $first) {
   <p [class]="pClasses() ?? ''">
-    @if (first && computedLabel()) {
-      <strong>{{ computedLabel() }}</strong>
+    @if (first && labelWithColon()) {
+      <strong>{{ labelWithColon() }}</strong>
     }
     {{ par }}
   </p>
