@@ -10,9 +10,9 @@ import { Pipe, PipeTransform } from '@angular/core';
  * This pipe splits a string by newline characters or escaped sequences.
  */
 @Pipe({
-  name: 'newlineSplit',
+  name: 'splitLines',
 })
-export class NewlineSplitPipe implements PipeTransform {
+export class SplitLinesPipe implements PipeTransform {
   /**
    * The transform method executes the business logic of the Pipe
    * @param string The string to split
@@ -20,10 +20,8 @@ export class NewlineSplitPipe implements PipeTransform {
    */
   transform(string: string): string[] {
     return string
-      .replaceAll(/\r|\\r/g, '')
-      .replaceAll('\\n', '\n')
-      .split('\n')
+      .split(/\r?\n\r?|(?:\\r)?\\n(?:\\r)?/)
       .map((x) => x.trim())
-      .filter((x) => x.length > 0);
+      .filter((x) => x);
   }
 }

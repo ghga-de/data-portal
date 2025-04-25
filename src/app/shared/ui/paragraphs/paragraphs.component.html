@@ -1,0 +1,6 @@
+@for (par of text() | splitLines; track $index; let first = $first) {
+  <p [class]="pClasses() ?? ''">
+    <strong>{{ first && header() ? header() : '' }}</strong
+    >{{ par }}
+  </p>
+}

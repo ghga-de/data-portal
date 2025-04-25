@@ -37,10 +37,10 @@ import { ValidateDOI } from '@app/metadata/pipes/validate-doi.pipe';
 import { DatasetInformationService } from '@app/metadata/services/dataset-information.service';
 import { MetadataService } from '@app/metadata/services/metadata.service';
 import { AddPluralS } from '@app/shared/pipes/add-plural-s.pipe';
-import { NewlineSplitPipe } from '@app/shared/pipes/newline-split.pipe';
 import { ParseBytes } from '@app/shared/pipes/parse-bytes.pipe';
 import { UnderscoreToSpace } from '@app/shared/pipes/underscore-to-space.pipe';
 import { NotificationService } from '@app/shared/services/notification.service';
+import { ParagraphsComponent } from '../../../shared/ui/paragraphs/paragraphs.component';
 
 const COLUMNS = {
   experiments: 'accession ega_accession title description method platform',
@@ -72,7 +72,7 @@ const COLUMNS = {
     DynamicAccessRequestButtonComponent,
     MatTooltipModule,
     ValidateDOI,
-    NewlineSplitPipe,
+    ParagraphsComponent,
   ],
   providers: [MetadataService],
   templateUrl: './dataset-details.component.html',
