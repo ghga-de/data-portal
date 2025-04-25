@@ -32,7 +32,6 @@ import { Title } from '@angular/platform-browser';
 // eslint-disable-next-line boundaries/element-types
 import { DynamicAccessRequestButtonComponent } from '@app/access-requests/features/dynamic-access-request-button/dynamic-access-request-button.component';
 import { Experiment, File, Sample } from '@app/metadata/models/dataset-details';
-import { ParseErrorPipe } from '@app/metadata/pipes/parse-error.pipe';
 import { StorageAlias } from '@app/metadata/pipes/storage-alias.pipe';
 import { ValidateDOI } from '@app/metadata/pipes/validate-doi.pipe';
 import { DatasetInformationService } from '@app/metadata/services/dataset-information.service';
@@ -72,7 +71,6 @@ const COLUMNS = {
     DynamicAccessRequestButtonComponent,
     MatTooltipModule,
     ValidateDOI,
-    ParseErrorPipe,
   ],
   providers: [MetadataService],
   templateUrl: './dataset-details.component.html',
@@ -87,9 +85,20 @@ export class DatasetDetailsComponent implements OnInit, AfterViewInit {
   #dins = inject(DatasetInformationService);
 
   #datasetDetails = this.#metadata.datasetDetails;
-  error = this.#datasetDetails.error;
+  #error = this.#datasetDetails.error;
   datasetDetails = this.#datasetDetails.value;
   datasetInformation = this.#dins.datasetInformation.value;
+
+  errorMessage = computed(() => {
+    switch (this.#error()) {
+      case 404:
+        return 'The specified dataset could not be found.';
+      case undefined:
+        return undefined;
+      default:
+        return 'There was an error loading the dataset details. Please try again later.';
+    }
+  });
 
   dap = computed(() => this.datasetDetails().data_access_policy);
   dac = computed(() => this.dap().data_access_committee);

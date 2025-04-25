@@ -1,4 +1,4 @@
-@if (!error()) {
+@if (!errorMessage()) {
   <div class="grid grid-cols-12 grid-rows-none gap-x-5">
     <div class="col-span-12 lg:col-span-8 lg:col-start-5 xl:col-span-9 xl:col-start-4">
       <div class="flex w-full justify-between pb-4">
@@ -150,13 +150,8 @@
   </div>
 } @else {
   <div>
-    @if (error | parseError) {
-      <p class="text-error text-2xl">
-        {{ error | parseError }}
-      </p>
-    }
     <p class="text-error text-2xl">
-      There was an error loading the datasets. Please try again later.
+      {{ errorMessage() }}
     </p>
   </div>
 }

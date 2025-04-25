@@ -18,7 +18,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FacetFilterSetting } from '@app/metadata/models/facet-filter';
 import { FacetActivityPipe } from '@app/metadata/pipes/facet-activity.pipe';
-import { ParseErrorPipe } from '@app/metadata/pipes/parse-error.pipe';
 import { MetadataSearchService } from '@app/metadata/services/metadata-search.service';
 import { NotificationService } from '@app/shared/services/notification.service';
 import { StencilComponent } from '@app/shared/ui/stencil/stencil/stencil.component';
@@ -46,7 +45,6 @@ const MAX_FACET_OPTIONS = 5;
     SearchResultListComponent,
     StencilComponent,
     MatCardModule,
-    ParseErrorPipe,
   ],
   templateUrl: './metadata-browser.component.html',
   styleUrl: './metadata-browser.component.scss',
@@ -69,10 +67,7 @@ export class MetadataBrowserComponent implements OnInit {
   lastSearchQuery = this.#metadataSearch.query;
   lastSearchFilterFacets = this.#metadataSearch.facets;
   #searchResults = this.#metadataSearch.searchResults;
-  error = computed(() => {
-    console.log(this.#searchResults.error());
-    return this.#searchResults.error();
-  });
+  #error = this.#searchResults.error;
   status = this.#searchResults.status;
   searchResults = this.#searchResults.value;
   facets = computed(() =>
@@ -82,6 +77,15 @@ export class MetadataBrowserComponent implements OnInit {
   );
   numResults = computed(() => this.searchResults().count);
   loading = computed(() => this.#searchResults.isLoading());
+
+  errorMessage = computed(() => {
+    switch (this.#error()) {
+      case undefined:
+        return undefined;
+      default:
+        return 'There was an error loading the datasets. Please try again later.';
+    }
+  });
 
   displayFilters = false;
 

@@ -1,4 +1,4 @@
-@if (!error()) {
+@if (!errorMessage()) {
   <div>
     @if (datasetDetails().accession !== '') {
       <div class="mb-2 flex items-center justify-between">
@@ -504,11 +504,8 @@
   </div>
 } @else {
   <div>
-    <p class="text-error text-2xl">There was an error loading the dataset.</p>
-    @if (error | parseError) {
-      <p class="text-error text-2xl">
-        {{ error | parseError }}
-      </p>
-    }
+    <p class="text-error text-2xl">
+      {{ errorMessage() }}
+    </p>
   </div>
 }
