@@ -442,7 +442,16 @@
                     File location
                   </th>
                   <td mat-cell *matCellDef="let file">
-                    {{ (file.file_information?.storage_alias | storageAlias) || 'N/A' }}
+                    {{
+                      file.file_information?.storage_alias &&
+                      humanReadableStorageAliases()
+                        ? humanReadableStorageAliases()[
+                            file.file_information?.storage_alias
+                          ] || file.file_information?.storage_alias
+                        : file.file_information?.storage_alias
+                          ? file.file_information?.storage_alias
+                          : 'N/A'
+                    }}
                   </td>
                 </ng-container>
 

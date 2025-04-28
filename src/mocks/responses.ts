@@ -13,6 +13,7 @@ import {
   getAccessRequests,
   getDatasetDetails,
   getDatasetSummary,
+  humanReadableStorageAliases,
   metadataGlobalSummary,
   searchResults,
   workPackageResponse,
@@ -143,6 +144,12 @@ export const responses: { [endpoint: string]: ResponseValue } = {
 
   // Patch an access request
   'PATCH /api/ars/access-requests/*': 204,
+
+  /**
+   * WKVS API
+   */
+  // Get human-readable storage aliases
+  'GET /.well-known/alias_decodes': humanReadableStorageAliases,
 
   /**
    * Static assets
