@@ -13,7 +13,7 @@ import {
 } from '@angular/common/http/testing';
 import { ConfigService } from '@app/shared/services/config.service';
 import { emptyStorageLabels } from '../models/well-known-values';
-import { WellKnownValueService } from './well-known-values.service';
+import { WellKnownValueService } from './well-known-value.service';
 
 import { storageLabels } from '@app/../mocks/data';
 

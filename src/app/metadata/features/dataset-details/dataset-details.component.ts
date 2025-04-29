@@ -35,7 +35,7 @@ import { Experiment, File, Sample } from '@app/metadata/models/dataset-details';
 import { ValidateDOI } from '@app/metadata/pipes/validate-doi.pipe';
 import { DatasetInformationService } from '@app/metadata/services/dataset-information.service';
 import { MetadataService } from '@app/metadata/services/metadata.service';
-import { WellKnownValueService } from '@app/metadata/services/well-known-values.service';
+import { WellKnownValueService } from '@app/metadata/services/well-known-value.service';
 import { AddPluralS } from '@app/shared/pipes/add-plural-s.pipe';
 import { ParseBytes } from '@app/shared/pipes/parse-bytes.pipe';
 import { UnderscoreToSpace } from '@app/shared/pipes/underscore-to-space.pipe';

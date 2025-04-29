@@ -442,12 +442,9 @@
                     File location
                   </th>
                   <td mat-cell *matCellDef="let file">
-                    @let decodes = storageLabels();
                     @let storageAlias = file.file_information?.storage_alias;
-                    @if (storageAlias && decodes) {
-                      decodes[storageAlias] || storageAlias
-                    } @else if (storageAlias) {
-                      storageAlias
+                    @if (storageAlias) {
+                      storageLabels()[storageAlias] || storageAlias
                     } @else {
                       'N/A'
                     }

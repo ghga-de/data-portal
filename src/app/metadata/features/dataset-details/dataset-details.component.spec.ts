@@ -31,7 +31,7 @@ import {
   MockAccessRequestService,
 } from '@app/access-requests/services/access-request.service';
 import { AuthService } from '@app/auth/services/auth.service';
-import { WellKnownValueService } from '@app/metadata/services/well-known-values.service';
+import { WellKnownValueService } from '@app/metadata/services/well-known-value.service';
 import { screen } from '@testing-library/angular';
 
 /**
