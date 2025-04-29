@@ -49,7 +49,7 @@ export class MockAuthService {
  */
 export class MockWellKnownValueService {
   storageLabels = {
-    value: () => ({ alias_decodes: { TUE01: 'Tübingen', TUE02: 'Tübingen' } }),
+    value: () => ({ storage_labels: { TUE01: 'Tübingen', TUE02: 'Tübingen' } }),
     isLoading: () => false,
     error: () => undefined,
   };

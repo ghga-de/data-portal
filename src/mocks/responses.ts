@@ -149,7 +149,7 @@ export const responses: { [endpoint: string]: ResponseValue } = {
    * WKVS API
    */
   // Get human-readable storage aliases
-  'GET /.well-known/values/storage_alias_decodes': storageLabels,
+  'GET /.well-known/values/storage_labels': storageLabels,
 
   /**
    * Static assets

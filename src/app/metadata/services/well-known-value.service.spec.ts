@@ -50,20 +50,18 @@ describe('WellKnownValueService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should load the storage alias decodes', async () => {
-    const decodes = service.storageLabels;
-    expect(decodes.isLoading()).toBeTruthy();
-    expect(decodes.error()).toBeUndefined();
-    expect(decodes.value()).toEqual(emptyStorageLabels);
+  it('should load the storage labels', async () => {
+    const labels = service.storageLabels;
+    expect(labels.isLoading()).toBeTruthy();
+    expect(labels.error()).toBeUndefined();
+    expect(labels.value()).toEqual(emptyStorageLabels);
     testBed.flushEffects();
-    const req = httpMock.expectOne(
-      'http://mock.dev/.well-known/values/storage_alias_decodes',
-    );
+    const req = httpMock.expectOne('http://mock.dev/.well-known/values/storage_labels');
     expect(req.request.method).toBe('GET');
     req.flush(storageLabels);
     await Promise.resolve(); // wait for loader to return
-    expect(decodes.isLoading()).toBe(false);
-    expect(decodes.error()).toBeUndefined();
-    expect(decodes.value()).toEqual(storageLabels.storage_labels);
+    expect(labels.isLoading()).toBe(false);
+    expect(labels.error()).toBeUndefined();
+    expect(labels.value()).toEqual(storageLabels.storage_labels);
   });
 });

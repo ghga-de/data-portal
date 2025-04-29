@@ -23,7 +23,7 @@ export class WellKnownValueService {
   #config = inject(ConfigService);
   #wkvsUrl = this.#config.wkvsUrl;
 
-  #storageLabelsUrl = `${this.#wkvsUrl}/storage_alias_decodes`;
+  #storageLabelsUrl = `${this.#wkvsUrl}/storage_labels`;
 
   /**
    * The human-readable storage aliases (empty while loading) as a resource
