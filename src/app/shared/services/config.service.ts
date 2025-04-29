@@ -32,7 +32,7 @@ interface Config {
   default_access_duration_days: number;
   umami_url: string | null;
   umami_website_id: string | null;
-  well_known_value_service: string | null;
+  wkvs_url: string | null;
 }
 
 declare global {
@@ -133,7 +133,7 @@ export class ConfigService {
    * @returns the URL of the well-known value service or the default '/.well-known/values if not configured
    */
   get wkvsUrl(): string {
-    return this.#config.well_known_value_service || '/.well-known/values';
+    return this.#config.wkvs_url || '/.well-known/values';
   }
 
   /**

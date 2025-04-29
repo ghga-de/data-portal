@@ -31,7 +31,7 @@ import {
   MockAccessRequestService,
 } from '@app/access-requests/services/access-request.service';
 import { AuthService } from '@app/auth/services/auth.service';
-import { WellKnownValueService } from '@app/metadata/services/well-known.service';
+import { WellKnownValueService } from '@app/metadata/services/well-known-values.service';
 import { screen } from '@testing-library/angular';
 
 /**
@@ -48,7 +48,7 @@ export class MockAuthService {
  * Mock a basic version of the well-known value service
  */
 export class MockWellKnownValueService {
-  storageAliasDecodes = {
+  storageLabels = {
     value: () => ({ alias_decodes: { TUE01: 'Tübingen', TUE02: 'Tübingen' } }),
     isLoading: () => false,
     error: () => undefined,

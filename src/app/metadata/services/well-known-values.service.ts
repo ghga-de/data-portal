@@ -8,9 +8,10 @@ import { httpResource } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { ConfigService } from '@app/shared/services/config.service';
 import {
-  emptyStorageAliasDecodes,
-  storageAliasDecodes,
-} from '../models/storage-aliases';
+  BaseStorageLabels,
+  emptyStorageLabels,
+  wellKnownValues,
+} from '../models/well-known-values';
 
 /**
  * Well-Known Value query service
@@ -22,17 +23,13 @@ export class WellKnownValueService {
   #config = inject(ConfigService);
   #wkvsUrl = this.#config.wkvsUrl;
 
-  #storageAliasDecodesUrl = `${this.#wkvsUrl}/storage_alias_decodes`;
+  #storageLabelsUrl = `${this.#wkvsUrl}/storage_alias_decodes`;
 
   /**
    * The human-readable storage aliases (empty while loading) as a resource
    */
-  storageAliasDecodes = httpResource<storageAliasDecodes>(
-    this.#storageAliasDecodesUrl,
-    {
-      parse: (raw) =>
-        (raw as { storage_alias_decodes: storageAliasDecodes }).storage_alias_decodes,
-      defaultValue: emptyStorageAliasDecodes,
-    },
-  ).asReadonly();
+  storageLabels = httpResource<wellKnownValues>(this.#storageLabelsUrl, {
+    parse: (raw) => (raw as BaseStorageLabels).storage_labels,
+    defaultValue: emptyStorageLabels,
+  }).asReadonly();
 }

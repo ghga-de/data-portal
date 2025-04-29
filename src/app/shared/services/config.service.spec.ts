@@ -34,7 +34,7 @@ const mockConfig = {
   default_access_duration_days: 365,
   umami_url: null,
   umami_website_id: null,
-  well_known_value_service: null,
+  wkvs_url: null,
 };
 
 describe('ConfigService', () => {

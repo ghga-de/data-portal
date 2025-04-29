@@ -12,10 +12,10 @@ import {
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { ConfigService } from '@app/shared/services/config.service';
-import { emptyStorageAliasDecodes } from '../models/storage-aliases';
-import { WellKnownValueService } from './well-known.service';
+import { emptyStorageLabels } from '../models/well-known-values';
+import { WellKnownValueService } from './well-known-values.service';
 
-import { storageAliasDecodes } from '@app/../mocks/data';
+import { storageLabels } from '@app/../mocks/data';
 
 /**
  * Mock the config service as needed by the metadata service
@@ -42,24 +42,28 @@ describe('WellKnownValueService', () => {
     httpMock = TestBed.inject(HttpTestingController);
   });
 
+  afterEach(() => {
+    httpMock.verify();
+  });
+
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
   it('should load the storage alias decodes', async () => {
-    const decodes = service.storageAliasDecodes;
+    const decodes = service.storageLabels;
     expect(decodes.isLoading()).toBeTruthy();
     expect(decodes.error()).toBeUndefined();
-    expect(decodes.value()).toEqual(emptyStorageAliasDecodes);
+    expect(decodes.value()).toEqual(emptyStorageLabels);
     testBed.flushEffects();
     const req = httpMock.expectOne(
       'http://mock.dev/.well-known/values/storage_alias_decodes',
     );
     expect(req.request.method).toBe('GET');
-    req.flush(storageAliasDecodes);
+    req.flush(storageLabels);
     await Promise.resolve(); // wait for loader to return
     expect(decodes.isLoading()).toBe(false);
     expect(decodes.error()).toBeUndefined();
-    expect(decodes.value()).toEqual(storageAliasDecodes.storage_alias_decodes);
+    expect(decodes.value()).toEqual(storageLabels.storage_labels);
   });
 });

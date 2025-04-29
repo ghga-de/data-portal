@@ -35,7 +35,7 @@ import { Experiment, File, Sample } from '@app/metadata/models/dataset-details';
 import { ValidateDOI } from '@app/metadata/pipes/validate-doi.pipe';
 import { DatasetInformationService } from '@app/metadata/services/dataset-information.service';
 import { MetadataService } from '@app/metadata/services/metadata.service';
-import { WellKnownValueService } from '@app/metadata/services/well-known.service';
+import { WellKnownValueService } from '@app/metadata/services/well-known-values.service';
 import { AddPluralS } from '@app/shared/pipes/add-plural-s.pipe';
 import { ParseBytes } from '@app/shared/pipes/parse-bytes.pipe';
 import { UnderscoreToSpace } from '@app/shared/pipes/underscore-to-space.pipe';
@@ -90,8 +90,8 @@ export class DatasetDetailsComponent implements OnInit, AfterViewInit {
   #datasetDetailsError = this.#datasetDetails.error;
   datasetDetails = this.#datasetDetails.value;
   datasetInformation = this.#dins.datasetInformation.value;
-  #storageAliasDecodes = this.#wkvs.storageAliasDecodes;
-  storageAliasDecodes = this.#storageAliasDecodes.value;
+  #storageLabels = this.#wkvs.storageLabels;
+  storageLabels = this.#storageLabels.value;
 
   errorMessage = computed(() => {
     if (this.#datasetDetailsError()) {
@@ -179,8 +179,8 @@ export class DatasetDetailsComponent implements OnInit, AfterViewInit {
     }
   });
 
-  #storageAliasDecodesErrorEffect = effect(() => {
-    if (this.#wkvs.storageAliasDecodes.error()) {
+  #storageLabelsErrorEffect = effect(() => {
+    if (this.#wkvs.storageLabels.error()) {
       this.#notify.showError('Error fetching storage aliases.');
     }
   });
