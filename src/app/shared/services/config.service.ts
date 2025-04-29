@@ -130,10 +130,10 @@ export class ConfigService {
 
   /**
    * Gets the URL of the well-known value service
-   * @returns the URL of the well-known value service or the default '/.well-known/values if not configured
+   * @returns the URL of the well-known value service or the default '/.well-known if not configured
    */
   get wkvsUrl(): string {
-    return this.#config.wkvs_url || '/.well-known/values';
+    return this.#config.wkvs_url || '/.well-known';
   }
 
   /**

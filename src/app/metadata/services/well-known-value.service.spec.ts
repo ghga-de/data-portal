@@ -21,7 +21,7 @@ import { storageLabels } from '@app/../mocks/data';
  * Mock the config service as needed by the metadata service
  */
 class MockConfigService {
-  wkvsUrl = 'http://mock.dev/.well-known/values';
+  wkvsUrl = 'http://mock.dev/.well-known';
 }
 
 describe('WellKnownValueService', () => {

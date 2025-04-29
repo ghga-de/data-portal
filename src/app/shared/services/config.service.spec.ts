@@ -99,6 +99,6 @@ describe('ConfigService', () => {
   });
 
   it('should provide the default Well-Known Value Service URL', () => {
-    expect(service.wkvsUrl).toBe('/.well-known/values');
+    expect(service.wkvsUrl).toBe('/.well-known');
   });
 });
