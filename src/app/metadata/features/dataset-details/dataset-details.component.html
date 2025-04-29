@@ -444,7 +444,7 @@
                   <td mat-cell *matCellDef="let file">
                     @let storageAlias = file.file_information?.storage_alias;
                     @if (storageAlias) {
-                      storageLabels()[storageAlias] || storageAlias
+                      {{ storageLabels()[storageAlias] || storageAlias }}
                     } @else {
                       'N/A'
                     }
