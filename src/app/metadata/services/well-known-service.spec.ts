@@ -21,7 +21,7 @@ import { storageAliasDecodes } from '@app/../mocks/data';
  * Mock the config service as needed by the metadata service
  */
 class MockConfigService {
-  wkvsUrl = 'http://mock.dev/.well-known';
+  wkvsUrl = 'http://mock.dev/.well-known/values';
 }
 
 describe('WellKnownValueService', () => {
@@ -52,7 +52,9 @@ describe('WellKnownValueService', () => {
     expect(decodes.error()).toBeUndefined();
     expect(decodes.value()).toEqual(emptyStorageAliasDecodes);
     testBed.flushEffects();
-    const req = httpMock.expectOne('http://mock.dev/.well-known/storage_alias_decodes');
+    const req = httpMock.expectOne(
+      'http://mock.dev/.well-known/values/storage_alias_decodes',
+    );
     expect(req.request.method).toBe('GET');
     req.flush(storageAliasDecodes);
     await Promise.resolve(); // wait for loader to return

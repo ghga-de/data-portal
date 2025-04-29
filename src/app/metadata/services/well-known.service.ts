@@ -30,7 +30,8 @@ export class WellKnownValueService {
   storageAliasDecodes = httpResource<storageAliasDecodes>(
     this.#storageAliasDecodesUrl,
     {
-      parse: (raw) => (raw as { alias_decodes: storageAliasDecodes }).alias_decodes,
+      parse: (raw) =>
+        (raw as { storage_alias_decodes: storageAliasDecodes }).storage_alias_decodes,
       defaultValue: emptyStorageAliasDecodes,
     },
   ).asReadonly();
