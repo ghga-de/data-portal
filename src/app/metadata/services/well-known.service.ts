@@ -8,8 +8,8 @@ import { httpResource } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { ConfigService } from '@app/shared/services/config.service';
 import {
-  emptyHumanReadableStorageAliases,
-  HumanReadableStorageAliases,
+  emptyStorageAliasDecodes,
+  storageAliasDecodes,
 } from '../models/storage-aliases';
 
 /**
@@ -22,17 +22,16 @@ export class WellKnownValueService {
   #config = inject(ConfigService);
   #wkvsUrl = this.#config.wkvsUrl;
 
-  #humanReadableStorageAliasesUrl = `${this.#wkvsUrl}/alias_decodes`;
+  #storageAliasDecodesUrl = `${this.#wkvsUrl}/storage_alias_decodes`;
 
   /**
    * The human-readable storage aliases (empty while loading) as a resource
    */
-  humanReadableStorageAliases = httpResource<HumanReadableStorageAliases>(
-    this.#humanReadableStorageAliasesUrl,
+  storageAliasDecodes = httpResource<storageAliasDecodes>(
+    this.#storageAliasDecodesUrl,
     {
-      parse: (raw) =>
-        (raw as { alias_decodes: HumanReadableStorageAliases }).alias_decodes,
-      defaultValue: emptyHumanReadableStorageAliases,
+      parse: (raw) => (raw as { alias_decodes: storageAliasDecodes }).alias_decodes,
+      defaultValue: emptyStorageAliasDecodes,
     },
   ).asReadonly();
 }

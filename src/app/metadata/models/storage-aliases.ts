@@ -4,12 +4,12 @@
  * @license Apache-2.0
  */
 
-export interface HumanReadableStorageAliases {
+export interface storageAliasDecodes {
   [key: string]: string;
 }
 
-export interface BaseHumanReadableStorageAliases {
-  alias_decodes: HumanReadableStorageAliases;
+export interface BaseStorageAliasDecodes {
+  storage_alias_decodes: storageAliasDecodes;
 }
 
-export const emptyHumanReadableStorageAliases: HumanReadableStorageAliases = {};
+export const emptyStorageAliasDecodes: storageAliasDecodes = {};

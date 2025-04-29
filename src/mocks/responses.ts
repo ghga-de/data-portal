@@ -13,9 +13,9 @@ import {
   getAccessRequests,
   getDatasetDetails,
   getDatasetSummary,
-  humanReadableStorageAliases,
   metadataGlobalSummary,
   searchResults,
+  storageAliasDecodes,
   workPackageResponse,
 } from './data';
 
@@ -149,7 +149,7 @@ export const responses: { [endpoint: string]: ResponseValue } = {
    * WKVS API
    */
   // Get human-readable storage aliases
-  'GET /.well-known/alias_decodes': humanReadableStorageAliases,
+  'GET /.well-known/storage_alias_decodes': storageAliasDecodes,
 
   /**
    * Static assets

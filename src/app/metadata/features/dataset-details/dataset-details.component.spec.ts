@@ -48,7 +48,7 @@ export class MockAuthService {
  * Mock a basic version of the well-known value service
  */
 export class MockWellKnownValueService {
-  humanReadableStorageAliases = {
+  storageAliasDecodes = {
     value: () => ({ alias_decodes: { TUE01: 'Tübingen', TUE02: 'Tübingen' } }),
     isLoading: () => false,
     error: () => undefined,

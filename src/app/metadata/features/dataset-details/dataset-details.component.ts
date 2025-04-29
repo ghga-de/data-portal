@@ -90,8 +90,8 @@ export class DatasetDetailsComponent implements OnInit, AfterViewInit {
   #datasetDetailsError = this.#datasetDetails.error;
   datasetDetails = this.#datasetDetails.value;
   datasetInformation = this.#dins.datasetInformation.value;
-  #humanReadableStorageAliases = this.#wkvs.humanReadableStorageAliases;
-  humanReadableStorageAliases = this.#humanReadableStorageAliases.value;
+  #storageAliasDecodes = this.#wkvs.storageAliasDecodes;
+  storageAliasDecodes = this.#storageAliasDecodes.value;
 
   errorMessage = computed(() => {
     if (this.#datasetDetailsError()) {
@@ -179,8 +179,8 @@ export class DatasetDetailsComponent implements OnInit, AfterViewInit {
     }
   });
 
-  #humanReadableStorageAliasesErrorEffect = effect(() => {
-    if (this.#wkvs.humanReadableStorageAliases.error()) {
+  #storageAliasDecodesErrorEffect = effect(() => {
+    if (this.#wkvs.storageAliasDecodes.error()) {
       this.#notify.showError('Error fetching storage aliases.');
     }
   });
