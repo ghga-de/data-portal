@@ -650,15 +650,15 @@ export const workPackageResponse: WorkPackageResponse = {
 
 export const humanReadableStorageAliases: BaseHumanReadableStorageAliases = {
   alias_decodes: {
-    TUE01: 'Tübingen',
-    TUE02: 'Tübingen',
-    TUE03: 'Tübingen',
-    TUE04: 'Tübingen',
-    TUE05: 'Tübingen',
-    HD01: 'Heidelberg',
-    HD02: 'Heidelberg',
-    HD03: 'Heidelberg',
-    HD04: 'Heidelberg',
-    HD05: 'Heidelberg',
+    TUE01: 'Tübingen 1',
+    TUE02: 'Tübingen 2',
+    TUE03: 'Tübingen 3',
+    TUE04: 'Tübingen 4',
+    TUE05: 'Tübingen 5',
+    HD01: 'Heidelberg 1',
+    HD02: 'Heidelberg 2',
+    HD03: 'Heidelberg 3',
+    HD04: 'Heidelberg 4',
+    HD05: 'Heidelberg 5',
   },
 };
