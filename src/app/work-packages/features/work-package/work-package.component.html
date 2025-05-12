@@ -35,7 +35,8 @@
       ><span class="text-sm break-normal text-green-900">{{ token() }}</span></pre>
       <p>Make sure to copy the token now as you will not be able to see this again!</p>
       <p class="mt-8">
-        Your token expires on {{ tokenExpiration() | date: friendlyDateFormat }}
+        Your token expires on
+        <strong>{{ tokenExpiration() | date: friendlyDateFormat }}</strong>
       </p>
     </mat-card-content>
   </mat-card>
