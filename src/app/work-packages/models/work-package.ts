@@ -14,4 +14,6 @@ export interface WorkPackage {
 export interface WorkPackageResponse {
   id: string;
   token: string;
+  created: string;
+  expires: string;
 }

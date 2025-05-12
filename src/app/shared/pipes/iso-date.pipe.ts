@@ -12,7 +12,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 @Pipe({
   name: 'isoDate',
 })
-export class isoDatePipe implements PipeTransform {
+export class IsoDatePipe implements PipeTransform {
   /**
    * The transform method executes the business logic of the Pipe
    * @param date The js Date object or string of the date to convert to an ISO-formatted date
