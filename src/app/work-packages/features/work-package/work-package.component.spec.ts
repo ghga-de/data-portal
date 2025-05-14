@@ -10,10 +10,6 @@ import { datasets } from '@app/../mocks/data';
 import { WorkPackageService } from '@app/work-packages/services/work-package.service';
 import { WorkPackageComponent } from './work-package.component';
 
-import {
-  AccessRequestService,
-  MockAccessRequestService,
-} from '@app/access-requests/services/access-request.service';
 import { screen } from '@testing-library/angular';
 
 /**
@@ -34,10 +30,7 @@ describe('WorkPackageComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [WorkPackageComponent, NoopAnimationsModule],
-      providers: [
-        { provide: WorkPackageService, useClass: MockWorkPackageService },
-        { provide: AccessRequestService, useClass: MockAccessRequestService },
-      ],
+      providers: [{ provide: WorkPackageService, useClass: MockWorkPackageService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(WorkPackageComponent);
