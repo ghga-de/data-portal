@@ -6,6 +6,14 @@
         <th class="pe-1 text-start">Dataset ID:</th>
         <td>{{ data.dataset_id }}</td>
       </tr>
+      @if (data.ticket_id) {
+        <tr>
+          <th class="pe-1 text-start">Relevant Issue:</th>
+          <td>
+            <a [href]="ticket_url()" target="_blank">{{ data.ticket_id }}</a>
+          </td>
+        </tr>
+      }
       <tr>
         <th class="pe-1 text-start">Requester:</th>
         <td>{{ data.full_user_name }}</td>

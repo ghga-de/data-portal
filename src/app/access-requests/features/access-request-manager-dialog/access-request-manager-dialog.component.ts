@@ -87,6 +87,14 @@ export class AccessRequestManagerDialogComponent implements OnInit {
     () => this.data.status === AccessRequestStatus.pending,
   );
 
+  ticket_url: Signal<string | undefined> = computed(() => {
+    if (this.data.ticket_id) {
+      const ticketId = encodeURI(this.data.ticket_id);
+      return `https://youtrack-ghga.dkfz.de/issue/${ticketId}`;
+    }
+    return undefined;
+  });
+
   #ivasErrorEffect = effect(() => {
     if (this.ivasError()) {
       this.#notificationService.showError('Error fetching verification addresses.');
