@@ -36,7 +36,7 @@
       <p>Make sure to copy the token now as you will not be able to see this again!</p>
       <p class="mt-8">
         Your token expires on
-        <strong>{{ tokenExpiration() | date: friendlyDateFormat }}</strong>
+        {{ tokenExpiration() | date: friendlyDateFormat }}.
       </p>
     </mat-card-content>
   </mat-card>

@@ -646,8 +646,7 @@ export const workPackageResponse: WorkPackageResponse = {
   // the encrypted work package token (which can be pretty long)
   token:
     'gumRa5XE1Rm3tOJr3ocfA1F63rRUI2g6eCI0KY2Mv3epb28cZeylvaYsxRmgQRDboE2yOhtE4qxPhZgYz/Y7zR+hssBzq7Hg',
-  created: '2025-01-01T00:00:00',
-  expires: '2026-01-01T00:00:00',
+  expires: '2026-01-01T12:00:00',
 };
 
 export const storageLabels: BaseStorageLabels = {
