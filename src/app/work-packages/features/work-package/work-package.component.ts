@@ -85,6 +85,7 @@ export class WorkPackageComponent {
    */
   selectDataset(id: string): void {
     this.selectedDataset.set(this.datasets.value().find((d) => d.id === id));
+    this.selectedDatasetRequest.set(undefined);
     this.selectedDatasetRequest.set(
       this.grantedRequests().find((x) => x.request.dataset_id === id),
     );
