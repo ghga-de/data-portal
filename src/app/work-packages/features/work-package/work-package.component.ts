@@ -18,6 +18,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterLink } from '@angular/router';
+import { GrantedAccessRequest } from '@app/access-requests/models/access-requests';
+import { AccessRequestService } from '@app/access-requests/services/access-request.service';
 import { NotificationService } from '@app/shared/services/notification.service';
 import { FRIENDLY_DATE_FORMAT } from '@app/shared/utils/date-formats';
 import { getBackendErrorMessage, MaybeBackendError } from '@app/shared/utils/errors';
@@ -55,10 +57,13 @@ export class WorkPackageComponent {
   #clipboard = inject(Clipboard);
   #notify = inject(NotificationService);
   #wpService = inject(WorkPackageService);
+  #arService = inject(AccessRequestService);
 
   datasets = this.#wpService.datasets;
+  grantedRequests = this.#arService.grantedUserAccessRequests;
 
   selectedDataset = signal<Dataset | undefined>(undefined);
+  selectedDatasetRequest = signal<GrantedAccessRequest | undefined>(undefined);
 
   tokenAction = computed<'upload' | 'download' | 'access'>(
     () => this.selectedDataset()?.stage ?? 'access',
@@ -80,6 +85,9 @@ export class WorkPackageComponent {
    */
   selectDataset(id: string): void {
     this.selectedDataset.set(this.datasets.value().find((d) => d.id === id));
+    this.selectedDatasetRequest.set(
+      this.grantedRequests().find((x) => x.request.dataset_id === id),
+    );
   }
 
   /**

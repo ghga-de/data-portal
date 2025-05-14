@@ -125,6 +125,15 @@ export default [
                 ['pipe', { context: 'verification-addresses' }],
               ],
             },
+            // work packages context may import from access requests and IVA context
+            {
+              from: [['features', { context: 'work-packages' }]],
+              allow: [
+                ['service', { context: 'access-requests' }],
+                ['service', { context: 'verification-addresses' }],
+                ['model', { context: 'access-requests' }],
+              ],
+            },
             // main may only import config and main app modules
             {
               from: ['main'],

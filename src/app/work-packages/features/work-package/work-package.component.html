@@ -89,6 +89,13 @@
     <p>
       This dataset has been selected for <strong>{{ dataset.stage }}.</strong>
     </p>
+    @if (selectedDatasetRequest()) {
+      <p>
+        Access expires in {{ selectedDatasetRequest()?.daysRemaining }} days ({{
+          selectedDatasetRequest()?.request?.access_ends | date
+        }})
+      </p>
+    }
     @if (dataset.stage !== 'download') {
       <p class="font-bold text-red-600">Currently we only support download tokens.</p>
     }
