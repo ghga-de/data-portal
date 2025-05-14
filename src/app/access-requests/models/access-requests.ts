@@ -34,7 +34,6 @@ export interface AccessRequest {
   iva_id: null | string;
   internal_note: null | string;
   note_to_requester: null | string;
-  ticket_id: null | string;
 }
 
 export interface GrantedAccessRequest {
