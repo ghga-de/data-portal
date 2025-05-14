@@ -18,6 +18,12 @@
         <th class="pe-1 text-start align-top">Request details:</th>
         <td>{{ data.request_text }}</td>
       </tr>
+      <app-access-request-note
+        [request]="data"
+        [noteTypes]="notes_types"
+        [showAsTable]="true"
+        class="table-row-group"
+      ></app-access-request-note>
     </table>
     <p>
       The request has been made on
@@ -35,51 +41,55 @@
       }}</strong
       >.
     </p>
-    @if (ivasAreLoading()) {
-      <p>Loading verification addresses...</p>
-    } @else if (ivasError() || !ivas().length) {
-      <p>No corresponding verification addresses found, cannot process request.</p>
-    } @else if (!changeable()) {
-      @let iva = associatedIva();
-      @if (iva) {
-        <p>
-          The corresponding verification address is
-          {{ (iva.type | IvaTypePipe).name }}: {{ iva.value }} (<span
-            [class]="(iva.state | IvaStatePipe).class"
-            >{{ (iva.state | IvaStatePipe).name }}</span
-          >).
-        </p>
-      }
-      <p>The status or address of this request cannot be changed any more.</p>
-    } @else {
-      <label for="iva-selection-group" class="text-lg">
-        @if (selectedIvaIdRadioButton()) {
-          If you wish to change the verification address used for this access request,
-          please select it below:
-        } @else {
-          Please select the verification address that should be used to secure the
-          access request:
+    <p class="mb-5">
+      @if (ivasAreLoading()) {
+        <p>Loading verification addresses...</p>
+      } @else if (ivasError() || !ivas().length) {
+        <p>No corresponding verification addresses found, cannot process request.</p>
+      } @else if (!changeable()) {
+        @let iva = associatedIva();
+        @if (iva) {
+          <p>
+            The corresponding verification address is
+            {{ (iva.type | IvaTypePipe).name }}: {{ iva.value }} (<span
+              [class]="(iva.state | IvaStatePipe).class"
+              >{{ (iva.state | IvaStatePipe).name }}</span
+            >).
+          </p>
         }
-      </label>
-      <mat-radio-group [(ngModel)]="selectedIvaIdRadioButton" id="iva-selection-group">
-        <table class="ivas mt-2">
-          @for (iva of ivas(); track iva.id) {
-            <tr class="border-outline border-t-1 border-b-1">
-              <td class="py-1">
-                <mat-radio-button [value]="iva.id">
-                  {{ (iva.type | IvaTypePipe).name }}: {{ iva.value }}
-                </mat-radio-button>
-              </td>
-              <td [class]="(iva.state | IvaStatePipe).class" class="w-40 ps-4">
-                {{ (iva.state | IvaStatePipe).name }}
-              </td>
-            </tr>
+        <p>The status or address of this request cannot be changed any more.</p>
+      } @else {
+        <label for="iva-selection-group" class="text-lg">
+          @if (selectedIvaIdRadioButton()) {
+            If you wish to change the verification address used for this access request,
+            please select it below:
+          } @else {
+            Please select the verification address that should be used to secure the
+            access request:
           }
-        </table>
-      </mat-radio-group>
-    }
-    <br />
-  </mat-dialog-content>
+        </label>
+        <mat-radio-group
+          [(ngModel)]="selectedIvaIdRadioButton"
+          id="iva-selection-group"
+        >
+          <table class="ivas mt-2">
+            @for (iva of ivas(); track iva.id) {
+              <tr class="border-outline border-t-1 border-b-1">
+                <td class="py-1">
+                  <mat-radio-button [value]="iva.id">
+                    {{ (iva.type | IvaTypePipe).name }}: {{ iva.value }}
+                  </mat-radio-button>
+                </td>
+                <td [class]="(iva.state | IvaStatePipe).class" class="w-40 ps-4">
+                  {{ (iva.state | IvaStatePipe).name }}
+                </td>
+              </tr>
+            }
+          </table>
+        </mat-radio-group>
+      }
+      <br /></p
+  ></mat-dialog-content>
   <mat-dialog-actions class="flex gap-x-2 gap-y-4">
     @if (ivasAreLoading() || ivasError() || !ivas().length || !changeable()) {
       <button

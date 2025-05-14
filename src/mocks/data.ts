@@ -465,6 +465,9 @@ export const accessRequests = [
     status: 'denied',
     status_changed: null,
     changed_by: null,
+    internal_note: null,
+    note_to_requester: null,
+    ticket_id: 'GSI-1580',
   },
   {
     id: '4ef4ccac-6c0a-4be6-9637-b33925178cea',
@@ -480,6 +483,9 @@ export const accessRequests = [
     status_changed: '2023-05-19T12:04:03.000Z',
     changed_by: 'doe@test.dev',
     iva_id: 'fc3c0ad8-01a4-4eb1-b8f3-40b04bb4bcb2',
+    internal_note: 'An internal note for the request.',
+    note_to_requester: 'This is a note to the requester.',
+    ticket_id: null,
   },
   {
     id: '4ef4ccac-6c0a-4be6-9637-b339251793fb',
@@ -496,6 +502,9 @@ export const accessRequests = [
     status_changed: '2023-05-19T12:04:03.000Z',
     changed_by: 'doe@test.dev',
     iva_id: '783d9682-d5e5-4ce7-9157-9eeb53a1e9ba',
+    internal_note: 'Allowed by Paul on 2023-05-19.',
+    note_to_requester: null,
+    ticket_id: null,
   },
   {
     id: 'a787d591-4264-4f48-8827-598585db868e',
@@ -510,6 +519,9 @@ export const accessRequests = [
     status: 'denied',
     status_changed: '2023-05-19T12:04:02.000Z',
     changed_by: 'doe@test.dev',
+    internal_note: null,
+    note_to_requester: null,
+    ticket_id: null,
   },
   {
     id: '9409db13-e23e-433e-9afa-544d8f25b720',
@@ -524,6 +536,9 @@ export const accessRequests = [
     status: 'pending',
     status_changed: '2023-05-19T12:04:02.000Z',
     changed_by: 'doe@test.dev',
+    internal_note: 'We need to ask X about this.',
+    note_to_requester: 'Please wait for the approval. Additional steps were required.',
+    ticket_id: 'GSI-1582',
   },
 ];
 
