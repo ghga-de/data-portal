@@ -10,7 +10,16 @@
         <tr>
           <th class="pe-1 text-start">Relevant Issue:</th>
           <td>
-            <a [href]="ticket_url()" target="_blank">{{ data.ticket_id }}</a>
+            <a [href]="ticketUrl()" target="_blank"
+              >{{ data.ticket_id
+              }}<mat-icon
+                role="img"
+                aria-hidden="true"
+                class="mat-icon material-symbols-outlined mat-icon-no-color no-translate h-4 w-4"
+                data-mat-icon-type="font"
+                >open_in_new</mat-icon
+              ></a
+            >
           </td>
         </tr>
       }
