@@ -2,15 +2,11 @@
   <h2 mat-dialog-title>Access Request Detail</h2>
   <mat-dialog-content>
     <table class="detail mb-4 w-full">
-      <tr>
-        <th class="pe-1 text-start">Dataset ID:</th>
-        <td>{{ data.dataset_id }}</td>
-      </tr>
       @if (data.ticket_id) {
         <tr>
           <th class="pe-1 text-start">Relevant Issue:</th>
           <td>
-            <a [href]="ticketUrl()" target="_blank"
+            <a [href]="ticketUrl()" target="_blank" tabindex="-1"
               >{{ data.ticket_id
               }}<mat-icon
                 role="img"
@@ -23,6 +19,11 @@
           </td>
         </tr>
       }
+      <tr>
+        <th class="pe-1 text-start">Dataset ID:</th>
+        <td>{{ data.dataset_id }}</td>
+      </tr>
+
       <tr>
         <th class="pe-1 text-start">Requester:</th>
         <td>{{ data.full_user_name }}</td>
@@ -109,6 +110,7 @@
     } @else {
       <div class="w-full sm:w-auto">
         <button
+          autoFocus
           mat-stroked-button
           class="w-full sm:w-auto"
           (click)="cancel()"
