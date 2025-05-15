@@ -21,6 +21,7 @@ import {
   MatDialogModule,
   MatDialogRef,
 } from '@angular/material/dialog';
+import { MatIcon } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
 import {
   AccessRequest,
@@ -43,11 +44,13 @@ import { AccessRequestNoteComponent } from '../access-request-note/access-reques
  */
 @Component({
   selector: 'app-access-request-manager-dialog',
+  styleUrl: './access-request-manager-dialog.component.scss',
   imports: [
     FormsModule,
     MatDialogModule,
     MatButtonModule,
     MatRadioModule,
+    MatIcon,
     DatePipe,
     AccessRequestStatusClassPipe,
     IvaTypePipe,
@@ -89,6 +92,14 @@ export class AccessRequestManagerDialogComponent implements OnInit {
   changeable: Signal<boolean> = computed(
     () => this.data.status === AccessRequestStatus.pending,
   );
+
+  ticketUrl: Signal<string | undefined> = computed(() => {
+    if (this.data.ticket_id) {
+      const ticketId = encodeURI(this.data.ticket_id);
+      return `https://youtrack-ghga.dkfz.de/issue/${ticketId}`;
+    }
+    return undefined;
+  });
 
   #ivasErrorEffect = effect(() => {
     if (this.ivasError()) {
