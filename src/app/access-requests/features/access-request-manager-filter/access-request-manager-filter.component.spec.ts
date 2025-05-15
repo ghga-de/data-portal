@@ -25,6 +25,9 @@ const mockAccessRequestService = {
     fromDate: undefined,
     toDate: undefined,
     status: undefined,
+    ticketId: undefined,
+    noteToRequester: undefined,
+    internalNote: undefined,
   }),
   setAllAccessRequestsFilter: jest.fn(),
 };
