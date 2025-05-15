@@ -9,11 +9,14 @@ export interface DatasetFile {
   extension: string;
 }
 
-export interface DatasetWithExpiration {
+export interface Dataset {
   id: string;
   title: string;
   description: string;
   stage: 'download' | 'upload';
   files: DatasetFile[];
+}
+
+export interface DatasetWithExpiration extends Dataset {
   expires: string;
 }
