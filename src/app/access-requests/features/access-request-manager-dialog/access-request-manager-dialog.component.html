@@ -7,6 +7,15 @@
         <td>{{ data.dataset_id }}</td>
       </tr>
       <tr>
+        <th class="pe-1 text-start">Status:</th>
+        <td>
+          <strong class="{{ data.status | AccessRequestStatusClassPipe }}">{{
+            data.status
+          }}</strong>
+        </td>
+      </tr>
+
+      <tr>
         <th class="pe-1 text-start">Requester:</th>
         <td>{{ data.full_user_name }}</td>
       </tr>
@@ -34,62 +43,50 @@
       {{ data.access_starts | date: friendlyDateFormat }} until
       {{ data.access_ends | date: friendlyDateFormat }}.
     </p>
-    <p class="mb-5">
-      Access request is currently
-      <strong class="{{ data.status | AccessRequestStatusClassPipe }}">{{
-        data.status
-      }}</strong
-      >.
-    </p>
-    <p class="mb-5">
-      @if (ivasAreLoading()) {
-        <p>Loading verification addresses...</p>
-      } @else if (ivasError() || !ivas().length) {
-        <p>No corresponding verification addresses found, cannot process request.</p>
-      } @else if (!changeable()) {
-        @let iva = associatedIva();
-        @if (iva) {
-          <p>
-            The corresponding verification address is
-            {{ (iva.type | IvaTypePipe).name }}: {{ iva.value }} (<span
-              [class]="(iva.state | IvaStatePipe).class"
-              >{{ (iva.state | IvaStatePipe).name }}</span
-            >).
-          </p>
-        }
-        <p>The status or address of this request cannot be changed any more.</p>
-      } @else {
-        <label for="iva-selection-group" class="text-lg">
-          @if (selectedIvaIdRadioButton()) {
-            If you wish to change the verification address used for this access request,
-            please select it below:
-          } @else {
-            Please select the verification address that should be used to secure the
-            access request:
-          }
-        </label>
-        <mat-radio-group
-          [(ngModel)]="selectedIvaIdRadioButton"
-          id="iva-selection-group"
-        >
-          <table class="ivas mt-2">
-            @for (iva of ivas(); track iva.id) {
-              <tr class="border-outline border-t-1 border-b-1">
-                <td class="py-1">
-                  <mat-radio-button [value]="iva.id">
-                    {{ (iva.type | IvaTypePipe).name }}: {{ iva.value }}
-                  </mat-radio-button>
-                </td>
-                <td [class]="(iva.state | IvaStatePipe).class" class="w-40 ps-4">
-                  {{ (iva.state | IvaStatePipe).name }}
-                </td>
-              </tr>
-            }
-          </table>
-        </mat-radio-group>
+    @if (ivasAreLoading()) {
+      <p>Loading verification addresses...</p>
+    } @else if (ivasError() || !ivas().length) {
+      <p>No corresponding verification addresses found, cannot process request.</p>
+    } @else if (!changeable()) {
+      @let iva = associatedIva();
+      @if (iva) {
+        <p>
+          The corresponding verification address is
+          {{ (iva.type | IvaTypePipe).name }}: {{ iva.value }} (<span
+            [class]="(iva.state | IvaStatePipe).class"
+            >{{ (iva.state | IvaStatePipe).name }}</span
+          >).
+        </p>
       }
-      <br /></p
-  ></mat-dialog-content>
+      <p>The status or address of this request cannot be changed any more.</p>
+    } @else {
+      <label for="iva-selection-group" class="text-lg">
+        @if (selectedIvaIdRadioButton()) {
+          If you wish to change the verification address used for this access request,
+          please select it below:
+        } @else {
+          Please select the verification address that should be used to secure the
+          access request:
+        }
+      </label>
+      <mat-radio-group [(ngModel)]="selectedIvaIdRadioButton" id="iva-selection-group">
+        <table class="ivas mt-2">
+          @for (iva of ivas(); track iva.id) {
+            <tr class="border-outline border-t-1 border-b-1">
+              <td class="py-1">
+                <mat-radio-button [value]="iva.id">
+                  {{ (iva.type | IvaTypePipe).name }}: {{ iva.value }}
+                </mat-radio-button>
+              </td>
+              <td [class]="(iva.state | IvaStatePipe).class" class="w-40 ps-4">
+                {{ (iva.state | IvaStatePipe).name }}
+              </td>
+            </tr>
+          }
+        </table>
+      </mat-radio-group>
+    }
+  </mat-dialog-content>
   <mat-dialog-actions class="flex gap-x-2 gap-y-4">
     @if (ivasAreLoading() || ivasError() || !ivas().length || !changeable()) {
       <button
