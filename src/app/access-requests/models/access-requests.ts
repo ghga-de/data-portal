@@ -32,6 +32,9 @@ export interface AccessRequest {
   status_changed: null | string;
   changed_by: null | string;
   iva_id: null | string;
+  ticket_id: null | string;
+  internal_note: null | string;
+  note_to_requester: null | string;
 }
 
 export interface GrantedAccessRequest {
@@ -55,4 +58,7 @@ export interface AccessRequestFilter {
   fromDate: Date | undefined;
   toDate: Date | undefined;
   status: AccessRequestStatus | undefined;
+  ticketId: string | undefined;
+  noteToRequester: string | undefined;
+  internalNote: string | undefined;
 }
