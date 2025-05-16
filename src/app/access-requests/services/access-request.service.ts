@@ -209,11 +209,15 @@ export class AccessRequestService {
       }
       const requestText = filter.requestText?.trim().toLowerCase();
       if (requestText) {
-        requests = requests.filter((ar) => ar.request_text === requestText);
+        requests = requests.filter((ar) =>
+          ar.request_text.toLowerCase().includes(requestText),
+        );
       }
       const ticketId = filter.ticketId?.trim().toLowerCase();
       if (ticketId) {
-        requests = requests.filter((ar) => ar.ticket_id === ticketId);
+        requests = requests.filter((ar) =>
+          ar.ticket_id?.toLowerCase().includes(ticketId),
+        );
       }
       const noteToRequester = filter.noteToRequester?.trim().toLowerCase();
       if (noteToRequester) {
