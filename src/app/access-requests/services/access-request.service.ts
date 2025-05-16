@@ -138,6 +138,7 @@ export class AccessRequestService {
         fromDate: undefined,
         toDate: undefined,
         status: AccessRequestStatus.pending,
+        requestText: '',
         ticketId: '',
         noteToRequester: '',
         internalNote: '',
@@ -155,6 +156,7 @@ export class AccessRequestService {
         filter.fromDate ||
         filter.toDate ||
         filter.status ||
+        filter.requestText ||
         filter.ticketId ||
         filter.noteToRequester ||
         filter.internalNote
@@ -204,6 +206,10 @@ export class AccessRequestService {
       }
       if (filter.status) {
         requests = requests.filter((ar) => ar.status === filter.status);
+      }
+      const requestText = filter.requestText?.trim().toLowerCase();
+      if (requestText) {
+        requests = requests.filter((ar) => ar.request_text === requestText);
       }
       const ticketId = filter.ticketId?.trim().toLowerCase();
       if (ticketId) {
