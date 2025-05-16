@@ -32,9 +32,9 @@ export interface AccessRequest {
   status_changed: null | string;
   changed_by: null | string;
   iva_id: null | string;
-  ticket_id: null | string;
   internal_note: null | string;
   note_to_requester: null | string;
+  ticket_id: null | string;
 }
 
 export interface GrantedAccessRequest {
@@ -61,4 +61,10 @@ export interface AccessRequestFilter {
   ticketId: string | undefined;
   noteToRequester: string | undefined;
   internalNote: string | undefined;
+}
+
+export enum NotesTypeSelection {
+  internalNote = 'internalNote',
+  noteToRequester = 'noteToRequester',
+  both = 'both',
 }

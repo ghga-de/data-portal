@@ -21,10 +21,12 @@ import {
   MatDialogModule,
   MatDialogRef,
 } from '@angular/material/dialog';
+import { MatIcon } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
 import {
   AccessRequest,
   AccessRequestStatus,
+  NotesTypeSelection,
 } from '@app/access-requests/models/access-requests';
 import { AccessRequestStatusClassPipe } from '@app/access-requests/pipes/access-request-status-class.pipe';
 import { ConfirmationService } from '@app/shared/services/confirmation.service';
@@ -34,6 +36,7 @@ import { Iva, IvaState } from '@app/verification-addresses/models/iva';
 import { IvaStatePipe } from '@app/verification-addresses/pipes/iva-state.pipe';
 import { IvaTypePipe } from '@app/verification-addresses/pipes/iva-type.pipe';
 import { IvaService } from '@app/verification-addresses/services/iva.service';
+import { AccessRequestNoteComponent } from '../access-request-note/access-request-note.component';
 
 /**
  * The dialog component used for managing access requests in the access request manager.
@@ -41,15 +44,18 @@ import { IvaService } from '@app/verification-addresses/services/iva.service';
  */
 @Component({
   selector: 'app-access-request-manager-dialog',
+  styleUrl: './access-request-manager-dialog.component.scss',
   imports: [
     FormsModule,
     MatDialogModule,
     MatButtonModule,
     MatRadioModule,
+    MatIcon,
     DatePipe,
     AccessRequestStatusClassPipe,
     IvaTypePipe,
     IvaStatePipe,
+    AccessRequestNoteComponent,
   ],
   providers: [IvaTypePipe],
   templateUrl: './access-request-manager-dialog.component.html',
@@ -87,6 +93,14 @@ export class AccessRequestManagerDialogComponent implements OnInit {
     () => this.data.status === AccessRequestStatus.pending,
   );
 
+  ticketUrl: Signal<string | undefined> = computed(() => {
+    if (this.data.ticket_id) {
+      const ticketId = encodeURI(this.data.ticket_id);
+      return `https://youtrack-ghga.dkfz.de/issue/${ticketId}`;
+    }
+    return undefined;
+  });
+
   #ivasErrorEffect = effect(() => {
     if (this.ivasError()) {
       this.#notificationService.showError('Error fetching verification addresses.');
@@ -98,6 +112,7 @@ export class AccessRequestManagerDialogComponent implements OnInit {
       this.#preSelectIvaRadioButton();
     }
   });
+  notes_types: NotesTypeSelection = NotesTypeSelection.both;
 
   /**
    * Get the display name for the IVA type
