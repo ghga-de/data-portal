@@ -4,7 +4,7 @@
  * @license Apache-2.0
  */
 
-import { DatasetDetails } from '@app/metadata/models/dataset-details';
+import { DatasetDetailsRaw } from '@app/metadata/models/dataset-details';
 import { DatasetInformation } from '@app/metadata/models/dataset-information';
 import { DatasetSummary } from '@app/metadata/models/dataset-summary';
 import { BaseGlobalSummary } from '@app/metadata/models/global-summary';
@@ -190,7 +190,7 @@ export const datasetSummary: DatasetSummary = {
   },
 };
 
-export const datasetDetails: DatasetDetails = {
+export const datasetDetails: DatasetDetailsRaw = {
   accession: 'GHGAD12345678901234',
   title: 'Test dataset for details',
   description:
@@ -318,24 +318,45 @@ export const datasetDetails: DatasetDetails = {
       title: 'Text Experiment 1',
       description:
         'Test Experiment 1. Sagittis purus sit amet volutpat. Tellus cras adipiscing enim eu turpis egestas pretium. Vitae suscipit tellus mauris a diam maecenas sed enim ut. Vulputate enim nulla aliquet porttitor lacus luctus. Egestas sed sed risus pretium quam vulputate dignissim. Netus et malesuada fames ac turpis egestas maecenas. Nisl condimentum id venenatis a condimentum vitae sapien. Commodo quis imperdiet massa tincidunt nunc pulvinar sapien et. Vitae sapien pellentesque habitant morbi tristique senectus. Leo vel fringilla est ullamcorper eget nulla. Tempus egestas sed sed risus.',
-      experiment_method: {
-        accession: 'GHGAEM12345678901234',
-        name: 'DNA-Seq',
-        type: 'Experiment Method 1',
-        instrument_model: 'Experiment Platform 1',
-      },
+      experiment_method: 'GHGAEM12345678901234',
     },
     {
       accession: 'GHGAE12345678901235',
       ega_accession: 'EGAE12345678902',
       title: 'Text Experiment 2',
       description: 'Test Experiment 2. Sagittis purus sit amet volutpat.',
-      experiment_method: {
-        accession: 'GHGAEM12345678901235',
-        name: 'RNA-Seq',
-        type: 'Experiment Method 2',
-        instrument_model: 'Experiment Platform 2',
-      },
+      experiment_method: 'GHGAEM12345678901235',
+    },
+  ],
+  experiment_methods: [
+    {
+      accession: 'GHGAEM12345678901234',
+      name: 'DNA-Seq',
+      type: 'Experiment Method 1',
+      instrument_model: 'Experiment Platform 1',
+    },
+    {
+      accession: 'GHGAEM12345678901235',
+      name: 'RNA-Seq',
+      type: 'Experiment Method 2',
+      instrument_model: 'Experiment Platform 2',
+    },
+  ],
+  individuals: [
+    {
+      accession: 'GHGAI12345678901234',
+      sex: 'FEMALE',
+      phenotypic_features_terms: ['Test phenotypic feature 1'],
+    },
+    {
+      accession: 'GHGAI12345678901235',
+      sex: 'MALE',
+      phenotypic_features_terms: ['Test phenotypic feature 2'],
+    },
+    {
+      accession: 'GHGAI12345678901236',
+      phenotypic_features_terms: ['Test phenotypic feature 3'],
+      sex: 'FEMALE',
     },
   ],
   samples: [
@@ -346,11 +367,8 @@ export const datasetDetails: DatasetDetails = {
         'Test Sample 1. Vivamus arcu felis bibendum ut. Eget mi proin sed libero enim. Metus dictum at tempor commodo ullamcorper a lacus. Tincidunt tortor aliquam nulla facilisi cras. Nullam vehicula ipsum a arcu. Malesuada proin libero nunc consequat. Purus faucibus ornare suspendisse sed nisi lacus sed viverra tellus. Elementum eu facilisis sed odio morbi quis. Condimentum id venenatis a condimentum vitae sapien pellentesque habitant. Purus sit amet volutpat consequat mauris nunc. Ultricies mi quis hendrerit dolor magna eget est lorem. Fermentum leo vel orci porta non pulvinar. Integer malesuada nunc vel risus commodo viverra maecenas.',
       name: 'Test anatomical entity',
       case_control_status: 'Test control status',
-      individual: {
-        sex: 'Female',
-        phenotypic_features_terms: ['Test phenotypic feature 1'],
-      },
-      biospecimen_type: 'Test biospeciment type 1',
+      individual: 'GHGAI12345678901234',
+      biospecimen_type: 'Test biospecimen type 1',
       biospecimen_tissue_term: 'Test tissue',
     },
     {
@@ -359,11 +377,8 @@ export const datasetDetails: DatasetDetails = {
       description: 'Test Sample 2. Vivamus arcu felis bibendum ut.',
       name: 'Test anatomical entity 2',
       case_control_status: 'Test control status 2',
-      individual: {
-        sex: 'Male',
-        phenotypic_features_terms: ['Test phenotypic feature 2'],
-      },
-      biospecimen_type: 'Test biospeciment type 2',
+      individual: 'GHGAI12345678901235',
+      biospecimen_type: 'Test biospecimen type 2',
       biospecimen_tissue_term: 'Test tissue 2',
     },
     {
@@ -372,11 +387,8 @@ export const datasetDetails: DatasetDetails = {
       description: 'Test Sample 3. Vivamus arcu felis bibendum ut.',
       name: 'Test anatomical entity 3',
       case_control_status: 'Test control status 3',
-      individual: {
-        sex: 'Female',
-        phenotypic_features_terms: ['Test phenotypic feature 3'],
-      },
-      biospecimen_type: 'Test biospeciment type 3',
+      individual: 'GHGAI12345678901236',
+      biospecimen_type: 'Test biospecimen type 3',
       biospecimen_tissue_term: 'Test tissue 3',
     },
   ],
