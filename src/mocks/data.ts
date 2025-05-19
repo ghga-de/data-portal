@@ -412,7 +412,7 @@ export const searchResults: SearchResults = {
     {
       id_: 'GHGAD12345678901234',
       content: {
-        alias: 'EGAD12345678901',
+        ega_accession: 'EGAD12345678901',
         title:
           'Test dataset for details and this is also testing whether two lines of text actually appear correctly on the expansion panel headers or not at least at a resolution of one thousand nine hundred and twenty pixels wide',
       },
@@ -420,14 +420,14 @@ export const searchResults: SearchResults = {
     {
       id_: 'GHGAD12345678901235',
       content: {
-        alias: 'EGAD12345678902',
+        ega_accession: 'EGAD12345678902',
         title: 'Test dataset for details',
       },
     },
     {
       id_: 'GHGAD12345678901236',
       content: {
-        alias: 'EGAD12345678903',
+        ega_accession: 'EGAD12345678903',
         title:
           'Test dataset for details and this is also testing whether more than two lines of text actually appear correctly on the expansion panel headers or not at least at a resolution of one thousand nine hundred and twenty pixels wide especially since this can cause issues with the layout of the expansion panels',
       },
