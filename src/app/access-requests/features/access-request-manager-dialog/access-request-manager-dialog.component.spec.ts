@@ -12,6 +12,10 @@ import { accessRequests, allIvasOfDoe } from '@app/../mocks/data';
 import { IvaService } from '@app/verification-addresses/services/iva.service';
 import { AccessRequestManagerDialogComponent } from './access-request-manager-dialog.component';
 
+import {
+  AccessRequestService,
+  MockAccessRequestService,
+} from '@app/access-requests/services/access-request.service';
 import { screen } from '@testing-library/angular';
 
 /**
@@ -35,6 +39,7 @@ describe('AccessRequestManagerDialogComponent', () => {
       imports: [AccessRequestManagerDialogComponent],
       providers: [
         { provide: IvaService, useClass: MockIvaService },
+        { provide: AccessRequestService, useClass: MockAccessRequestService },
         {
           provide: MAT_DIALOG_DATA,
           useValue: { ...accessRequests[0], status: 'pending' },

@@ -256,14 +256,15 @@ export class AccessRequestService {
    * Currently, we can only set the status, and the selected IVA,
    * other fields like the access dates cannot be modified here.
    * This method also updates the local state if the modification was successful.
-   * @param accessRequest - the access request with the new status
+   * @param accessRequestId - the access request ID
+   * @param patchData - the data to be patched (status, notes, validity period)
    * @returns An observable that emits null when the request has been processed
    */
-  processRequest(accessRequest: AccessRequest): Observable<null> {
-    const { id, iva_id, status } = accessRequest;
+  processRequest(accessRequestId: string, patchData: any): Observable<null> {
+    const id = accessRequestId;
     return this.#http
-      .patch<null>(`${this.#arsEndpointUrl}/${id}`, { iva_id, status })
-      .pipe(tap(() => this.#updateAccessRequestLocally(accessRequest)));
+      .patch<null>(`${this.#arsEndpointUrl}/${id}`, { patchData })
+      .pipe(tap(() => this.#updateAccessRequestLocally(patchData)));
   }
 }
 

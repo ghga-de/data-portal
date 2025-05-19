@@ -16,12 +16,14 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatChipsModule } from '@angular/material/chips';
 import {
   MAT_DIALOG_DATA,
   MatDialogModule,
   MatDialogRef,
 } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import {
   AccessRequest,
@@ -29,6 +31,7 @@ import {
   NotesTypeSelection,
 } from '@app/access-requests/models/access-requests';
 import { AccessRequestStatusClassPipe } from '@app/access-requests/pipes/access-request-status-class.pipe';
+import { AccessRequestService } from '@app/access-requests/services/access-request.service';
 import { ConfirmationService } from '@app/shared/services/confirmation.service';
 import { NotificationService } from '@app/shared/services/notification.service';
 import { FRIENDLY_DATE_FORMAT } from '@app/shared/utils/date-formats';
@@ -56,6 +59,8 @@ import { AccessRequestNoteComponent } from '../access-request-note/access-reques
     IvaTypePipe,
     IvaStatePipe,
     AccessRequestNoteComponent,
+    MatChipsModule,
+    MatInputModule,
   ],
   providers: [IvaTypePipe],
   templateUrl: './access-request-manager-dialog.component.html',
@@ -65,6 +70,7 @@ export class AccessRequestManagerDialogComponent implements OnInit {
   readonly data = inject<AccessRequest>(MAT_DIALOG_DATA);
   readonly friendlyDateFormat = FRIENDLY_DATE_FORMAT;
   #ivaService = inject(IvaService);
+  #accessRequestService = inject(AccessRequestService);
   #confirmationService = inject(ConfirmationService);
   #notificationService = inject(NotificationService);
 
@@ -76,6 +82,10 @@ export class AccessRequestManagerDialogComponent implements OnInit {
   #ivaTypePipe = inject(IvaTypePipe);
 
   selectedIvaIdRadioButton = model<string | undefined>(undefined);
+
+  showEditTicketId = false;
+
+  editedTicketId: string | null = null;
 
   /**
    * Get the IVA associated with the access request.
@@ -232,5 +242,35 @@ export class AccessRequestManagerDialogComponent implements OnInit {
       }
     }
     return ivaId;
+  }
+
+  /**
+   * Handle all the processes needed for the handling of the editing of the ticket id
+   * @param action the action that we are currently doing (show the edit field, cancel edit, or save the edit)
+   */
+  handleEditTicketId(action: string) {
+    switch (action) {
+      case 'show':
+        this.showEditTicketId = true;
+        this.editedTicketId = this.data.ticket_id;
+        break;
+
+      case 'cancel':
+        this.showEditTicketId = false;
+        this.editedTicketId = this.data.ticket_id;
+        break;
+
+      case 'save':
+        this.showEditTicketId = false;
+        this.data.ticket_id = this.editedTicketId;
+        this.#accessRequestService.processRequest(this.data.id, {
+          ticket_id: this.editedTicketId,
+        });
+        this.editedTicketId = null;
+        break;
+
+      default:
+        break;
+    }
   }
 }

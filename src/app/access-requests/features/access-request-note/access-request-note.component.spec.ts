@@ -10,6 +10,10 @@ import { AccessRequestNoteComponent } from './access-request-note.component';
 
 import { accessRequests } from '@app/../mocks/data';
 import { NotesTypeSelection } from '@app/access-requests/models/access-requests';
+import {
+  AccessRequestService,
+  MockAccessRequestService,
+} from '@app/access-requests/services/access-request.service';
 
 describe('AccessRequestNoteComponent', () => {
   let component: AccessRequestNoteComponent;
@@ -20,7 +24,9 @@ describe('AccessRequestNoteComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AccessRequestNoteComponent],
-      providers: [],
+      providers: [
+        { provide: AccessRequestService, useClass: MockAccessRequestService },
+      ],
     }).compileComponents();
 
     empty_fixture = TestBed.createComponent(AccessRequestNoteComponent);
