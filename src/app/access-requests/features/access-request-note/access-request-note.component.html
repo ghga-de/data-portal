@@ -1,80 +1,72 @@
 @if (showAsTable) {
-  @if (showNoteToRequester()) {
-    <tr>
-      <th class="pe-1 text-start">Note to Requester:</th>
-      <td class="flex items-center">
-        <span [hidden]="showEditNoteToRequester" class="grow">{{
-          request.note_to_requester
-        }}</span
-        ><mat-chip
-          (click)="handleEditNoteToRequester('show')"
-          [hidden]="showEditNoteToRequester"
-          class="smaller-chip interactive-chip edit-button ms-2"
-          ><mat-icon class="scale-[0.75]">edit</mat-icon>
-        </mat-chip>
-        <mat-form-field [hidden]="!showEditNoteToRequester" class="grow">
-          <mat-label>Note to requester</mat-label>
-          <textarea
-            matInput
-            [(ngModel)]="editedNoteToRequester"
-            class="min-h-20"
-          ></textarea>
-        </mat-form-field>
-        <mat-chip
-          class="smaller-chip interactive-chip cancel-edit-button mx-2"
-          [hidden]="!showEditNoteToRequester"
-          (click)="handleEditNoteToRequester('cancel')"
-        >
-          <mat-icon>close</mat-icon>
-        </mat-chip>
-        <mat-chip
-          class="smaller-chip interactive-chip save-edit-button"
-          [hidden]="!showEditNoteToRequester"
-          (click)="handleEditNoteToRequester('save')"
-        >
-          <mat-icon>check</mat-icon>
-        </mat-chip>
-      </td>
-    </tr>
-  }
-  @if (showInternalNote()) {
-    <tr>
-      <th class="pe-1 text-start">Internal Note:</th>
-      <td class="flex items-center">
-        <span [hidden]="showEditInternalNote" class="grow">{{
-          request.internal_note
-        }}</span
-        ><mat-chip
-          (click)="handleEditInternalNote('show')"
-          [hidden]="showEditInternalNote"
-          class="smaller-chip interactive-chip edit-button ms-2"
-          ><mat-icon class="scale-[0.75]">edit</mat-icon>
-        </mat-chip>
-        <mat-form-field [hidden]="!showEditInternalNote" class="grow">
-          <mat-label>Internal note</mat-label>
-          <textarea
-            matInput
-            [(ngModel)]="editedInternalNote"
-            class="min-h-20"
-          ></textarea>
-        </mat-form-field>
-        <mat-chip
-          class="smaller-chip interactive-chip cancel-edit-button mx-2"
-          [hidden]="!showEditInternalNote"
-          (click)="handleEditInternalNote('cancel')"
-        >
-          <mat-icon>close</mat-icon>
-        </mat-chip>
-        <mat-chip
-          class="smaller-chip interactive-chip save-edit-button"
-          [hidden]="!showEditInternalNote"
-          (click)="handleEditInternalNote('save')"
-        >
-          <mat-icon>check</mat-icon>
-        </mat-chip>
-      </td>
-    </tr>
-  }
+  <tr>
+    <th class="pe-1 text-start">Note to Requester:</th>
+    <td class="flex items-center">
+      <span [hidden]="showEditNoteToRequester" class="grow">{{
+        request.note_to_requester
+      }}</span
+      ><mat-chip
+        (click)="handleEditNoteToRequester('show')"
+        [hidden]="showEditNoteToRequester"
+        class="smaller-chip interactive-chip edit-button ms-2"
+        ><mat-icon class="scale-[0.75]">edit</mat-icon>
+      </mat-chip>
+      <mat-form-field [hidden]="!showEditNoteToRequester" class="grow">
+        <mat-label>Note to requester</mat-label>
+        <textarea
+          matInput
+          [(ngModel)]="editedNoteToRequester"
+          class="min-h-20"
+        ></textarea>
+      </mat-form-field>
+      <mat-chip
+        class="smaller-chip interactive-chip cancel-edit-button mx-2"
+        [hidden]="!showEditNoteToRequester"
+        (click)="handleEditNoteToRequester('cancel')"
+      >
+        <mat-icon>close</mat-icon>
+      </mat-chip>
+      <mat-chip
+        class="smaller-chip interactive-chip save-edit-button"
+        [hidden]="!showEditNoteToRequester"
+        (click)="handleEditNoteToRequester('save')"
+      >
+        <mat-icon>check</mat-icon>
+      </mat-chip>
+    </td>
+  </tr>
+  <tr>
+    <th class="pe-1 text-start">Internal Note:</th>
+    <td class="flex items-center">
+      <span [hidden]="showEditInternalNote" class="grow">{{
+        request.internal_note
+      }}</span
+      ><mat-chip
+        (click)="handleEditInternalNote('show')"
+        [hidden]="showEditInternalNote"
+        class="smaller-chip interactive-chip edit-button ms-2"
+        ><mat-icon class="scale-[0.75]">edit</mat-icon>
+      </mat-chip>
+      <mat-form-field [hidden]="!showEditInternalNote" class="grow">
+        <mat-label>Internal note</mat-label>
+        <textarea matInput [(ngModel)]="editedInternalNote" class="min-h-20"></textarea>
+      </mat-form-field>
+      <mat-chip
+        class="smaller-chip interactive-chip cancel-edit-button mx-2"
+        [hidden]="!showEditInternalNote"
+        (click)="handleEditInternalNote('cancel')"
+      >
+        <mat-icon>close</mat-icon>
+      </mat-chip>
+      <mat-chip
+        class="smaller-chip interactive-chip save-edit-button"
+        [hidden]="!showEditInternalNote"
+        (click)="handleEditInternalNote('save')"
+      >
+        <mat-icon>check</mat-icon>
+      </mat-chip>
+    </td>
+  </tr>
 } @else {
   @if (showNoteToRequester()) {
     <p><span class="font-bold">Note: </span>{{ request.note_to_requester }}</p>
