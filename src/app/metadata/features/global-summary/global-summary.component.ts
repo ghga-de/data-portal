@@ -4,10 +4,11 @@
  * @license Apache-2.0
  */
 
-import { Component, computed, effect, inject } from '@angular/core';
+import { Component, computed, effect, inject, Signal } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { FileStatsModel } from '@app/metadata/models/global-summary';
 import { MetadataStatsService } from '@app/metadata/services/metadata-stats.service';
 import { UnderscoreToSpace } from '@app/shared/pipes/underscore-to-space.pipe';
 import { NotificationService } from '@app/shared/services/notification.service';
@@ -47,5 +48,25 @@ export class GlobalSummaryComponent {
   datasets = computed(() => this.stats().Dataset);
   methods = computed(() => this.stats().ExperimentMethod);
   individuals = computed(() => this.stats().Individual);
-  files = computed(() => this.stats().ProcessDataFile);
+  files: Signal<FileStatsModel> = computed(() => {
+    let fileCount = 0;
+    const formats: { value: string; count: number }[] = [];
+    Object.entries(this.stats())
+      .filter(([key]) => key.endsWith('File'))
+      .forEach(([, fileSummary]) => {
+        fileCount += fileSummary.count;
+        fileSummary.stats.format.forEach((x: any) => {
+          let found = formats.find((y) => y.value === x.value);
+          if (found) {
+            found.count += x.count;
+          } else {
+            formats.push(x);
+          }
+        });
+      });
+    return {
+      count: fileCount,
+      stats: formats.length > 0 ? { format: formats } : undefined,
+    };
+  });
 }
