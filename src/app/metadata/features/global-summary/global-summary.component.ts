@@ -8,7 +8,7 @@ import { Component, computed, effect, inject, Signal } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { FileStatsModel } from '@app/metadata/models/global-summary';
+import { FileStats, ValueCount } from '@app/metadata/models/global-summary';
 import { MetadataStatsService } from '@app/metadata/services/metadata-stats.service';
 import { UnderscoreToSpace } from '@app/shared/pipes/underscore-to-space.pipe';
 import { NotificationService } from '@app/shared/services/notification.service';
@@ -48,25 +48,34 @@ export class GlobalSummaryComponent {
   datasets = computed(() => this.stats().Dataset);
   methods = computed(() => this.stats().ExperimentMethod);
   individuals = computed(() => this.stats().Individual);
-  files: Signal<FileStatsModel> = computed(() => {
+  files: Signal<FileStats> = computed(() => this.getFiles());
+
+  /**
+   * Aggregates file statistics from the individual file stats in the global summary.
+   * @returns The aggregated file statistics from all file stats.
+   */
+  getFiles(): FileStats {
     let fileCount = 0;
-    const formats: { value: string; count: number }[] = [];
+    const formats = new Map();
     Object.entries(this.stats())
       .filter(([key]) => key.endsWith('File'))
       .forEach(([, fileSummary]) => {
         fileCount += fileSummary.count;
-        fileSummary.stats.format.forEach((x: any) => {
-          let found = formats.find((y) => y.value === x.value);
+        fileSummary.stats.format.forEach((x: ValueCount) => {
+          let found = formats.get(x.value);
           if (found) {
-            found.count += x.count;
+            formats.set(x.value, x.count + found);
           } else {
-            formats.push(x);
+            formats.set(x.value, x.count);
           }
         });
       });
+    const formatsDict: ValueCount[] = Array.from(formats.entries()).map(
+      ([value, count]) => ({ value, count }),
+    );
     return {
       count: fileCount,
-      stats: formats.length > 0 ? { format: formats } : undefined,
+      stats: formatsDict.length > 0 ? { format: formatsDict } : undefined,
     };
-  });
+  }
 }
