@@ -55,27 +55,24 @@ export class GlobalSummaryComponent {
    * @returns The aggregated file statistics from all file stats.
    */
   #getFiles(): FileStats {
-    let fileCount = 0;
-    const formats = new Map();
+    let totalCount = 0;
+    const totalFormats: Map<string, number> = new Map();
     Object.entries(this.stats())
       .filter(([key]) => key.endsWith('File'))
-      .forEach(([, fileSummary]) => {
-        fileCount += fileSummary.count;
-        fileSummary.stats.format.forEach((x: ValueCount) => {
-          let found = formats.get(x.value);
-          if (found) {
-            formats.set(x.value, x.count + found);
-          } else {
-            formats.set(x.value, x.count);
-          }
-        });
+      .forEach(([, value]) => {
+        const fileStats = value as FileStats;
+        totalCount += fileStats.count;
+        const format = fileStats.stats?.format || [];
+        format.forEach(({ value, count }) =>
+          totalFormats.set(value, (totalFormats.get(value) || 0) + count),
+        );
       });
-    const formatsDict: ValueCount[] = Array.from(formats.entries()).map(
+    const format: ValueCount[] = Array.from(totalFormats.entries()).map(
       ([value, count]) => ({ value, count }),
     );
     return {
-      count: fileCount,
-      stats: formatsDict.length > 0 ? { format: formatsDict } : undefined,
+      count: totalCount,
+      stats: format ? { format } : undefined,
     };
   }
 }
