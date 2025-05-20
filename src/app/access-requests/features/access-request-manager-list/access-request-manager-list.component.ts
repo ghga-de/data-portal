@@ -15,11 +15,13 @@ import {
   ViewChildren,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { AccessRequest } from '@app/access-requests/models/access-requests';
 import { AccessRequestStatusClassPipe } from '@app/access-requests/pipes/access-request-status-class.pipe';
+import { ParseTicketIdPipe } from '@app/access-requests/pipes/parse-ticket-id.pipe';
 import { AccessRequestService } from '@app/access-requests/services/access-request.service';
 import { NotificationService } from '@app/shared/services/notification.service';
 import { AccessRequestManagerDialogComponent } from '../access-request-manager-dialog/access-request-manager-dialog.component';
@@ -38,6 +40,8 @@ import { AccessRequestManagerDialogComponent } from '../access-request-manager-d
     MatPaginatorModule,
     DatePipe,
     AccessRequestStatusClassPipe,
+    ParseTicketIdPipe,
+    MatIconModule,
   ],
   templateUrl: './access-request-manager-list.component.html',
   styleUrl: './access-request-manager-list.component.scss',
@@ -61,6 +65,8 @@ export class AccessRequestManagerListComponent implements AfterViewInit {
 
   #accessRequestSortingAccessor = (ar: AccessRequest, key: string) => {
     switch (key) {
+      case 'ticket':
+        return ar.ticket_id || '';
       case 'dataset':
         return ar.dataset_id;
       case 'user':

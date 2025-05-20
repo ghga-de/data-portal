@@ -31,6 +31,7 @@ import {
   NotesTypeSelection,
 } from '@app/access-requests/models/access-requests';
 import { AccessRequestStatusClassPipe } from '@app/access-requests/pipes/access-request-status-class.pipe';
+import { ParseTicketIdPipe } from '@app/access-requests/pipes/parse-ticket-id.pipe';
 import { AccessRequestService } from '@app/access-requests/services/access-request.service';
 import { ConfirmationService } from '@app/shared/services/confirmation.service';
 import { NotificationService } from '@app/shared/services/notification.service';
@@ -40,6 +41,14 @@ import { IvaStatePipe } from '@app/verification-addresses/pipes/iva-state.pipe';
 import { IvaTypePipe } from '@app/verification-addresses/pipes/iva-type.pipe';
 import { IvaService } from '@app/verification-addresses/services/iva.service';
 import { AccessRequestNoteComponent } from '../access-request-note/access-request-note.component';
+
+export interface EditDictionary {
+  name: 'ticket_id' | 'note_to_requester' | 'internal_note';
+  show: boolean;
+  editedValue: string | null;
+}
+
+export type EditActionType = 'show' | 'cancel' | 'save';
 
 /**
  * The dialog component used for managing access requests in the access request manager.
@@ -61,8 +70,9 @@ import { AccessRequestNoteComponent } from '../access-request-note/access-reques
     AccessRequestNoteComponent,
     MatChipsModule,
     MatInputModule,
+    ParseTicketIdPipe,
   ],
-  providers: [IvaTypePipe],
+  providers: [IvaTypePipe, ParseTicketIdPipe],
   templateUrl: './access-request-manager-dialog.component.html',
 })
 export class AccessRequestManagerDialogComponent implements OnInit {
@@ -80,12 +90,11 @@ export class AccessRequestManagerDialogComponent implements OnInit {
   ivasError = this.#ivas.error;
 
   #ivaTypePipe = inject(IvaTypePipe);
+  #parseTicketId = inject(ParseTicketIdPipe);
 
   selectedIvaIdRadioButton = model<string | undefined>(undefined);
 
-  showEditTicketId = false;
-
-  editedTicketId: string | null = null;
+  editTicketId: EditDictionary = { name: 'ticket_id', show: false, editedValue: null };
 
   /**
    * Get the IVA associated with the access request.
@@ -102,14 +111,6 @@ export class AccessRequestManagerDialogComponent implements OnInit {
   changeable: Signal<boolean> = computed(
     () => this.data.status === AccessRequestStatus.pending,
   );
-
-  ticketUrl: Signal<string | undefined> = computed(() => {
-    if (this.data.ticket_id) {
-      const ticketId = encodeURI(this.data.ticket_id);
-      return `https://youtrack-ghga.dkfz.de/issue/${ticketId}`;
-    }
-    return undefined;
-  });
 
   #ivasErrorEffect = effect(() => {
     if (this.ivasError()) {
@@ -245,31 +246,35 @@ export class AccessRequestManagerDialogComponent implements OnInit {
   }
 
   /**
-   * Handle all the processes needed for the handling of the editing of the ticket id
-   * @param action the action that we are currently doing (show the edit field, cancel edit, or save the edit)
+   * Handles the editing of certain fields in the access request manager dialog.
+   * @param action The action to perform as a string literal with options 'show', 'cancel', or 'save'.
+   * @param editDictionary The dictionary object of the field being edited.
    */
-  handleEditTicketId(action: string) {
+  handleEdit(action: EditActionType, editDictionary: EditDictionary) {
     switch (action) {
       case 'show':
-        this.showEditTicketId = true;
-        this.editedTicketId = this.data.ticket_id;
+        editDictionary.show = true;
+        editDictionary.editedValue = this.data[editDictionary.name] as string | null;
         break;
 
       case 'cancel':
-        this.showEditTicketId = false;
-        this.editedTicketId = this.data.ticket_id;
+        editDictionary.show = false;
+        editDictionary.editedValue = null;
         break;
 
       case 'save':
-        this.showEditTicketId = false;
-        this.data.ticket_id = this.editedTicketId;
+        if (editDictionary.name === 'ticket_id' && editDictionary.editedValue) {
+          editDictionary.editedValue = this.#parseTicketId.transform(
+            editDictionary.editedValue,
+            false,
+          );
+        }
+        editDictionary.show = false;
+        this.data[editDictionary.name] = editDictionary.editedValue as string;
         this.#accessRequestService.processRequest(this.data.id, {
-          ticket_id: this.editedTicketId,
+          [editDictionary.name]: editDictionary.editedValue,
         });
-        this.editedTicketId = null;
-        break;
-
-      default:
+        editDictionary.editedValue = null;
         break;
     }
   }

@@ -2,52 +2,50 @@
   <h2 mat-dialog-title>Access Request Detail</h2>
   <mat-dialog-content>
     <table class="detail mb-4 w-full">
-      @if (data.ticket_id) {
-        <tr>
-          <th class="pe-1 text-start">Relevant Issue:</th>
-          <td class="flex items-center">
-            <a
-              [href]="ticketUrl()"
-              target="_blank"
-              tabindex="-1"
-              [hidden]="showEditTicketId"
-              class="grow"
-              >{{ data.ticket_id
-              }}<mat-icon
-                role="img"
-                aria-hidden="true"
-                class="mat-icon material-symbols-outlined mat-icon-no-color no-translate h-4 w-4"
-                data-mat-icon-type="font"
-                >open_in_new</mat-icon
-              ></a
-            >
-            <mat-chip
-              (click)="handleEditTicketId('show')"
-              [hidden]="showEditTicketId"
-              class="smaller-chip interactive-chip edit-button ms-2"
-              ><mat-icon class="scale-[0.75]">edit</mat-icon>
-            </mat-chip>
-            <mat-form-field [hidden]="!showEditTicketId" class="grow">
-              <mat-label>Internal ticket ID</mat-label>
-              <input matInput [(ngModel)]="editedTicketId" />
-            </mat-form-field>
-            <mat-chip
-              class="smaller-chip interactive-chip cancel-edit-button mx-2"
-              [hidden]="!showEditTicketId"
-              (click)="handleEditTicketId('cancel')"
-            >
-              <mat-icon>close</mat-icon>
-            </mat-chip>
-            <mat-chip
-              class="smaller-chip interactive-chip save-edit-button"
-              [hidden]="!showEditTicketId"
-              (click)="handleEditTicketId('save')"
-            >
-              <mat-icon>check</mat-icon>
-            </mat-chip>
-          </td>
-        </tr>
-      }
+      <tr>
+        <th class="pe-1 text-start">Helpdesk Ticket ID:</th>
+        <td class="flex items-center">
+          <a
+            [href]="this.data.ticket_id | parseTicketId"
+            target="_blank"
+            tabindex="-1"
+            [hidden]="editTicketId.show"
+            class="grow"
+            >{{ data.ticket_id ? data.ticket_id : 'None. Go to Helpdesk'
+            }}<mat-icon
+              role="img"
+              aria-hidden="true"
+              class="mat-icon material-symbols-outlined mat-icon-no-color no-translate h-4 w-4"
+              data-mat-icon-type="font"
+              >open_in_new</mat-icon
+            ></a
+          >
+          <mat-chip
+            (click)="handleEdit('show', editTicketId)"
+            [hidden]="editTicketId.show"
+            class="smaller-chip interactive-chip edit-button ms-2"
+            ><mat-icon class="scale-[0.75]">edit</mat-icon>
+          </mat-chip>
+          <mat-form-field [hidden]="!editTicketId.show" class="grow">
+            <mat-label>Internal ticket ID</mat-label>
+            <input matInput [(ngModel)]="editTicketId.editedValue" />
+          </mat-form-field>
+          <mat-chip
+            class="smaller-chip interactive-chip cancel-edit-button mx-2"
+            [hidden]="!editTicketId.show"
+            (click)="handleEdit('cancel', editTicketId)"
+          >
+            <mat-icon>close</mat-icon>
+          </mat-chip>
+          <mat-chip
+            class="smaller-chip interactive-chip save-edit-button"
+            [hidden]="!editTicketId.show"
+            (click)="handleEdit('save', editTicketId)"
+          >
+            <mat-icon>check</mat-icon>
+          </mat-chip>
+        </td>
+      </tr>
       <tr>
         <th class="pe-1 text-start">Dataset ID:</th>
         <td>{{ data.dataset_id }}</td>
@@ -77,6 +75,7 @@
         [request]="data"
         [noteTypes]="notes_types"
         [showAsTable]="true"
+        [handleEdit]="handleEdit"
         class="table-row-group"
       ></app-access-request-note>
     </table>
@@ -106,7 +105,7 @@
       }
       <p>The status or address of this request cannot be changed any more.</p>
     } @else {
-      <label for="iva-selection-group" class="text-lg">
+      <label for="iva-selection-group">
         @if (selectedIvaIdRadioButton()) {
           If you wish to change the verification address used for this access request,
           please select it below:
