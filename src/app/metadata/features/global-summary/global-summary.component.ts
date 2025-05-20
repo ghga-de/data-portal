@@ -48,13 +48,13 @@ export class GlobalSummaryComponent {
   datasets = computed(() => this.stats().Dataset);
   methods = computed(() => this.stats().ExperimentMethod);
   individuals = computed(() => this.stats().Individual);
-  files: Signal<FileStats> = computed(() => this.getFiles());
+  files: Signal<FileStats> = computed(() => this.#getFiles());
 
   /**
    * Aggregates file statistics from the individual file stats in the global summary.
    * @returns The aggregated file statistics from all file stats.
    */
-  getFiles(): FileStats {
+  #getFiles(): FileStats {
     let fileCount = 0;
     const formats = new Map();
     Object.entries(this.stats())
