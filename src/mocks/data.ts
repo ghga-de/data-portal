@@ -94,12 +94,46 @@ export const getDatasetDetails = (accession: string) => ({
 
 export const metadataGlobalSummary: BaseGlobalSummary = {
   resource_stats: {
+    AnalysisMethodSupportingFile: {
+      count: 5,
+      stats: {
+        format: [{ value: 'txt', count: 5 }],
+      },
+    },
+    ExperimentMethodSupportingFile: {
+      count: 19,
+      stats: {
+        format: [
+          { value: 'txt', count: 7 },
+          { value: 'bam', count: 12 },
+        ],
+      },
+    },
+    IndividualSupportingFile: {
+      count: 25,
+      stats: {
+        format: [
+          { value: 'fastq', count: 1 },
+          { value: 'bam', count: 7 },
+          { value: 'zip', count: 17 },
+        ],
+      },
+    },
     ProcessDataFile: {
       count: 532,
       stats: {
         format: [
           { value: 'fastq', count: 124 },
           { value: 'bam', count: 408 },
+        ],
+      },
+    },
+    ResearchDataFile: {
+      count: 122,
+      stats: {
+        format: [
+          { value: 'fastq', count: 87 },
+          { value: 'bam', count: 35 },
         ],
       },
     },
