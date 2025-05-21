@@ -4,9 +4,9 @@
     <table class="detail mb-4 w-full">
       @if (data.ticket_id) {
         <tr>
-          <th class="pe-1 text-start">Relevant Issue:</th>
+          <th class="pe-1 text-start">Relevant issue:</th>
           <td>
-            <a class="underline" [href]="ticketUrl()" target="_blank" tabindex="-1"
+            <a [href]="ticketUrl()" target="_blank" tabindex="-1"
               >{{ data.ticket_id
               }}<mat-icon
                 role="img"
@@ -22,11 +22,7 @@
       <tr>
         <th class="pe-1 text-start">Dataset ID:</th>
         <td>
-          <a
-            class="underline"
-            [href]="'/dataset/' + data.dataset_id"
-            target="_blank"
-            tabindex="-1"
+          <a [href]="'/dataset/' + data.dataset_id" target="_blank" tabindex="-1"
             >{{ data.dataset_id
             }}<mat-icon
               role="img"
@@ -52,7 +48,7 @@
       </tr>
       <tr></tr>
       <tr>
-        <th class="pe-1 text-start align-top">Dataset Title:</th>
+        <th class="pe-1 text-start align-top">Dataset title:</th>
         <td>{{ data.dataset_title }}</td>
       </tr>
       <tr></tr>
@@ -61,7 +57,7 @@
         <td>{{ data.full_user_name }}</td>
       </tr>
       <tr>
-        <th class="w-32 pe-1 text-start">Contact e-Mail:</th>
+        <th class="w-32 pe-1 text-start">Contact e-mail:</th>
         <td>
           <a class="underline" [href]="'mailto:' + data.email" tabindex="-1">{{
             data.email
