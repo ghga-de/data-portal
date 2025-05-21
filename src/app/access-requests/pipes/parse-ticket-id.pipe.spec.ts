@@ -47,4 +47,22 @@ describe('ParseTicketId', () => {
     const result = pipe.transform('https://test.com/GSI-1138/THX-1138', false);
     expect(result).toBe('GSI-1138');
   });
+
+  it('should return GSI-1138 for the URL http://test.com/GSI-1138/THX-1138 and WithBaseUrl set to false', () => {
+    const pipe = new ParseTicketIdPipe();
+    const result = pipe.transform('https://test.com/GSI-1138/THX-1138', false);
+    expect(result).toBe('GSI-1138');
+  });
+
+  it('should return test for the random string "test" and WithBaseUrl set to false', () => {
+    const pipe = new ParseTicketIdPipe();
+    const result = pipe.transform('test', false);
+    expect(result).toBe('test');
+  });
+
+  it('should return https://youtrack-ghga.dkfz.de/issue/test for the random string "test"', () => {
+    const pipe = new ParseTicketIdPipe();
+    const result = pipe.transform('test');
+    expect(result).toBe('https://youtrack-ghga.dkfz.de/issue/test');
+  });
 });
