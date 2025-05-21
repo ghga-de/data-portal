@@ -26,7 +26,7 @@ export class ParseTicketIdPipe implements PipeTransform {
       try {
         const ticketUrl = new URL(ticketId).pathname.split('/');
         ticketId = ticketUrl.at(-2) as string;
-        if (ticketUrl.at(-2) === 'issue') ticketId = ticketUrl.at(-1) as string;
+        if (ticketId === 'issue') ticketId = ticketUrl.at(-1) as string;
       } catch {
         return 'https://youtrack-ghga.dkfz.de/';
       }
