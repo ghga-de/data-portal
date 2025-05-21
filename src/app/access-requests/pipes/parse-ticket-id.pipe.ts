@@ -4,7 +4,7 @@
  * @license Apache-2.0
  */
 
-import { Pipe, PipeTransform } from '@angular/core';
+import { Injectable, Pipe, PipeTransform } from '@angular/core';
 
 /**
  * This pipe is used to parse a helpdesk ticket ID and convert it to a clean URL.
@@ -12,6 +12,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 @Pipe({
   name: 'parseTicketId',
 })
+@Injectable({ providedIn: 'root' })
 export class ParseTicketIdPipe implements PipeTransform {
   /**
    * Transforms a Helpdesk ticket ID into a clean URL.

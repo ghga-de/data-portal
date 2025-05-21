@@ -32,6 +32,7 @@ import {
 } from '@app/access-requests/models/access-requests';
 import { AccessRequestStatusClassPipe } from '@app/access-requests/pipes/access-request-status-class.pipe';
 import { ParseTicketIdPipe } from '@app/access-requests/pipes/parse-ticket-id.pipe';
+import { AccessRequestFieldEditService } from '@app/access-requests/services/access-request-field-edit.service';
 import { AccessRequestService } from '@app/access-requests/services/access-request.service';
 import { ConfirmationService } from '@app/shared/services/confirmation.service';
 import { NotificationService } from '@app/shared/services/notification.service';
@@ -72,7 +73,7 @@ export type EditActionType = 'show' | 'cancel' | 'save';
     MatInputModule,
     ParseTicketIdPipe,
   ],
-  providers: [IvaTypePipe, ParseTicketIdPipe],
+  providers: [IvaTypePipe],
   templateUrl: './access-request-manager-dialog.component.html',
 })
 export class AccessRequestManagerDialogComponent implements OnInit {
@@ -90,11 +91,22 @@ export class AccessRequestManagerDialogComponent implements OnInit {
   ivasError = this.#ivas.error;
 
   #ivaTypePipe = inject(IvaTypePipe);
-  #parseTicketId = inject(ParseTicketIdPipe);
+
+  editNotesAndTicket = inject(AccessRequestFieldEditService);
 
   selectedIvaIdRadioButton = model<string | undefined>(undefined);
 
   editTicketId: EditDictionary = { name: 'ticket_id', show: false, editedValue: null };
+  editNoteToRequester: EditDictionary = {
+    name: 'note_to_requester',
+    show: false,
+    editedValue: null,
+  };
+  editInternalNote: EditDictionary = {
+    name: 'internal_note',
+    show: false,
+    editedValue: null,
+  };
 
   /**
    * Get the IVA associated with the access request.
@@ -184,6 +196,51 @@ export class AccessRequestManagerDialogComponent implements OnInit {
   }
 
   /**
+   * Checks if the user has pending changes before proceeding with a status change.
+   * If there are unsaved edits, prompts the user to confirm discarding them before proceeding.
+   * @param action String literal specifying the desired status change.
+   */
+  saveBeforeStatusChange(action: 'deny' | 'allow'): void {
+    if (
+      (this.editTicketId.editedValue &&
+        this.editTicketId.editedValue !== this.data.ticket_id) ||
+      (this.editNoteToRequester.editedValue &&
+        this.editNoteToRequester.editedValue !== this.data.note_to_requester) ||
+      (this.editInternalNote.editedValue &&
+        this.editInternalNote.editedValue !== this.data.internal_note)
+    ) {
+      console.log(this.editNoteToRequester.editedValue !== this.data.note_to_requester);
+      this.#confirmationService.confirm({
+        title: 'Unsaved changes',
+        message: 'Do you want to discard your changes?',
+        cancelText: 'Cancel',
+        confirmText: 'Discard Changes',
+        confirmClass: 'danger',
+        callback: (discardConfirmed) => {
+          if (discardConfirmed) {
+            this.editNotesAndTicket.handleEdit('cancel', this.editTicketId, this.data);
+            this.editNotesAndTicket.handleEdit(
+              'cancel',
+              this.editNoteToRequester,
+              this.data,
+            );
+            this.editNotesAndTicket.handleEdit(
+              'cancel',
+              this.editInternalNote,
+              this.data,
+            );
+            if (action === 'allow') this.safeAllow();
+            else this.safeDeny();
+          }
+        },
+      });
+    } else {
+      if (action === 'allow') this.safeAllow();
+      else this.safeDeny();
+    }
+  }
+
+  /**
    * Allow the access request and close the dialog.
    */
   #allowRequestAndCloseDialog = () => {
@@ -243,39 +300,5 @@ export class AccessRequestManagerDialogComponent implements OnInit {
       }
     }
     return ivaId;
-  }
-
-  /**
-   * Handles the editing of certain fields in the access request manager dialog.
-   * @param action The action to perform as a string literal with options 'show', 'cancel', or 'save'.
-   * @param editDictionary The dictionary object of the field being edited.
-   */
-  handleEdit(action: EditActionType, editDictionary: EditDictionary) {
-    switch (action) {
-      case 'show':
-        editDictionary.show = true;
-        editDictionary.editedValue = this.data[editDictionary.name] as string | null;
-        break;
-
-      case 'cancel':
-        editDictionary.show = false;
-        editDictionary.editedValue = null;
-        break;
-
-      case 'save':
-        if (editDictionary.name === 'ticket_id' && editDictionary.editedValue) {
-          editDictionary.editedValue = this.#parseTicketId.transform(
-            editDictionary.editedValue,
-            false,
-          );
-        }
-        editDictionary.show = false;
-        this.data[editDictionary.name] = editDictionary.editedValue as string;
-        this.#accessRequestService.processRequest(this.data.id, {
-          [editDictionary.name]: editDictionary.editedValue,
-        });
-        editDictionary.editedValue = null;
-        break;
-    }
   }
 }
