@@ -17,13 +17,13 @@ dins_url: /api/dins
 mass_url: /api/mass
 metldata_url: /api/metldata
 wps_url: /api/wps
+wkvs_url: null
+
+ribbon_text: 'Development v$v'
+max_facet_options: 7
 
 oidc_client_id: ghga-dev-client
 oidc_authority_url: https://login.aai.lifescience-ri.eu/oidc/
 
-ribbon_text: 'Development v$v'
-
 umami_url: null
 umami_website_id: null
-
-wkvs_url: null
