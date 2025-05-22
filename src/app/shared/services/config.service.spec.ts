@@ -35,6 +35,7 @@ const mockConfig = {
   umami_url: null,
   umami_website_id: null,
   wkvs_url: null,
+  helpdesk_url: 'https://helpdesk.test',
 };
 
 describe('ConfigService', () => {
@@ -100,5 +101,9 @@ describe('ConfigService', () => {
 
   it('should provide the default Well-Known Value Service URL', () => {
     expect(service.wkvsUrl).toBe('/.well-known');
+  });
+
+  it('should provide the helpdesk URL', () => {
+    expect(service.helpdesk_url).toBe('https://helpdesk.test/');
   });
 });

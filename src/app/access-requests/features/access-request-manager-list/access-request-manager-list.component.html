@@ -15,7 +15,7 @@
           Ticket ID
         </th>
         <td mat-cell *matCellDef="let ar">
-          {{ (ar.ticket_id | parseTicketId: false) || 'N/A' }}
+          {{ (ar.ticket_id | RemoveUrlFromTicketId) || 'N/A' }}
         </td>
       </ng-container>
       <ng-container matColumnDef="dataset">

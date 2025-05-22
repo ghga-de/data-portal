@@ -6,12 +6,13 @@
 
 /* eslint-disable boundaries/element-types */
 import { inject, Injectable } from '@angular/core';
+import { NotificationService } from '@app/shared/services/notification.service';
 import {
+  EditableFieldInfo,
   EditActionType,
-  EditDictionary,
 } from '../features/access-request-manager-dialog/access-request-manager-dialog.component';
 import { AccessRequest } from '../models/access-requests';
-import { ParseTicketIdPipe } from '../pipes/parse-ticket-id.pipe';
+import { RemoveUrlFromTicketId } from '../pipes/remove-url-from-ticket-id.pipe';
 import { AccessRequestService } from './access-request.service';
 
 /**
@@ -20,7 +21,8 @@ import { AccessRequestService } from './access-request.service';
 @Injectable({ providedIn: 'root' })
 export class AccessRequestFieldEditService {
   #accessRequestService = inject(AccessRequestService);
-  #parseTicketId = inject(ParseTicketIdPipe);
+  #parseTicketId = inject(RemoveUrlFromTicketId);
+  #notificationService = inject(NotificationService);
 
   /**
    * Handles the editing of certain fields in the access request manager dialog.
@@ -30,7 +32,7 @@ export class AccessRequestFieldEditService {
    */
   handleEdit(
     action: EditActionType,
-    editDictionary: EditDictionary,
+    editDictionary: EditableFieldInfo,
     ar: AccessRequest,
   ) {
     switch (action) {
@@ -47,17 +49,28 @@ export class AccessRequestFieldEditService {
       case 'save':
         let editedValue = editDictionary.editedValue;
         if (editDictionary.name === 'ticket_id' && editDictionary.editedValue) {
-          editedValue = this.#parseTicketId.transform(
-            editDictionary.editedValue,
-            false,
-          );
+          editedValue = this.#parseTicketId.transform(editDictionary.editedValue);
         }
         editDictionary.show = false;
-        ar[editDictionary.name] = editedValue as string;
-        this.#accessRequestService.processRequest(ar.id, {
-          [editDictionary.name]: editedValue,
-        });
-        editDictionary.editedValue = null;
+        this.#accessRequestService
+          .patchRequest(ar.id, {
+            [editDictionary.name]: editedValue,
+          })
+          .subscribe({
+            next: () => {
+              this.#notificationService.showSuccess(
+                `Access request was successfully modified.`,
+              );
+              editDictionary.editedValue = null;
+            },
+            error: (err) => {
+              console.debug(err);
+              this.#notificationService.showError(
+                'Access request could not be modified. Please try again later',
+              );
+              editDictionary.show = true;
+            },
+          });
         break;
     }
   }

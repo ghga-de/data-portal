@@ -236,35 +236,47 @@ export class AccessRequestService {
   });
 
   /**
-   * Update the lists of access requests locally
-   * @param accessRequest - the access request that has been modified
+   * Update the lists of access requests locally.
+   * @param accessRequestId - The access request ID.
+   * @param patchData - The data to modify as a key-value pair.
    */
-  #updateAccessRequestLocally(accessRequest: AccessRequest): void {
+  #updateAccessRequestLocally(accessRequestId: string, patchData: any): void {
     const update = (accessRequests: AccessRequest[]) =>
-      accessRequests.map((ar) => (ar.id === accessRequest.id ? accessRequest : ar));
+      accessRequests.map((ar) => {
+        if (ar.id === accessRequestId) {
+          Object.entries(patchData).forEach(([key, value]) => {
+            if (key === 'status') {
+              ar.status = value as AccessRequestStatus;
+            } else {
+              (ar as any)[key] = value;
+            }
+          });
+          return ar;
+        } else return ar;
+      });
 
-    accessRequest.status_changed = new Date().toISOString();
-    accessRequest.changed_by = this.#auth.user()?.id || null;
+    if (patchData.status) {
+      patchData.status_changed = new Date().toISOString();
+      patchData.changed_by = this.#auth.user()?.id || null;
+    }
 
     this.userAccessRequests.value.set(update(this.userAccessRequests.value()));
     this.allAccessRequests.value.set(update(this.allAccessRequests.value()));
   }
 
   /**
-   * Process an access request, i.e. approve or disapprove it.
+   * Patch an access request, i.e. change status, duration, notes, ticket ID.
    * This can only be done by a data steward.
-   * Currently, we can only set the status, and the selected IVA,
-   * other fields like the access dates cannot be modified here.
    * This method also updates the local state if the modification was successful.
    * @param accessRequestId - the access request ID
-   * @param patchData - the data to be patched (status, notes, validity period)
+   * @param patchData - the data to be patched (status, notes, ticket ID, validity period)
    * @returns An observable that emits null when the request has been processed
    */
-  processRequest(accessRequestId: string, patchData: any): Observable<null> {
+  patchRequest(accessRequestId: string, patchData: any): Observable<null> {
     const id = accessRequestId;
     return this.#http
       .patch<null>(`${this.#arsEndpointUrl}/${id}`, { patchData })
-      .pipe(tap(() => this.#updateAccessRequestLocally(patchData)));
+      .pipe(tap(() => this.#updateAccessRequestLocally(accessRequestId, patchData)));
   }
 }
 

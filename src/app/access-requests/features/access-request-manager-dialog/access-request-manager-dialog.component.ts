@@ -12,6 +12,7 @@ import {
   inject,
   model,
   OnInit,
+  signal,
   Signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -28,12 +29,11 @@ import { MatRadioModule } from '@angular/material/radio';
 import {
   AccessRequest,
   AccessRequestStatus,
-  NotesTypeSelection,
 } from '@app/access-requests/models/access-requests';
 import { AccessRequestStatusClassPipe } from '@app/access-requests/pipes/access-request-status-class.pipe';
-import { ParseTicketIdPipe } from '@app/access-requests/pipes/parse-ticket-id.pipe';
+import { RemoveUrlFromTicketId } from '@app/access-requests/pipes/remove-url-from-ticket-id.pipe';
 import { AccessRequestFieldEditService } from '@app/access-requests/services/access-request-field-edit.service';
-import { AccessRequestService } from '@app/access-requests/services/access-request.service';
+import { ConfigService } from '@app/shared/services/config.service';
 import { ConfirmationService } from '@app/shared/services/confirmation.service';
 import { NotificationService } from '@app/shared/services/notification.service';
 import { FRIENDLY_DATE_FORMAT } from '@app/shared/utils/date-formats';
@@ -41,9 +41,9 @@ import { Iva, IvaState } from '@app/verification-addresses/models/iva';
 import { IvaStatePipe } from '@app/verification-addresses/pipes/iva-state.pipe';
 import { IvaTypePipe } from '@app/verification-addresses/pipes/iva-type.pipe';
 import { IvaService } from '@app/verification-addresses/services/iva.service';
-import { AccessRequestNoteComponent } from '../access-request-note/access-request-note.component';
+import { AccessRequestNotesEditComponent } from '../access-request-notes-edit/access-request-notes-edit.component';
 
-export interface EditDictionary {
+export interface EditableFieldInfo {
   name: 'ticket_id' | 'note_to_requester' | 'internal_note';
   show: boolean;
   editedValue: string | null;
@@ -68,10 +68,10 @@ export type EditActionType = 'show' | 'cancel' | 'save';
     AccessRequestStatusClassPipe,
     IvaTypePipe,
     IvaStatePipe,
-    AccessRequestNoteComponent,
+    AccessRequestNotesEditComponent,
     MatChipsModule,
     MatInputModule,
-    ParseTicketIdPipe,
+    RemoveUrlFromTicketId,
   ],
   providers: [IvaTypePipe],
   templateUrl: './access-request-manager-dialog.component.html',
@@ -81,9 +81,11 @@ export class AccessRequestManagerDialogComponent implements OnInit {
   readonly data = inject<AccessRequest>(MAT_DIALOG_DATA);
   readonly friendlyDateFormat = FRIENDLY_DATE_FORMAT;
   #ivaService = inject(IvaService);
-  #accessRequestService = inject(AccessRequestService);
   #confirmationService = inject(ConfirmationService);
   #notificationService = inject(NotificationService);
+
+  #configService = inject(ConfigService);
+  helpdeskUrl = this.#configService.helpdesk_url;
 
   #ivas = this.#ivaService.userIvas;
   ivas = this.#ivas.value;
@@ -96,17 +98,21 @@ export class AccessRequestManagerDialogComponent implements OnInit {
 
   selectedIvaIdRadioButton = model<string | undefined>(undefined);
 
-  editTicketId: EditDictionary = { name: 'ticket_id', show: false, editedValue: null };
-  editNoteToRequester: EditDictionary = {
+  editTicketId: Signal<EditableFieldInfo> = signal({
+    name: 'ticket_id',
+    show: false,
+    editedValue: null,
+  });
+  editNoteToRequester: Signal<EditableFieldInfo> = signal({
     name: 'note_to_requester',
     show: false,
     editedValue: null,
-  };
-  editInternalNote: EditDictionary = {
+  });
+  editInternalNote: Signal<EditableFieldInfo> = signal({
     name: 'internal_note',
     show: false,
     editedValue: null,
-  };
+  });
 
   /**
    * Get the IVA associated with the access request.
@@ -135,7 +141,6 @@ export class AccessRequestManagerDialogComponent implements OnInit {
       this.#preSelectIvaRadioButton();
     }
   });
-  notes_types: NotesTypeSelection = NotesTypeSelection.both;
 
   /**
    * Get the display name for the IVA type
@@ -202,14 +207,16 @@ export class AccessRequestManagerDialogComponent implements OnInit {
    */
   saveBeforeStatusChange(action: 'deny' | 'allow'): void {
     if (
-      (this.editTicketId.editedValue &&
-        this.editTicketId.editedValue !== this.data.ticket_id) ||
-      (this.editNoteToRequester.editedValue &&
-        this.editNoteToRequester.editedValue !== this.data.note_to_requester) ||
-      (this.editInternalNote.editedValue &&
-        this.editInternalNote.editedValue !== this.data.internal_note)
+      (this.editTicketId().editedValue &&
+        this.editTicketId().editedValue !== this.data.ticket_id) ||
+      (this.editNoteToRequester().editedValue &&
+        this.editNoteToRequester().editedValue !== this.data.note_to_requester) ||
+      (this.editInternalNote().editedValue &&
+        this.editInternalNote().editedValue !== this.data.internal_note)
     ) {
-      console.log(this.editNoteToRequester.editedValue !== this.data.note_to_requester);
+      console.log(
+        this.editNoteToRequester().editedValue !== this.data.note_to_requester,
+      );
       this.#confirmationService.confirm({
         title: 'Unsaved changes',
         message: 'Do you want to discard your changes?',
@@ -218,15 +225,19 @@ export class AccessRequestManagerDialogComponent implements OnInit {
         confirmClass: 'danger',
         callback: (discardConfirmed) => {
           if (discardConfirmed) {
-            this.editNotesAndTicket.handleEdit('cancel', this.editTicketId, this.data);
             this.editNotesAndTicket.handleEdit(
               'cancel',
-              this.editNoteToRequester,
+              this.editTicketId(),
               this.data,
             );
             this.editNotesAndTicket.handleEdit(
               'cancel',
-              this.editInternalNote,
+              this.editNoteToRequester(),
+              this.data,
+            );
+            this.editNotesAndTicket.handleEdit(
+              'cancel',
+              this.editInternalNote(),
               this.data,
             );
             if (action === 'allow') this.safeAllow();

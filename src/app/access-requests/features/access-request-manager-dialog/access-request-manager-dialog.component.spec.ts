@@ -16,6 +16,7 @@ import {
   AccessRequestService,
   MockAccessRequestService,
 } from '@app/access-requests/services/access-request.service';
+import { ConfigService } from '@app/shared/services/config.service';
 import { screen } from '@testing-library/angular';
 
 /**
@@ -30,6 +31,13 @@ class MockIvaService {
   };
 }
 
+/**
+ * Mock the config service as needed by the access request manager dialog component
+ */
+class MockConfigService {
+  helpdesk_url = 'http://mock.dev/helpdesk';
+}
+
 describe('AccessRequestManagerDialogComponent', () => {
   let component: AccessRequestManagerDialogComponent;
   let fixture: ComponentFixture<AccessRequestManagerDialogComponent>;
@@ -40,6 +48,7 @@ describe('AccessRequestManagerDialogComponent', () => {
       providers: [
         { provide: IvaService, useClass: MockIvaService },
         { provide: AccessRequestService, useClass: MockAccessRequestService },
+        { provide: ConfigService, useClass: MockConfigService },
         {
           provide: MAT_DIALOG_DATA,
           useValue: { ...accessRequests[0], status: 'pending' },

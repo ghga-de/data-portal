@@ -33,6 +33,7 @@ interface Config {
   umami_url: string | null;
   umami_website_id: string | null;
   wkvs_url: string | null;
+  helpdesk_url: string | null;
 }
 
 declare global {
@@ -265,5 +266,13 @@ export class ConfigService {
    */
   get default_access_duration_days(): number {
     return this.#config.default_access_duration_days;
+  }
+
+  /**
+   * Gets the URL of the Helpdesk portal for data stewards
+   * @returns the URL of the Helpdesk
+   */
+  get helpdesk_url(): string {
+    return withEndSlash(this.#config.helpdesk_url || 'https://helpdesk.ghga.de/');
   }
 }
