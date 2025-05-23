@@ -31,8 +31,7 @@ import {
   AccessRequestStatus,
 } from '@app/access-requests/models/access-requests';
 import { AccessRequestStatusClassPipe } from '@app/access-requests/pipes/access-request-status-class.pipe';
-import { AccessRequestFieldEditService } from '@app/access-requests/services/access-request-field-edit.service';
-import { ConfigService } from '@app/shared/services/config.service';
+import { AccessRequestService } from '@app/access-requests/services/access-request.service';
 import { ConfirmationService } from '@app/shared/services/confirmation.service';
 import { NotificationService } from '@app/shared/services/notification.service';
 import { FRIENDLY_DATE_FORMAT } from '@app/shared/utils/date-formats';
@@ -40,15 +39,7 @@ import { Iva, IvaState } from '@app/verification-addresses/models/iva';
 import { IvaStatePipe } from '@app/verification-addresses/pipes/iva-state.pipe';
 import { IvaTypePipe } from '@app/verification-addresses/pipes/iva-type.pipe';
 import { IvaService } from '@app/verification-addresses/services/iva.service';
-import { AccessRequestNotesEditComponent } from '../access-request-notes-edit/access-request-notes-edit.component';
-
-export interface EditableFieldInfo {
-  name: 'ticket_id' | 'note_to_requester' | 'internal_note';
-  show: boolean;
-  editedValue: string | null;
-}
-
-export type EditActionType = 'show' | 'cancel' | 'save';
+import { AccessRequestFieldEditComponent } from '../access-request-field-edit/access-request-field-edit.component';
 
 /**
  * The dialog component used for managing access requests in the access request manager.
@@ -67,7 +58,7 @@ export type EditActionType = 'show' | 'cancel' | 'save';
     AccessRequestStatusClassPipe,
     IvaTypePipe,
     IvaStatePipe,
-    AccessRequestNotesEditComponent,
+    AccessRequestFieldEditComponent,
     MatChipsModule,
     MatInputModule,
   ],
@@ -81,9 +72,9 @@ export class AccessRequestManagerDialogComponent implements OnInit {
   #ivaService = inject(IvaService);
   #confirmationService = inject(ConfirmationService);
   #notificationService = inject(NotificationService);
+  #accessRequestService = inject(AccessRequestService);
 
-  #configService = inject(ConfigService);
-  helpdeskTicketUrl = this.#configService.helpdeskTicketUrl;
+  #request = signal(this.data);
 
   #ivas = this.#ivaService.userIvas;
   ivas = this.#ivas.value;
@@ -92,40 +83,24 @@ export class AccessRequestManagerDialogComponent implements OnInit {
 
   #ivaTypePipe = inject(IvaTypePipe);
 
-  editNotesAndTicket = inject(AccessRequestFieldEditService);
-
   selectedIvaIdRadioButton = model<string | undefined>(undefined);
 
-  editTicketId: Signal<EditableFieldInfo> = signal({
-    name: 'ticket_id',
-    show: false,
-    editedValue: null,
-  });
-  editNoteToRequester: Signal<EditableFieldInfo> = signal({
-    name: 'note_to_requester',
-    show: false,
-    editedValue: null,
-  });
-  editInternalNote: Signal<EditableFieldInfo> = signal({
-    name: 'internal_note',
-    show: false,
-    editedValue: null,
-  });
+  #pendingEdits = new Set<keyof AccessRequest>();
 
   /**
    * Get the IVA associated with the access request.
    */
-  associatedIva: Signal<Iva | undefined> = computed(() =>
-    this.data.iva_id
-      ? this.ivas().find((iva) => iva.id === this.data.iva_id)
-      : undefined,
-  );
+  associatedIva: Signal<Iva | undefined> = computed(() => {
+    const ivaId = this.#request().iva_id;
+    return ivaId ? this.ivas().find((iva) => iva.id === ivaId) : undefined;
+  });
+
   /**
    * Check whether the access request is changeable.
    * Currently the backend only allows to changed pending requests.
    */
   changeable: Signal<boolean> = computed(
-    () => this.data.status === AccessRequestStatus.pending,
+    () => this.#request().status === AccessRequestStatus.pending,
   );
 
   #ivasErrorEffect = effect(() => {
@@ -153,12 +128,61 @@ export class AccessRequestManagerDialogComponent implements OnInit {
    * Load the IVAs of the user when the component is initialized
    */
   ngOnInit(): void {
-    this.#ivaService.loadUserIvas(this.data.user_id);
+    this.#ivaService.loadUserIvas(this.#request().user_id);
   }
 
   cancel = () => {
     this.dialogRef.close(undefined);
   };
+
+  /**
+   * Update the request.
+   * @param changes - The changes to apply
+   */
+  #update(changes: Partial<AccessRequest>): void {
+    const id = this.#request().id;
+    this.#accessRequestService.updateRequest(id, changes).subscribe({
+      next: () => {
+        this.#notificationService.showSuccess(
+          `Access request was successfully modified.`,
+        );
+        const request = this.#request();
+        this.#request.update(() => ({ ...request, ...changes }));
+      },
+      error: (err) => {
+        console.debug(err);
+        this.#notificationService.showError(
+          'Access request could not be modified. Please try again later',
+        );
+      },
+    });
+  }
+
+  /**
+   * Memorize which editors have changes.
+   * @param event - The name of the field and whether it was edited
+   */
+  edited(event: [keyof AccessRequest, boolean]): void {
+    const [name, edited] = event;
+    if (edited) this.#pendingEdits.add(name);
+    else this.#pendingEdits.delete(name);
+  }
+
+  /**
+   * Save a field change.
+   * @param event - The name of the field and the new value
+   */
+  saved(event: [keyof AccessRequest, string]): void {
+    const [name, value] = event;
+    this.#update({ [name]: value });
+  }
+
+  /**
+   * Update the IVA selection.
+   */
+  saveIva() {
+    this.#update({ iva_id: this.selectedIvaIdRadioButton() });
+  }
 
   /**
    * Allow the access request after confirmation.
@@ -177,7 +201,7 @@ export class AccessRequestManagerDialogComponent implements OnInit {
       confirmText: 'Confirm approval',
       confirmClass: 'success',
       callback: (approvalConfirmed) => {
-        if (approvalConfirmed) this.#allowRequestAndCloseDialog();
+        if (approvalConfirmed) this.#allowAndClose();
       },
     });
   }
@@ -193,7 +217,7 @@ export class AccessRequestManagerDialogComponent implements OnInit {
       confirmText: 'Confirm denial',
       confirmClass: 'error',
       callback: (denialConfirmed) => {
-        if (denialConfirmed) this.#deny();
+        if (denialConfirmed) this.#denyAndClose();
       },
     });
   }
@@ -204,40 +228,15 @@ export class AccessRequestManagerDialogComponent implements OnInit {
    * @param action String literal specifying the desired status change.
    */
   saveBeforeStatusChange(action: 'deny' | 'allow'): void {
-    if (
-      (this.editTicketId().editedValue &&
-        this.editTicketId().editedValue !== this.data.ticket_id) ||
-      (this.editNoteToRequester().editedValue &&
-        this.editNoteToRequester().editedValue !== this.data.note_to_requester) ||
-      (this.editInternalNote().editedValue &&
-        this.editInternalNote().editedValue !== this.data.internal_note)
-    ) {
-      console.log(
-        this.editNoteToRequester().editedValue !== this.data.note_to_requester,
-      );
+    if (this.#pendingEdits.size) {
       this.#confirmationService.confirm({
         title: 'Unsaved changes',
-        message: 'Do you want to discard your changes?',
+        message: 'Do you want to continue without saving your changes?',
         cancelText: 'Cancel',
         confirmText: 'Discard Changes',
         confirmClass: 'danger',
-        callback: (discardConfirmed) => {
-          if (discardConfirmed) {
-            this.editNotesAndTicket.handleEdit(
-              'cancel',
-              this.editTicketId(),
-              this.data,
-            );
-            this.editNotesAndTicket.handleEdit(
-              'cancel',
-              this.editNoteToRequester(),
-              this.data,
-            );
-            this.editNotesAndTicket.handleEdit(
-              'cancel',
-              this.editInternalNote(),
-              this.data,
-            );
+        callback: (wantsToDiscard) => {
+          if (wantsToDiscard) {
             if (action === 'allow') this.safeAllow();
             else this.safeDeny();
           }
@@ -252,26 +251,22 @@ export class AccessRequestManagerDialogComponent implements OnInit {
   /**
    * Allow the access request and close the dialog.
    */
-  #allowRequestAndCloseDialog = () => {
+  #allowAndClose = () => {
     if (!this.selectedIvaIdRadioButton()) return;
-    const data = {
-      ...this.data,
-      iva_id: this.selectedIvaIdRadioButton(),
+    this.#update({
       status: AccessRequestStatus.allowed,
-    };
-    this.dialogRef.close(data);
+    });
+    this.dialogRef.close();
   };
 
   /**
    * Deny the access request and close the dialog.
    */
-  #deny = () => {
-    const data = {
-      ...this.data,
-      iva_id: this.selectedIvaIdRadioButton(),
+  #denyAndClose = () => {
+    this.#update({
       status: AccessRequestStatus.denied,
-    };
-    this.dialogRef.close(data);
+    });
+    this.dialogRef.close();
   };
 
   /**

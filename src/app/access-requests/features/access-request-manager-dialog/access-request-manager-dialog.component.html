@@ -2,57 +2,14 @@
   <h2 mat-dialog-title>Access Request Detail</h2>
   <mat-dialog-content>
     <table class="detail mb-4 w-full">
-      <tr>
-        <th class="pe-1 text-start">Ticket ID:</th>
-        <td class="flex items-center">
-          <span class="grow" [hidden]="editTicketId().show || data.ticket_id"></span>
-          <a
-            [href]="`${helpdeskTicketUrl}${data.ticket_id }`"
-            target="_blank"
-            tabindex="-1"
-            [hidden]="editTicketId().show || !data.ticket_id"
-            class="grow"
-            >{{ data.ticket_id
-            }}<mat-icon
-              role="img"
-              aria-hidden="true"
-              class="mat-icon material-symbols-outlined mat-icon-no-color no-translate h-4 w-4"
-              data-mat-icon-type="font"
-              >open_in_new</mat-icon
-            ></a
-          >
-          <mat-chip
-            (click)="
-              this.editNotesAndTicket.handleEdit('show', editTicketId(), this.data)
-            "
-            [hidden]="editTicketId().show"
-            class="smaller-chip interactive-chip edit-button ms-2"
-            ><mat-icon class="scale-[0.75]">edit</mat-icon>
-          </mat-chip>
-          <mat-form-field [hidden]="!editTicketId().show" class="grow">
-            <mat-label>Helpdesk ticket ID</mat-label>
-            <input matInput [(ngModel)]="editTicketId().editedValue" />
-          </mat-form-field>
-          <mat-chip
-            class="smaller-chip interactive-chip cancel-edit-button mx-2"
-            [hidden]="!editTicketId().show"
-            (click)="
-              this.editNotesAndTicket.handleEdit('cancel', editTicketId(), this.data)
-            "
-          >
-            <mat-icon>close</mat-icon>
-          </mat-chip>
-          <mat-chip
-            class="smaller-chip interactive-chip save-edit-button"
-            [hidden]="!editTicketId().show"
-            (click)="
-              this.editNotesAndTicket.handleEdit('save', editTicketId(), this.data)
-            "
-          >
-            <mat-icon>check</mat-icon>
-          </mat-chip>
-        </td>
-      </tr>
+      <app-access-request-field-edit
+        [request]="data"
+        name="ticket_id"
+        label="Ticket ID"
+        (saved)="saved($event)"
+        (edited)="edited($event)"
+        class="table-row-group"
+      ></app-access-request-field-edit>
       <tr>
         <th class="pe-1 text-start">Dataset ID:</th>
         <td>
@@ -100,12 +57,22 @@
         <th class="pe-1 text-start align-top">Request details:</th>
         <td>{{ data.request_text }}</td>
       </tr>
-      <app-access-request-notes
+      <app-access-request-field-edit
         [request]="data"
-        [editNoteToRequester]="editNoteToRequester()"
-        [editInternalNote]="editInternalNote()"
+        name="note_to_requester"
+        label="Note to requester"
+        (saved)="saved($event)"
+        (edited)="edited($event)"
         class="table-row-group"
-      ></app-access-request-notes>
+      ></app-access-request-field-edit>
+      <app-access-request-field-edit
+        [request]="data"
+        name="internal_note"
+        label="Internal note"
+        (saved)="saved($event)"
+        (edited)="edited($event)"
+        class="table-row-group"
+      ></app-access-request-field-edit>
     </table>
     <p>
       The request has been made on
@@ -142,7 +109,11 @@
           access request:
         }
       </label>
-      <mat-radio-group [(ngModel)]="selectedIvaIdRadioButton" id="iva-selection-group">
+      <mat-radio-group
+        [(ngModel)]="selectedIvaIdRadioButton"
+        (ngModelChange)="saveIva()"
+        id="iva-selection-group"
+      >
         <table class="ivas mt-2">
           @for (iva of ivas(); track iva.id) {
             <tr class="border-outline border-t-1 border-b-1">

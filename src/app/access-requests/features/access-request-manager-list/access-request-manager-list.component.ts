@@ -22,7 +22,6 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { AccessRequest } from '@app/access-requests/models/access-requests';
 import { AccessRequestStatusClassPipe } from '@app/access-requests/pipes/access-request-status-class.pipe';
 import { AccessRequestService } from '@app/access-requests/services/access-request.service';
-import { NotificationService } from '@app/shared/services/notification.service';
 import { AccessRequestManagerDialogComponent } from '../access-request-manager-dialog/access-request-manager-dialog.component';
 
 /**
@@ -47,7 +46,6 @@ import { AccessRequestManagerDialogComponent } from '../access-request-manager-d
 export class AccessRequestManagerListComponent implements AfterViewInit {
   #ars = inject(AccessRequestService);
   #dialog = inject(MatDialog);
-  #notificationService = inject(NotificationService);
 
   #accessRequests = this.#ars.allAccessRequests;
   accessRequests = this.#ars.allAccessRequestsFiltered;
@@ -117,33 +115,12 @@ export class AccessRequestManagerListComponent implements AfterViewInit {
   }
 
   /**
-   * Process the result from the detail request dialog
-   * Currently, we can only process the status and the IVA selection.
-   * @param ar - the access request with potentially modified data
-   */
-  #processDialog(ar: AccessRequest | undefined) {
-    if (!ar) return; // dialog was cancelled
-    this.#ars.updateRequest(ar.id, { status: ar.status }).subscribe({
-      next: () => {
-        this.#notificationService.showSuccess(`Access has been ${ar.status}.`);
-      },
-      error: (err) => {
-        console.debug(err);
-        this.#notificationService.showError('Access request could not be processed.');
-      },
-    });
-  }
-
-  /**
    * Open the details dialog
    * @param row - the selected row to open the details for
    */
   openDetails(row: AccessRequest): void {
-    this.#dialog
-      .open(AccessRequestManagerDialogComponent, {
-        data: row,
-      })
-      .afterClosed()
-      .subscribe((ar) => this.#processDialog(ar));
+    this.#dialog.open(AccessRequestManagerDialogComponent, {
+      data: row,
+    });
   }
 }

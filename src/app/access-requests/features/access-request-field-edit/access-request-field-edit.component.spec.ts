@@ -1,19 +1,14 @@
 /**
- * Test the Access Request Note component.
+ * Test the Access Request Field Editor component.
  * @copyright The GHGA Authors
  * @license Apache-2.0
  */
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AccessRequestNotesEditComponent } from './access-request-notes-edit.component';
+import { AccessRequestFieldEditComponent } from './access-request-field-edit.component';
 
 import { accessRequests } from '@app/../mocks/data';
-import {
-  AccessRequestService,
-  MockAccessRequestService,
-} from '@app/access-requests/services/access-request.service';
-import { ConfigService } from '@app/shared/services/config.service';
 
 /**
  * Mock the config service as needed by the access request note component
@@ -22,20 +17,16 @@ class MockConfigService {
   helpdeskTicketUrl = 'http:/helpdesk.test/ticket/';
 }
 
-describe('AccessRequestNoteComponent', () => {
-  let component: AccessRequestNotesEditComponent;
-  let fixture: ComponentFixture<AccessRequestNotesEditComponent>;
+describe('AccessRequestFieldComponent', () => {
+  let component: AccessRequestFieldEditComponent;
+  let fixture: ComponentFixture<AccessRequestFieldEditComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AccessRequestNotesEditComponent],
-      providers: [
-        { provide: AccessRequestService, useClass: MockAccessRequestService },
-        { provide: ConfigService, useClass: MockConfigService },
-      ],
+      imports: [AccessRequestFieldEditComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AccessRequestNotesEditComponent);
+    fixture = TestBed.createComponent(AccessRequestFieldEditComponent);
     fixture.componentRef.setInput('request', accessRequests[0]);
     fixture.componentRef.setInput('editNoteToRequester', {
       name: 'note_to_requester',
