@@ -205,7 +205,7 @@
             (click)="saveBeforeStatusChange('allow')"
             data-umami-event="Access Request Manager Allow Clicked"
             [disabled]="
-              this.data.status === 'allowed' &&
+              data.status === 'allowed' &&
               (!selectedIvaIdRadioButton() ||
                 data.iva_id === selectedIvaIdRadioButton())
             "
