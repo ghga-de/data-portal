@@ -18,7 +18,7 @@ import { EditableFieldInfo } from '../access-request-manager-dialog/access-reque
  * This is a so-called "dumb" component that displays a note for an access request.
  */
 @Component({
-  selector: 'app-access-request-note',
+  selector: 'app-access-request-notes',
   imports: [MatChipsModule, MatIconModule, MatInputModule, FormsModule],
   providers: [RemoveUrlFromTicketId],
   templateUrl: './access-request-notes-edit.component.html',

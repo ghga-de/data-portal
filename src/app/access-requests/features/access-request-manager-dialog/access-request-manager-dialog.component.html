@@ -100,12 +100,12 @@
         <th class="pe-1 text-start align-top">Request details:</th>
         <td>{{ data.request_text }}</td>
       </tr>
-      <app-access-request-note
+      <app-access-request-notes
         [request]="data"
         [editNoteToRequester]="editNoteToRequester()"
         [editInternalNote]="editInternalNote()"
         class="table-row-group"
-      ></app-access-request-note>
+      ></app-access-request-notes>
     </table>
     <p>
       The request has been made on
