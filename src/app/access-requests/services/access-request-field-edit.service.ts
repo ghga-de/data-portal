@@ -54,7 +54,7 @@ export class AccessRequestFieldEditService {
         }
         info.show = false;
         this.#accessRequestService
-          .patchRequest(ar.id, {
+          .updateRequest(ar.id, {
             [info.name]: editedValue,
           })
           .subscribe({

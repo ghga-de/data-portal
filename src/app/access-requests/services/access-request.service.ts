@@ -237,46 +237,39 @@ export class AccessRequestService {
 
   /**
    * Update the lists of access requests locally.
-   * @param accessRequestId - The access request ID.
-   * @param patchData - The data to modify as a key-value pair.
+   * @param id - the ID of the updated access request
+   * @param changes - the changes to the access request which may be partial
    */
-  #updateAccessRequestLocally(accessRequestId: string, patchData: any): void {
-    const update = (accessRequests: AccessRequest[]) =>
-      accessRequests.map((ar) => {
-        if (ar.id === accessRequestId) {
-          Object.entries(patchData).forEach(([key, value]) => {
-            if (key === 'status') {
-              ar.status = value as AccessRequestStatus;
-            } else {
-              (ar as any)[key] = value;
-            }
-          });
-          return ar;
-        } else return ar;
-      });
+  #updateAccessRequestLocally(id: string, changes: any): void {
+    const oldRequest = this.allAccessRequests.value().find((ar) => ar.id === id);
+    if (!oldRequest) return;
 
-    if (patchData.status) {
-      patchData.status_changed = new Date().toISOString();
-      patchData.changed_by = this.#auth.user()?.id || null;
+    if (changes.status != oldRequest.status) {
+      changes.status_changed = new Date().toISOString();
+      changes.changed_by = this.#auth.user()?.id || null;
     }
+
+    const newRequest = { ...oldRequest, ...changes };
+
+    const update = (accessRequests: AccessRequest[]) =>
+      accessRequests.map((ar) => (ar.id === id ? newRequest : ar));
 
     this.userAccessRequests.value.set(update(this.userAccessRequests.value()));
     this.allAccessRequests.value.set(update(this.allAccessRequests.value()));
   }
 
   /**
-   * Patch an access request, i.e. change status, duration, notes, ticket ID.
+   * Update one or more properties of an access request.
    * This can only be done by a data steward.
    * This method also updates the local state if the modification was successful.
-   * @param accessRequestId - the access request ID
-   * @param patchData - the data to be patched (status, notes, ticket ID, validity period)
+   * @param id - the access request ID
+   * @param changes - the changes to the access request which may be partial
    * @returns An observable that emits null when the request has been processed
    */
-  patchRequest(accessRequestId: string, patchData: any): Observable<null> {
-    const id = accessRequestId;
+  updateRequest(id: string, changes: Partial<AccessRequest>): Observable<null> {
     return this.#http
-      .patch<null>(`${this.#arsEndpointUrl}/${id}`, { patchData })
-      .pipe(tap(() => this.#updateAccessRequestLocally(accessRequestId, patchData)));
+      .patch<null>(`${this.#arsEndpointUrl}/${id}`, changes)
+      .pipe(tap(() => this.#updateAccessRequestLocally(id, changes)));
   }
 }
 

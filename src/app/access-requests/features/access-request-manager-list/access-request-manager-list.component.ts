@@ -123,7 +123,7 @@ export class AccessRequestManagerListComponent implements AfterViewInit {
    */
   #processDialog(ar: AccessRequest | undefined) {
     if (!ar) return; // dialog was cancelled
-    this.#ars.patchRequest(ar.id, { status: ar.status }).subscribe({
+    this.#ars.updateRequest(ar.id, { status: ar.status }).subscribe({
       next: () => {
         this.#notificationService.showSuccess(`Access has been ${ar.status}.`);
       },
