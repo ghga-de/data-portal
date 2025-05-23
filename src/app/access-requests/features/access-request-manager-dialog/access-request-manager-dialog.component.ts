@@ -85,7 +85,7 @@ export class AccessRequestManagerDialogComponent implements OnInit {
   #notificationService = inject(NotificationService);
 
   #configService = inject(ConfigService);
-  helpdeskUrl = this.#configService.helpdesk_url;
+  helpdeskTicketUrl = this.#configService.helpdeskTicketUrl;
 
   #ivas = this.#ivaService.userIvas;
   ivas = this.#ivas.value;

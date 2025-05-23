@@ -35,7 +35,7 @@ class MockIvaService {
  * Mock the config service as needed by the access request manager dialog component
  */
 class MockConfigService {
-  helpdesk_url = 'http://mock.dev/helpdesk';
+  helpdeskTicketUrl = 'http:/helpdesk.test/ticket/';
 }
 
 describe('AccessRequestManagerDialogComponent', () => {

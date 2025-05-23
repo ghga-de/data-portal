@@ -37,6 +37,7 @@ const mockConfig = {
   mock_api: true,
   mock_oidc: true,
   helpdesk_url: 'https://helpdesk.test',
+  helpdesk_ticket_url: '/#ticket/',
 };
 
 describe('ConfigService', () => {
@@ -106,6 +107,10 @@ describe('ConfigService', () => {
   });
 
   it('should provide the helpdesk URL', () => {
-    expect(service.helpdesk_url).toBe('https://helpdesk.test/');
+    expect(service.helpdeskUrl).toBe('https://helpdesk.test');
+  });
+
+  it('should provide the helpdesk ticket URL', () => {
+    expect(service.helpdeskTicketUrl).toBe('https://helpdesk.test/#ticket/');
   });
 });

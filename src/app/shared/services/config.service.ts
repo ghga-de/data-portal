@@ -34,7 +34,8 @@ interface Config {
   mock_oidc: boolean;
   umami_url: string | null;
   umami_website_id: string | null;
-  helpdesk_url: string | null;
+  helpdesk_url: string;
+  helpdesk_ticket_url: string;
 }
 
 declare global {
@@ -278,10 +279,19 @@ export class ConfigService {
   }
 
   /**
-   * Gets the URL of the Helpdesk portal for data stewards
-   * @returns the URL of the Helpdesk
+   * Gets the base URL of the Helpdesk portal for data stewards
+   * @returns the base URL of the Helpdesk
    */
-  get helpdesk_url(): string {
-    return withEndSlash(this.#config.helpdesk_url || 'https://helpdesk.ghga.de/');
+  get helpdeskUrl(): string {
+    return this.#config.helpdesk_url;
+  }
+
+  /**
+   * Gets the base URL for Helpdesk tickets
+   * @returns the base URL for Helpdesk tickets
+   */
+  get helpdeskTicketUrl(): string {
+    const url = this.#config.helpdesk_ticket_url;
+    return new URL(url, withEndSlash(this.helpdeskUrl)).href;
   }
 }
