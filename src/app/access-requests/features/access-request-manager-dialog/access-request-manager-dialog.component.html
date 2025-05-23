@@ -91,17 +91,10 @@
         <td>{{ data.full_user_name }}</td>
       </tr>
       <tr>
-        <<<<<<< HEAD
-        <th class="w-38 pe-1 text-start">Contact e-Mail:</th>
-        <td>{{ data.email }}</td>
-        =======
         <th class="w-32 pe-1 text-start">Contact e-mail:</th>
         <td>
-          <a class="underline" [href]="'mailto:' + data.email" tabindex="-1">{{
-            data.email
-          }}</a>
+          <a [href]="'mailto:' + data.email" tabindex="-1">{{ data.email }}</a>
         </td>
-        >>>>>>> origin/main
       </tr>
       <tr>
         <th class="pe-1 text-start align-top">Request details:</th>
