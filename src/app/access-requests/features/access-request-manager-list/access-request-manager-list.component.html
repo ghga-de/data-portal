@@ -10,14 +10,6 @@
       matSort
       #sort="matSort"
     >
-      <ng-container matColumnDef="ticket">
-        <th mat-header-cell *matHeaderCellDef class="w-32" mat-sort-header>
-          Ticket ID
-        </th>
-        <td mat-cell *matCellDef="let ar">
-          {{ ar.ticket_id }}
-        </td>
-      </ng-container>
       <ng-container matColumnDef="dataset">
         <th mat-header-cell *matHeaderCellDef class="w-32" mat-sort-header>
           Dataset ID
@@ -30,6 +22,14 @@
         <th mat-header-cell *matHeaderCellDef class="min-w-40" mat-sort-header>User</th>
         <td mat-cell *matCellDef="let ar">
           {{ ar.full_user_name }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="ticket">
+        <th mat-header-cell *matHeaderCellDef class="w-32" mat-sort-header>
+          Ticket ID
+        </th>
+        <td mat-cell *matCellDef="let ar">
+          {{ ar.ticket_id }}
         </td>
       </ng-container>
       <ng-container matColumnDef="starts">
