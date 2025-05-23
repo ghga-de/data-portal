@@ -9,9 +9,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AccessRequestFieldEditComponent } from './access-request-field-edit.component';
 
 import { accessRequests } from '@app/../mocks/data';
+import { ConfigService } from '@app/shared/services/config.service';
 
 /**
- * Mock the config service as needed by the access request note component
+ * Mock the config service as needed by the access request field edit component
  */
 class MockConfigService {
   helpdeskTicketUrl = 'http:/helpdesk.test/ticket/';
@@ -23,21 +24,14 @@ describe('AccessRequestFieldComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      providers: [{ provide: ConfigService, useClass: MockConfigService }],
       imports: [AccessRequestFieldEditComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AccessRequestFieldEditComponent);
     fixture.componentRef.setInput('request', accessRequests[0]);
-    fixture.componentRef.setInput('editNoteToRequester', {
-      name: 'note_to_requester',
-      show: false,
-      editedValue: null,
-    });
-    fixture.componentRef.setInput('editInternalNote', {
-      name: 'internal_note',
-      show: false,
-      editedValue: null,
-    });
+    fixture.componentRef.setInput('name', 'internal_note');
+    fixture.componentRef.setInput('label', 'Internal Note');
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
