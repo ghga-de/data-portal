@@ -33,7 +33,7 @@ import { ConfigService } from '@app/shared/services/config.service';
 })
 export class AccessRequestFieldEditComponent {
   #config = inject(ConfigService);
-  ticketUrl = this.#config.helpdeskTicketUrl;
+  #baseTicketUrl = this.#config.helpdeskTicketUrl;
 
   request = input.required<AccessRequest>();
 
@@ -51,6 +51,10 @@ export class AccessRequestFieldEditComponent {
   isOpen = signal<boolean>(false);
   isModified = signal<boolean>(false);
 
+  ticketUrl = computed<string | null>(() =>
+    this.field() ? this.#baseTicketUrl + this.field() : null,
+  );
+
   #defaultValue = computed<string>(() => (this.request() as any)[this.name()] || '');
 
   #initFieldEffect = effect(() => this.field.update(() => this.#defaultValue()));
@@ -58,8 +62,8 @@ export class AccessRequestFieldEditComponent {
   #getValue = () => {
     const name = this.name();
     let value = this.field();
-    if (name === 'ticket_id' && value && value.startsWith(this.ticketUrl)) {
-      value = value.slice(this.ticketUrl.length);
+    if (name === 'ticket_id' && value && value.startsWith(this.#baseTicketUrl)) {
+      value = value.slice(this.#baseTicketUrl.length);
     }
     return value;
   };
@@ -87,8 +91,10 @@ export class AccessRequestFieldEditComponent {
 
   save = () => {
     const name = this.name();
+    const value = this.#getValue();
+    this.field.update(() => value);
     if (this.isModified()) {
-      this.saved.emit([name, this.#getValue()]);
+      this.saved.emit([name, value]);
       this.edited.emit([name, false]);
     }
     this.isOpen.set(false);
