@@ -27,48 +27,44 @@ export class AccessRequestFieldEditService {
   /**
    * Handles the editing of certain fields in the access request manager dialog.
    * @param action The action to perform as a string literal with options 'show', 'cancel', or 'save'.
-   * @param editDictionary The dictionary object of the field being edited.
-   * @param ar The access request to edit.
+   * @param info The info about the field being edited
+   * @param ar The access request to edit
    */
-  handleEdit(
-    action: EditActionType,
-    editDictionary: EditableFieldInfo,
-    ar: AccessRequest,
-  ) {
+  handleEdit(action: EditActionType, info: EditableFieldInfo, ar: AccessRequest) {
     switch (action) {
       case 'show':
-        editDictionary.show = true;
-        editDictionary.editedValue = ar[editDictionary.name] as string | null;
+        info.show = true;
+        info.editedValue = ar[info.name] as string | null;
         break;
 
       case 'cancel':
-        editDictionary.show = false;
-        editDictionary.editedValue = null;
+        info.show = false;
+        info.editedValue = null;
         break;
 
       case 'save':
-        let editedValue = editDictionary.editedValue;
-        if (editDictionary.name === 'ticket_id' && editDictionary.editedValue) {
-          editedValue = this.#parseTicketId.transform(editDictionary.editedValue);
+        let editedValue = info.editedValue;
+        if (info.name === 'ticket_id' && info.editedValue) {
+          editedValue = this.#parseTicketId.transform(info.editedValue);
         }
-        editDictionary.show = false;
+        info.show = false;
         this.#accessRequestService
           .patchRequest(ar.id, {
-            [editDictionary.name]: editedValue,
+            [info.name]: editedValue,
           })
           .subscribe({
             next: () => {
               this.#notificationService.showSuccess(
                 `Access request was successfully modified.`,
               );
-              editDictionary.editedValue = null;
+              info.editedValue = null;
             },
             error: (err) => {
               console.debug(err);
               this.#notificationService.showError(
                 'Access request could not be modified. Please try again later',
               );
-              editDictionary.show = true;
+              info.show = true;
             },
           });
         break;
