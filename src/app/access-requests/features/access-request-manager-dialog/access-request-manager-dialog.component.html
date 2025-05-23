@@ -7,7 +7,7 @@
         <td class="flex items-center">
           <span class="grow" [hidden]="editTicketId().show || data.ticket_id"></span>
           <a
-            [href]="`${helpdeskUrl}${data.ticket_id | RemoveUrlFromTicketId}`"
+            [href]="`${helpdeskTicketUrl}${data.ticket_id }`"
             target="_blank"
             tabindex="-1"
             [hidden]="editTicketId().show || !data.ticket_id"

@@ -31,7 +31,6 @@ import {
   AccessRequestStatus,
 } from '@app/access-requests/models/access-requests';
 import { AccessRequestStatusClassPipe } from '@app/access-requests/pipes/access-request-status-class.pipe';
-import { RemoveUrlFromTicketId } from '@app/access-requests/pipes/remove-url-from-ticket-id.pipe';
 import { AccessRequestFieldEditService } from '@app/access-requests/services/access-request-field-edit.service';
 import { ConfigService } from '@app/shared/services/config.service';
 import { ConfirmationService } from '@app/shared/services/confirmation.service';
@@ -71,7 +70,6 @@ export type EditActionType = 'show' | 'cancel' | 'save';
     AccessRequestNotesEditComponent,
     MatChipsModule,
     MatInputModule,
-    RemoveUrlFromTicketId,
   ],
   providers: [IvaTypePipe],
   templateUrl: './access-request-manager-dialog.component.html',

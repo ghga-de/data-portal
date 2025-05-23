@@ -6,13 +6,13 @@
 
 /* eslint-disable boundaries/element-types */
 import { inject, Injectable } from '@angular/core';
+import { ConfigService } from '@app/shared/services/config.service';
 import { NotificationService } from '@app/shared/services/notification.service';
 import {
   EditableFieldInfo,
   EditActionType,
 } from '../features/access-request-manager-dialog/access-request-manager-dialog.component';
 import { AccessRequest } from '../models/access-requests';
-import { RemoveUrlFromTicketId } from '../pipes/remove-url-from-ticket-id.pipe';
 import { AccessRequestService } from './access-request.service';
 
 /**
@@ -20,8 +20,9 @@ import { AccessRequestService } from './access-request.service';
  */
 @Injectable({ providedIn: 'root' })
 export class AccessRequestFieldEditService {
+  #config = inject(ConfigService);
+  #ticketUrl = this.#config.helpdeskTicketUrl;
   #accessRequestService = inject(AccessRequestService);
-  #parseTicketId = inject(RemoveUrlFromTicketId);
   #notificationService = inject(NotificationService);
 
   /**
@@ -44,8 +45,12 @@ export class AccessRequestFieldEditService {
 
       case 'save':
         let editedValue = info.editedValue;
-        if (info.name === 'ticket_id' && info.editedValue) {
-          editedValue = this.#parseTicketId.transform(info.editedValue);
+        if (
+          info.name === 'ticket_id' &&
+          editedValue &&
+          editedValue.startsWith(this.#ticketUrl)
+        ) {
+          editedValue = editedValue.slice(this.#ticketUrl.length);
         }
         info.show = false;
         this.#accessRequestService

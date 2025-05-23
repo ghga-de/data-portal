@@ -13,6 +13,14 @@ import {
   AccessRequestService,
   MockAccessRequestService,
 } from '@app/access-requests/services/access-request.service';
+import { ConfigService } from '@app/shared/services/config.service';
+
+/**
+ * Mock the config service as needed by the access request note component
+ */
+class MockConfigService {
+  helpdeskTicketUrl = 'http:/helpdesk.test/ticket/';
+}
 
 describe('AccessRequestNoteComponent', () => {
   let component: AccessRequestNotesEditComponent;
@@ -23,6 +31,7 @@ describe('AccessRequestNoteComponent', () => {
       imports: [AccessRequestNotesEditComponent],
       providers: [
         { provide: AccessRequestService, useClass: MockAccessRequestService },
+        { provide: ConfigService, useClass: MockConfigService },
       ],
     }).compileComponents();
 

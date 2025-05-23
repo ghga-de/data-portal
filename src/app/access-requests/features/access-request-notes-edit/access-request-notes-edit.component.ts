@@ -10,7 +10,6 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { AccessRequest } from '@app/access-requests/models/access-requests';
-import { RemoveUrlFromTicketId } from '@app/access-requests/pipes/remove-url-from-ticket-id.pipe';
 import { AccessRequestFieldEditService } from '@app/access-requests/services/access-request-field-edit.service';
 import { EditableFieldInfo } from '../access-request-manager-dialog/access-request-manager-dialog.component';
 
@@ -20,7 +19,6 @@ import { EditableFieldInfo } from '../access-request-manager-dialog/access-reque
 @Component({
   selector: 'app-access-request-notes',
   imports: [MatChipsModule, MatIconModule, MatInputModule, FormsModule],
-  providers: [RemoveUrlFromTicketId],
   templateUrl: './access-request-notes-edit.component.html',
   styleUrl:
     '../access-request-manager-dialog/access-request-manager-dialog.component.scss',
