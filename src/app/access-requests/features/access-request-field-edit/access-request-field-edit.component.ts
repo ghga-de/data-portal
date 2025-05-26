@@ -52,7 +52,9 @@ export class AccessRequestFieldEditComponent {
   isModified = signal<boolean>(false);
 
   ticketUrl = computed<string | null>(() =>
-    this.field() ? this.#baseTicketUrl + this.field() : null,
+    this.name() == 'ticket_id' && this.field()
+      ? this.#baseTicketUrl + this.field()
+      : null,
   );
 
   #defaultValue = computed<string>(() => (this.request() as any)[this.name()] || '');
