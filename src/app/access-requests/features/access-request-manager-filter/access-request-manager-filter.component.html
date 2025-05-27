@@ -95,6 +95,35 @@
         <div class="flex grow flex-col gap-2">
           <div class="flex gap-2">
             <mat-form-field class="grow">
+              <mat-label>
+                @if (status()) {
+                  Request status
+                } @else {
+                  All request statuses
+                }
+              </mat-label>
+              <mat-select [(ngModel)]="status">
+                <mat-option [value]="undefined">All request statuses</mat-option>
+                @for (opt of statusOptions; track opt) {
+                  <mat-option [value]="opt.value">{{
+                    opt.text | CapitalisePipe
+                  }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+            <button
+              mat-icon-button
+              aria-label="Remove filter for request status"
+              [class.invisible]="!this.status()"
+              class="pb-2.5"
+              (click)="this.status.set(undefined)"
+              data-umami-event="Access Request Filters Status Clear Clicked"
+            >
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </div>
+          <div class="flex gap-2">
+            <mat-form-field class="grow">
               <mat-label>Request creation date from</mat-label>
               <input matInput [matDatepicker]="fromPicker" [(ngModel)]="fromDate" />
               <mat-hint>{{ dateInputFormatHint }}</mat-hint>
@@ -133,34 +162,6 @@
               class="pb-2.5"
               (click)="this.toDate.set(undefined)"
               data-umami-event="Access Request Filters Request Created Until Clear Clicked"
-            >
-              <mat-icon>cancel</mat-icon>
-            </button>
-          </div>
-          <div class="flex gap-2">
-            <mat-form-field class="grow">
-              <mat-label>
-                @if (status()) {
-                  Status value
-                } @else {
-                  All status values
-                }
-              </mat-label>
-              <mat-select [(ngModel)]="status">
-                @for (opt of statusOptions; track opt) {
-                  <mat-option [value]="opt.value">{{
-                    opt.text | CapitalisePipe
-                  }}</mat-option>
-                }
-              </mat-select>
-            </mat-form-field>
-            <button
-              mat-icon-button
-              aria-label="Remove filter for status"
-              [class.invisible]="!this.status()"
-              class="pb-2.5"
-              (click)="this.status.set(undefined)"
-              data-umami-event="Access Request Filters Status Clear Clicked"
             >
               <mat-icon>cancel</mat-icon>
             </button>
