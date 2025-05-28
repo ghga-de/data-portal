@@ -197,6 +197,7 @@ export class AccessRequestManagerDialogComponent implements OnInit {
       this.#request().access_starts,
       this.friendlyDateFormat,
     );
+    const startDateInFuture = new Date(this.#request().access_starts) > new Date();
     const endDate = this.#datePipe.transform(
       this.#request().access_ends,
       this.friendlyDateFormat,
@@ -204,10 +205,12 @@ export class AccessRequestManagerDialogComponent implements OnInit {
     this.#confirmationService.confirm({
       title: 'Confirm approval of the access request',
       message:
-        'Please confirm that the access request shall be <strong>allowed</strong>' +
-        ` for the period between <strong>${startDate}</strong> and <strong>${endDate}</strong>,` +
-        ` and coupled to the address ${ivaType}: ${iva.value}.` +
-        `<br/><br/><strong>Once allowed, no further changes can be made to the access request, only revoking the granted access!</strong>`,
+        '<p>Please confirm that the access request shall be <strong>allowed</strong>' +
+        (startDateInFuture
+          ? ` for the period between <strong>${startDate}</strong> and`
+          : ` until`) +
+        ` <strong>${endDate}</strong>, and coupled to the address ${ivaType}: ${iva.value}.` +
+        `</p><p><strong>Once allowed, no further changes can be made to the access request, only revoking the granted access!</strong></p>`,
       cancelText: 'Cancel',
       confirmText: 'Confirm allowance',
       confirmClass: 'success',
@@ -224,8 +227,8 @@ export class AccessRequestManagerDialogComponent implements OnInit {
     this.#confirmationService.confirm({
       title: 'Confirm denial of the access request',
       message:
-        'Please confirm that the access request shall be <strong>denied</strong>.' +
-        `<br/><br/><strong>Once denied, no further changes can be made to the access request!</strong>`,
+        '<p>Please confirm that the access request shall be <strong>denied</strong>.' +
+        `</p><p><strong>Once denied, no further changes can be made to the access request!</strong></p>`,
       cancelText: 'Cancel',
       confirmText: 'Confirm denial',
       confirmClass: 'error',
