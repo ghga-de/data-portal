@@ -1,41 +1,103 @@
 @use '@angular/material' as mat;
 
+.dialog-columns-container {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  flex-wrap: wrap;
+
+  @media (max-width: 768px) { 
+    flex-direction: column;
+  }
+
+  .column-left,
+  .column-right {
+    flex: 1; 
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 500px;
+  }
+}
+
+.info-card {
+  width: 100%;
+
+  mat-card-header {
+    padding-bottom: 8px;
+  }
+  mat-card-title {
+    font-size: 1.1em;
+  }
+  mat-card-content {
+    padding-top: 8px;
+  }
+}
+
+.field-table {
+  width: 100%;
+  border-collapse: collapse;
+  ::ng-deep tr {
+    th.label-cell, td.value-cell {
+        padding-top: 6px;
+        padding-bottom: 6px;
+        vertical-align: top;
+    }
+
+    th.label-cell {
+        text-align: left;
+        font-weight: bold;
+        padding-right: 8px;
+        width: 130px;
+    }
+    
+    td.value-cell {
+        word-break: break-word;
+    }
+
+    th.align-top, td.align-top {
+        vertical-align: top;
+    }
+  }
+}
+
+.request-details-text {
+  white-space: pre-wrap;
+  max-height: 150px;
+  overflow-y: auto; 
+}
+
+.summary-text {
+  font-size: 0.9em;
+  color: rgba(0, 0, 0, 0.7);
+  margin-top: 8px;
+}
+
+.iva-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.iva-radio-group {
+  .ivas {
+    width: 100%;
+    tr > td {
+      padding-top: 8px;
+      padding-bottom: 8px;
+    }
+  }
+}
+
+mat-dialog-actions {
+  padding-top: 16px;
+  border-top: 1px solid rgba(0,0,0,0.12);
+}
+
 a mat-icon {
   scale: 0.6;
   margin: 0 -5px 0 -3px;
   transform: translateY(3px);
   height: 16px;
   font-size: 18px;
-}
-
-mat-chip {
-  @include mat.chips-overrides(
-    (
-      label-text-size: var(--mat-sys-label-small-size),
-      label-text-line-height: 0px,
-      container-height: 50%,
-    )
-  );
-}
-
-.edit-button mat-icon {
-  @include mat.icon-overrides(
-    (
-      color: var(--mat-sys-primary),
-    )
-  );
-}
-.cancel-edit-button mat-icon {
-  @include mat.icon-overrides(
-    (
-      color: var(--mat-sys-danger),
-    )
-  );
-}
-.save-edit-button mat-icon {
-  @include mat.icon-overrides(
-    (
-      color: var(--mat-sys-success),
-    )
-  );
 }
