@@ -34,33 +34,6 @@ mat-card {
   }
 }
 
-.field-table {
-  width: 100%;
-  border-collapse: collapse;
-  ::ng-deep tr {
-    th.label-cell, td.value-cell {
-        padding-top: 6px;
-        padding-bottom: 6px;
-        vertical-align: top;
-    }
-
-    th.label-cell {
-        text-align: left;
-        font-weight: bold;
-        padding-right: 8px;
-        width: 130px;
-    }
-    
-    td.value-cell {
-        word-break: break-word;
-    }
-
-    th.align-top, td.align-top {
-        vertical-align: top;
-    }
-  }
-}
-
 .request-details-text {
   white-space: pre-wrap;
   max-height: 150px;
@@ -88,6 +61,11 @@ mat-card {
     }
   }
 }
+th,  
+mat-radio-group:not(#iva-selection-group) td {  
+  text-align: left;  
+  vertical-align: top;  
+}  
 
 mat-dialog-actions {
   padding-top: 16px;
