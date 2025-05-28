@@ -4,7 +4,7 @@
     <td class="flex items-center">
       @if (isOpen()) {
         @if (isDate()) {
-          <mat-form-field class="grow">
+          <mat-form-field class="">
             <mat-datepicker-toggle
               matIconSuffix
               class="float-end"
@@ -21,14 +21,12 @@
             <mat-datepicker #datepicker></mat-datepicker>
           </mat-form-field>
         } @else {
-          <mat-form-field class="grow">
-            <mat-label>{{ label() }}</mat-label>
+          <mat-form-field class="">
             @if (rows() > 1) {
               <textarea
                 matInput
                 [(ngModel)]="field"
                 (ngModelChange)="changed()"
-                class="min-h-20"
                 [rows]="rows()"
               ></textarea>
             } @else {
