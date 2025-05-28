@@ -23,7 +23,13 @@ describe('ConfirmDialogComponent', () => {
     await TestBed.configureTestingModule({
       imports: [ConfirmDialogComponent],
       providers: [
-        { provide: MAT_DIALOG_DATA, useValue: { message: 'Test message' } },
+        {
+          provide: MAT_DIALOG_DATA,
+          useValue: {
+            message:
+              '<strong>Test<script>alert("Security Risk")</script> message</strong>',
+          },
+        },
         { provide: MatDialogRef, useValue: dialogRef },
       ],
     }).compileComponents();
@@ -42,6 +48,21 @@ describe('ConfirmDialogComponent', () => {
     const content = compiled.querySelector('.mat-mdc-dialog-content');
     expect(content).toBeTruthy();
     expect(content.textContent).toBe('Test message');
+  });
+
+  it('should display the test message with html tags', () => {
+    const compiled = fixture.nativeElement;
+    const content = screen.getByText('Test message', { selector: 'strong' });
+    expect(content).toBeVisible();
+  });
+
+  it('should not render the script tag and contents', () => {
+    expect(component).toBeTruthy();
+
+    const alertMock = jest.spyOn(window, 'alert').mockImplementation();
+    expect(alertMock).toHaveBeenCalledTimes(0);
+    global.alert('test');
+    expect(alertMock).toHaveBeenCalledTimes(1);
   });
 
   it('should return false when cancelled', () => {
