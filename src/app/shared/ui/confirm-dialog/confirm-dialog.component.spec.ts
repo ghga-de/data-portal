@@ -51,18 +51,16 @@ describe('ConfirmDialogComponent', () => {
   });
 
   it('should display the test message with html tags', () => {
-    const compiled = fixture.nativeElement;
     const content = screen.getByText('Test message', { selector: 'strong' });
     expect(content).toBeVisible();
   });
 
   it('should not render the script tag and contents', () => {
-    expect(component).toBeTruthy();
-
-    const alertMock = jest.spyOn(window, 'alert').mockImplementation();
-    expect(alertMock).toHaveBeenCalledTimes(0);
-    global.alert('test');
-    expect(alertMock).toHaveBeenCalledTimes(1);
+    const compiled = fixture.nativeElement;
+    const content = compiled.querySelector('.mat-mdc-dialog-content');
+    expect(content).toBeTruthy();
+    const html = content.innerHTML;
+    expect(html).toBe('<strong>Test message</strong>');
   });
 
   it('should return false when cancelled', () => {

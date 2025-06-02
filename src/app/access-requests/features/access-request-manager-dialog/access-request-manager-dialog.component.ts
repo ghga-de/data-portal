@@ -210,7 +210,7 @@ export class AccessRequestManagerDialogComponent implements OnInit {
           ? ` for the period between <strong>${startDate}</strong> and`
           : ` until`) +
         ` <strong>${endDate}</strong>, and coupled to the address ${ivaType}: ${iva.value}.` +
-        `</p><p><strong>Once allowed, no further changes can be made to the access request, only revoking the granted access!</strong></p>`,
+        `</p><p><strong>Once allowed, no further changes can be made to the access request!</strong></p>`,
       cancelText: 'Cancel',
       confirmText: 'Confirm allowance',
       confirmClass: 'success',

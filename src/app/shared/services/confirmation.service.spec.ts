@@ -46,28 +46,6 @@ describe('ConfirmationService', () => {
     });
   });
 
-  it('should open the dialog and allow for HTML tags but not render any script embedded in the message', () => {
-    const data = {
-      title: 'Test Title',
-      message:
-        '<strong>Test Message.</strong><script>alert("Security risk")</script> Hello World',
-      cancelText: 'Cancel',
-      confirmText: 'Confirm',
-    };
-    const alertMock = jest.spyOn(window, 'alert').mockImplementation();
-    service.confirm({
-      ...data,
-    });
-
-    expect(matDialogMock.open).toHaveBeenCalledWith(ConfirmDialogComponent, {
-      data,
-    });
-    expect(alertMock).toHaveBeenCalledTimes(0);
-
-    global.alert('test');
-    expect(alertMock).toHaveBeenCalledTimes(1);
-  });
-
   it('should call afterClosed and callback with the correct value', (done) => {
     const callbackMock = jest.fn();
 
