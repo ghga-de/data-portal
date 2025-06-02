@@ -17,7 +17,8 @@ mat-card {
 th,  
 mat-radio-group:not(#iva-selection-group) td {  
   text-align: left;  
-  vertical-align: top;  
+  vertical-align: top; 
+  width: 150px;
 }  
 
 mat-dialog-actions {

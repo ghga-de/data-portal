@@ -106,12 +106,9 @@
             <table class="w-full">
               <tbody>
                 <tr>
-                  <th>DAC name:</th>
-                  <td>{{ data.dac_alias }}</td>
-                </tr>
-                <tr>
-                  <th>DAC e-mail:</th>
+                  <th>DAC</th>
                   <td>
+                    <span class="italic">{{ data.dac_alias }}</span> -
                     <a [href]="'mailto:' + data.dac_email" tabindex="-1">{{
                       data.dac_email
                     }}</a>
@@ -119,11 +116,8 @@
                 </tr>
                 <tr>
                   <th class="label-cell">Requester:</th>
-                  <td>{{ data.full_user_name }}</td>
-                </tr>
-                <tr>
-                  <th class="label-cell">Contact e-mail:</th>
                   <td>
+                    <span class="italic">{{ data.full_user_name }}</span> -
                     <a [href]="'mailto:' + data.email" tabindex="-1">{{
                       data.email
                     }}</a>
