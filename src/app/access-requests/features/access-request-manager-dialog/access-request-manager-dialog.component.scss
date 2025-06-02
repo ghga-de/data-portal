@@ -1,25 +1,5 @@
 @use '@angular/material' as mat;
 
-.dialog-columns-container {
-  display: flex;
-  flex-direction: row;
-  gap: 24px;
-  flex-wrap: wrap;
-
-  @media (max-width: 768px) { 
-    flex-direction: column;
-  }
-
-  .column-left,
-  .column-right {
-    flex: 1; 
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    min-width: 500px;
-  }
-}
-
 mat-card {
   width: 100%;
 
@@ -34,33 +14,6 @@ mat-card {
   }
 }
 
-.request-details-text {
-  white-space: pre-wrap;
-  max-height: 150px;
-  overflow-y: auto; 
-}
-
-.summary-text {
-  font-size: 0.9em;
-  color: rgba(0, 0, 0, 0.7);
-  margin-top: 8px;
-}
-
-.iva-label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 500;
-}
-
-.iva-radio-group {
-  .ivas {
-    width: 100%;
-    tr > td {
-      padding-top: 8px;
-      padding-bottom: 8px;
-    }
-  }
-}
 th,  
 mat-radio-group:not(#iva-selection-group) td {  
   text-align: left;  

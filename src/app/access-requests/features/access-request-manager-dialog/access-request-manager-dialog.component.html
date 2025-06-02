@@ -1,8 +1,8 @@
 <div>
   <h2 mat-dialog-title>Access Request Detail</h2>
-  <mat-dialog-content class="dialog-content-custom">
-    <div class="dialog-columns-container">
-      <div class="column-left my-2 min-w-[500px]">
+  <mat-dialog-content>
+    <div class="grid grid-cols-1 gap-2 lg:grid-cols-2">
+      <div class="my-2 grid gap-2">
         <mat-card>
           <mat-card-header>
             <mat-card-title>Request & Dataset</mat-card-title>
@@ -20,7 +20,7 @@
                 ></app-access-request-field-edit>
                 <tr>
                   <th class="label-cell">Dataset ID:</th>
-                  <td class="value-cell">
+                  <td>
                     <a
                       [href]="'/dataset/' + data.dataset_id"
                       target="_blank"
@@ -38,17 +38,124 @@
                   </td>
                 </tr>
                 <tr>
-                  <th class="label-cell align-top">Dataset title:</th>
-                  <td class="value-cell">{{ data.dataset_title }}</td>
+                  <th>Dataset title:</th>
+                  <td>{{ data.dataset_title }}</td>
                 </tr>
                 <tr>
                   <th class="label-cell">Status:</th>
-                  <td class="value-cell">
+                  <td>
                     <strong class="{{ data.status | AccessRequestStatusClassPipe }}">{{
                       data.status
                     }}</strong>
                   </td>
                 </tr>
+              </tbody>
+            </table>
+          </mat-card-content>
+        </mat-card>
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>Access Timeline & Details</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <table class="w-full">
+              <tbody>
+                <app-access-request-field-edit
+                  [request]="data"
+                  name="access_starts"
+                  label="Access starts"
+                  [isDate]="true"
+                  (saved)="saved($event)"
+                  (edited)="edited($event)"
+                  class="table-row-group"
+                ></app-access-request-field-edit>
+                <app-access-request-field-edit
+                  [request]="data"
+                  name="access_ends"
+                  label="Access ends"
+                  [isDate]="true"
+                  (saved)="saved($event)"
+                  (edited)="edited($event)"
+                ></app-access-request-field-edit>
+                <tr>
+                  <th>Request details:</th>
+                  <td class="max-h-38 overflow-y-auto">
+                    @for (line of data.request_text | splitLines; track line) {
+                      <p>{{ line }}</p>
+                    }
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <p class="text-on-surface-variant pt-2 text-sm">
+              The request has been made on
+              {{ data.request_created | date: friendlyDateFormat }}.
+            </p>
+            <p class="text-on-surface-variant pt-2 text-sm">
+              Access has been requested from
+              {{ data.access_starts | date: friendlyDateFormat }} until
+              {{ data.access_ends | date: friendlyDateFormat }}.
+            </p>
+          </mat-card-content>
+        </mat-card>
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>DAC & Requester</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <table class="w-full">
+              <tbody>
+                <tr>
+                  <th>DAC name:</th>
+                  <td>{{ data.dac_alias }}</td>
+                </tr>
+                <tr>
+                  <th>DAC e-mail:</th>
+                  <td>
+                    <a [href]="'mailto:' + data.dac_email" tabindex="-1">{{
+                      data.dac_email
+                    }}</a>
+                  </td>
+                </tr>
+                <tr>
+                  <th class="label-cell">Requester:</th>
+                  <td>{{ data.full_user_name }}</td>
+                </tr>
+                <tr>
+                  <th class="label-cell">Contact e-mail:</th>
+                  <td>
+                    <a [href]="'mailto:' + data.email" tabindex="-1">{{
+                      data.email
+                    }}</a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </mat-card-content>
+        </mat-card>
+      </div>
+      <div class="my-2 grid gap-2">
+        <mat-card>
+          <mat-card-header> <mat-card-title>Notes</mat-card-title> </mat-card-header>
+          <mat-card-content>
+            <table class="w-full">
+              <tbody>
+                <app-access-request-field-edit
+                  [request]="data"
+                  name="note_to_requester"
+                  label="Note to requester"
+                  (saved)="saved($event)"
+                  (edited)="edited($event)"
+                  class="table-row-group"
+                ></app-access-request-field-edit>
+                <app-access-request-field-edit
+                  [request]="data"
+                  name="internal_note"
+                  label="Internal note"
+                  (saved)="saved($event)"
+                  (edited)="edited($event)"
+                  class="table-row-group"
+                ></app-access-request-field-edit>
               </tbody>
             </table>
           </mat-card-content>
@@ -77,7 +184,7 @@
               }
               <p>The status or address of this request cannot be changed any more.</p>
             } @else {
-              <label for="iva-selection-group" class="iva-label">
+              <label for="iva-selection-group" class="mb-2 font-medium">
                 @if (selectedIvaIdRadioButton()) {
                   If you wish to change the verification address used for this access
                   request, please select it below:
@@ -92,7 +199,7 @@
                 id="iva-selection-group"
                 class="iva-radio-group"
               >
-                <table class="ivas mt-2">
+                <table class="mt-2">
                   @for (iva of ivas(); track iva.id) {
                     <tr class="border-outline border-t-1 border-b-1">
                       <td class="py-1">
@@ -100,7 +207,10 @@
                           {{ (iva.type | IvaTypePipe).name }}: {{ iva.value }}
                         </mat-radio-button>
                       </td>
-                      <td [class]="(iva.state | IvaStatePipe).class" class="w-40 ps-4">
+                      <td
+                        [class]="(iva.state | IvaStatePipe).class"
+                        class="w-40 py-2 ps-4 align-middle"
+                      >
                         {{ (iva.state | IvaStatePipe).name }}
                       </td>
                     </tr>
@@ -108,112 +218,6 @@
                 </table>
               </mat-radio-group>
             }
-          </mat-card-content>
-        </mat-card>
-      </div>
-      <div class="column-right my-2 min-w-[500px]">
-        <mat-card>
-          <mat-card-header>
-            <mat-card-title>Access Timeline & Details</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <table class="w-full">
-              <tbody>
-                <app-access-request-field-edit
-                  [request]="data"
-                  name="access_starts"
-                  label="Access starts"
-                  [isDate]="true"
-                  (saved)="saved($event)"
-                  (edited)="edited($event)"
-                  class="table-row-group"
-                ></app-access-request-field-edit>
-                <app-access-request-field-edit
-                  [request]="data"
-                  name="access_ends"
-                  label="Access ends"
-                  [isDate]="true"
-                  (saved)="saved($event)"
-                  (edited)="edited($event)"
-                  class="table-row-group"
-                ></app-access-request-field-edit>
-                <tr>
-                  <th class="label-cell align-top">Request details:</th>
-                  <td class="value-cell request-details-text">
-                    {{ data.request_text }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <p class="summary-text">
-              The request has been made on
-              {{ data.request_created | date: friendlyDateFormat }}.
-            </p>
-            <p class="summary-text pb-2">
-              Access has been requested from
-              {{ data.access_starts | date: friendlyDateFormat }} until
-              {{ data.access_ends | date: friendlyDateFormat }}.
-            </p>
-          </mat-card-content>
-        </mat-card>
-        <mat-card>
-          <mat-card-header>
-            <mat-card-title>DAC & Requester</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <table class="w-full">
-              <tbody>
-                <tr>
-                  <th class="label-cell align-top">DAC name:</th>
-                  <td class="value-cell">{{ data.dac_alias }}</td>
-                </tr>
-                <tr>
-                  <th class="label-cell align-top">DAC e-mail:</th>
-                  <td class="value-cell">
-                    <a [href]="'mailto:' + data.dac_email" tabindex="-1">{{
-                      data.dac_email
-                    }}</a>
-                  </td>
-                </tr>
-                <tr>
-                  <th class="label-cell">Requester:</th>
-                  <td class="value-cell">{{ data.full_user_name }}</td>
-                </tr>
-                <tr>
-                  <th class="label-cell">Contact e-mail:</th>
-                  <td class="value-cell">
-                    <a [href]="'mailto:' + data.email" tabindex="-1">{{
-                      data.email
-                    }}</a>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </mat-card-content>
-        </mat-card>
-        <mat-card>
-          <mat-card-header> <mat-card-title>Notes</mat-card-title> </mat-card-header>
-          <mat-card-content>
-            <table class="w-full">
-              <tbody>
-                <app-access-request-field-edit
-                  [request]="data"
-                  name="note_to_requester"
-                  label="Note to requester"
-                  (saved)="saved($event)"
-                  (edited)="edited($event)"
-                  class="table-row-group"
-                ></app-access-request-field-edit>
-                <app-access-request-field-edit
-                  [request]="data"
-                  name="internal_note"
-                  label="Internal note"
-                  (saved)="saved($event)"
-                  (edited)="edited($event)"
-                  class="table-row-group"
-                ></app-access-request-field-edit>
-              </tbody>
-            </table>
           </mat-card-content>
         </mat-card>
       </div>

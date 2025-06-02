@@ -40,6 +40,7 @@ import { Iva, IvaState } from '@app/verification-addresses/models/iva';
 import { IvaStatePipe } from '@app/verification-addresses/pipes/iva-state.pipe';
 import { IvaTypePipe } from '@app/verification-addresses/pipes/iva-type.pipe';
 import { IvaService } from '@app/verification-addresses/services/iva.service';
+import { SplitLinesPipe } from '../../../shared/pipes/split-lines.pipe';
 import { AccessRequestFieldEditComponent } from '../access-request-field-edit/access-request-field-edit.component';
 
 /**
@@ -63,6 +64,7 @@ import { AccessRequestFieldEditComponent } from '../access-request-field-edit/ac
     AccessRequestFieldEditComponent,
     MatChipsModule,
     MatInputModule,
+    SplitLinesPipe,
   ],
   providers: [IvaTypePipe],
   templateUrl: './access-request-manager-dialog.component.html',
