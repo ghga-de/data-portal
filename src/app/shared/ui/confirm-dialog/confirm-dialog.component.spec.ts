@@ -50,12 +50,7 @@ describe('ConfirmDialogComponent', () => {
     expect(content.textContent).toBe('Test message');
   });
 
-  it('should display the test message with html tags', () => {
-    const content = screen.getByText('Test message', { selector: 'strong' });
-    expect(content).toBeVisible();
-  });
-
-  it('should not render the script tag and contents', () => {
+  it('should only render text and safe HTML tags', () => {
     const compiled = fixture.nativeElement;
     const content = compiled.querySelector('.mat-mdc-dialog-content');
     expect(content).toBeTruthy();
