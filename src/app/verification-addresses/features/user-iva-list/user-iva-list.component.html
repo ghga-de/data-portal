@@ -64,10 +64,16 @@
                   </button>
                 }
                 @default {
-                  <div class="text-bold text-warning text-base">
-                    Verification requested
-                    <mat-icon class="align-bottom">pending</mat-icon>
-                  </div>
+                  <button
+                    (click)="awaitVerificationCode(iva)"
+                    [disabled]="checkingIvaId()"
+                    class="w-64"
+                    mat-stroked-button
+                    data-umami-event="User IVA list Awaiting Verification Code Clicked"
+                  >
+                    <mat-icon>pending</mat-icon>
+                    Awaiting verification
+                  </button>
                 }
               }
             </div>

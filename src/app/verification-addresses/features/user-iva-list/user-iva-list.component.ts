@@ -4,14 +4,14 @@
  * @license Apache-2.0
  */
 
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, effect, inject, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { ConfirmationService } from '@app/shared/services/confirmation.service';
 import { NotificationService } from '@app/shared/services/notification.service';
-import { Iva, IvaType } from '@app/verification-addresses/models/iva';
+import { Iva, IvaState, IvaType } from '@app/verification-addresses/models/iva';
 import { IvaTypePipe } from '@app/verification-addresses/pipes/iva-type.pipe';
 import { IvaService } from '@app/verification-addresses/services/iva.service';
 import { NewIvaDialogComponent } from '../new-iva-dialog/new-iva-dialog.component';
@@ -42,6 +42,8 @@ export class UserIvaListComponent implements OnInit {
   ivas = this.#ivas.value;
   ivasAreLoading = this.#ivas.isLoading;
   ivasError = this.#ivas.error;
+
+  checkingIvaId = signal<string | null>(null);
 
   #ivaTypePipe = inject(IvaTypePipe);
 
@@ -154,6 +156,39 @@ export class UserIvaListComponent implements OnInit {
       }
     });
   }
+
+  /**
+   * Check whether the verification code has arrived
+   * @param iva - the IVA waiting for a verification code
+   */
+  awaitVerificationCode(iva: Iva): void {
+    if (this.checkingIvaId()) return;
+    this.checkingIvaId.set(iva.id);
+    this.reload();
+  }
+
+  /**
+   * Handle manual reloading of the user IVAs
+   */
+  #ivaReloadEffect = effect(() => {
+    const ivas = this.ivas();
+    const ivaId = this.checkingIvaId();
+    if (ivaId) {
+      const iva = ivas.find((iva) => iva.id === ivaId);
+      if (iva) {
+        const state = iva.state;
+        if (state === IvaState.CodeRequested || state === IvaState.CodeCreated) {
+          this.#notify.showWarning(
+            'A verification code has not yet been sent. Please try again later.',
+          );
+        } else if (state === IvaState.CodeTransmitted) {
+          this.#notify.showSuccess('A verification code has been sent to you.');
+          this.enterVerificationCode(iva);
+        }
+      }
+      this.checkingIvaId.set(null);
+    }
+  });
 
   /**
    * Delete the given IVA
