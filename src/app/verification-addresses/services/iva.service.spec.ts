@@ -39,21 +39,6 @@ class MockAuthService {
   user = computed(() => ({ id: currentUserId() }));
 }
 
-/**
- * Mock the HttpCacheManager
- */
-class MockHttpCacheManager {
-  deleted: string[] = [];
-
-  /**
-   * Mock deletion from the cache
-   * @param url The URL to be deleted
-   */
-  delete(url: string) {
-    this.deleted.push(url);
-  }
-}
-
 describe('IvaService', () => {
   let service: IvaService;
   let httpMock: HttpTestingController;
