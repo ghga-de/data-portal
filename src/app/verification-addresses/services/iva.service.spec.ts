@@ -15,6 +15,7 @@ import { computed, signal } from '@angular/core';
 import { allIvas, allIvasOfDoe, allIvasOfRoe } from '@app/../mocks/data';
 import { AuthService } from '@app/auth/services/auth.service';
 import { ConfigService } from '@app/shared/services/config.service';
+import { HttpCacheManager } from '@ngneat/cashew';
 import { IvaType } from '../models/iva';
 import { IvaService } from './iva.service';
 
@@ -38,16 +39,36 @@ class MockAuthService {
   user = computed(() => ({ id: currentUserId() }));
 }
 
+/**
+ * Mock the HttpCacheManager
+ */
+class MockHttpCacheManager {
+  deleted: string[] = [];
+
+  /**
+   * Mock deletion from the cache
+   * @param url The URL to be deleted
+   */
+  delete(url: string) {
+    this.deleted.push(url);
+  }
+}
+
 describe('IvaService', () => {
   let service: IvaService;
   let httpMock: HttpTestingController;
   let testBed: TestBed;
+
+  const httpCache = {
+    delete: jest.fn(),
+  };
 
   beforeEach(() => {
     testBed = TestBed.configureTestingModule({
       providers: [
         { provide: AuthService, useClass: MockAuthService },
         { provide: ConfigService, useClass: MockConfigService },
+        { provide: HttpCacheManager, useValue: httpCache },
         provideHttpClient(),
         provideHttpClientTesting(),
       ],
@@ -128,6 +149,28 @@ describe('IvaService', () => {
     expect(service.userIvas.isLoading()).toBe(false);
     expect(service.userIvas.error()).toBeUndefined();
     expect(service.userIvas.value()).toEqual(allIvasOfRoe);
+  });
+
+  it('should reload the IVAs of the current user', async () => {
+    jest.spyOn(httpCache, 'delete');
+    currentUserId.set('doe@test.dev');
+    service.loadUserIvas();
+    testBed.tick();
+    const url = 'http://mock.dev/auth/users/doe@test.dev/ivas';
+    const r1 = httpMock.expectOne(url);
+    expect(r1.request.method).toBe('GET');
+    r1.flush([]);
+    await Promise.resolve();
+    expect(service.userIvas.value()).toEqual([]);
+    expect(httpCache.delete).not.toHaveBeenCalled();
+    service.reloadUserIvas();
+    expect(httpCache.delete).toHaveBeenCalledWith(url);
+    testBed.tick();
+    const r2 = httpMock.expectOne(url);
+    expect(r2.request.method).toBe('GET');
+    r2.flush(allIvasOfDoe);
+    await Promise.resolve();
+    expect(service.userIvas.value()).toEqual(allIvasOfDoe);
   });
 
   it('should pass authorization errors when getting IVAs of a user', async () => {
