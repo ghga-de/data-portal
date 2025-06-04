@@ -1,51 +1,5 @@
 @use '@angular/material' as mat;
 
-:host {
-  display: contents;
-}
-
-td.flex {
-  display: flex;
-  align-items: center;
-  width: 100%;
-}
-
-td.flex span.grow {
-  flex-grow: 1;
-  flex-shrink: 1;
-  min-width: 0;
-  display: inline-block;
-}
-
-td.flex mat-form-field.grow {
-  flex-grow: 1;
-  flex-shrink: 1;
-  min-width: 50px;
-  width: 100%;
-}
-
-td span {
-    vertical-align: top;
-}
-
-th {
-    vertical-align: top;
-    width: 140px;
-}
-
-td.flex mat-chip {
-  flex-grow: 0;
-  flex-shrink: 0;
-  margin-left: 8px;
-}
-
-a mat-icon {
-  scale: 0.6;
-  margin: 0 -5px 0 -3px;
-  transform: translateY(3px);
-  height: 16px;
-  font-size: 18px;
-}
 
 mat-chip {
   @include mat.chips-overrides(
@@ -81,9 +35,4 @@ mat-chip {
 
 div.mdc-text-mat-mdc-form-field-infix {
     padding: 0 !important;
-}
-
-mat-form-field {
-  width: 80%;
-  min-width: 50px;
 }

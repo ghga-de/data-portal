@@ -1,10 +1,16 @@
 @if (!locked() || field()) {
   <tr>
-    <th class="pe-1 text-start">{{ label() }}:</th>
-    <td class="flex items-center">
+    <th
+      class="w-36 min-w-36 pe-1 text-start"
+      [class.align-top]="!isOpen()"
+      [class.align-center]="isOpen()"
+    >
+      {{ label() }}:
+    </th>
+    <td class="flex min-w-60 items-center" [class.pb-[2px]]="!isOpen()">
       @if (isOpen()) {
         @if (isDate()) {
-          <mat-form-field class="">
+          <mat-form-field class="grow">
             <mat-datepicker-toggle
               matIconSuffix
               class="float-end"
@@ -21,7 +27,7 @@
             <mat-datepicker #datepicker></mat-datepicker>
           </mat-form-field>
         } @else {
-          <mat-form-field class="">
+          <mat-form-field class="grow">
             @if (rows() > 1) {
               <textarea
                 matInput

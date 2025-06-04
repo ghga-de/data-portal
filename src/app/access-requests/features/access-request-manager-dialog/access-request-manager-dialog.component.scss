@@ -2,6 +2,7 @@
 
 mat-card {
   width: 100%;
+  overflow-x: scroll;
 
   mat-card-header {
     padding-bottom: 8px;
@@ -14,11 +15,18 @@ mat-card {
   }
 }
 
-th,  
-mat-radio-group:not(#iva-selection-group) td {  
+:not(mat-radio-group) > table td {  
   text-align: left;  
-  vertical-align: top; 
-  width: 150px;
+  vertical-align: top;  
+  min-width: 240px;  
+  padding-bottom: 4px;  
+}  
+
+th {  
+  width: 144px;  
+  min-width: 144px;  
+  text-align: left;
+  vertical-align: top;
 }  
 
 mat-dialog-actions {

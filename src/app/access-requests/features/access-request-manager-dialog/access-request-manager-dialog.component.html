@@ -16,10 +16,10 @@
                   label="Ticket ID"
                   (saved)="saved($event)"
                   (edited)="edited($event)"
-                  class="table-row"
+                  class="contents"
                 ></app-access-request-field-edit>
                 <tr>
-                  <th class="label-cell">Dataset ID:</th>
+                  <th>Dataset ID:</th>
                   <td>
                     <a
                       [href]="'/dataset/' + data.dataset_id"
@@ -42,7 +42,7 @@
                   <td>{{ data.dataset_title }}</td>
                 </tr>
                 <tr>
-                  <th class="label-cell">Status:</th>
+                  <th>Status:</th>
                   <td>
                     <strong class="{{ data.status | AccessRequestStatusClassPipe }}">{{
                       data.status
@@ -67,7 +67,7 @@
                   [isDate]="true"
                   (saved)="saved($event)"
                   (edited)="edited($event)"
-                  class="table-row-group"
+                  class="contents"
                 ></app-access-request-field-edit>
                 <app-access-request-field-edit
                   [request]="data"
@@ -76,6 +76,7 @@
                   [isDate]="true"
                   (saved)="saved($event)"
                   (edited)="edited($event)"
+                  class="contents"
                 ></app-access-request-field-edit>
                 <tr>
                   <th>Request details:</th>
@@ -87,7 +88,7 @@
                 </tr>
               </tbody>
             </table>
-            <p class="text-on-surface-variant pt-2 text-sm">
+            <p class="text-on-surface-variant pt-1 text-sm">
               The request has been made on
               {{ data.request_created | date: friendlyDateFormat }}.
             </p>
@@ -100,13 +101,13 @@
         </mat-card>
         <mat-card>
           <mat-card-header>
-            <mat-card-title>DAC & Requester:</mat-card-title>
+            <mat-card-title>DAC & Requester</mat-card-title>
           </mat-card-header>
           <mat-card-content>
             <table class="w-full">
               <tbody>
                 <tr>
-                  <th>DAC</th>
+                  <th>Data Access Committee:</th>
                   <td>
                     <span class="italic">{{ data.dac_alias }}</span> -
                     <a [href]="'mailto:' + data.dac_email" tabindex="-1">{{
@@ -115,7 +116,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <th class="label-cell">Requester:</th>
+                  <th>Requester:</th>
                   <td>
                     <span class="italic">{{ data.full_user_name }}</span> -
                     <a [href]="'mailto:' + data.email" tabindex="-1">{{
@@ -140,7 +141,7 @@
                   label="Note to requester"
                   (saved)="saved($event)"
                   (edited)="edited($event)"
-                  class="table-row-group"
+                  class="contents"
                 ></app-access-request-field-edit>
                 <app-access-request-field-edit
                   [request]="data"
@@ -148,7 +149,7 @@
                   label="Internal note"
                   (saved)="saved($event)"
                   (edited)="edited($event)"
-                  class="table-row-group"
+                  class="contents"
                 ></app-access-request-field-edit>
               </tbody>
             </table>
@@ -217,7 +218,7 @@
       </div>
     </div>
   </mat-dialog-content>
-  <mat-dialog-actions class="flex gap-x-2 gap-y-4">
+  <mat-dialog-actions class="border-top flex gap-x-2 gap-y-4 border-black/12 pt-4">
     @if (ivasAreLoading() || ivasError() || !ivas().length || !changeable()) {
       <button
         mat-stroked-button
