@@ -141,30 +141,28 @@ export class UserIvaListComponent implements OnInit {
   }
 
   /**
-   * Ask the user to enter the verification code for the given IVA
-   * and then continue with the verification process when the code was entered
+   * Enter the verification code if possible at this point.
+   * If the IVA is not in the state CodeTransmitted, we first reload the IVAs
+   * and check the state again. If it is still not in the state CodeTransmitted,
+   * we show a warning that the code has not yet been sent.
    * @param iva - the IVA to verify
    */
   enterVerificationCode(iva: Iva): void {
-    const address = this.#ivaAddress(iva);
-    const dialogRef = this.#dialog.open(VerificationDialogComponent, {
-      data: { address },
-    });
-    dialogRef.afterClosed().subscribe((code) => {
-      if (code) {
-        this.submitVerificationCode(iva, code);
-      }
-    });
-  }
-
-  /**
-   * Check whether the verification code has arrived
-   * @param iva - the IVA waiting for a verification code
-   */
-  awaitVerificationCode(iva: Iva): void {
-    if (this.checkingIvaId()) return;
-    this.checkingIvaId.set(iva.id);
-    this.reload();
+    if (iva.state === IvaState.CodeTransmitted) {
+      const address = this.#ivaAddress(iva);
+      const dialogRef = this.#dialog.open(VerificationDialogComponent, {
+        data: { address },
+      });
+      dialogRef.afterClosed().subscribe((code) => {
+        if (code) {
+          this.submitVerificationCode(iva, code);
+        }
+      });
+    } else {
+      if (this.checkingIvaId()) return;
+      this.checkingIvaId.set(iva.id);
+      this.reload();
+    }
   }
 
   /**
