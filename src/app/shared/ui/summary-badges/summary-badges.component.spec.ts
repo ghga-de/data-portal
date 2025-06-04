@@ -41,17 +41,18 @@ describe('SummaryBadgesComponent', () => {
 
   it('should create', () => {
     expect(componentFourItems).toBeTruthy();
+    expect(componentThreeItems).toBeTruthy();
   });
 
   it('should show "Show 2 More" when there are four items', () => {
     const compiled = fixtureFourItems.nativeElement as HTMLElement;
     const text = compiled.textContent;
-    expect(text).toContain('Show 2 more');
+    expect(text).toContain('test 1 1test 2 1Show 2 more…test 3 1test 4 1Show less…');
   });
 
   it('should show all three data points when there are only three', () => {
     const compiled = fixtureThreeItems.nativeElement as HTMLElement;
     const text = compiled.textContent;
-    expect(text).toContain('test 3');
+    expect(text).toContain('test 1 1test 2 1test 3 1');
   });
 });
