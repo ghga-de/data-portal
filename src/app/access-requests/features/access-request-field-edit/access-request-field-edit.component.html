@@ -57,7 +57,7 @@
           </mat-chip>
         } @else {
           <span class="grow">
-            @if (ticketUrl()) {
+            @if (ticketUrl()[idx]) {
               <a [href]="ticketUrl()" target="_blank" tabindex="-1"
                 >{{ fields()[idx]
                 }}<mat-icon
