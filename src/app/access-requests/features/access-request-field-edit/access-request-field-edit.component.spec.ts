@@ -30,8 +30,8 @@ describe('AccessRequestFieldComponent', () => {
 
     fixture = TestBed.createComponent(AccessRequestFieldEditComponent);
     fixture.componentRef.setInput('request', accessRequests[0]);
-    fixture.componentRef.setInput('name', 'internal_note');
-    fixture.componentRef.setInput('label', 'Internal Note');
+    fixture.componentRef.setInput('names', ['internal_note']);
+    fixture.componentRef.setInput('labels', ['Internal Note']);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

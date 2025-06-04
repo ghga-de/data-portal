@@ -1,86 +1,90 @@
-@if (!locked() || field()) {
-  <tr>
-    <th
-      class="w-36 min-w-36 pe-1 text-start"
-      [class.align-top]="!isOpen()"
-      [class.align-center]="isOpen()"
-    >
-      {{ label() }}:
-    </th>
-    <td class="flex min-w-60 items-center" [class.pb-[2px]]="!isOpen()">
-      @if (isOpen()) {
-        @if (isDate()) {
-          <mat-form-field class="grow">
-            <mat-datepicker-toggle
-              matIconSuffix
-              class="float-end"
-              [for]="datepicker"
-            ></mat-datepicker-toggle>
-            <input
-              matInput
-              [matDatepicker]="datepicker"
-              [(ngModel)]="field"
-              (dateChange)="onDateSelected($event)"
-              class="pr-8"
-            />
-
-            <mat-datepicker #datepicker></mat-datepicker>
-          </mat-form-field>
-        } @else {
-          <mat-form-field class="grow">
-            @if (rows() > 1) {
-              <textarea
+@if (!locked() || names()) {
+  @for (name of names(); track name; let idx = $index) {
+    <tr>
+      <th
+        class="w-36 min-w-36 pe-1 text-start"
+        [class.align-top]="!isOpen()"
+        [class.align-center]="isOpen()"
+      >
+        {{ labels()[idx] ? labels()[idx] + ':' : '' }}
+      </th>
+      <td class="flex min-w-60 items-center" [class.pb-[2px]]="!isOpen()">
+        @if (isOpen()) {
+          @if (isDate()) {
+            <mat-form-field class="grow">
+              <mat-datepicker-toggle
+                matIconSuffix
+                [for]="datepicker"
+              ></mat-datepicker-toggle>
+              <input
                 matInput
-                [(ngModel)]="field"
-                (ngModelChange)="changed()"
-                [rows]="rows()"
-              ></textarea>
-            } @else {
-              <input matInput [(ngModel)]="field" (ngModelChange)="changed()" />
-            }
-          </mat-form-field>
-        }
-        <mat-chip
-          class="smaller-chip interactive-chip cancel-edit-button mx-2"
-          (click)="cancel()"
-        >
-          <mat-icon>close</mat-icon>
-        </mat-chip>
-        <mat-chip
-          class="smaller-chip interactive-chip save-edit-button"
-          (click)="save()"
-        >
-          <mat-icon>check</mat-icon>
-        </mat-chip>
-      } @else {
-        <span class="grow">
-          @if (ticketUrl()) {
-            <a [href]="ticketUrl()" target="_blank" tabindex="-1"
-              >{{ field()
-              }}<mat-icon
-                role="img"
-                aria-hidden="true"
-                class="mat-icon material-symbols-outlined mat-icon-no-color no-translate h-4 w-4"
-                data-mat-icon-type="font"
-                >open_in_new</mat-icon
-              ></a
-            >
+                [matDatepicker]="datepicker"
+                [(ngModel)]="fields()[idx]"
+                (dateChange)="onDateSelected($event, idx)"
+                class="pr-8"
+              />
+              <mat-datepicker #datepicker></mat-datepicker>
+            </mat-form-field>
           } @else {
-            @if (isDate()) {
-              {{ field() | date: 'yyyy-MM-dd' }}
-            } @else {
-              {{ field() }}
-            }
+            <mat-form-field class="grow">
+              @if (rows()[idx] > 1) {
+                <textarea
+                  matInput
+                  [(ngModel)]="fields()[idx]"
+                  (ngModelChange)="changed(idx)"
+                  [rows]="rows()"
+                ></textarea>
+              } @else {
+                <input
+                  matInput
+                  [(ngModel)]="fields()[idx]"
+                  (ngModelChange)="changed(idx)"
+                />
+              }
+            </mat-form-field>
           }
-        </span>
-        @if (!locked()) {
           <mat-chip
-            (click)="edit()"
-            class="smaller-chip interactive-chip edit-button ms-2"
-            ><mat-icon class="scale-[0.75]">edit</mat-icon>
+            class="smaller-chip interactive-chip cancel-edit-button mx-2 mb-5"
+            (click)="cancel()"
+          >
+            <mat-icon>close</mat-icon>
           </mat-chip>
+          <mat-chip
+            class="smaller-chip interactive-chip save-edit-button mb-5"
+            (click)="save()"
+          >
+            <mat-icon>check</mat-icon>
+          </mat-chip>
+        } @else {
+          <span class="grow">
+            @if (ticketUrl()) {
+              <a [href]="ticketUrl()" target="_blank" tabindex="-1"
+                >{{ fields()[idx]
+                }}<mat-icon
+                  role="img"
+                  aria-hidden="true"
+                  class="mat-icon material-symbols-outlined mat-icon-no-color no-translate h-4 w-4"
+                  data-mat-icon-type="font"
+                  >open_in_new</mat-icon
+                ></a
+              >
+            } @else {
+              @if (isDate()) {
+                {{ fields()[idx] | date: 'yyyy-MM-dd' }}
+              } @else {
+                {{ fields()[idx] }}
+              }
+            }
+          </span>
+          @if (!locked()) {
+            <mat-chip
+              (click)="edit()"
+              class="smaller-chip interactive-chip edit-button ms-2"
+              ><mat-icon class="scale-[0.75]">edit</mat-icon>
+            </mat-chip>
+          }
         }
-      }
-    </td>
-  </tr>
+      </td>
+    </tr>
+  }
 }
