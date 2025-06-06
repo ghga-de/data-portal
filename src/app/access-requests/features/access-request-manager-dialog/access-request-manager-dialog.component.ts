@@ -165,21 +165,22 @@ export class AccessRequestManagerDialogComponent implements OnInit {
 
   /**
    * Memorize which editors have changes.
-   * @param event - The name of the field and whether it was edited
+   * @param event - The name of the fields and whether they were edited
    */
-  edited(event: [keyof AccessRequest, boolean]): void {
-    const [name, edited] = event;
-    if (edited) this.#pendingEdits.add(name);
-    else this.#pendingEdits.delete(name);
+  edited(event: Map<keyof AccessRequest, boolean>): void {
+    event.forEach((edited, name) => {
+      if (edited) this.#pendingEdits.add(name);
+      else this.#pendingEdits.delete(name);
+    });
   }
 
   /**
-   * Save a field change.
-   * @param event - The name of the field and the new value
+   * Save field changes.
+   * @param event - The names of the field and their new values
    */
-  saved(event: [keyof AccessRequest, string]): void {
-    const [name, value] = event;
-    this.#update({ [name]: value });
+  saved(event: Map<keyof AccessRequest, string>): void {
+    const data = Object.fromEntries(event);
+    this.#update(data as Partial<AccessRequest>);
   }
 
   /**
