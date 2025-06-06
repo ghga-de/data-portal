@@ -1,6 +1,6 @@
 @if (!locked() || names()) {
-  @for (name of names(); track name; let idx = $index) {
-    <tr>
+  @for (name of names(); track name; let idx = $index; let first = $first) {
+    <tr class="">
       <th
         class="w-36 min-w-36 pe-1 text-start"
         [class.align-top]="!isOpen()"
@@ -8,7 +8,10 @@
       >
         {{ labels()[idx] ? labels()[idx] + ':' : '' }}
       </th>
-      <td class="flex min-w-60 items-center" [class.pb-[2px]]="!isOpen()">
+      <td
+        class="flex min-w-60 items-center"
+        [class.pb-1]="!isOpen() && names().length > 1 && !first"
+      >
         @if (isOpen()) {
           @if (isDate()) {
             <mat-form-field class="grow">
@@ -18,11 +21,19 @@
               ></mat-datepicker-toggle>
               <input
                 matInput
+                [formControl]="durationFormControl[idx]!"
                 [matDatepicker]="datepicker"
                 [(ngModel)]="fields()[idx]"
+                [min]="name === 'access_starts' ? minFromDate : minUntilDate"
+                [max]="name === 'access_starts' ? maxFromDate : maxUntilDate"
                 (dateChange)="onDateSelected($event, idx)"
                 class="pr-8"
               />
+              @if (fieldErrorMessages()[idx]) {
+                <mat-error>
+                  {{ fieldErrorMessages()[idx] }}
+                </mat-error>
+              }
               <mat-datepicker #datepicker></mat-datepicker>
             </mat-form-field>
           } @else {
@@ -43,18 +54,24 @@
               }
             </mat-form-field>
           }
-          <mat-chip
-            class="smaller-chip interactive-chip cancel-edit-button mx-2 mb-5"
-            (click)="cancel()"
-          >
-            <mat-icon>close</mat-icon>
-          </mat-chip>
-          <mat-chip
-            class="smaller-chip interactive-chip save-edit-button mb-5"
-            (click)="save()"
-          >
-            <mat-icon>check</mat-icon>
-          </mat-chip>
+          @if ((names().length > 1 && first) || names().length === 1) {
+            <mat-chip
+              class="smaller-chip interactive-chip cancel-edit-button mx-2 mb-5"
+              (click)="cancel()"
+            >
+              <mat-icon>close</mat-icon>
+            </mat-chip>
+            <mat-chip
+              class="smaller-chip interactive-chip save-edit-button mb-5"
+              (click)="save()"
+              [class.grayscale]="saveDisabled()"
+              [disabled]="saveDisabled()"
+            >
+              <mat-icon>check</mat-icon>
+            </mat-chip>
+          } @else {
+            <div class="w-16"></div>
+          }
         } @else {
           <span class="grow">
             @if (ticketUrl()[idx]) {
@@ -63,7 +80,7 @@
                 }}<mat-icon
                   role="img"
                   aria-hidden="true"
-                  class="mat-icon material-symbols-outlined mat-icon-no-color no-translate h-4 w-4"
+                  class="mat-icon material-symbols-outlined mat-icon-no-color no-translate h-5 w-4"
                   data-mat-icon-type="font"
                   >open_in_new</mat-icon
                 ></a
@@ -76,7 +93,7 @@
               }
             }
           </span>
-          @if (!locked()) {
+          @if (!locked() && ((names().length > 1 && first) || names().length === 1)) {
             <mat-chip
               (click)="edit()"
               class="smaller-chip interactive-chip edit-button ms-2"
