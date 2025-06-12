@@ -18,7 +18,7 @@ class MockConfigService {
   helpdeskTicketUrl = 'http:/helpdesk.test/ticket/';
 }
 
-describe('AccessRequestDurationComponent', () => {
+describe('AccessRequestDurationEditComponent', () => {
   let component: AccessRequestDurationEditComponent;
   let fixture: ComponentFixture<AccessRequestDurationEditComponent>;
 
@@ -30,8 +30,6 @@ describe('AccessRequestDurationComponent', () => {
 
     fixture = TestBed.createComponent(AccessRequestDurationEditComponent);
     fixture.componentRef.setInput('request', accessRequests[0]);
-    fixture.componentRef.setInput('name', 'internal_note');
-    fixture.componentRef.setInput('label', 'Internal Note');
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

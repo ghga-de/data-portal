@@ -117,49 +117,31 @@ export class AccessRequestDialogComponent {
   }
 
   /**
-   * Validate a Form Control against the constraints of the from date
-   * @param control The form Control to validate
+   * Validate a Form Control against the constraints of the date
+   * @param control The Form Control to validate
+   * @param isFromDate Whether the date is a 'from' date
    * @returns a validation error or null
    */
-  #fromDateValidator = (
+  #dateValidator = (
     control: AbstractControl<Date, Date>,
+    isFromDate: boolean,
   ): ValidationErrors | null => {
-    const ret = this.#validateDateAgainstMinAndMax(
-      control.value,
-      this.minFromDate,
-      this.maxFromDate,
-    );
-    this.fromDateErrorMessage.set(this.getErrorMessageForValidationState('start', ret));
+    const [min, max, field, name] = isFromDate
+      ? [this.minFromDate, this.maxFromDate, this.fromDateErrorMessage, 'start']
+      : [this.minUntilDate, this.maxUntilDate, this.untilDateErrorMessage, 'end'];
+    const ret = this.#validateDateAgainstMinAndMax(control.value, min, max);
+    field.set(this.getErrorMessageForValidationState(name, ret));
     return ret;
   };
 
   readonly fromFormControl = new FormControl('', [
     Validators.required,
-    (control) => this.#fromDateValidator(control),
+    (control) => this.#dateValidator(control, true),
   ]);
-
-  /**
-   * Validate a Form Control against the constraints of the until date
-   * @param control The form Control to validate
-   * @returns a validation error or null
-   */
-  #untilDateValidator = (
-    control: AbstractControl<Date, Date>,
-  ): ValidationErrors | null => {
-    const midnightAdjustedDate = new Date(control.value);
-    midnightAdjustedDate.setHours(23, 59, 59, 999);
-    const ret = this.#validateDateAgainstMinAndMax(
-      midnightAdjustedDate,
-      this.minUntilDate,
-      this.maxUntilDate,
-    );
-    this.untilDateErrorMessage.set(this.getErrorMessageForValidationState('end', ret));
-    return ret;
-  };
 
   readonly untilFormControl = new FormControl('', [
     Validators.required,
-    (control) => this.#untilDateValidator(control),
+    (control) => this.#dateValidator(control, false),
   ]);
 
   /**
@@ -226,9 +208,9 @@ export class AccessRequestDialogComponent {
     const newFromMinDate = new Date(date);
     const dateMinusGrantMaxDays = new Date(date);
     dateMinusGrantMaxDays.setDate(date.getDate() - this.#config.accessGrantMaxDays);
-    if (currentDate < dateMinusGrantMaxDays)
-      newFromMinDate.setTime(dateMinusGrantMaxDays.getTime());
-    else newFromMinDate.setTime(currentDate.getTime());
+    newFromMinDate.setTime(
+      Math.max(dateMinusGrantMaxDays.getTime(), currentDate.getTime()),
+    );
 
     const newFromMaxDate = new Date(date);
     const dateMinusGrantMinDays = new Date(date);
@@ -237,9 +219,12 @@ export class AccessRequestDialogComponent {
     currentDatePlusUpfrontMaxDays.setDate(
       currentDate.getDate() + this.#config.accessUpfrontMaxDays,
     );
-    if (dateMinusGrantMinDays < currentDatePlusUpfrontMaxDays)
-      newFromMaxDate.setTime(dateMinusGrantMinDays.getTime());
-    else newFromMaxDate.setTime(currentDatePlusUpfrontMaxDays.getTime());
+    newFromMaxDate.setTime(
+      Math.min(
+        dateMinusGrantMinDays.getTime(),
+        currentDatePlusUpfrontMaxDays.getTime(),
+      ),
+    );
 
     this.minFromDate = newFromMinDate;
     this.maxFromDate = newFromMaxDate;

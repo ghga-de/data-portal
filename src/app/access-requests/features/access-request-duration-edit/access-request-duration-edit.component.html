@@ -15,20 +15,20 @@
         [class.items-start]="!isOpen()"
       >
         @if (isOpen()) {
-          <mat-form-field class="grow">
-            <mat-datepicker-toggle
-              matIconSuffix
-              [for]="datepicker"
-            ></mat-datepicker-toggle>
-            @if (first) {
+          @if (first) {
+            <mat-form-field class="grow">
+              <mat-datepicker-toggle
+                matIconSuffix
+                [for]="datepickerFrom"
+              ></mat-datepicker-toggle>
               <input
                 matInput
                 [formControl]="fromFormControl"
-                [matDatepicker]="datepicker"
+                [matDatepicker]="datepickerFrom"
                 [(ngModel)]="fromField"
                 [min]="minFromDate"
                 [max]="maxFromDate"
-                (dateChange)="onDateSelected($event, 'access_starts')"
+                (dateChange)="onDateSelected($event, true)"
                 class="pr-8"
               />
               @if (fromFieldErrorMessage()) {
@@ -36,15 +36,22 @@
                   {{ fromFieldErrorMessage() }}
                 </mat-error>
               }
-            } @else {
+              <mat-datepicker #datepickerFrom></mat-datepicker>
+            </mat-form-field>
+          } @else {
+            <mat-form-field class="grow">
+              <mat-datepicker-toggle
+                matIconSuffix
+                [for]="datepickerUntil"
+              ></mat-datepicker-toggle>
               <input
                 matInput
                 [formControl]="untilFormControl"
-                [matDatepicker]="datepicker"
+                [matDatepicker]="datepickerUntil"
                 [(ngModel)]="untilField"
                 [min]="minUntilDate"
                 [max]="maxUntilDate"
-                (dateChange)="onDateSelected($event, 'access_ends')"
+                (dateChange)="onDateSelected($event, false)"
                 class="pr-8"
               />
               @if (untilFieldErrorMessage()) {
@@ -52,9 +59,9 @@
                   {{ untilFieldErrorMessage() }}
                 </mat-error>
               }
-            }
-            <mat-datepicker #datepicker></mat-datepicker>
-          </mat-form-field>
+              <mat-datepicker #datepickerUntil></mat-datepicker>
+            </mat-form-field>
+          }
 
           @if (first) {
             <mat-chip
@@ -74,11 +81,15 @@
           }
         } @else {
           <span class="grow">
-            {{ fromField() | date: 'yyyy-MM-dd' }}
+            @if (first) {
+              {{ fromField() | date: 'yyyy-MM-dd' }}
+            } @else {
+              {{ untilField() | date: 'yyyy-MM-dd' }}
+            }
           </span>
           @if (!locked() && first) {
             <mat-chip
-              (click)="edit()"
+              (click)="open()"
               class="smaller-chip interactive-chip edit-button ms-2"
               ><mat-icon class="scale-[0.75]">edit</mat-icon>
             </mat-chip>

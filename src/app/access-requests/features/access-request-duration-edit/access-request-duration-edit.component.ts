@@ -69,15 +69,15 @@ export class AccessRequestDurationEditComponent implements OnInit {
   isOpen = signal<boolean>(false);
   isModified = signal<boolean>(false);
 
-  todayMidnight = new Date();
-  tomorrowMidnight = new Date();
+  todayStart = new Date();
+  todayEnd = new Date();
   minFromDate = new Date();
   minUntilDate = new Date();
   maxFromDate = new Date();
   maxUntilDate = new Date();
 
-  fromFieldErrorMessage = signal<string>('');
-  untilFieldErrorMessage = signal<string>('');
+  fromFieldErrorMessage = signal<string | null>(null);
+  untilFieldErrorMessage = signal<string | null>(null);
 
   #defaultFromDate = computed<Date>(() => {
     const date = new Date();
@@ -104,8 +104,8 @@ export class AccessRequestDurationEditComponent implements OnInit {
   untilFormControl: FormControl = new FormControl();
 
   constructor() {
-    this.todayMidnight.setHours(0, 0, 0, 0);
-    this.tomorrowMidnight.setHours(23, 59, 59, 99);
+    this.todayStart.setHours(0, 0, 0, 0);
+    this.todayEnd.setHours(23, 59, 59, 999);
   }
 
   /**
@@ -113,14 +113,12 @@ export class AccessRequestDurationEditComponent implements OnInit {
    */
   ngOnInit(): void {
     this.fromField.update(() => {
-      if (this.#defaultFromDate() < this.todayMidnight)
-        return new Date(this.todayMidnight);
+      if (this.#defaultFromDate() < this.todayStart) return new Date(this.todayStart);
       return new Date(this.#defaultFromDate());
     });
 
     this.untilField.update(() => {
-      if (this.#defaultUntilDate() < this.tomorrowMidnight)
-        return new Date(this.tomorrowMidnight);
+      if (this.#defaultUntilDate() < this.todayEnd) return new Date(this.todayEnd);
       return new Date(this.#defaultUntilDate());
     });
 
@@ -142,7 +140,7 @@ export class AccessRequestDurationEditComponent implements OnInit {
    * @param date - The from date to update the range for
    */
   updateAccessEndRanges(date: Date): void {
-    const dateAfterNextDay = new Date(this.todayMidnight);
+    const dateAfterNextDay = new Date(this.todayStart);
     this.minUntilDate = dateAfterNextDay;
 
     const newUntilMaxDate = new Date(date);
@@ -156,7 +154,7 @@ export class AccessRequestDurationEditComponent implements OnInit {
    * @param date - The until date to update the range for
    */
   updateAccessStartRanges(date: Date): void {
-    const currentDate = new Date(this.todayMidnight);
+    const currentDate = new Date(this.todayStart);
 
     const newFromMinDate = new Date();
     const dateMinusGrantMaxDays = new Date(date);
@@ -186,7 +184,7 @@ export class AccessRequestDurationEditComponent implements OnInit {
     min: Date,
     max: Date,
   ): ValidationErrors | null {
-    if (!inDate) return { invalid: true };
+    if (!inDate || min > max) return { invalid: true };
     if (inDate < min) {
       return { minDate: true };
     } else if (inDate > max) {
@@ -204,9 +202,9 @@ export class AccessRequestDurationEditComponent implements OnInit {
   getErrorMessageForValidationState(
     name: string,
     error: ValidationErrors | null,
-  ): string {
+  ): string | null {
     if (!error) {
-      return '';
+      return null;
     } else if (error['invalid']) {
       return 'Please choose a valid ' + name + ' date.';
     } else if (error['minDate']) {
@@ -254,20 +252,20 @@ export class AccessRequestDurationEditComponent implements OnInit {
     return ret;
   };
 
-  edit = () => {
+  open = () => {
     this.isOpen.set(true);
   };
 
   onDateSelected = (
     selectedDate: MatDatepickerInputEvent<Date> | Date,
-    name: string,
+    isFromDate: boolean,
   ) => {
-    let value: Date | null;
+    let value: Date | null = null;
     if (selectedDate instanceof MatDatepickerInputEvent) value = selectedDate.value;
     else value = selectedDate;
     if (value) {
       const selectedLocalDate = new Date(value);
-      if (name === 'access_starts') {
+      if (isFromDate) {
         selectedLocalDate.setHours(0, 0, 0, 0);
         this.updateAccessEndRanges(selectedLocalDate);
         this.fromField.set(selectedLocalDate);
@@ -284,7 +282,7 @@ export class AccessRequestDurationEditComponent implements OnInit {
   };
 
   saveDisabled = () => {
-    return this.fromFieldErrorMessage() !== '' || this.untilFieldErrorMessage() !== '';
+    return this.fromFieldErrorMessage() || this.untilFieldErrorMessage();
   };
 
   changed = () => {
@@ -299,15 +297,16 @@ export class AccessRequestDurationEditComponent implements OnInit {
   cancel = () => {
     if (this.isModified()) {
       this.fromField.update(() => this.#defaultFromDate());
+      this.untilField.update(() => this.#defaultUntilDate());
       this.edited.emit(['access_ends', false]);
     }
     this.isOpen.set(false);
   };
 
   save = () => {
-    this.onDateSelected(new Date(this.fromField() as Date), 'access_starts');
-    this.onDateSelected(new Date(this.untilField() as Date), 'access_ends');
-    if (!this.saveDisabled() && this.fromField() && this.untilField()) {
+    if (this.fromField() && this.untilField()) {
+      this.onDateSelected(new Date(this.fromField() as Date), true);
+      this.onDateSelected(new Date(this.untilField() as Date), false);
       const fromDate = new Date(this.fromField()!);
       const untilDate = new Date(this.untilField()!);
       if (fromDate && untilDate) {

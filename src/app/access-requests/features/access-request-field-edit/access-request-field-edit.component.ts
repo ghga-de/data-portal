@@ -72,16 +72,14 @@ export class AccessRequestFieldEditComponent implements OnInit {
   }
 
   #getValue = () => {
-    const name = this.name();
-    let value = this.field();
     if (
-      name === 'ticket_id' &&
-      value &&
-      (value as string).startsWith(this.#baseTicketUrl)
+      this.name() === 'ticket_id' &&
+      this.field() &&
+      (this.field() as string).startsWith(this.#baseTicketUrl)
     ) {
-      value = (value as string).slice(this.#baseTicketUrl.length);
+      this.field.set((this.field() as string).slice(this.#baseTicketUrl.length));
     }
-    return value;
+    return this.field();
   };
 
   edit = () => {
@@ -106,14 +104,11 @@ export class AccessRequestFieldEditComponent implements OnInit {
   };
 
   save = () => {
-    const name = this.name();
-    const names = this.name();
-    let value = this.#getValue();
-    if (value) {
-      this.field.update(() => value);
+    if (this.field()) {
+      this.field.update(() => this.field());
       if (this.isModified()) {
-        this.saved.emit(new Map([[name, value]]));
-        this.edited.emit([name, false]);
+        this.saved.emit(new Map([[this.name(), this.field() as string]]));
+        this.edited.emit([this.name(), false]);
       }
       this.isOpen.set(false);
     }
