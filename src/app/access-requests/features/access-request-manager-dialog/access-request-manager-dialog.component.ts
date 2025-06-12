@@ -41,6 +41,7 @@ import { IvaStatePipe } from '@app/verification-addresses/pipes/iva-state.pipe';
 import { IvaTypePipe } from '@app/verification-addresses/pipes/iva-type.pipe';
 import { IvaService } from '@app/verification-addresses/services/iva.service';
 import { SplitLinesPipe } from '../../../shared/pipes/split-lines.pipe';
+import { AccessRequestDurationEditComponent } from '../access-request-duration-edit/access-request-duration-edit.component';
 import { AccessRequestFieldEditComponent } from '../access-request-field-edit/access-request-field-edit.component';
 
 /**
@@ -65,6 +66,7 @@ import { AccessRequestFieldEditComponent } from '../access-request-field-edit/ac
     MatChipsModule,
     MatInputModule,
     SplitLinesPipe,
+    AccessRequestDurationEditComponent,
   ],
   providers: [IvaTypePipe, DatePipe],
   templateUrl: './access-request-manager-dialog.component.html',
@@ -167,11 +169,10 @@ export class AccessRequestManagerDialogComponent implements OnInit {
    * Memorize which editors have changes.
    * @param event - The name of the fields and whether they were edited
    */
-  edited(event: Map<keyof AccessRequest, boolean>): void {
-    event.forEach((edited, name) => {
-      if (edited) this.#pendingEdits.add(name);
-      else this.#pendingEdits.delete(name);
-    });
+  edited(event: [keyof AccessRequest, boolean]): void {
+    const [name, edited] = event;
+    if (edited) this.#pendingEdits.add(name);
+    else this.#pendingEdits.delete(name);
   }
 
   /**

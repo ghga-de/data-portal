@@ -1,107 +1,54 @@
-@if (!locked() || names()) {
-  @for (name of names(); track name; let idx = $index; let first = $first) {
-    <tr class="">
-      <th
-        class="w-36 min-w-36 pe-1 text-start"
-        [class.align-top]="!isOpen()"
-        [class.align-center]="isOpen()"
-      >
-        {{ labels()[idx] ? labels()[idx] + ':' : '' }}
-      </th>
-      <td
-        class="flex min-w-60 items-center"
-        [class.pb-1]="!isOpen() && names().length > 1 && !first"
-      >
-        @if (isOpen()) {
-          @if (isDate()) {
-            <mat-form-field class="grow">
-              <mat-datepicker-toggle
-                matIconSuffix
-                [for]="datepicker"
-              ></mat-datepicker-toggle>
-              <input
-                matInput
-                [formControl]="durationFormControl[idx]!"
-                [matDatepicker]="datepicker"
-                [(ngModel)]="fields()[idx]"
-                [min]="name === 'access_starts' ? minFromDate : minUntilDate"
-                [max]="name === 'access_starts' ? maxFromDate : maxUntilDate"
-                (dateChange)="onDateSelected($event, idx)"
-                class="pr-8"
-              />
-              @if (fieldErrorMessages()[idx]) {
-                <mat-error>
-                  {{ fieldErrorMessages()[idx] }}
-                </mat-error>
-              }
-              <mat-datepicker #datepicker></mat-datepicker>
-            </mat-form-field>
+@if (!locked() || name()) {
+  <tr>
+    <th
+      class="w-36 min-w-36 pe-1 text-start"
+      [class.align-top]="!isOpen()"
+      [class.align-center]="isOpen()"
+    >
+      {{ label() ? label() + ':' : '' }}
+    </th>
+    <td class="flex min-w-60 items-center">
+      @if (isOpen()) {
+        <mat-form-field class="grow">
+          @if (rows() > 1) {
+            <textarea
+              matInput
+              [(ngModel)]="field"
+              (ngModelChange)="changed()"
+              [rows]="rows()"
+            ></textarea>
           } @else {
-            <mat-form-field class="grow">
-              @if (rows()[idx] > 1) {
-                <textarea
-                  matInput
-                  [(ngModel)]="fields()[idx]"
-                  (ngModelChange)="changed(idx)"
-                  [rows]="rows()"
-                ></textarea>
-              } @else {
-                <input
-                  matInput
-                  [(ngModel)]="fields()[idx]"
-                  (ngModelChange)="changed(idx)"
-                />
-              }
-            </mat-form-field>
+            <input matInput [(ngModel)]="field" (ngModelChange)="changed()" />
           }
-          @if ((names().length > 1 && first) || names().length === 1) {
-            <mat-chip
-              class="smaller-chip interactive-chip cancel-edit-button mx-2 mb-5"
-              (click)="cancel()"
+        </mat-form-field>
+        <mat-chip
+          class="smaller-chip interactive-chip cancel-edit-button mx-2 mb-5"
+          (click)="cancel()"
+          ><mat-icon>close</mat-icon></mat-chip
+        >
+        <mat-chip
+          class="smaller-chip interactive-chip save-edit-button mb-5"
+          (click)="save()"
+          ><mat-icon>check</mat-icon></mat-chip
+        >
+      } @else {
+        <span class="grow">
+          @if (ticketUrl()) {
+            <a [href]="ticketUrl()" target="_blank" tabindex="-1"
+              >{{ field() }}<mat-icon aria-hidden="true">open_in_new</mat-icon></a
             >
-              <mat-icon>close</mat-icon>
-            </mat-chip>
-            <mat-chip
-              class="smaller-chip interactive-chip save-edit-button mb-5"
-              (click)="save()"
-              [class.grayscale]="saveDisabled()"
-              [disabled]="saveDisabled()"
-            >
-              <mat-icon>check</mat-icon>
-            </mat-chip>
           } @else {
-            <div class="w-16"></div>
+            {{ field() }}
           }
-        } @else {
-          <span class="grow">
-            @if (ticketUrl()[idx]) {
-              <a [href]="ticketUrl()" target="_blank" tabindex="-1"
-                >{{ fields()[idx]
-                }}<mat-icon
-                  role="img"
-                  aria-hidden="true"
-                  class="mat-icon material-symbols-outlined mat-icon-no-color no-translate h-5 w-4"
-                  data-mat-icon-type="font"
-                  >open_in_new</mat-icon
-                ></a
-              >
-            } @else {
-              @if (isDate()) {
-                {{ fields()[idx] | date: 'yyyy-MM-dd' }}
-              } @else {
-                {{ fields()[idx] }}
-              }
-            }
-          </span>
-          @if (!locked() && ((names().length > 1 && first) || names().length === 1)) {
-            <mat-chip
-              (click)="edit()"
-              class="smaller-chip interactive-chip edit-button ms-2"
-              ><mat-icon class="scale-[0.75]">edit</mat-icon>
-            </mat-chip>
-          }
+        </span>
+        @if (!locked()) {
+          <mat-chip
+            (click)="edit()"
+            class="smaller-chip interactive-chip edit-button ms-2"
+            ><mat-icon class="scale-[0.75]">edit</mat-icon>
+          </mat-chip>
         }
-      </td>
-    </tr>
-  }
+      }
+    </td>
+  </tr>
 }

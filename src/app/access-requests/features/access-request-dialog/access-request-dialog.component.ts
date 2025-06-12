@@ -29,8 +29,6 @@ import { AccessRequestDialogData } from '@app/access-requests/models/access-requ
 import { ConfigService } from '@app/shared/services/config.service';
 import { DATE_INPUT_FORMAT_HINT } from '@app/shared/utils/date-formats';
 
-const MILLISECONDS_PER_DAY = 86400000;
-
 /**
  * This component contains a form for all the data needed for an access request.
  */
@@ -84,14 +82,16 @@ export class AccessRequestDialogComponent {
 
   constructor() {
     this.todayMidnight.setHours(0, 0, 0, 0);
-    this.fromDate.set(this.todayMidnight);
-    let d = new Date();
+    this.fromDate.set(new Date(this.todayMidnight));
+
+    let d = new Date(this.todayMidnight);
+    d.setHours(23, 59, 59, 999);
+    this.minUntilDate.setDate(d.getDate() + this.#config.accessGrantMinDays);
+
     d.setDate(d.getDate() + this.#config.defaultAccessDurationDays);
     this.untilDate.set(d);
-    this.minUntilDate.setDate(
-      this.minUntilDate.getDate() + this.#config.accessGrantMinDays,
-    );
-    this.updateUntilRangeForFromValue(new Date());
+
+    this.updateUntilRangeForFromValue(new Date(this.todayMidnight));
     this.updateFromRangeForUntilValue(d);
   }
 
@@ -146,8 +146,10 @@ export class AccessRequestDialogComponent {
   #untilDateValidator = (
     control: AbstractControl<Date, Date>,
   ): ValidationErrors | null => {
+    const midnightAdjustedDate = new Date(control.value);
+    midnightAdjustedDate.setHours(23, 59, 59, 999);
     const ret = this.#validateDateAgainstMinAndMax(
-      control.value,
+      midnightAdjustedDate,
       this.minUntilDate,
       this.maxUntilDate,
     );
@@ -221,19 +223,23 @@ export class AccessRequestDialogComponent {
   updateFromRangeForUntilValue(date: Date): void {
     const currentDate = this.todayMidnight;
 
-    const newFromMinDate = new Date(
-      Math.max(
-        currentDate.getTime(),
-        date.getTime() - this.#config.accessGrantMaxDays * MILLISECONDS_PER_DAY,
-      ),
+    const newFromMinDate = new Date(date);
+    const dateMinusGrantMaxDays = new Date(date);
+    dateMinusGrantMaxDays.setDate(date.getDate() - this.#config.accessGrantMaxDays);
+    if (currentDate < dateMinusGrantMaxDays)
+      newFromMinDate.setTime(dateMinusGrantMaxDays.getTime());
+    else newFromMinDate.setTime(currentDate.getTime());
+
+    const newFromMaxDate = new Date(date);
+    const dateMinusGrantMinDays = new Date(date);
+    dateMinusGrantMinDays.setDate(date.getDate() - this.#config.accessGrantMinDays);
+    const currentDatePlusUpfrontMaxDays = new Date(currentDate);
+    currentDatePlusUpfrontMaxDays.setDate(
+      currentDate.getDate() + this.#config.accessUpfrontMaxDays,
     );
-    const newFromMaxDate = new Date(
-      Math.min(
-        date.getTime() - this.#config.accessGrantMinDays * MILLISECONDS_PER_DAY,
-        currentDate.getTime() +
-          this.#config.accessUpfrontMaxDays * MILLISECONDS_PER_DAY,
-      ),
-    );
+    if (dateMinusGrantMinDays < currentDatePlusUpfrontMaxDays)
+      newFromMaxDate.setTime(dateMinusGrantMinDays.getTime());
+    else newFromMaxDate.setTime(currentDatePlusUpfrontMaxDays.getTime());
 
     this.minFromDate = newFromMinDate;
     this.maxFromDate = newFromMaxDate;
@@ -244,12 +250,12 @@ export class AccessRequestDialogComponent {
    * @param date - The from date to update the range for
    */
   updateUntilRangeForFromValue(date: Date): void {
-    const newUntilMinDate = new Date(
-      date.getTime() + this.#config.accessGrantMinDays * MILLISECONDS_PER_DAY,
-    );
-    const newUntilMaxDate = new Date(
-      date.getTime() + this.#config.accessGrantMaxDays * MILLISECONDS_PER_DAY,
-    );
+    const newUntilMinDate = new Date(date);
+    newUntilMinDate.setHours(23, 59, 59, 999);
+    newUntilMinDate.setDate(date.getDate() + this.#config.accessGrantMinDays);
+    const newUntilMaxDate = new Date(date);
+    newUntilMaxDate.setHours(23, 59, 59, 999);
+    newUntilMaxDate.setDate(date.getDate() + this.#config.accessGrantMaxDays);
 
     this.minUntilDate = newUntilMinDate;
     this.maxUntilDate = newUntilMaxDate;
@@ -281,7 +287,9 @@ export class AccessRequestDialogComponent {
   submit(): void {
     const description = this.descriptionFormControl.value;
     const fromDate = this.fromDate();
+    fromDate?.setHours(0, 0, 0, 0);
     const untilDate = this.untilDate();
+    untilDate?.setHours(23, 59, 59, 999);
     const email = this.emailFormControl.value;
     const data = { ...this.data, description, fromDate, untilDate, email };
     this.dialogRef.close(data);

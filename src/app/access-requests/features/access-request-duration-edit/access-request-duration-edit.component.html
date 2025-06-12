@@ -1,0 +1,90 @@
+@if (!locked()) {
+  @for (item of [0, 1]; track item; let first = $first) {
+    <tr>
+      <th
+        class="w-36 min-w-36 pe-1 text-start"
+        [class.align-top]="!isOpen()"
+        [class.align-center]="isOpen()"
+      >
+        Access {{ first ? 'Starts' : 'Ends' }}:
+      </th>
+      <td
+        class="flex min-w-60"
+        [class.pb-1]="!first"
+        [class.items-center]="isOpen()"
+        [class.items-start]="!isOpen()"
+      >
+        @if (isOpen()) {
+          <mat-form-field class="grow">
+            <mat-datepicker-toggle
+              matIconSuffix
+              [for]="datepicker"
+            ></mat-datepicker-toggle>
+            @if (first) {
+              <input
+                matInput
+                [formControl]="fromFormControl"
+                [matDatepicker]="datepicker"
+                [(ngModel)]="fromField"
+                [min]="minFromDate"
+                [max]="maxFromDate"
+                (dateChange)="onDateSelected($event, 'access_starts')"
+                class="pr-8"
+              />
+              @if (fromFieldErrorMessage()) {
+                <mat-error>
+                  {{ fromFieldErrorMessage() }}
+                </mat-error>
+              }
+            } @else {
+              <input
+                matInput
+                [formControl]="untilFormControl"
+                [matDatepicker]="datepicker"
+                [(ngModel)]="untilField"
+                [min]="minUntilDate"
+                [max]="maxUntilDate"
+                (dateChange)="onDateSelected($event, 'access_ends')"
+                class="pr-8"
+              />
+              @if (untilFieldErrorMessage()) {
+                <mat-error>
+                  {{ untilFieldErrorMessage() }}
+                </mat-error>
+              }
+            }
+            <mat-datepicker #datepicker></mat-datepicker>
+          </mat-form-field>
+
+          @if (first) {
+            <mat-chip
+              class="smaller-chip interactive-chip cancel-edit-button mx-2 mb-5"
+              (click)="cancel()"
+              ><mat-icon>close</mat-icon></mat-chip
+            >
+            <mat-chip
+              class="smaller-chip interactive-chip save-edit-button mb-5"
+              (click)="save()"
+              [class.grayscale]="saveDisabled()"
+              [disabled]="saveDisabled()"
+              ><mat-icon>check</mat-icon></mat-chip
+            >
+          } @else {
+            <span class="w-16"></span>
+          }
+        } @else {
+          <span class="grow">
+            {{ fromField() | date: 'yyyy-MM-dd' }}
+          </span>
+          @if (!locked() && first) {
+            <mat-chip
+              (click)="edit()"
+              class="smaller-chip interactive-chip edit-button ms-2"
+              ><mat-icon class="scale-[0.75]">edit</mat-icon>
+            </mat-chip>
+          }
+        }
+      </td>
+    </tr>
+  }
+}

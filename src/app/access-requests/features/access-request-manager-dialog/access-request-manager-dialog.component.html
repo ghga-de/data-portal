@@ -12,8 +12,8 @@
               <tbody>
                 <app-access-request-field-edit
                   [request]="data"
-                  [names]="['ticket_id']"
-                  [labels]="['Ticket ID']"
+                  name="ticket_id"
+                  label="Ticket ID"
                   (saved)="saved($event)"
                   (edited)="edited($event)"
                   class="contents"
@@ -25,15 +25,8 @@
                       [href]="'/dataset/' + data.dataset_id"
                       target="_blank"
                       tabindex="-1"
-                    >
-                      {{ data.dataset_id }}
-                      <mat-icon
-                        role="img"
-                        aria-hidden="true"
-                        class="mat-icon material-symbols-outlined mat-icon-no-color no-translate h-4 w-4"
-                        data-mat-icon-type="font"
-                        >open_in_new</mat-icon
-                      >
+                      >{{ data.dataset_id
+                      }}<mat-icon aria-hidden="true">open_in_new</mat-icon>
                     </a>
                   </td>
                 </tr>
@@ -60,15 +53,12 @@
           <mat-card-content>
             <table class="w-full">
               <tbody>
-                <app-access-request-field-edit
+                <app-access-request-duration-edit
                   [request]="data"
-                  [names]="['access_starts', 'access_ends']"
-                  [labels]="['Access starts', 'Access ends']"
-                  [isDate]="true"
                   (saved)="saved($event)"
                   (edited)="edited($event)"
                   class="contents"
-                ></app-access-request-field-edit>
+                ></app-access-request-duration-edit>
                 <tr>
                   <th>Request details:</th>
                   <td class="max-h-38 overflow-y-auto">
@@ -128,16 +118,16 @@
               <tbody>
                 <app-access-request-field-edit
                   [request]="data"
-                  [names]="['note_to_requester']"
-                  [labels]="['Note to requester']"
+                  name="note_to_requester"
+                  label="Note to requester"
                   (saved)="saved($event)"
                   (edited)="edited($event)"
                   class="contents"
                 ></app-access-request-field-edit>
                 <app-access-request-field-edit
                   [request]="data"
-                  [names]="['internal_note']"
-                  [labels]="['Internal note']"
+                  name="internal_note"
+                  label="Internal note"
                   (saved)="saved($event)"
                   (edited)="edited($event)"
                   class="contents"
