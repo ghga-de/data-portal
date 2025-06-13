@@ -74,7 +74,8 @@
               {{ data.request_created | date: friendlyDateFormat }}.
             </p>
             <p class="text-on-surface-variant pt-2 text-sm">
-              Access has been requested from
+              Access has been
+              {{ data.status === allowedState ? 'granted' : 'requested ' }} from
               {{ data.access_starts | date: friendlyDateFormat }} until
               {{ data.access_ends | date: friendlyDateFormat }}.
             </p>

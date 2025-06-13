@@ -75,6 +75,7 @@ export class AccessRequestManagerDialogComponent implements OnInit {
   readonly dialogRef = inject(MatDialogRef<AccessRequestManagerDialogComponent>);
   readonly data = inject<AccessRequest>(MAT_DIALOG_DATA);
   readonly friendlyDateFormat = FRIENDLY_DATE_FORMAT;
+  allowedState = AccessRequestStatus.allowed;
   #ivaService = inject(IvaService);
   #confirmationService = inject(ConfirmationService);
   #notificationService = inject(NotificationService);
