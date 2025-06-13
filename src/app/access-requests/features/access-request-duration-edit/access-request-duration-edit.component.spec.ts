@@ -15,7 +15,9 @@ import { ConfigService } from '@app/shared/services/config.service';
  * Mock the config service as needed by the access request duration edit component
  */
 class MockConfigService {
-  helpdeskTicketUrl = 'http:/helpdesk.test/ticket/';
+  accessGrantMaxDays = 730;
+  accessGrantMaxExtend = 5;
+  defaultAccessDurationDays = 365;
 }
 
 describe('AccessRequestDurationEditComponent', () => {
