@@ -309,9 +309,31 @@ export class AccessRequestDurationEditComponent implements OnInit {
       this.onDateSelected(new Date(this.untilField() as Date), false);
       const fromDate = new Date(this.fromField()!);
       const untilDate = new Date(this.untilField()!);
+      const fromUTCDate = new Date(
+        Date.UTC(
+          fromDate.getFullYear(),
+          fromDate.getMonth(),
+          fromDate.getDate(),
+          0,
+          0,
+          0,
+          0,
+        ),
+      );
+      const untilUTCDate = new Date(
+        Date.UTC(
+          untilDate.getFullYear(),
+          untilDate.getMonth(),
+          untilDate.getDate(),
+          23,
+          59,
+          59,
+          999,
+        ),
+      );
       if (fromDate && untilDate) {
-        const fromISO = fromDate.toISOString();
-        const untilISO = untilDate.toISOString();
+        const fromISO = fromUTCDate.toISOString();
+        const untilISO = untilUTCDate.toISOString();
         if (this.isModified()) {
           const saveMap = new Map<keyof AccessRequest, string>();
           saveMap.set('access_starts', fromISO);
