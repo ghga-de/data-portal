@@ -106,6 +106,26 @@
                     }}</a>
                   </td>
                 </tr>
+                <tr>
+                  <th>LifeScience ID:</th>
+                  <td>
+                    @if (userExtId.isLoading()) {
+                      <em>Loading...</em>
+                    } @else if (userExtId.error() || !userExtId.value()) {
+                      <em>could not be retrieved</em>
+                    } @else {
+                      {{ userExtId.value()!.split('@', 2)[0] }}
+                    }
+                  </td>
+                </tr>
+                @if (userExtId.value() && userExtId.value()!.split('@', 2)[1]) {
+                  <tr>
+                    <th></th>
+                    <td class="pt-0">
+                      {{ '@' + userExtId.value()!.split('@', 2)[1] }}
+                    </td>
+                  </tr>
+                }
               </tbody>
             </table>
           </mat-card-content>
