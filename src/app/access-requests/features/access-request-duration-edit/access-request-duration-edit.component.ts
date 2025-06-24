@@ -206,13 +206,13 @@ export class AccessRequestDurationEditComponent implements OnInit {
     if (!error) {
       return null;
     } else if (error['invalid']) {
-      return 'Invalid ' + name + ' date.';
+      return 'Invalid ' + name + ' date';
     } else if (error['minDate']) {
-      return 'Too early ' + name + ' date.';
+      return 'Too early ' + name + ' date';
     } else if (error['maxDate']) {
-      return 'Too late ' + name + ' date.';
+      return 'Too late ' + name + ' date';
     } else {
-      return 'Invalid ' + name + ' date.';
+      return 'Invalid ' + name + ' date';
     }
   }
 
