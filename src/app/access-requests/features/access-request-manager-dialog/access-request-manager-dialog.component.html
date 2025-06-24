@@ -121,14 +121,6 @@
                     }
                   </td>
                 </tr>
-                @if (userExtId.value() && userExtId.value()!.split('@', 2)[1]) {
-                  <tr>
-                    <th></th>
-                    <td class="pt-0">
-                      {{ '@' + userExtId.value()!.split('@', 2)[1] }}
-                    </td>
-                  </tr>
-                }
               </tbody>
             </table>
           </mat-card-content>
