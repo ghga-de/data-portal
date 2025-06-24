@@ -114,10 +114,7 @@
                     } @else if (userExtId.error() || !userExtId.value()) {
                       <em>could not be retrieved</em>
                     } @else {
-                      <span class="block">{{
-                        userExtId.value()!.split('@', 2)[0]
-                      }}</span
-                      ><span>{{ '@' + userExtId.value()!.split('@', 2)[1] }}</span>
+                      {{ userExtId.value()!.split('@', 2).join('\u200B@') }}
                     }
                   </td>
                 </tr>

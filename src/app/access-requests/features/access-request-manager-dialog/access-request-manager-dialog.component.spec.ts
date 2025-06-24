@@ -104,10 +104,10 @@ describe('AccessRequestManagerDialogComponent', () => {
     expect(row).toBeVisible();
   });
 
-  it('should load the LD ID and show it spread over two table rows', () => {
-    let row = screen.getByRole('row', { name: 'LifeScience ID: ls-id-of-joe' });
-    expect(row).toBeVisible();
-    row = screen.getByRole('row', { name: '@ls-aai.dev' });
+  it('should load the LD ID and show it in a table row', () => {
+    let row = screen.getByRole('row', {
+      name: 'LifeScience ID: ls-id-of-joe​@ls-aai.dev',
+    });
     expect(row).toBeVisible();
   });
 
