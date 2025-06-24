@@ -110,9 +110,9 @@
                   <th>LifeScience ID:</th>
                   <td>
                     @if (userExtId.isLoading()) {
-                      <em>Loading...</em>
+                      <em class="text-gray-400">Loading...</em>
                     } @else if (userExtId.error() || !userExtId.value()) {
-                      <em>could not be retrieved</em>
+                      <em class="text-red-600">could not be retrieved</em>
                     } @else {
                       {{ userExtId.value()!.split('@', 2).join('\u200B@') }}
                     }
