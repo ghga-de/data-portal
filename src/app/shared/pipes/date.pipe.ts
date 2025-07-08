@@ -23,11 +23,9 @@ import { inject, Pipe, PipeTransform } from '@angular/core';
  * We assume the Intl API is supported since all modern browsers have it.
  * If it is not supported, it behaves like the original DatePipe.
  */
-@Pipe({
-  name: 'DatePipe',
-})
+@Pipe({ name: 'DatePipe' })
 export class DatePipe implements PipeTransform {
-  private datePipe = inject(CommonDatePipe);
+  #datePipe = inject(CommonDatePipe);
 
   /**
    * Transforms a date value according to the specified parameters.
@@ -48,7 +46,7 @@ export class DatePipe implements PipeTransform {
     if (timezone && timezone.includes('/')) {
       timezone = this.#convertTimezoneToOffset(value, timezone);
     }
-    return this.datePipe.transform(value, format, timezone, locale);
+    return this.#datePipe.transform(value, format, timezone, locale);
   }
 
   /**

@@ -4,7 +4,7 @@
  * @license Apache-2.0
  */
 
-import { DatePipe as AngularDatePipe } from '@angular/common';
+import { DatePipe as CommonDatePipe } from '@angular/common';
 import { TestBed } from '@angular/core/testing';
 import { DatePipe } from './date.pipe';
 
@@ -13,7 +13,7 @@ describe('DatePipe', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [AngularDatePipe, DatePipe],
+      providers: [CommonDatePipe, DatePipe],
     });
     pipe = TestBed.inject(DatePipe);
   });
@@ -74,5 +74,17 @@ describe('DatePipe', () => {
     // note that this is summer time in Sydney, so UTC+11
     const result = pipe.transform(date, 'yyyy-MM-dd HH:mm', 'Australia/Sydney');
     expect(result).toBe('2024-12-26 02:30');
+  });
+
+  it('should break if Sydney timezone is used with common pipe', () => {
+    const pipe = new CommonDatePipe('en');
+    const date = new Date('2024-12-25T15:30:00Z');
+    let result = pipe.transform(date, 'yyyy-MM-dd HH:mm', '+11:00');
+    expect(result).toBe('2024-12-26 02:30');
+    result = pipe.transform(date, 'yyyy-MM-dd HH:mm', 'Australia/Sydney');
+    // The following is expected to break (see
+    // https://github.com/angular/angular/issues/48279).
+    // If it works, it means we do not need the custom DatePipe any more.
+    expect(result).not.toBe('2024-12-26 02:30');
   });
 });
