@@ -10,14 +10,17 @@ import { inject, Pipe, PipeTransform } from '@angular/core';
 /**
  * This is an improved DatePipe that also supports IANA time zone names.
  *
- * The existing Angular DatePipe currently only supports time zone offsets.
+ * The existing Angular DatePipe currently only supports time zone offsets
+ * such as '+0100', but not abbreviations or IANA time zone names.
+ *
  * This custom DatePipe extends the functionality by allowing
  * the use of IANA time zone names like 'Europe/Berlin'.
- * Please use either time zone offsets or IANA time zone names,
- * but do not use time zone abbreviations (e.g., 'CET', 'EST')
- * as they can be ambiguous* and can lead to incorrect results
- * depending on the runtime environment.
- * This pipe assumes the browser supports the Intl API, which all modern browsers do.
+ *
+ * Please use either time zone offsets or IANA time zone names, but do not
+ * use time zone abbreviations such as 'CET', as they can be ambiguous and
+ * lead to incorrect results depending on the runtime environment.
+ *
+ * We assume the Intl API is supported since all modern browsers have it.
  * If it is not supported, it behaves like the original DatePipe.
  */
 @Pipe({
@@ -43,7 +46,7 @@ export class DatePipe implements PipeTransform {
     // If the timezone is specified as an IANA time zone name,
     // convert the time zone to an offset using the Intl API.
     if (timezone && timezone.includes('/')) {
-      timezone = this.convertTimezoneToOffset(value, timezone);
+      timezone = this.#convertTimezoneToOffset(value, timezone);
     }
     return this.datePipe.transform(value, format, timezone, locale);
   }
@@ -54,7 +57,7 @@ export class DatePipe implements PipeTransform {
    * @param timezone The IANA timezone name to convert
    * @returns The timezone offset in +HHMM or -HHMM format
    */
-  private convertTimezoneToOffset(
+  #convertTimezoneToOffset(
     value: Date | string | number | null | undefined,
     timezone: string,
   ): string {
