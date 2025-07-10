@@ -272,17 +272,13 @@ export class AccessRequestDialogComponent {
   submit(): void {
     const description = this.descriptionFormControl.value;
     const email = this.emailFormControl.value;
-    const from = this.fromDate();
-    const until = this.untilDate();
-    const fromDate = timeZoneToUTC(
-      from!.getFullYear(),
-      from!.getMonth(),
-      from!.getDate(),
-    );
+    const from = this.fromDate()!;
+    const until = this.untilDate()!;
+    const fromDate = timeZoneToUTC(from.getFullYear(), from.getMonth(), from.getDate());
     const untilDate = timeZoneToUTC(
-      until!.getFullYear(),
-      until!.getMonth(),
-      until!.getDate(),
+      until.getFullYear(),
+      until.getMonth(),
+      until.getDate(),
       true,
     );
     const data = { ...this.data, description, fromDate, untilDate, email };
