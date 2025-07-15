@@ -4,7 +4,7 @@
  * @license Apache-2.0
  */
 
-import { DatePipe } from '@angular/common';
+import { DatePipe as CommonDatePipe } from '@angular/common';
 import {
   Component,
   computed,
@@ -31,7 +31,13 @@ import {
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { AccessRequest } from '@app/access-requests/models/access-requests';
+import { DatePipe } from '@app/shared/pipes/date.pipe';
 import { ConfigService } from '@app/shared/services/config.service';
+import {
+  DEFAULT_DATE_OUTPUT_FORMAT,
+  DEFAULT_TIME_ZONE,
+  timeZoneToUTC,
+} from '@app/shared/utils/date-formats';
 
 /**
  * Editor for the duration of access requests.
@@ -47,6 +53,7 @@ import { ConfigService } from '@app/shared/services/config.service';
     DatePipe,
     ReactiveFormsModule,
   ],
+  providers: [CommonDatePipe],
   templateUrl: './access-request-duration-edit.component.html',
   styleUrl: './access-request-duration-edit.component.scss',
 })
@@ -55,6 +62,9 @@ export class AccessRequestDurationEditComponent implements OnInit {
   maxDays = this.#config.accessGrantMaxDays;
   maxExtend = this.#config.accessGrantMaxExtend;
   defaultDuration = this.#config.defaultAccessDurationDays;
+
+  periodFormat = DEFAULT_DATE_OUTPUT_FORMAT;
+  periodTimeZone = DEFAULT_TIME_ZONE;
 
   request = input.required<AccessRequest>();
 
@@ -206,13 +216,13 @@ export class AccessRequestDurationEditComponent implements OnInit {
     if (!error) {
       return null;
     } else if (error['invalid']) {
-      return 'Please choose a valid ' + name + ' date.';
+      return 'Invalid ' + name + ' date';
     } else if (error['minDate']) {
-      return 'Please choose a later ' + name + ' date.';
+      return 'Too early ' + name + ' date';
     } else if (error['maxDate']) {
-      return 'Please choose an earlier ' + name + ' date.';
+      return 'Too late ' + name + ' date';
     } else {
-      return 'Invalid ' + name + ' date.';
+      return 'Invalid ' + name + ' date';
     }
   }
 
@@ -307,9 +317,20 @@ export class AccessRequestDurationEditComponent implements OnInit {
     if (this.fromField() && this.untilField()) {
       this.onDateSelected(new Date(this.fromField() as Date), true);
       this.onDateSelected(new Date(this.untilField() as Date), false);
-      const fromDate = new Date(this.fromField()!);
-      const untilDate = new Date(this.untilField()!);
-      if (fromDate && untilDate) {
+      const from = new Date(this.fromField()!);
+      const until = new Date(this.untilField()!);
+      const fromDate = timeZoneToUTC(
+        from.getFullYear(),
+        from.getMonth(),
+        from.getDate(),
+      );
+      const untilDate = timeZoneToUTC(
+        until.getFullYear(),
+        until.getMonth(),
+        until.getDate(),
+        true,
+      );
+      if (from && until) {
         const fromISO = fromDate.toISOString();
         const untilISO = untilDate.toISOString();
         if (this.isModified()) {

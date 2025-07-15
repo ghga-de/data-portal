@@ -14,13 +14,18 @@ import {
   output,
   signal,
 } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { AccessRequest } from '@app/access-requests/models/access-requests';
 import { ConfigService } from '@app/shared/services/config.service';
+
+// we assume that ticket IDs are integers with up to 9 digits
+const PATTERN_TICKET_ID = '^[0-9]{0,9}$';
+const ERROR_TICKET_ID = 'must be a number with up to 9 digits';
 
 /**
  * Editor for one of the fields of AccessRequest.
@@ -31,6 +36,7 @@ import { ConfigService } from '@app/shared/services/config.service';
     MatDatepickerModule,
     MatChipsModule,
     MatIconModule,
+    MatFormFieldModule,
     MatInputModule,
     FormsModule,
     ReactiveFormsModule,
@@ -58,8 +64,15 @@ export class AccessRequestFieldEditComponent implements OnInit {
   isOpen = signal<boolean>(false);
   isModified = signal<boolean>(false);
 
+  pattern = computed<string>(() =>
+    this.name() === 'ticket_id' ? PATTERN_TICKET_ID : '.*',
+  );
+  validationError = signal<string>('');
+
   ticketUrl = computed<string | null>(() =>
-    this.name() === 'ticket_id' ? this.#baseTicketUrl + this.field() : null,
+    this.name() === 'ticket_id' && this.field()
+      ? this.#baseTicketUrl + this.field()
+      : null,
   );
 
   #defaultValue = computed<string>(() => this.request()[this.name()] || '');
@@ -71,24 +84,33 @@ export class AccessRequestFieldEditComponent implements OnInit {
     this.field.update(() => this.#defaultValue());
   }
 
-  #getValue = () => {
-    if (
-      this.name() === 'ticket_id' &&
-      this.field() &&
-      (this.field() as string).startsWith(this.#baseTicketUrl)
-    ) {
-      this.field.set((this.field() as string).slice(this.#baseTicketUrl.length));
-    }
-    return this.field();
-  };
-
   edit = () => {
     this.isOpen.set(true);
   };
 
-  changed = () => {
+  /**
+   * Remove any URL prefix from the field value if this is a ticket ID
+   * and set the proper error message if the field is invalid.
+   * @param control - the form control for the field
+   */
+  #handleControl = (control: FormControl) => {
+    if (this.name() === 'ticket_id') {
+      // if the field is prefixed with (parts of) the base ticket URL, remove that prefix
+      const baseUrl = this.#baseTicketUrl;
+      let value = this.field() || '';
+      const i = value.lastIndexOf('/');
+      if (baseUrl && i >= 0 && baseUrl.endsWith(value.substring(0, i + 1))) {
+        value = value.substring(i + 1);
+        control.setValue(value);
+      }
+      this.validationError.set(control.invalid ? ERROR_TICKET_ID : '');
+    }
+  };
+
+  changed = (control?: FormControl) => {
+    if (control) this.#handleControl(control);
     const wasModified = this.isModified();
-    const isModified = this.#getValue() !== this.#defaultValue();
+    const isModified = this.field() !== this.#defaultValue();
     if (isModified !== wasModified) {
       this.isModified.set(isModified);
       this.edited.emit([this.name(), isModified]);
@@ -104,13 +126,14 @@ export class AccessRequestFieldEditComponent implements OnInit {
   };
 
   save = () => {
-    if (this.field()) {
-      this.field.update(() => this.field());
-      if (this.isModified()) {
-        this.saved.emit(new Map([[this.name(), this.field() as string]]));
-        this.edited.emit([this.name(), false]);
-      }
-      this.isOpen.set(false);
+    const field = this.field();
+    if (field === undefined) return;
+    this.field.update(() => field);
+    if (this.isModified()) {
+      const name = this.name();
+      this.saved.emit(new Map([[name, field]]));
+      this.edited.emit([name, false]);
     }
+    this.isOpen.set(false);
   };
 }
