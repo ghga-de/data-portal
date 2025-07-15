@@ -260,10 +260,7 @@ export class MetadataValidatorComponent implements OnInit {
 
         if (result.validation_success !== undefined) {
           if (result.validation_success) {
-            this.#validationService['appendToProcessLog'](
-              'Schema validation successful!',
-              'success',
-            );
+            this.#validationService.log('Schema validation successful!', 'success');
             this.#setStepStatus('validation', 'succeeded');
             this.#updateStatus(
               'Transpilation and validation successful!',
@@ -272,14 +269,14 @@ export class MetadataValidatorComponent implements OnInit {
             );
 
             if (result.validation_stdout && result.validation_stdout.trim()) {
-              this.#validationService['appendToProcessLog'](
+              this.#validationService.log(
                 `Validation Output (stdout):\n${result.validation_stdout.trim()}`,
                 'info',
               );
             }
 
             if (result.validation_stderr && result.validation_stderr.trim()) {
-              this.#validationService['appendToProcessLog'](
+              this.#validationService.log(
                 `Validation Info/Warnings (stderr):\n${result.validation_stderr.trim()}`,
                 'info',
               );
@@ -289,10 +286,7 @@ export class MetadataValidatorComponent implements OnInit {
             }
           } else {
             this.#setStepStatus('validation', 'failed');
-            this.#validationService['appendToProcessLog'](
-              'Schema validation FAILED.',
-              'error',
-            );
+            this.#validationService.log('Schema validation FAILED.', 'error');
             this.#updateStatus(
               'Transpilation successful, but validation failed.',
               true,
@@ -302,21 +296,21 @@ export class MetadataValidatorComponent implements OnInit {
             let combinedValidationError = '';
             if (result.validation_stdout && result.validation_stdout.trim()) {
               combinedValidationError += `Validation Output (stdout):\n${result.validation_stdout.trim()}\n\n`;
-              this.#validationService['appendToProcessLog'](
+              this.#validationService.log(
                 `Validation Output (stdout):\n${result.validation_stdout.trim()}`,
                 'info',
               );
             }
             if (result.validation_stderr && result.validation_stderr.trim()) {
               combinedValidationError += `Validation Errors (stderr):\n${result.validation_stderr.trim()}`;
-              this.#validationService['appendToProcessLog'](
+              this.#validationService.log(
                 `Validation Errors (stderr):\n${result.validation_stderr.trim()}`,
                 'error',
               );
             } else {
               combinedValidationError +=
                 'No specific error message from validation. Check console.';
-              this.#validationService['appendToProcessLog'](
+              this.#validationService.log(
                 'No specific error message from validation. Check console.',
                 'error',
               );
@@ -326,7 +320,7 @@ export class MetadataValidatorComponent implements OnInit {
             );
           }
         } else {
-          this.#validationService['appendToProcessLog'](
+          this.#validationService.log(
             'Validation was not performed (likely due to prior transpilation issues).',
             'info',
           );

@@ -49,10 +49,15 @@ export class MetadataValidationService {
   readonly isPyodideLoading = this.#pyodideLoading.asReadonly();
 
   constructor() {
-    this.initPyodide();
+    this.#initPyodide();
   }
 
-  private appendToProcessLog(
+  /**
+   * Logs a message to the process log.
+   * @param message - the log message
+   * @param type - the log type (info, success, error, debug)
+   */
+  public log(
     message: string,
     type: 'info' | 'success' | 'error' | 'debug' = 'info',
   ): void {
@@ -70,18 +75,18 @@ export class MetadataValidationService {
    * @returns A promise that resolves when Pyodide is fully initialized.
    * @throws Will throw an error if Pyodide fails to initialize or if critical packages fail to load.
    */
-  private async initPyodide(): Promise<void> {
+  async #initPyodide(): Promise<void> {
     if (this.#pyodideLoading() || this.#pyodideInitialized()) {
       return;
     }
 
     this.#pyodideLoading.set(true);
-    this.appendToProcessLog('Loading Pyodide runtime...', 'info');
+    this.log('Loading Pyodide runtime...', 'info');
 
     try {
       // Load Pyodide from CDN
       const pyodideScript = document.createElement('script');
-      pyodideScript.src = `${PYODIDE_CDN_URL}pyodide.js`;
+      pyodideScript.src = PYODIDE_CDN_URL + 'pyodide.js';
       document.head.appendChild(pyodideScript);
 
       // Wait for script to load
@@ -96,28 +101,25 @@ export class MetadataValidationService {
         throw new Error('loadPyodide not found in global scope');
       }
 
-      this.appendToProcessLog(
-        `Setting Pyodide indexURL to: ${PYODIDE_CDN_URL}`,
-        'debug',
-      );
+      this.log('Setting Pyodide indexURL to: ' + PYODIDE_CDN_URL, 'debug');
 
       this.#pyodide = await loadPyodide({
         indexURL: PYODIDE_CDN_URL,
       });
-      this.appendToProcessLog('Pyodide core loaded.', 'info');
+      this.log('Pyodide core loaded.', 'info');
 
-      this.appendToProcessLog('Loading micropip & ghga-transpiler...', 'info');
+      this.log('Loading micropip & ghga-transpiler...', 'info');
       await this.#pyodide.loadPackage(['micropip']);
       const micropip = this.#pyodide.pyimport('micropip');
-      this.appendToProcessLog('Micropip loaded.', 'info');
+      this.log('Micropip loaded.', 'info');
 
       const packagesToInstall = ['ghga-transpiler', 'schemapack', 'openpyxl', 'typer'];
-      this.appendToProcessLog(
-        `Attempting to install: ${packagesToInstall.join(', ')} ...`,
+      this.log(
+        'Attempting to install: ' + packagesToInstall.join(', ') + ' ...',
         'info',
       );
       await micropip.install(packagesToInstall, { keep_going: true });
-      this.appendToProcessLog('Package installation attempt finished.', 'info');
+      this.log('Package installation attempt finished.', 'info');
 
       const yamlString = await firstValueFrom(
         this.#http.get(YAML_SCHEMA_PATH, { responseType: 'text' }),
@@ -127,28 +129,24 @@ export class MetadataValidationService {
       );
       const targetPathInPyodide = '/data/metadata_model.yaml';
 
-      const yamlWritten = this.writeYamlStringToPyodide(
-        this.#pyodide,
+      const yamlWritten = this.#writeYamlStringToPyodide(
         yamlString,
         targetPathInPyodide,
       );
       if (yamlWritten) {
-        this.appendToProcessLog(
+        this.log(
           'Custom YAML (from asset) loaded successfully into Pyodide.',
           'success',
         );
       } else {
-        this.appendToProcessLog(
-          'Failed to load custom YAML (from asset) into Pyodide.',
-          'error',
-        );
+        this.log('Failed to load custom YAML (from asset) into Pyodide.', 'error');
       }
 
       this.#pyodideInitialized.set(true);
-      this.appendToProcessLog('ghga-transpiler ready.', 'success');
+      this.log('ghga-transpiler ready.', 'success');
     } catch (error: any) {
       const errorMsg = error.message || 'Unknown initialization error.';
-      this.appendToProcessLog(`Initialization Error: ${errorMsg}`, 'error');
+      this.log(`Initialization Error: ${errorMsg}`, 'error');
       console.error(
         'FATAL: Pyodide initialization or critical package loading error:',
         error,
@@ -159,18 +157,20 @@ export class MetadataValidationService {
     }
   }
 
-  private writeYamlStringToPyodide(
-    pyodideInstance: any,
-    yamlString: string,
-    pyodideFsPath: string,
-  ): boolean {
+  /**
+   * Writes a YAML string to the Pyodide filesystem.
+   * @param yamlString - the YAML content to write
+   * @param pyodideFsPath - the absolute path in the Pyodide filesystem where to write the file
+   * @returns True if successful, false otherwise
+   */
+  #writeYamlStringToPyodide(yamlString: string, pyodideFsPath: string): boolean {
     try {
-      if (!pyodideInstance || typeof pyodideInstance.FS !== 'object') {
-        this.appendToProcessLog('Pyodide instance or FS is not available.', 'error');
+      if (!this.#pyodide?.FS) {
+        this.log('Pyodide instance or FS is not available.', 'error');
         return false;
       }
       if (typeof yamlString !== 'string') {
-        this.appendToProcessLog('Provided YAML content is not a string.', 'error');
+        this.log('Provided YAML content is not a string.', 'error');
         return false;
       }
       if (
@@ -178,30 +178,26 @@ export class MetadataValidationService {
         typeof pyodideFsPath !== 'string' ||
         !pyodideFsPath.startsWith('/')
       ) {
-        this.appendToProcessLog(
+        this.log(
           'Invalid Pyodide filesystem path provided. It must be an absolute path string (e.g., "/config/data.yaml").',
           'error',
         );
         return false;
       }
 
-      this.appendToProcessLog(
+      this.log(
         `Writing YAML string to Pyodide FS at: ${pyodideFsPath}. String length: ${yamlString.length}`,
         'debug',
       );
 
       const dirname = pyodideFsPath.substring(0, pyodideFsPath.lastIndexOf('/'));
-      if (
-        dirname &&
-        dirname !== '' &&
-        !pyodideInstance.FS.analyzePath(dirname).exists
-      ) {
-        pyodideInstance.FS.mkdirTree(dirname);
-        this.appendToProcessLog(`Created directory ${dirname} in Pyodide FS.`, 'debug');
+      if (dirname && !this.#pyodide.FS.analyzePath(dirname).exists) {
+        this.#pyodide.FS.mkdirTree(dirname);
+        this.log(`Created directory ${dirname} in Pyodide FS.`, 'debug');
       }
 
-      pyodideInstance.FS.writeFile(pyodideFsPath, yamlString, { encoding: 'utf8' });
-      this.appendToProcessLog(
+      this.#pyodide.FS.writeFile(pyodideFsPath, yamlString, { encoding: 'utf8' });
+      this.log(
         `YAML string successfully written to Pyodide FS at: ${pyodideFsPath}`,
         'success',
       );
@@ -211,7 +207,7 @@ export class MetadataValidationService {
         `[Service] Error writing YAML string to Pyodide FS at ${pyodideFsPath}:`,
         error,
       );
-      this.appendToProcessLog(
+      this.log(
         `Error writing YAML string to ${pyodideFsPath}: ${error.message}`,
         'error',
       );
@@ -233,7 +229,7 @@ export class MetadataValidationService {
   ): Promise<PyodideOutput> {
     if (!this.#pyodideInitialized() || !this.#pyodide) {
       const msg = 'Pyodide not ready.';
-      this.appendToProcessLog(msg, 'error');
+      this.log(msg, 'error');
       return {
         json_output: null,
         error_message: msg,
@@ -243,60 +239,51 @@ export class MetadataValidationService {
     }
 
     this.#processLog.set([]);
-    this.appendToProcessLog('Transpilation process started...', 'info');
+    this.log('Transpilation process started...', 'info');
 
     const inputFilePath = '/data/input.xlsx';
     const outputFilePathPy = '/data/output.json';
 
     try {
-      this.appendToProcessLog(
+      this.log(
         `Preparing to write input file to Pyodide FS: ${inputFilePath}`,
         'debug',
       );
-      this.appendToProcessLog(
-        `Designated output file (Python side): ${outputFilePathPy}`,
-        'debug',
-      );
+      this.log(`Designated output file (Python side): ${outputFilePathPy}`, 'debug');
 
       try {
         if (!this.#pyodide.FS.analyzePath('/data').exists) {
           this.#pyodide.FS.mkdir('/data');
-          this.appendToProcessLog('Created /data directory in Pyodide FS.', 'debug');
+          this.log('Created /data directory in Pyodide FS.', 'debug');
         }
       } catch (e: any) {
-        this.appendToProcessLog(
-          `Error with /data directory: ${e.message || e}`,
-          'error',
-        );
+        this.log(`Error with /data directory: ${e?.message || e}`, 'error');
         throw e;
       }
 
       this.#pyodide.FS.writeFile(inputFilePath, new Uint8Array(fileBuffer));
-      this.appendToProcessLog(
+      this.log(
         `FS.writeFile completed for ${inputFilePath}. Byte length: ${fileBuffer.byteLength}`,
         'debug',
       );
 
       const analysis = this.#pyodide.FS.analyzePath(inputFilePath);
-      if (!analysis.exists || !analysis.object || !analysis.object.contents) {
-        this.appendToProcessLog(
-          `${inputFilePath} NOT FOUND or empty after writing!`,
-          'error',
-        );
+      if (!analysis.exists || !analysis.object?.contents) {
+        this.log(`${inputFilePath} NOT FOUND or empty after writing!`, 'error');
         throw new Error('File not found in Pyodide FS after writing.');
       }
 
       const transpilerArgs = [inputFilePath, outputFilePathPy];
       this.#pyodide.globals.set('transpiler_args_js', transpilerArgs);
-      this.appendToProcessLog('Set transpiler_args_js in Pyodide globals.', 'debug');
-      this.appendToProcessLog('Executing Python transpiler script...', 'info');
+      this.log('Set transpiler_args_js in Pyodide globals.', 'debug');
+      this.log('Executing Python transpiler script...', 'info');
       const transpileResultProxy = await this.#pyodide.runPythonAsync(
         this.#pythonScript,
       );
       const transpileResult = Object.fromEntries(transpileResultProxy.toJs());
       transpileResultProxy.destroy();
 
-      this.appendToProcessLog(
+      this.log(
         `Python script finished. Success: ${transpileResult['success']}`,
         'debug',
       );
@@ -308,13 +295,13 @@ export class MetadataValidationService {
         error,
       );
       let errorMessage = 'An unexpected error occurred during transpilation.';
-      if (error && error.message) {
+      if (error?.message) {
         errorMessage = error.message;
         if (error.message.includes('Traceback (most recent call last):')) {
           errorMessage = `A Python error occurred. Check browser console for full traceback. Original message: ${error.message.substring(0, 200)}...`;
         }
       }
-      this.appendToProcessLog(`Transpilation Failed: ${errorMessage}`, 'error');
+      this.log(`Transpilation Failed: ${errorMessage}`, 'error');
       return {
         json_output: null,
         error_message: errorMessage,
