@@ -29,11 +29,6 @@
                 "input": "public"
               },
               {
-                "glob": "**/*",
-                "input": "node_modules/pyodide",
-                "output": "/assets/pyodide/"
-              },
-              {
                 "glob": "mockServiceWorker.js",
                 "input": "src/mocks",
                 "output": "./"

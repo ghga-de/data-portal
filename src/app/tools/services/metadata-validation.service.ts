@@ -26,6 +26,7 @@ export interface LogEntry {
 
 const YAML_SCHEMA_PATH = 'assets/schemas/ghga_metadata_schema.resolved.schemapack.yaml';
 const PYTHON_SCRIPT_PATH = 'assets/schemas/transpilation_and_validation.py';
+const PYODIDE_CDN_URL = 'https://cdn.jsdelivr.net/pyodide/v0.27.7/full/';
 
 /**
  * This service handles the initialization of Pyodide,
@@ -78,12 +79,30 @@ export class MetadataValidationService {
     this.appendToProcessLog('Loading Pyodide runtime...', 'info');
 
     try {
-      const { loadPyodide } = await /* @vite-ignore */ import('pyodide');
-      const pyodideCdnUrl = 'https://cdn.jsdelivr.net/pyodide/v0.27.7/full/';
-      this.appendToProcessLog(`Setting Pyodide indexURL to: ${pyodideCdnUrl}`, 'debug');
+      // Load Pyodide from CDN
+      const pyodideScript = document.createElement('script');
+      pyodideScript.src = `${PYODIDE_CDN_URL}pyodide.js`;
+      document.head.appendChild(pyodideScript);
+
+      // Wait for script to load
+      await new Promise((resolve, reject) => {
+        pyodideScript.onload = resolve;
+        pyodideScript.onerror = reject;
+      });
+
+      // Access loadPyodide from global scope
+      const loadPyodide = (window as any).loadPyodide;
+      if (!loadPyodide) {
+        throw new Error('loadPyodide not found in global scope');
+      }
+
+      this.appendToProcessLog(
+        `Setting Pyodide indexURL to: ${PYODIDE_CDN_URL}`,
+        'debug',
+      );
 
       this.#pyodide = await loadPyodide({
-        indexURL: pyodideCdnUrl,
+        indexURL: PYODIDE_CDN_URL,
       });
       this.appendToProcessLog('Pyodide core loaded.', 'info');
 
