@@ -5,14 +5,7 @@
  */
 
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  effect,
-  inject,
-  OnInit,
-  signal,
-  WritableSignal,
-} from '@angular/core';
+import { Component, effect, inject, signal, WritableSignal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import {
@@ -36,7 +29,7 @@ type StepName = 'fileSelection' | 'transpilation' | 'validation';
   styleUrls: ['./metadata-validator.component.scss'],
   imports: [CommonModule, MatButtonModule, MatIconModule],
 })
-export class MetadataValidatorComponent implements OnInit {
+export class MetadataValidatorComponent {
   #validationService = inject(MetadataValidationService);
   statusText: WritableSignal<string> = signal('Initializing...');
   isStatusError: WritableSignal<boolean> = signal(false);
@@ -64,41 +57,36 @@ export class MetadataValidatorComponent implements OnInit {
 
   #fileBuffer: ArrayBuffer | null = null;
 
-  constructor() {
-    effect(() => {
-      const isReady = this.#validationService.isPyodideInitialized();
-      const isLoading = this.#validationService.isPyodideLoading();
+  // Effect to handle Pyodide initialization status
+  #pyodideStatusEffect = effect(() => {
+    const isReady = this.#validationService.isPyodideInitialized();
+    const isLoading = this.#validationService.isPyodideLoading();
 
-      if (isLoading) {
-        this.#updateStatus('Loading Pyodide runtime...', false, true);
-        this.#resetStepStatus();
-      } else if (isReady) {
-        this.#updateStatus('ghga-transpiler ready.', false, false);
-        this.currentStep.set('fileSelection');
-        this.processButtonEnabled.set(this.#fileBuffer !== null);
-      } else {
-        this.#updateStatus('Pyodide initialization failed.', true, false);
-        this.processButtonEnabled.set(false);
-        this.#setStepStatus('fileSelection', 'failed');
+    if (isLoading) {
+      this.#updateStatus('Loading Pyodide runtime...', false, true);
+      this.#resetStepStatus();
+    } else if (isReady) {
+      this.#updateStatus('ghga-transpiler ready.', false, false);
+      this.currentStep.set('fileSelection');
+      this.processButtonEnabled.set(this.#fileBuffer !== null);
+    } else {
+      this.#updateStatus('Pyodide initialization failed.', true, false);
+      this.processButtonEnabled.set(false);
+      this.#setStepStatus('fileSelection', 'failed');
+    }
+  });
+
+  // Effect to handle process log updates from the service
+  #processLogEffect = effect(() => {
+    this.processLogEntries.set(this.#validationService.getProcessLog());
+    // Scroll to bottom of log if it's visible, ensure this runs after DOM update
+    setTimeout(() => {
+      const logContainer = document.getElementById('processLog');
+      if (logContainer) {
+        logContainer.scrollTop = logContainer.scrollHeight;
       }
-    });
-
-    // React to process log updates from the service
-    effect(() => {
-      this.processLogEntries.set(this.#validationService.getProcessLog());
-      // Scroll to bottom of log if it's visible, ensure this runs after DOM update
-      setTimeout(() => {
-        const logContainer = document.getElementById('processLog');
-        if (logContainer) {
-          logContainer.scrollTop = logContainer.scrollHeight;
-        }
-      }, 0);
-    });
-  }
-
-  ngOnInit(): void {
-    this.jsonOutput.set('Awaiting XLSX file...');
-  }
+    }, 0);
+  });
 
   /**
    * Resets all step statuses to 'idle'.

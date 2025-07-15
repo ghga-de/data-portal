@@ -1,5 +1,5 @@
 /**
- * This service provides functionality to validate metadata files
+ * This service provides functionality to transpile and validate metadata files
  * @copyright The GHGA Authors
  * @license Apache-2.0
  */
@@ -12,7 +12,6 @@ export interface PyodideOutput {
   json_output: string | null;
   error_message: string | null;
   success: boolean;
-  py_output_file_path: string;
   validation_success?: boolean;
   validation_stdout?: string;
   validation_stderr?: string;
@@ -27,6 +26,10 @@ export interface LogEntry {
 const YAML_SCHEMA_PATH = 'assets/schemas/ghga_metadata_schema.resolved.schemapack.yaml';
 const PYTHON_SCRIPT_PATH = 'assets/schemas/transpilation_and_validation.py';
 const PYODIDE_CDN_URL = 'https://cdn.jsdelivr.net/pyodide/v0.27.7/full/';
+
+const SCHEMA_FILE_PATH = '/data/metadata_model.yaml';
+const INPUT_FILE_PATH = '/data/input.xlsx';
+const OUTPUT_FILE_PATH = '/data/output.json';
 
 /**
  * This service handles the initialization of Pyodide,
@@ -127,12 +130,8 @@ export class MetadataValidationService {
       this.#pythonScript = await firstValueFrom(
         this.#http.get(PYTHON_SCRIPT_PATH, { responseType: 'text' }),
       );
-      const targetPathInPyodide = '/data/metadata_model.yaml';
 
-      const yamlWritten = this.#writeYamlStringToPyodide(
-        yamlString,
-        targetPathInPyodide,
-      );
+      const yamlWritten = this.#writeYamlStringToPyodide(yamlString, SCHEMA_FILE_PATH);
       if (yamlWritten) {
         this.log(
           'Custom YAML (from asset) loaded successfully into Pyodide.',
@@ -216,7 +215,7 @@ export class MetadataValidationService {
   }
 
   /**
-   * This function perofrms the actual transpilation of an XLSX file to JSON.
+   * This function performs the actual transpilation of an XLSX file to JSON.
    * It writes the XLSX file to the Pyodide filesystem,
    * executes the `ghga-transpiler` Python script,
    * and returns the JSON output or error details.
@@ -234,22 +233,18 @@ export class MetadataValidationService {
         json_output: null,
         error_message: msg,
         success: false,
-        py_output_file_path: '',
       };
     }
 
     this.#processLog.set([]);
     this.log('Transpilation process started...', 'info');
 
-    const inputFilePath = '/data/input.xlsx';
-    const outputFilePathPy = '/data/output.json';
-
     try {
       this.log(
-        `Preparing to write input file to Pyodide FS: ${inputFilePath}`,
+        `Preparing to write input file to Pyodide FS: ${INPUT_FILE_PATH}`,
         'debug',
       );
-      this.log(`Designated output file (Python side): ${outputFilePathPy}`, 'debug');
+      this.log(`Designated output file (Python side): ${OUTPUT_FILE_PATH}`, 'debug');
 
       try {
         if (!this.#pyodide.FS.analyzePath('/data').exists) {
@@ -261,19 +256,28 @@ export class MetadataValidationService {
         throw e;
       }
 
-      this.#pyodide.FS.writeFile(inputFilePath, new Uint8Array(fileBuffer));
+      this.#pyodide.FS.writeFile(INPUT_FILE_PATH, new Uint8Array(fileBuffer));
       this.log(
-        `FS.writeFile completed for ${inputFilePath}. Byte length: ${fileBuffer.byteLength}`,
+        `FS.writeFile completed for ${INPUT_FILE_PATH}. Byte length: ${fileBuffer.byteLength}`,
         'debug',
       );
 
-      const analysis = this.#pyodide.FS.analyzePath(inputFilePath);
+      const analysis = this.#pyodide.FS.analyzePath(INPUT_FILE_PATH);
       if (!analysis.exists || !analysis.object?.contents) {
-        this.log(`${inputFilePath} NOT FOUND or empty after writing!`, 'error');
+        this.log(`${INPUT_FILE_PATH} NOT FOUND or empty after writing!`, 'error');
         throw new Error('File not found in Pyodide FS after writing.');
       }
 
-      const transpilerArgs = [inputFilePath, outputFilePathPy];
+      try {
+        if (this.#pyodide.FS.analyzePath(OUTPUT_FILE_PATH).exists) {
+          this.#pyodide.FS.unlink(OUTPUT_FILE_PATH);
+          this.log(`Cleaned up existing output file: ${OUTPUT_FILE_PATH}`, 'debug');
+        }
+      } catch (cleanupError) {
+        this.log(`Could not clean up output file: ${cleanupError}`, 'debug');
+      }
+
+      const transpilerArgs = [SCHEMA_FILE_PATH, INPUT_FILE_PATH, OUTPUT_FILE_PATH];
       this.#pyodide.globals.set('transpiler_args_js', transpilerArgs);
       this.log('Set transpiler_args_js in Pyodide globals.', 'debug');
       this.log('Executing Python transpiler script...', 'info');
@@ -283,10 +287,14 @@ export class MetadataValidationService {
       const transpileResult = Object.fromEntries(transpileResultProxy.toJs());
       transpileResultProxy.destroy();
 
-      this.log(
-        `Python script finished. Success: ${transpileResult['success']}`,
-        'debug',
-      );
+      if (transpileResult['success']) {
+        this.log('Python script finished successfully.', 'debug');
+      } else {
+        this.log(
+          `Transpilation failed: ${transpileResult['error_message'] || 'Unknown error'}`,
+          'error',
+        );
+      }
 
       return transpileResult as PyodideOutput;
     } catch (error: any) {
@@ -306,7 +314,6 @@ export class MetadataValidationService {
         json_output: null,
         error_message: errorMessage,
         success: false,
-        py_output_file_path: '',
       };
     }
   }

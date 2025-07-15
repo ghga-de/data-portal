@@ -35,5 +35,8 @@
   "remote.localPortHost": "allInterfaces",
   "files.insertFinalNewline": true,
   "files.trimFinalNewlines": true,
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff"
+  }
 }
