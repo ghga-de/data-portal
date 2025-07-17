@@ -261,6 +261,8 @@ export class MetadataValidatorComponent {
 
       // If transpilation was successful, proceed to validation
 
+      await this.#validationService.prepareSchemaFileFromAssets();
+
       const validationResult = await this.#validationService.runValidator();
 
       console.log('Validation Result:', validationResult);

@@ -37,6 +37,14 @@ export const routes: Routes = [
     title: 'Validate Metadata',
   },
   {
+    path: 'schemapack-playground',
+    loadComponent: () =>
+      import(
+        './tools/features/schemapack-playground/schemapack-playground.component'
+      ).then((m) => m.SchemapackPlaygroundComponent),
+    title: 'Schemapack Playground',
+  },
+  {
     path: 'dataset/:id',
     loadComponent: () =>
       import('./metadata/features/dataset-details/dataset-details.component').then(
