@@ -8,12 +8,11 @@ import { CommonModule } from '@angular/common';
 import { Component, effect, inject, signal, WritableSignal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { LogEntry, PyodideOutput } from '@app/tools/models/pyodide';
 import { StepDetails, StepStatus } from '@app/tools/models/stepper';
-import {
-  LogEntry,
-  MetadataValidationService,
-  PyodideOutput,
-} from '../../services/metadata-validation.service';
+import { PyodideService } from '@app/tools/services/pyodide.service';
+import { MetadataValidationService } from '@app/tools/services/validator.service';
+import { TranspilerService } from '../../services/transpiler.service';
 import { StepperComponent } from '../stepper/stepper.component';
 
 /**
@@ -30,6 +29,8 @@ import { StepperComponent } from '../stepper/stepper.component';
 })
 export class MetadataValidatorComponent {
   #validationService = inject(MetadataValidationService);
+  #transpilerService = inject(TranspilerService);
+  #pyodideService = inject(PyodideService);
   statusText: WritableSignal<string> = signal('Initializing...');
   isStatusError: WritableSignal<boolean> = signal(false);
   errorText: WritableSignal<string> = signal('');
@@ -52,8 +53,8 @@ export class MetadataValidatorComponent {
 
   // Effect to handle Pyodide initialization status
   #pyodideStatusEffect = effect(() => {
-    const isReady = this.#validationService.isPyodideInitialized();
-    const isLoading = this.#validationService.isPyodideLoading();
+    const isReady = this.#pyodideService.isPyodideInitialized();
+    const isLoading = this.#pyodideService.isPyodideLoading();
 
     if (isLoading) {
       this.#updateStatus('Loading Pyodide runtime...', false, true);
@@ -74,7 +75,7 @@ export class MetadataValidatorComponent {
 
   // Effect to handle process log updates from the service
   #processLogEffect = effect(() => {
-    this.processLogEntries.set(this.#validationService.getProcessLog());
+    this.processLogEntries.set(this.#pyodideService.getProcessLog());
     // Scroll to bottom of log if it's visible, ensure this runs after DOM update
     setTimeout(() => {
       const logContainer = document.getElementById('processLog');
@@ -199,7 +200,7 @@ export class MetadataValidatorComponent {
       this.#updateStatus(msg, false, false);
       this.#setStepStatus(0, 'succeeded');
       // Enable button only if Pyodide is initialized and a file is loaded
-      this.processButtonEnabled.set(this.#validationService.isPyodideInitialized());
+      this.processButtonEnabled.set(this.#pyodideService.isPyodideInitialized());
       this.jsonOutput.set('Ready for transpilation...'); // Update pre tag
     };
 
@@ -234,91 +235,18 @@ export class MetadataValidatorComponent {
     this.#setStepStatus(2, 'idle'); // Reset validation step
 
     try {
-      const result: PyodideOutput =
-        await this.#validationService.transpileXlsxToJsonAndValidate(this.#fileBuffer);
+      const transpilerResult: PyodideOutput =
+        await this.#transpilerService.runTranspiler(this.#fileBuffer);
 
-      if (result.success && result.json_output !== null) {
-        this.jsonOutput.set(result.json_output);
+      if (transpilerResult.success && transpilerResult.json_output !== null) {
+        this.jsonOutput.set(transpilerResult.json_output);
 
         this.#setStepStatus(1, 'succeeded');
         this.#setStepStatus(2, 'ongoing');
-
-        if (result.validation_success !== undefined) {
-          if (result.validation_success) {
-            this.#validationService.log('Schema validation successful!', 'success');
-            this.#setStepStatus(2, 'succeeded');
-            this.#updateStatus(
-              'Transpilation and validation successful!',
-              false,
-              false,
-            );
-
-            if (result.validation_stdout && result.validation_stdout.trim()) {
-              this.#validationService.log(
-                `Validation Output (stdout):\n${result.validation_stdout.trim()}`,
-                'info',
-              );
-            }
-
-            if (result.validation_stderr && result.validation_stderr.trim()) {
-              this.#validationService.log(
-                `Validation Info/Warnings (stderr):\n${result.validation_stderr.trim()}`,
-                'info',
-              );
-              this.validationOutputDetails.set(
-                this.#formatSchemapackError(result.validation_stderr.trim()),
-              );
-            }
-          } else {
-            this.#setStepStatus(2, 'failed');
-            this.#validationService.log('Schema validation FAILED.', 'error');
-            this.#updateStatus(
-              'Transpilation successful, but validation failed.',
-              true,
-              false,
-            );
-
-            let combinedValidationError = '';
-            if (result.validation_stdout && result.validation_stdout.trim()) {
-              combinedValidationError += `Validation Output (stdout):\n${result.validation_stdout.trim()}\n\n`;
-              this.#validationService.log(
-                `Validation Output (stdout):\n${result.validation_stdout.trim()}`,
-                'info',
-              );
-            }
-            if (result.validation_stderr && result.validation_stderr.trim()) {
-              combinedValidationError += `Validation Errors (stderr):\n${result.validation_stderr.trim()}`;
-              this.#validationService.log(
-                `Validation Errors (stderr):\n${result.validation_stderr.trim()}`,
-                'error',
-              );
-            } else {
-              combinedValidationError +=
-                'No specific error message from validation. Check console.';
-              this.#validationService.log(
-                'No specific error message from validation. Check console.',
-                'error',
-              );
-            }
-            this.validationOutputDetails.set(
-              this.#formatSchemapackError(combinedValidationError.trim()),
-            );
-          }
-        } else {
-          this.#validationService.log(
-            'Validation was not performed (likely due to prior transpilation issues).',
-            'info',
-          );
-          this.#setStepStatus(2, 'idle');
-          this.#updateStatus(
-            'Transpilation successful, validation skipped.',
-            false,
-            false,
-          );
-        }
       } else {
         const errorMsg =
-          result.error_message || 'Unknown transpilation error or no JSON output.';
+          transpilerResult.error_message ||
+          'Unknown transpilation error or no JSON output.';
         this.jsonOutput.set(`Transpilation Failed. See process log.`);
         this.#updateStatus(
           'Transpilation failed. Check process log and console.',
@@ -328,6 +256,83 @@ export class MetadataValidatorComponent {
         this.#setStepStatus(1, 'failed');
         this.#setStepStatus(2, 'failed');
         this.validationOutputDetails.set(null);
+        return;
+      }
+
+      // If transpilation was successful, proceed to validation
+
+      const validationResult = await this.#validationService.runValidator();
+
+      console.log('Validation Result:', validationResult);
+
+      if (validationResult.success !== undefined) {
+        if (validationResult.success) {
+          this.#pyodideService.log('Schema validation successful!', 'success');
+          this.#setStepStatus(2, 'succeeded');
+          this.#updateStatus('Transpilation and validation successful!', false, false);
+
+          if (validationResult.stdout && validationResult.stdout.trim()) {
+            this.#pyodideService.log(
+              `Validation Output (stdout):\n${validationResult.stdout.trim()}`,
+              'info',
+            );
+          }
+
+          if (validationResult.stderr && validationResult.stderr.trim()) {
+            this.#pyodideService.log(
+              `Validation Info/Warnings (stderr):\n${validationResult.stderr.trim()}`,
+              'info',
+            );
+            this.validationOutputDetails.set(
+              this.#formatSchemapackError(validationResult.stderr.trim()),
+            );
+          }
+        } else {
+          this.#setStepStatus(2, 'failed');
+          this.#pyodideService.log('Schema validation FAILED.', 'error');
+          this.#updateStatus(
+            'Transpilation successful, but validation failed.',
+            true,
+            false,
+          );
+
+          let combinedValidationError = '';
+          if (validationResult.stdout && validationResult.stdout.trim()) {
+            combinedValidationError += `Validation Output (stdout):\n${validationResult.stdout.trim()}\n\n`;
+            this.#pyodideService.log(
+              `Validation Output (stdout):\n${validationResult.stdout.trim()}`,
+              'info',
+            );
+          }
+          if (validationResult.stderr && validationResult.stderr.trim()) {
+            combinedValidationError += `Validation Errors (stderr):\n${validationResult.stderr.trim()}`;
+            this.#pyodideService.log(
+              `Validation Errors (stderr):\n${validationResult.stderr.trim()}`,
+              'error',
+            );
+          } else {
+            combinedValidationError +=
+              'No specific error message from validation. Check console.';
+            this.#pyodideService.log(
+              'No specific error message from validation. Check console.',
+              'error',
+            );
+          }
+          this.validationOutputDetails.set(
+            this.#formatSchemapackError(combinedValidationError.trim()),
+          );
+        }
+      } else {
+        this.#pyodideService.log(
+          'Validation was not performed (likely due to prior transpilation issues).',
+          'info',
+        );
+        this.#setStepStatus(2, 'idle');
+        this.#updateStatus(
+          'Transpilation successful, validation skipped.',
+          false,
+          false,
+        );
       }
     } catch (error: any) {
       const errorMsg =

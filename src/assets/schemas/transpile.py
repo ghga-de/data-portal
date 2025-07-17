@@ -7,8 +7,7 @@ import traceback
 from contextlib import redirect_stderr, redirect_stdout
 
 original_argv = list(sys.argv)
-schema_filename, in_filename, out_filename = transpiler_args_js.to_py()  # noqa: F821
-
+in_filename, out_filename = args_js.to_py() 
 
 def transpile():
     """Transpile the input file using the ghga-transpiler."""
@@ -111,76 +110,6 @@ def transpile():
         "json_output": json_output,
     }
 
-
-def validate():
-    """Validate the output JSON using schemapack."""
-
-    validation_success = False
-    stdout = io.StringIO()
-    stderr = io.StringIO()
-
-    print("[Python] DEBUG: Preparing to call schemapack's validate function...")
-    sys.argv = [
-        "schemapack",
-        "validate",
-        "--schemapack",
-        schema_filename,
-        "--datapack",
-        out_filename,
-    ]
-    print(f"[Python] DEBUG: sys.argv set to: {sys.argv}")
-
-    try:
-        print("[Python] DEBUG: Importing schemapack.cli.cli ...")
-        from schemapack.__main__ import cli as schemapack_main_func
-
-        print(
-            "[Python] DEBUG: schemapack.cli.cli imported. Calling schemapack_main_func()..."
-        )
-
-        # Redirect stdout/stderr for schemapack specifically
-        with redirect_stdout(stdout), redirect_stderr(stderr):
-            schemapack_main_func()  # This will parse sys.argv
-
-        # Determine validation success based on exit code or stderr content
-        errors = stderr.getvalue().strip()
-        validation_success = "error" not in errors.lower()
-
-        print(
-            f"[Python] DEBUG: schemapack call completed (no SystemExit caught here). Stderr check: '{errors[:100]}...'"
-        )
-
-    except SystemExit as e:
-        if e.code == 0:
-            validation_success = True
-            print(
-                "[Python] DEBUG: schemapack SystemExit with code 0 (validation success)."
-            )
-        else:
-            validation_success = False  # Explicit failure
-            print(
-                f"[Python] DEBUG: schemapack SystemExit with code {e.code} (validation failure)."
-            )
-    except ImportError as e:
-        stderr.write(f"ImportError during schemapack: {str(e)}")
-        print(f"[Python] DEBUG: schemapack ImportError: {stderr.getvalue()}")
-    except Exception as e:
-        tb = traceback.format_exc()
-        stderr.write(
-            f"Exception during schemapack: {type(e).__name__}: {str(e)}\nTraceback:\n{tb}"
-        )
-        print(f"[Python] DEBUG: schemapack Exception: {stderr.getvalue()}")
-    finally:
-        sys.argv = original_argv
-        print("[Python] DEBUG: schemapack validation block finished.")
-
-    return {
-        "validation_success": validation_success,
-        "validation_stdout": stdout.getvalue(),
-        "validation_stderr": stderr.getvalue(),
-    }
-
-
 def main():
     """Main entry point for the transpilation and validation script."""
     print("[Python] DEBUG: Starting ghga-transpiler execution script...")
@@ -189,17 +118,16 @@ def main():
     success, json_output = results["success"], results["json_output"]
     if success and json_output:
         print(
-            "[Python] DEBUG: Transpilation successful. Proceeding to schemapack validation..."
+            "[Python] DEBUG: Transpilation successful."
         )
-        results.update(validate())
     elif not success:
         print(
-            "[Python] DEBUG: Skipping schemapack validation because transpilation failed."
+            "[Python] DEBUG: Transpilation failed."
         )
         results["json_output"] = None
     else:
         print(
-            "[Python] DEBUG: Skipping schemapack validation because transpiler produced no JSON output."
+            "[Python] DEBUG: Transpiler produced no JSON output."
         )
     return results
 

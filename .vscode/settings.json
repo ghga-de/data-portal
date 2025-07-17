@@ -1,12 +1,16 @@
 {
   "window.title": "Data Portal - ${dirty}${activeEditorShort}${separator}${rootName}${separator}${profileName}${separator}${appName}",
   "cSpell.words": [
+    "datapack",
     "devcontainer",
     "devkit",
     "GHGA",
     "IVA",
     "metldata",
+    "micropip",
     "Pydantic",
+    "Pyodide",
+    "schemapack",
     "TOTP"
   ],
   "cSpell.language": "en-GB",
