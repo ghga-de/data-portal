@@ -8,14 +8,13 @@ import { CommonModule } from '@angular/common';
 import { Component, effect, inject, signal, WritableSignal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { StepDetails, StepStatus } from '@app/tools/models/stepper';
 import {
   LogEntry,
   MetadataValidationService,
   PyodideOutput,
 } from '../../services/metadata-validation.service';
-
-type StepStatus = 'idle' | 'ongoing' | 'succeeded' | 'failed';
-type StepName = 'fileSelection' | 'transpilation' | 'validation';
+import { StepperComponent } from '../stepper/stepper.component';
 
 /**
  * This component works in tandem with the MetadataValidationService to provide
@@ -27,7 +26,7 @@ type StepName = 'fileSelection' | 'transpilation' | 'validation';
   selector: 'app-metadata-validator',
   templateUrl: './metadata-validator.component.html',
   styleUrls: ['./metadata-validator.component.scss'],
-  imports: [CommonModule, MatButtonModule, MatIconModule],
+  imports: [CommonModule, MatButtonModule, MatIconModule, StepperComponent],
 })
 export class MetadataValidatorComponent {
   #validationService = inject(MetadataValidationService);
@@ -41,19 +40,13 @@ export class MetadataValidatorComponent {
   processLogEntries: WritableSignal<LogEntry[]> = signal([]);
   showLog: WritableSignal<boolean> = signal(false);
   processButtonEnabled: WritableSignal<boolean> = signal(false);
-
-  currentStep: WritableSignal<'idle' | StepName> = signal('idle');
-  stepStatus: WritableSignal<{
-    fileSelection: StepStatus;
-    transpilation: StepStatus;
-    validation: StepStatus;
-  }> = signal({
-    fileSelection: 'idle',
-    transpilation: 'idle',
-    validation: 'idle',
-  });
-
   validationOutputDetails: WritableSignal<string | null> = signal(null);
+
+  stepDetails: WritableSignal<StepDetails[]> = signal([
+    { name: 'File Selection', status: 'idle' },
+    { name: 'Transpilation', status: 'idle' },
+    { name: 'Validation', status: 'idle' },
+  ]);
 
   #fileBuffer: ArrayBuffer | null = null;
 
@@ -67,12 +60,15 @@ export class MetadataValidatorComponent {
       this.#resetStepStatus();
     } else if (isReady) {
       this.#updateStatus('ghga-transpiler ready.', false, false);
-      this.currentStep.set('fileSelection');
+      this.#resetStepStatus();
       this.processButtonEnabled.set(this.#fileBuffer !== null);
     } else {
       this.#updateStatus('Pyodide initialization failed.', true, false);
       this.processButtonEnabled.set(false);
-      this.#setStepStatus('fileSelection', 'failed');
+      this.stepDetails.update((steps) => {
+        steps[0].status = 'failed';
+        return steps;
+      });
     }
   });
 
@@ -92,21 +88,25 @@ export class MetadataValidatorComponent {
    * Resets all step statuses to 'idle'.
    */
   #resetStepStatus(): void {
-    this.stepStatus.set({
-      fileSelection: 'idle',
-      transpilation: 'idle',
-      validation: 'idle',
-    });
-    this.currentStep.set('idle');
+    this.stepDetails.update((steps) =>
+      steps.map((step) => ({ ...step, status: 'idle' })),
+    );
   }
 
   /**
    * Sets the status of a specific step.
-   * @param step The step to update.
+   * @param step_index The index of the step to update.
    * @param status The new status.
    */
-  #setStepStatus(step: StepName, status: StepStatus): void {
-    this.stepStatus.update((current) => ({ ...current, [step]: status }));
+  #setStepStatus(step_index: number, status: StepStatus): void {
+    this.stepDetails.update((steps) => {
+      if (step_index < 0 || step_index >= steps.length) {
+        console.warn(`Invalid step index: ${step_index}`);
+        return steps;
+      }
+      steps[step_index].status = status;
+      return steps;
+    });
   }
 
   /**
@@ -176,10 +176,9 @@ export class MetadataValidatorComponent {
     this.jsonOutput.set('Awaiting XLSX file...'); // Set initial message for pre tag
     this.validationOutputDetails.set(null); // Clear previous validation errors
 
-    this.currentStep.set('fileSelection');
-    this.#setStepStatus('fileSelection', 'ongoing');
-    this.#setStepStatus('transpilation', 'idle');
-    this.#setStepStatus('validation', 'idle');
+    this.#setStepStatus(0, 'ongoing');
+    this.#setStepStatus(1, 'idle');
+    this.#setStepStatus(2, 'idle');
 
     if (!file || !file.name.endsWith('.xlsx')) {
       const msg = 'Please select a valid .xlsx file.';
@@ -187,7 +186,7 @@ export class MetadataValidatorComponent {
       this.fileName.set('');
       this.#fileBuffer = null;
       this.processButtonEnabled.set(false);
-      this.#setStepStatus('fileSelection', 'failed');
+      this.#setStepStatus(0, 'failed');
       return;
     }
 
@@ -198,7 +197,7 @@ export class MetadataValidatorComponent {
       this.#fileBuffer = e.target?.result as ArrayBuffer;
       const msg = `File "${file.name}" loaded. Ready to transpile.`;
       this.#updateStatus(msg, false, false);
-      this.#setStepStatus('fileSelection', 'succeeded');
+      this.#setStepStatus(0, 'succeeded');
       // Enable button only if Pyodide is initialized and a file is loaded
       this.processButtonEnabled.set(this.#validationService.isPyodideInitialized());
       this.jsonOutput.set('Ready for transpilation...'); // Update pre tag
@@ -209,7 +208,7 @@ export class MetadataValidatorComponent {
       this.#updateStatus(msg, true, false);
       this.#fileBuffer = null;
       this.processButtonEnabled.set(false);
-      this.#setStepStatus('fileSelection', 'failed');
+      this.#setStepStatus(0, 'failed');
     };
 
     reader.readAsArrayBuffer(file);
@@ -222,7 +221,7 @@ export class MetadataValidatorComponent {
     if (!this.#fileBuffer) {
       const msg = 'No file selected to transpile.';
       this.#updateStatus(msg, true, false);
-      this.#setStepStatus('transpilation', 'failed');
+      this.#setStepStatus(1, 'failed');
       return;
     }
 
@@ -231,9 +230,8 @@ export class MetadataValidatorComponent {
     this.jsonOutput.set('Processing...'); // Update pre tag
     this.validationOutputDetails.set(null); // Clear validation output when starting a new transpile
 
-    this.currentStep.set('transpilation');
-    this.#setStepStatus('transpilation', 'ongoing');
-    this.#setStepStatus('validation', 'idle'); // Reset validation step
+    this.#setStepStatus(1, 'ongoing');
+    this.#setStepStatus(2, 'idle'); // Reset validation step
 
     try {
       const result: PyodideOutput =
@@ -242,14 +240,13 @@ export class MetadataValidatorComponent {
       if (result.success && result.json_output !== null) {
         this.jsonOutput.set(result.json_output);
 
-        this.#setStepStatus('transpilation', 'succeeded');
-        this.currentStep.set('validation');
-        this.#setStepStatus('validation', 'ongoing');
+        this.#setStepStatus(1, 'succeeded');
+        this.#setStepStatus(2, 'ongoing');
 
         if (result.validation_success !== undefined) {
           if (result.validation_success) {
             this.#validationService.log('Schema validation successful!', 'success');
-            this.#setStepStatus('validation', 'succeeded');
+            this.#setStepStatus(2, 'succeeded');
             this.#updateStatus(
               'Transpilation and validation successful!',
               false,
@@ -273,7 +270,7 @@ export class MetadataValidatorComponent {
               );
             }
           } else {
-            this.#setStepStatus('validation', 'failed');
+            this.#setStepStatus(2, 'failed');
             this.#validationService.log('Schema validation FAILED.', 'error');
             this.#updateStatus(
               'Transpilation successful, but validation failed.',
@@ -312,7 +309,7 @@ export class MetadataValidatorComponent {
             'Validation was not performed (likely due to prior transpilation issues).',
             'info',
           );
-          this.#setStepStatus('validation', 'idle');
+          this.#setStepStatus(2, 'idle');
           this.#updateStatus(
             'Transpilation successful, validation skipped.',
             false,
@@ -328,8 +325,8 @@ export class MetadataValidatorComponent {
           true,
           false,
         );
-        this.#setStepStatus('transpilation', 'failed');
-        this.#setStepStatus('validation', 'failed');
+        this.#setStepStatus(1, 'failed');
+        this.#setStepStatus(2, 'failed');
         this.validationOutputDetails.set(null);
       }
     } catch (error: any) {
@@ -337,8 +334,8 @@ export class MetadataValidatorComponent {
         error.message || 'An unexpected error occurred during transpilation.';
       this.jsonOutput.set(`Transpilation Error: ${errorMsg}`);
       this.#updateStatus(`Transpilation Error. ${errorMsg}`, true, false);
-      this.#setStepStatus('transpilation', 'failed');
-      this.#setStepStatus('validation', 'failed');
+      this.#setStepStatus(1, 'failed');
+      this.#setStepStatus(2, 'failed');
       this.validationOutputDetails.set(null);
     } finally {
       this.processButtonEnabled.set(true);
