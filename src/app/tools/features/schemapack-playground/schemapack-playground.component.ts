@@ -83,7 +83,6 @@ export class SchemapackPlaygroundComponent {
       PLAYGROUND_SCHEMA_PYODIDE_PATH,
     );
 
-    console.log('Validation result:', result);
     if (!result.success) {
       this.statusText.set('Validation failed. Check the details below.');
       this.isStatusError.set(true);

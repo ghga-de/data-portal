@@ -265,8 +265,6 @@ export class MetadataValidatorComponent {
 
       const validationResult = await this.#validationService.runValidator();
 
-      console.log('Validation Result:', validationResult);
-
       if (validationResult.success !== undefined) {
         if (validationResult.success) {
           this.#pyodideService.log('Schema validation successful!', 'success');

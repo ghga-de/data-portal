@@ -101,7 +101,6 @@ export class MetadataValidationService {
       validatorScriptPath,
       validatorArgs,
     );
-    console.log('Validator output:', ret);
     return ret;
   }
 }
