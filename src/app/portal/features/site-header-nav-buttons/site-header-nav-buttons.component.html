@@ -15,6 +15,30 @@
 >
 <a
   mat-button
+  [matMenuTriggerFor]="menu"
+  aria-label="Tools"
+  class="mx-1 flex-row-reverse"
+>
+  Tools <mat-icon>arrow_drop_down</mat-icon>
+</a>
+<mat-menu #menu="matMenu">
+  <a
+    mat-menu-item
+    routerLink="/metadata-validator"
+    class="mx-1"
+    data-umami-event="Metadata Validator Clicked"
+    ><mat-icon>check</mat-icon> Metadata Validator</a
+  >
+  <a
+    mat-menu-item
+    routerLink="/schemapack-playground"
+    class="mx-1"
+    data-umami-event="Schemapack Playground Clicked"
+    ><mat-icon>experiment</mat-icon> Schemapack Playground</a
+  >
+</mat-menu>
+<a
+  mat-button
   href="https://docs.ghga.de/faq/"
   target="_blank"
   rel="noreferrer noopener"
@@ -30,4 +54,5 @@
   class="mx-1 flex-row-reverse"
   data-umami-event="Site Header Open Documentation Clicked"
   >Docs<mat-icon class="float-right">open_in_new</mat-icon></a
-><app-admin-menu></app-admin-menu>
+>
+<app-admin-menu></app-admin-menu>
