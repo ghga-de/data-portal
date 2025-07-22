@@ -47,14 +47,6 @@ export class UserManagerDetailComponent {
   });
 
   /**
-   * Get the display name from the enhanced user
-   */
-  userDisplayName = computed(() => {
-    const user = this.user();
-    return user?.displayName || '';
-  });
-
-  /**
    * Navigate back to the user list
    */
   goBack(): void {
