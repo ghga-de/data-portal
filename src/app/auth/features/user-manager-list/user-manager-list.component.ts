@@ -8,7 +8,6 @@ import { DatePipe as CommonDatePipe } from '@angular/common';
 import {
   AfterViewInit,
   Component,
-  computed,
   effect,
   inject,
   QueryList,
@@ -22,19 +21,9 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Router } from '@angular/router';
-import { RegisteredUser, RoleNames } from '@app/auth/models/user';
 import { UserStatusClassPipe } from '@app/auth/pipes/user-status-class.pipe';
-import { UserService } from '@app/auth/services/user.service';
+import { EnhancedUser, UserService } from '@app/auth/services/user.service';
 import { DatePipe } from '@app/shared/pipes/date.pipe';
-
-/**
- * Enhanced user interface with computed display properties for template use
- */
-interface EnhancedUser extends RegisteredUser {
-  displayName: string;
-  roleNames: string[];
-  sortName: string;
-}
 
 /**
  * User Manager List component.
@@ -62,67 +51,10 @@ export class UserManagerListComponent implements AfterViewInit {
   #userService = inject(UserService);
   #router = inject(Router);
 
-  #rawUsers = this.#userService.users;
-
-  /**
-   * Creates a sortable name
-   * @param name - the user's full name
-   * @param title - optional academic title
-   * @returns formatted sort name
-   */
-  #createSortName(name: string, title?: string): string {
-    const words = name.trim().split(/\s+/);
-
-    if (words.length === 1) {
-      // Single name, just return as is with optional title
-      return title ? `${name}, ${title}` : name;
-    }
-
-    // Find the last non-abbreviated word
-    let lastNameIndex = -1;
-    for (let i = words.length - 1; i >= 0; i--) {
-      const word = words[i];
-      if (!word.endsWith('.') && word.length > 2) {
-        lastNameIndex = i;
-        break;
-      }
-    }
-
-    // If no suitable last name found, use the last word
-    if (lastNameIndex === -1) {
-      lastNameIndex = words.length - 1;
-    }
-
-    const lastName = words[lastNameIndex];
-    const beforeLastName = words.slice(0, lastNameIndex);
-    const afterLastName = words.slice(lastNameIndex + 1);
-
-    // Construct the sort name: "LastName, FirstName Middle Suffix"
-    const restOfName = [...beforeLastName, ...afterLastName].join(' ');
-    let sortName = restOfName ? `${lastName}, ${restOfName}` : lastName;
-
-    // Add title at the end if present
-    if (title) {
-      sortName += `, ${title}`;
-    }
-
-    return sortName;
-  }
-
-  // Computed signal that transforms users with display properties
-  users = computed((): EnhancedUser[] =>
-    this.#rawUsers.value().map((user) => ({
-      ...user,
-      displayName: user.title ? `${user.title} ${user.name}` : user.name,
-      roleNames: user.roles.map(
-        (role) => RoleNames[role as keyof typeof RoleNames] || role,
-      ),
-      sortName: this.#createSortName(user.name, user.title || undefined),
-    })),
-  );
-
-  usersAreLoading = this.#rawUsers.isLoading;
-  usersError = this.#rawUsers.error;
+  #users = this.#userService.users;
+  users = this.#users.value;
+  usersAreLoading = this.#users.isLoading;
+  usersError = this.#users.error;
 
   source = new MatTableDataSource<EnhancedUser>([]);
 

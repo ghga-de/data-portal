@@ -9,7 +9,15 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { UserService } from '@app/auth/services/user.service';
+import { ConfigService } from '@app/shared/services/config.service';
 import { UserManagerComponent } from './user-manager.component';
+
+/**
+ * Mock ConfigService for testing
+ */
+class MockConfigService {
+  auth_url = 'https://test-auth.example.com';
+}
 
 /**
  * Mock UserService for testing
@@ -32,7 +40,11 @@ describe('UserManagerComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [UserManagerComponent, NoopAnimationsModule],
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: ConfigService, useClass: MockConfigService },
+      ],
     })
       .overrideComponent(UserManagerComponent, {
         set: {

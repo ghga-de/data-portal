@@ -10,8 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
-import { RegisteredUser } from '@app/auth/models/user';
-import { UserService } from '@app/auth/services/user.service';
+import { EnhancedUser, UserService } from '@app/auth/services/user.service';
 import { DatePipe } from '@app/shared/pipes/date.pipe';
 
 /**
@@ -33,24 +32,23 @@ export class UserManagerDetailComponent {
   #userService = inject(UserService);
 
   #userId = computed(() => this.#route.snapshot.params['id']);
-  #allUsers = this.#userService.users;
+  #users = this.#userService.users;
 
   /**
    * Get the specific user based on the route parameter
    */
   user = computed(() => {
     const userId = this.#userId();
-    const users = this.#allUsers.value();
-    return users.find((user: RegisteredUser) => user.id === userId);
+    const users = this.#users.value();
+    return users.find((user: EnhancedUser) => user.id === userId);
   });
 
   /**
-   * Get the display name with title if available
+   * Get the display name from the enhanced user
    */
   userDisplayName = computed(() => {
     const user = this.user();
-    if (!user) return '';
-    return user.title ? `${user.title} ${user.name}` : user.name;
+    return user?.displayName || '';
   });
 
   /**
