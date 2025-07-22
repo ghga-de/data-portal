@@ -74,6 +74,15 @@ export const routes: Routes = [
       ).then((m) => m.AccessRequestManagerComponent),
     title: 'Access Request Manager',
   },
+  {
+    path: 'user-manager',
+    canActivate: [() => inject(AuthService).guardDataSteward()],
+    loadComponent: () =>
+      import('./auth/features/user-manager/user-manager.component').then(
+        (m) => m.UserManagerComponent,
+      ),
+    title: 'User Manager',
+  },
   // routes used in the authentication flows
   {
     path: 'oauth/callback',

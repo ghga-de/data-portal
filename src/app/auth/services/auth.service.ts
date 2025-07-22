@@ -625,4 +625,14 @@ export class AuthService {
     }
     this.#router.navigate([path]);
   }
+
+  /**
+   * Get all users (stub method for data stewards)
+   * @returns Observable of User array (currently returns empty array as stub)
+   */
+  getUsers(): Observable<User[]> {
+    // TODO: Implement actual API call to fetch users
+    console.log('getUsers() called - stub implementation');
+    return of([]);
+  }
 }
