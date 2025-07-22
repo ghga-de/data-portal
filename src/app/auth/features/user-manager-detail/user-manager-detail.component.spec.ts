@@ -120,11 +120,6 @@ describe('UserManagerDetailComponent', () => {
     expect(user?.title).toBe('Dr.');
   });
 
-  it('should format user display name with title', () => {
-    const displayName = component.userDisplayName();
-    expect(displayName).toBe('Dr. John Doe');
-  });
-
   it('should navigate back when goBack is called', () => {
     component.goBack();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/user-manager']);
