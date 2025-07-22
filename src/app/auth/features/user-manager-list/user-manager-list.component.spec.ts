@@ -67,16 +67,25 @@ describe('UserManagerListComponent', () => {
   });
 
   it('should format display name with title when available', () => {
-    const userWithTitle = {
-      name: 'John Doe',
-      title: 'Dr.' as const,
-    } as any;
-
-    const userWithoutTitle = {
-      name: 'Jane Smith',
-    } as any;
-
-    expect(component.getDisplayName(userWithTitle)).toBe('Dr. John Doe');
-    expect(component.getDisplayName(userWithoutTitle)).toBe('Jane Smith');
+    const usersWithVariousTitles = [
+      {
+        name: 'John Doe',
+        title: 'Dr.' as const,
+        roles: ['data_steward'],
+      },
+      {
+        name: 'Jane Smith',
+        roles: ['data_steward'],
+      },
+    ] as any;
+    
+    mockUserService.allUsers.value.mockReturnValue(usersWithVariousTitles);
+    
+    const enhancedUsers = component.users();
+    
+    expect(enhancedUsers[0].displayName).toBe('Dr. John Doe');
+    expect(enhancedUsers[1].displayName).toBe('Jane Smith');
+    expect(enhancedUsers[0].roleNames).toEqual(['Data Steward']);
+    expect(enhancedUsers[1].roleNames).toEqual(['Data Steward']);
   });
 });

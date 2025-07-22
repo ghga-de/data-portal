@@ -8,6 +8,7 @@ import { DatePipe as CommonDatePipe } from '@angular/common';
 import {
   AfterViewInit,
   Component,
+  computed,
   effect,
   inject,
   QueryList,
@@ -23,6 +24,14 @@ import { RegisteredUser, RoleNames } from '@app/auth/models/user';
 import { UserStatusClassPipe } from '@app/auth/pipes/user-status-class.pipe';
 import { UserService } from '@app/auth/services/user.service';
 import { DatePipe } from '@app/shared/pipes/date.pipe';
+
+/**
+ * Enhanced user interface with computed display properties for template use
+ */
+interface EnhancedUser extends RegisteredUser {
+  displayName: string;
+  roleNames: string[];
+}
 
 /**
  * User Manager List component.
@@ -48,32 +57,43 @@ import { DatePipe } from '@app/shared/pipes/date.pipe';
 export class UserManagerListComponent implements AfterViewInit {
   #userService = inject(UserService);
 
-  #users = this.#userService.allUsers;
-  users = this.#userService.allUsers;
-  usersAreLoading = this.#users.isLoading;
-  usersError = this.#users.error;
+  #rawUsers = this.#userService.allUsers;
+  
+  // Computed signal that transforms users with display properties
+  users = computed((): EnhancedUser[] =>
+    this.#rawUsers.value().map((user) => ({
+      ...user,
+      displayName: user.title ? `${user.title} ${user.name}` : user.name,
+      roleNames: user.roles.map(
+        (role) => RoleNames[role as keyof typeof RoleNames] || role,
+      ),
+    })),
+  );
 
-  source = new MatTableDataSource<RegisteredUser>([]);
+  usersAreLoading = this.#rawUsers.isLoading;
+  usersError = this.#rawUsers.error;
+
+  source = new MatTableDataSource<EnhancedUser>([]);
 
   defaultTablePageSize = 10;
   tablePageSizeOptions = [10, 25, 50, 100, 250, 500];
 
-  #updateSourceEffect = effect(() => (this.source.data = this.users.value()));
+  #updateSourceEffect = effect(() => (this.source.data = this.users()));
 
-  #userSortingAccessor = (user: RegisteredUser, key: string) => {
+  #userSortingAccessor = (user: EnhancedUser, key: string) => {
     switch (key) {
       case 'email':
         return user.email;
       case 'name':
         return user.name;
       case 'roles':
-        return this.getRoleNames(user.roles).join(', ');
+        return user.roleNames.join(', ');
       case 'status':
         return user.status;
       case 'registration_date':
         return user.registration_date;
       default:
-        const value = user[key as keyof RegisteredUser];
+        const value = user[key as keyof EnhancedUser];
         if (typeof value === 'string' || typeof value === 'number') {
           return value;
         }
@@ -113,28 +133,10 @@ export class UserManagerListComponent implements AfterViewInit {
   }
 
   /**
-   * Get readable role names from role keys
-   * @param roles - array of role keys
-   * @returns array of readable role names
-   */
-  getRoleNames(roles: string[]): string[] {
-    return roles.map((role) => RoleNames[role as keyof typeof RoleNames] || role);
-  }
-
-  /**
-   * Get the display name with title if available
-   * @param user - the user object
-   * @returns the formatted name with title
-   */
-  getDisplayName(user: RegisteredUser): string {
-    return user.title ? `${user.title} ${user.name}` : user.name;
-  }
-
-  /**
    * Open the details view for a user (placeholder for future implementation)
    * @param row - the selected user row
    */
-  openDetails(row: RegisteredUser): void {
+  openDetails(row: EnhancedUser): void {
     // TODO: Implement user details dialog
     console.log('User details clicked:', row);
   }
