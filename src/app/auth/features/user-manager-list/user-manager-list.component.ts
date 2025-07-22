@@ -14,11 +14,12 @@ import {
   ViewChild,
   ViewChildren,
 } from '@angular/core';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { RegisteredUser } from '@app/auth/models/user';
+import { RegisteredUser, RoleNames } from '@app/auth/models/user';
 import { UserService } from '@app/auth/services/user.service';
 import { DatePipe } from '@app/shared/pipes/date.pipe';
 
@@ -30,7 +31,14 @@ import { DatePipe } from '@app/shared/pipes/date.pipe';
  */
 @Component({
   selector: 'app-user-manager-list',
-  imports: [MatTableModule, MatSortModule, MatPaginatorModule, DatePipe, MatIconModule],
+  imports: [
+    MatTableModule,
+    MatSortModule,
+    MatPaginatorModule,
+    DatePipe,
+    MatIconModule,
+    MatChipsModule,
+  ],
   providers: [CommonDatePipe],
   templateUrl: './user-manager-list.component.html',
   styleUrl: './user-manager-list.component.scss',
@@ -57,7 +65,7 @@ export class UserManagerListComponent implements AfterViewInit {
       case 'name':
         return user.name;
       case 'roles':
-        return user.roles.join(', ');
+        return this.getRoleNames(user.roles).join(', ');
       case 'status':
         return user.status;
       case 'registration_date':
@@ -100,6 +108,15 @@ export class UserManagerListComponent implements AfterViewInit {
     this.#addPagination();
     this.matSorts.changes.subscribe(() => this.#addSorting());
     this.matPaginators.changes.subscribe(() => this.#addPagination());
+  }
+
+  /**
+   * Get readable role names from role keys
+   * @param roles - array of role keys
+   * @returns array of readable role names
+   */
+  getRoleNames(roles: string[]): string[] {
+    return roles.map((role) => RoleNames[role as keyof typeof RoleNames] || role);
   }
 
   /**

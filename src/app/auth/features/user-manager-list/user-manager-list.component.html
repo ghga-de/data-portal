@@ -29,9 +29,13 @@
       </ng-container>
 
       <ng-container matColumnDef="roles">
-        <th mat-header-cell *matHeaderCellDef class="w-32" mat-sort-header>Roles</th>
+        <th mat-header-cell *matHeaderCellDef class="w-40" mat-sort-header>Roles</th>
         <td mat-cell *matCellDef="let user">
-          {{ user.roles.join(', ') }}
+          <span class="flex flex-wrap gap-1">
+            @for (roleName of getRoleNames(user.roles); track roleName) {
+              <mat-chip>{{ roleName }}</mat-chip>
+            }
+          </span>
         </td>
       </ng-container>
 
