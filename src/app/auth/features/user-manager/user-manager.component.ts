@@ -6,6 +6,7 @@
 
 import { Component, inject } from '@angular/core';
 import { UserService } from '@app/auth/services/user.service';
+import { UserManagerListComponent } from '../user-manager-list/user-manager-list.component';
 
 /**
  * User Manager component.
@@ -15,7 +16,7 @@ import { UserService } from '@app/auth/services/user.service';
  */
 @Component({
   selector: 'app-user-manager',
-  imports: [],
+  imports: [UserManagerListComponent],
   providers: [UserService],
   templateUrl: './user-manager.component.html',
 })

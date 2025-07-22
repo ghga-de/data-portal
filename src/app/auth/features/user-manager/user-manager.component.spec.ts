@@ -57,6 +57,6 @@ describe('UserManagerComponent', () => {
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.textContent).toContain('User filters will be implemented here');
-    expect(compiled.textContent).toContain('User list will be implemented here');
+    expect(compiled.querySelector('app-user-manager-list')).toBeTruthy();
   });
 });
