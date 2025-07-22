@@ -65,4 +65,18 @@ describe('UserManagerListComponent', () => {
     expect(component.defaultTablePageSize).toBe(10);
     expect(component.tablePageSizeOptions).toEqual([10, 25, 50, 100, 250, 500]);
   });
+
+  it('should format display name with title when available', () => {
+    const userWithTitle = {
+      name: 'John Doe',
+      title: 'Dr.' as const,
+    } as any;
+
+    const userWithoutTitle = {
+      name: 'Jane Smith',
+    } as any;
+
+    expect(component.getDisplayName(userWithTitle)).toBe('Dr. John Doe');
+    expect(component.getDisplayName(userWithoutTitle)).toBe('Jane Smith');
+  });
 });

@@ -73,8 +73,8 @@ export const users: RegisteredUser[] = [
   {
     id: 'oscar.flintstone@test.dev',
     ext_id: 'caffeecaffeecaffeecaffeecaffeecaffeeadeaa@lifescience-ri.eu',
-    name: 'Jeffrey Spencer Slate',
-    title: null,
+    name: 'Jeffrey Spencer Slate Sr.',
+    title: 'Prof.',
     email: 'jeff@flintstones.org',
     roles: ['data_steward'],
     status: 'inactive',

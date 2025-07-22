@@ -122,6 +122,15 @@ export class UserManagerListComponent implements AfterViewInit {
   }
 
   /**
+   * Get the display name with title if available
+   * @param user - the user object
+   * @returns the formatted name with title
+   */
+  getDisplayName(user: RegisteredUser): string {
+    return user.title ? `${user.title} ${user.name}` : user.name;
+  }
+
+  /**
    * Open the details view for a user (placeholder for future implementation)
    * @param row - the selected user row
    */
