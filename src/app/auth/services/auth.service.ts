@@ -8,7 +8,6 @@ import {
   HttpClient,
   HttpHeaders,
   HttpParams,
-  httpResource,
   HttpResponse,
 } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
@@ -33,7 +32,6 @@ import {
 } from 'rxjs';
 import {
   LoginState,
-  RegisteredUser,
   RoleNames,
   UserBasicData,
   UserRole,
@@ -633,26 +631,4 @@ export class AuthService {
     }
     this.#router.navigate([path]);
   }
-
-  // signal to load all users' data
-  #loadUsers = signal<boolean>(false);
-
-  /**
-   * Load all users' data
-   */
-  loadUsers(): void {
-    this.#loadUsers.set(true);
-  }
-
-  /**
-   * Resource for loading all users.
-   * Note: We do the filtering currently only on the client side,
-   * but in principle we can also do some filtering on the sever.
-   */
-  allUsers = httpResource<RegisteredUser[]>(
-    () => (this.#loadUsers() ? this.#usersUrl : undefined),
-    {
-      defaultValue: [],
-    },
-  );
 }

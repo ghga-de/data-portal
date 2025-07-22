@@ -5,28 +5,35 @@
  */
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { AuthService } from '@app/auth/services/auth.service';
+import { UserService } from '@app/auth/services/user.service';
 import { UserManagerComponent } from './user-manager.component';
 
 /**
- * Mock AuthService for testing
+ * Mock UserService for testing
  */
-class MockAuthService {
-  loadUsers = jest.fn();
+class MockUserService {
+  allUsers = {
+    value: jest.fn(() => []),
+  };
 }
 
 describe('UserManagerComponent', () => {
   let component: UserManagerComponent;
   let fixture: ComponentFixture<UserManagerComponent>;
-  let mockAuthService: MockAuthService;
+  let mockUserService: MockUserService;
 
   beforeEach(async () => {
-    mockAuthService = new MockAuthService();
+    mockUserService = new MockUserService();
 
     await TestBed.configureTestingModule({
       imports: [UserManagerComponent],
-      providers: [{ provide: AuthService, useValue: mockAuthService }],
-    }).compileComponents();
+    })
+      .overrideComponent(UserManagerComponent, {
+        set: {
+          providers: [{ provide: UserService, useValue: mockUserService }],
+        },
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(UserManagerComponent);
     component = fixture.componentInstance;
@@ -36,9 +43,8 @@ describe('UserManagerComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should call getUsers on initialization', () => {
-    fixture.detectChanges();
-    expect(mockAuthService.loadUsers).toHaveBeenCalled();
+  it('should have userService injected', () => {
+    expect(component.userService).toBeDefined();
   });
 
   it('should render the title', () => {

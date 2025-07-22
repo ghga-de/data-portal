@@ -4,28 +4,21 @@
  * @license Apache-2.0
  */
 
-import { Component, inject, OnInit } from '@angular/core';
-import { AuthService } from '@app/auth/services/auth.service';
+import { Component, inject } from '@angular/core';
+import { UserService } from '@app/auth/services/user.service';
 
 /**
  * User Manager component.
  *
- * The User Manager allows data stewards to manage registered users,
- * view user user details, their IVAs and access grants and requests,
- * and delete or revoke access to the user or individual datasets.
+ * The User Manager allows data stewards to manage users,
+ * view user details, and perform administrative actions.
  */
 @Component({
   selector: 'app-user-manager',
   imports: [],
+  providers: [UserService],
   templateUrl: './user-manager.component.html',
 })
-export class UserManagerComponent implements OnInit {
-  #authService = inject(AuthService);
-
-  /**
-   * Load the users when the component is initialized
-   */
-  ngOnInit(): void {
-    this.#authService.loadUsers();
-  }
+export class UserManagerComponent {
+  userService = inject(UserService);
 }
