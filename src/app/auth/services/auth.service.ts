@@ -8,6 +8,7 @@ import {
   HttpClient,
   HttpHeaders,
   HttpParams,
+  httpResource,
   HttpResponse,
 } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
@@ -30,7 +31,14 @@ import {
   of,
   timeout,
 } from 'rxjs';
-import { LoginState, RoleNames, User, UserBasicData, UserRole } from '../models/user';
+import {
+  LoginState,
+  RegisteredUser,
+  RoleNames,
+  UserBasicData,
+  UserRole,
+  UserSession,
+} from '../models/user';
 import { CsrfService } from './csrf.service';
 
 /**
@@ -46,7 +54,7 @@ export class AuthService {
   #router = inject(Router);
   #csrf = inject(CsrfService);
   #notify = inject(NotificationService);
-  #userSignal = signal<User | null | undefined>(undefined);
+  #userSignal = signal<UserSession | null | undefined>(undefined);
 
   #oidcUserManager: OidcUserManager;
 
@@ -63,7 +71,7 @@ export class AuthService {
    * Null means that the user is not logged in (state is 'Anonymous'), while
    * undefined means that the session has not yet been loaded (state 'Undetermined').
    */
-  user = computed<User | null | undefined>(() => this.#userSignal());
+  user = computed<UserSession | null | undefined>(() => this.#userSignal());
 
   /**
    * Check whether the session state is known as a signal
@@ -389,9 +397,9 @@ export class AuthService {
    * @param session - the session as a JSON-formatted string or null
    * @returns the parsed user or null if no session or undefined if error
    */
-  #parseUserFromSession(session: string): User | null | undefined {
+  #parseUserFromSession(session: string): UserSession | null | undefined {
     if (!session) return null;
-    let user: User | null;
+    let user: UserSession | null;
     try {
       user = JSON.parse(session || 'null');
       if (!user) return null;
@@ -445,7 +453,7 @@ export class AuthService {
           of([401, 403, 404].includes(error?.status) ? null : undefined),
         ),
       )
-      .subscribe((user: User | null | undefined) => {
+      .subscribe((user: UserSession | null | undefined) => {
         if (user) {
           console.debug('User session loaded:', user);
           userSignal.set(user);
@@ -626,13 +634,25 @@ export class AuthService {
     this.#router.navigate([path]);
   }
 
+  // signal to load all users' data
+  #loadUsers = signal<boolean>(false);
+
   /**
-   * Get all users (stub method for data stewards)
-   * @returns Observable of User array (currently returns empty array as stub)
+   * Load all users' data
    */
-  getUsers(): Observable<User[]> {
-    // TODO: Implement actual API call to fetch users
-    console.log('getUsers() called - stub implementation');
-    return of([]);
+  loadUsers(): void {
+    this.#loadUsers.set(true);
   }
+
+  /**
+   * Resource for loading all users.
+   * Note: We do the filtering currently only on the client side,
+   * but in principle we can also do some filtering on the sever.
+   */
+  allUsers = httpResource<RegisteredUser[]>(
+    () => (this.#loadUsers() ? this.#usersUrl : undefined),
+    {
+      defaultValue: [],
+    },
+  );
 }

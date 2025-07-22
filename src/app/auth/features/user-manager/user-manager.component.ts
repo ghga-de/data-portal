@@ -26,6 +26,6 @@ export class UserManagerComponent implements OnInit {
    * Load the users when the component is initialized
    */
   ngOnInit(): void {
-    this.#authService.getUsers();
+    this.#authService.loadUsers();
   }
 }

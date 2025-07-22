@@ -12,7 +12,7 @@ import { UserManagerComponent } from './user-manager.component';
  * Mock AuthService for testing
  */
 class MockAuthService {
-  getUsers = jest.fn();
+  loadUsers = jest.fn();
 }
 
 describe('UserManagerComponent', () => {
@@ -38,7 +38,7 @@ describe('UserManagerComponent', () => {
 
   it('should call getUsers on initialization', () => {
     fixture.detectChanges();
-    expect(mockAuthService.getUsers).toHaveBeenCalled();
+    expect(mockAuthService.loadUsers).toHaveBeenCalled();
   });
 
   it('should render the title', () => {
