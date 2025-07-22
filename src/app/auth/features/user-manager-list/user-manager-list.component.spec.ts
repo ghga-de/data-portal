@@ -4,6 +4,8 @@
  * @license Apache-2.0
  */
 
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { UserService } from '@app/auth/services/user.service';
@@ -13,7 +15,7 @@ import { UserManagerListComponent } from './user-manager-list.component';
  * Mock UserService for testing
  */
 class MockUserService {
-  allUsers = {
+  users = {
     value: jest.fn(() => []),
     isLoading: jest.fn(() => false),
     error: jest.fn(() => null),
@@ -30,7 +32,11 @@ describe('UserManagerListComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [UserManagerListComponent, NoopAnimationsModule],
-      providers: [{ provide: UserService, useValue: mockUserService }],
+      providers: [
+        { provide: UserService, useValue: mockUserService },
+        provideHttpClient(),
+        provideHttpClientTesting(),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(UserManagerListComponent);
@@ -42,15 +48,15 @@ describe('UserManagerListComponent', () => {
   });
 
   it('should display loading message when users are loading', () => {
-    mockUserService.allUsers.isLoading.mockReturnValue(true);
+    mockUserService.users.isLoading.mockReturnValue(true);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.textContent).toContain('Loading users...');
   });
 
   it('should display "No users found" when no users exist', () => {
-    mockUserService.allUsers.isLoading.mockReturnValue(false);
-    mockUserService.allUsers.value.mockReturnValue([]);
+    mockUserService.users.isLoading.mockReturnValue(false);
+    mockUserService.users.value.mockReturnValue([]);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.textContent).toContain('No users found');
@@ -78,27 +84,35 @@ describe('UserManagerListComponent', () => {
         roles: ['data_steward'],
       },
       {
-        name: 'Jeffrey Spence Slate Sr.',
+        name: 'Jeffrey Spencer Slate Sr.',
         title: 'Prof.' as const,
         roles: ['data_steward'],
       },
+      {
+        name: 'Thomas H. Morgan Sr.',
+        title: 'Prof.' as const,
+        roles: [],
+      },
     ] as any;
 
-    mockUserService.allUsers.value.mockReturnValue(usersWithVariousTitles);
+    mockUserService.users.value.mockReturnValue(usersWithVariousTitles);
 
     const enhancedUsers = component.users();
 
     expect(enhancedUsers[0].displayName).toBe('Dr. John Doe');
     expect(enhancedUsers[0].sortName).toBe('Doe, John, Dr.');
+    expect(enhancedUsers[0].roleNames).toEqual(['Data Steward']);
 
     expect(enhancedUsers[1].displayName).toBe('Jane Smith');
     expect(enhancedUsers[1].sortName).toBe('Smith, Jane');
-
-    expect(enhancedUsers[2].displayName).toBe('Prof. Jeffrey Spence Slate Sr.');
-    expect(enhancedUsers[2].sortName).toBe('Slate, Jeffrey Spence Sr., Prof.');
-
-    expect(enhancedUsers[0].roleNames).toEqual(['Data Steward']);
     expect(enhancedUsers[1].roleNames).toEqual(['Data Steward']);
+
+    expect(enhancedUsers[2].displayName).toBe('Prof. Jeffrey Spencer Slate Sr.');
+    expect(enhancedUsers[2].sortName).toBe('Slate, Jeffrey Spencer Sr., Prof.');
     expect(enhancedUsers[2].roleNames).toEqual(['Data Steward']);
+
+    expect(enhancedUsers[3].displayName).toBe('Prof. Thomas H. Morgan Sr.');
+    expect(enhancedUsers[3].sortName).toBe('Morgan, Thomas H. Sr., Prof.');
+    expect(enhancedUsers[3].roleNames).toEqual([]);
   });
 });

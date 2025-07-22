@@ -4,6 +4,8 @@
  * @license Apache-2.0
  */
 
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { ConfigService } from '@app/shared/services/config.service';
 import { UserService } from './user.service';
@@ -20,7 +22,12 @@ describe('UserService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [UserService, { provide: ConfigService, useClass: MockConfigService }],
+      providers: [
+        UserService,
+        { provide: ConfigService, useClass: MockConfigService },
+        provideHttpClient(),
+        provideHttpClientTesting(),
+      ],
     });
     service = TestBed.inject(UserService);
   });
@@ -29,7 +36,7 @@ describe('UserService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should have allUsers resource with default empty array', () => {
-    expect(service.allUsers.value()).toEqual([]);
+  it('should have users resource with default empty array', () => {
+    expect(service.users.value()).toEqual([]);
   });
 });

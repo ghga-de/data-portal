@@ -58,14 +58,13 @@ interface EnhancedUser extends RegisteredUser {
 export class UserManagerListComponent implements AfterViewInit {
   #userService = inject(UserService);
 
-  #rawUsers = this.#userService.allUsers;
+  #rawUsers = this.#userService.users;
 
   /**
-   * Creates a sortable name format by moving the last non-abbreviated word to front
-   * and optionally adding title at the end
+   * Creates a sortable name
    * @param name - the user's full name
    * @param title - optional academic title
-   * @returns formatted sort name (e.g., "Doe, John" or "Slate, Jeffrey Spencer Sr., Prof.")
+   * @returns formatted sort name
    */
   #createSortName(name: string, title?: string): string {
     const words = name.trim().split(/\s+/);
@@ -75,7 +74,7 @@ export class UserManagerListComponent implements AfterViewInit {
       return title ? `${name}, ${title}` : name;
     }
 
-    // Find the last non-abbreviated word (not ending with a period and longer than 2 chars)
+    // Find the last non-abbreviated word
     let lastNameIndex = -1;
     for (let i = words.length - 1; i >= 0; i--) {
       const word = words[i];

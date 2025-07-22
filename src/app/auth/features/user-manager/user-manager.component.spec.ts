@@ -4,7 +4,10 @@
  * @license Apache-2.0
  */
 
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { UserService } from '@app/auth/services/user.service';
 import { UserManagerComponent } from './user-manager.component';
 
@@ -12,8 +15,10 @@ import { UserManagerComponent } from './user-manager.component';
  * Mock UserService for testing
  */
 class MockUserService {
-  allUsers = {
+  users = {
     value: jest.fn(() => []),
+    isLoading: jest.fn(() => false),
+    error: jest.fn(() => null),
   };
 }
 
@@ -26,7 +31,8 @@ describe('UserManagerComponent', () => {
     mockUserService = new MockUserService();
 
     await TestBed.configureTestingModule({
-      imports: [UserManagerComponent],
+      imports: [UserManagerComponent, NoopAnimationsModule],
+      providers: [provideHttpClient(), provideHttpClientTesting()],
     })
       .overrideComponent(UserManagerComponent, {
         set: {

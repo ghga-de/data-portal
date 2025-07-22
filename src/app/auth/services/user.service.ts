@@ -26,7 +26,7 @@ export class UserService {
    * Note: We do the filtering currently only on the client side,
    * but in principle we can also do some filtering on the server.
    */
-  allUsers = httpResource<RegisteredUser[]>(() => this.#usersUrl, {
+  users = httpResource<RegisteredUser[]>(() => this.#usersUrl, {
     defaultValue: [],
   });
 }
