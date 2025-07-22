@@ -6,7 +6,7 @@
 
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { signal } from '@angular/core';
+import { DatePipe as CommonDatePipe } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -26,7 +26,7 @@ class MockConfigService {
  */
 class MockUserService {
   users = {
-    value: signal([
+    value: jest.fn(() => [
       {
         id: '123',
         name: 'John Doe',
@@ -53,8 +53,8 @@ class MockUserService {
         sortName: 'Smith, Jane',
       },
     ]),
-    isLoading: signal(false),
-    error: signal(null),
+    isLoading: jest.fn(() => false),
+    error: jest.fn(() => null),
   };
 }
 
@@ -89,12 +89,18 @@ describe('UserManagerDetailComponent', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        { provide: UserService, useValue: mockUserService },
+        CommonDatePipe,
         { provide: ConfigService, useClass: MockConfigService },
         { provide: ActivatedRoute, useClass: MockActivatedRoute },
         { provide: Router, useValue: mockRouter },
       ],
-    }).compileComponents();
+    })
+      .overrideComponent(UserManagerDetailComponent, {
+        set: {
+          providers: [{ provide: UserService, useValue: mockUserService }],
+        },
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(UserManagerDetailComponent);
     component = fixture.componentInstance;
@@ -130,16 +136,42 @@ describe('UserManagerDetailComponent', () => {
     expect(compiled.textContent).toContain('User: Dr. John Doe');
     expect(compiled.textContent).toContain('john@example.com');
     expect(compiled.textContent).toContain('ext123');
-    expect(compiled.textContent).toContain(
-      'Detail view functionality still needs to be implemented',
-    );
+    expect(compiled.textContent).toContain('Data Steward');
   });
 
   it('should show not found message when user is not found', () => {
-    // Update the signal to return empty array
-    mockUserService.users.value.set([]);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
+    // Create a new mock that returns empty array
+    const emptyMockUserService = {
+      users: {
+        value: jest.fn(() => []),
+        isLoading: jest.fn(() => false),
+        error: jest.fn(() => null),
+      },
+    };
+
+    // Create a new component with the updated mock
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      imports: [UserManagerDetailComponent, NoopAnimationsModule],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        CommonDatePipe,
+        { provide: ConfigService, useClass: MockConfigService },
+        { provide: ActivatedRoute, useClass: MockActivatedRoute },
+        { provide: Router, useValue: mockRouter },
+      ],
+    })
+      .overrideComponent(UserManagerDetailComponent, {
+        set: {
+          providers: [{ provide: UserService, useValue: emptyMockUserService }],
+        },
+      })
+      .compileComponents();
+
+    const emptyFixture = TestBed.createComponent(UserManagerDetailComponent);
+    emptyFixture.detectChanges();
+    const compiled = emptyFixture.nativeElement as HTMLElement;
     expect(compiled.textContent).toContain('User Not Found');
   });
 });

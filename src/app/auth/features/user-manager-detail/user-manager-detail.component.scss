@@ -4,6 +4,8 @@
  * @license Apache-2.0
  */
 
+@use '@angular/material' as mat;
+
 :host {
   display: block;
   min-height: 100vh;
@@ -12,6 +14,17 @@
 
 .container {
   max-width: 1200px;
+}
+
+// Consistent mat-chip styling with list view
+mat-chip {
+  @include mat.chips-overrides(
+    (
+      outline-color: var(--mat-sys-tertiary),
+      label-text-color: var(--mat-sys-tertiary),
+      with-trailing-icon-trailing-icon-color: var(--mat-sys-tertiary),
+    )
+  );
 }
 
 // Status color overrides if needed

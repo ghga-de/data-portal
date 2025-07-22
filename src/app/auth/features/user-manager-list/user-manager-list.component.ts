@@ -22,7 +22,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { UserStatusClassPipe } from '@app/auth/pipes/user-status-class.pipe';
-import { EnhancedUser, UserService } from '@app/auth/services/user.service';
+import { DisplayUser, UserService } from '@app/auth/services/user.service';
 import { DatePipe } from '@app/shared/pipes/date.pipe';
 
 /**
@@ -51,19 +51,18 @@ export class UserManagerListComponent implements AfterViewInit {
   #userService = inject(UserService);
   #router = inject(Router);
 
-  #users = this.#userService.users;
-  users = this.#users.value;
-  usersAreLoading = this.#users.isLoading;
-  usersError = this.#users.error;
+  users = this.#userService.users;
+  usersAreLoading = this.users.isLoading;
+  usersError = this.users.error;
 
-  source = new MatTableDataSource<EnhancedUser>([]);
+  source = new MatTableDataSource<DisplayUser>([]);
 
   defaultTablePageSize = 10;
   tablePageSizeOptions = [10, 25, 50, 100, 250, 500];
 
-  #updateSourceEffect = effect(() => (this.source.data = this.users()));
+  #updateSourceEffect = effect(() => (this.source.data = this.users.value()));
 
-  #userSortingAccessor = (user: EnhancedUser, key: string) => {
+  #userSortingAccessor = (user: DisplayUser, key: string) => {
     switch (key) {
       case 'email':
         return user.email;
@@ -76,7 +75,7 @@ export class UserManagerListComponent implements AfterViewInit {
       case 'registration_date':
         return user.registration_date;
       default:
-        const value = user[key as keyof EnhancedUser];
+        const value = user[key as keyof DisplayUser];
         if (typeof value === 'string' || typeof value === 'number') {
           return value;
         }
@@ -119,7 +118,7 @@ export class UserManagerListComponent implements AfterViewInit {
    * Navigate to user details page
    * @param user - the selected user
    */
-  viewDetails(user: EnhancedUser): void {
+  viewDetails(user: DisplayUser): void {
     this.#router.navigate(['/user-manager', user.id]);
   }
 
@@ -127,7 +126,7 @@ export class UserManagerListComponent implements AfterViewInit {
    * Open the details view for a user (placeholder for future implementation)
    * @param row - the selected user row
    */
-  openDetails(row: EnhancedUser): void {
+  openDetails(row: DisplayUser): void {
     this.viewDetails(row);
   }
 }

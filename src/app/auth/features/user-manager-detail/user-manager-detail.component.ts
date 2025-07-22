@@ -10,8 +10,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
-import { EnhancedUser, UserService } from '@app/auth/services/user.service';
+import { DisplayUser, UserService } from '@app/auth/services/user.service';
 import { DatePipe } from '@app/shared/pipes/date.pipe';
+import { FRIENDLY_DATE_FORMAT } from '@app/shared/utils/date-formats';
 
 /**
  * User Manager Detail component.
@@ -27,6 +28,8 @@ import { DatePipe } from '@app/shared/pipes/date.pipe';
   styleUrl: './user-manager-detail.component.scss',
 })
 export class UserManagerDetailComponent {
+  readonly friendlyDateFormat = FRIENDLY_DATE_FORMAT;
+
   #route = inject(ActivatedRoute);
   #router = inject(Router);
   #userService = inject(UserService);
@@ -40,7 +43,7 @@ export class UserManagerDetailComponent {
   user = computed(() => {
     const userId = this.#userId();
     const users = this.#users.value();
-    return users.find((user: EnhancedUser) => user.id === userId);
+    return users.find((user: DisplayUser) => user.id === userId);
   });
 
   /**

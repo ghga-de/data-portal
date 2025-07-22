@@ -133,7 +133,7 @@ describe('UserManagerListComponent', () => {
 
     mockUserService.users.value.mockReturnValue(usersWithVariousTitles);
 
-    const users = component.users();
+    const users = component.users.value();
 
     expect(users[0].displayName).toBe('Dr. John Doe');
     expect(users[0].sortName).toBe('Doe, John, Dr.');

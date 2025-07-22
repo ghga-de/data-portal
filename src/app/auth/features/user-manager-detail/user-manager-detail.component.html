@@ -53,14 +53,14 @@
                 >Registration Date</span
               >
               <p class="mt-1 text-sm text-gray-900">
-                {{ currentUser.registration_date | date }}
+                {{ currentUser.registration_date | date: friendlyDateFormat }}
               </p>
             </div>
             <div>
               <span class="block text-sm font-medium text-gray-700">Roles</span>
               <div class="mt-1 flex flex-wrap gap-1">
-                @for (role of currentUser.roles; track role) {
-                  <mat-chip>{{ role }}</mat-chip>
+                @for (roleName of currentUser.roleNames; track roleName) {
+                  <mat-chip>{{ roleName }}</mat-chip>
                 } @empty {
                   <p class="text-sm text-gray-500">No roles assigned</p>
                 }

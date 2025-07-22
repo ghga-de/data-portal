@@ -10,9 +10,9 @@ import { ConfigService } from '@app/shared/services/config.service';
 import { RegisteredUser, RoleNames } from '../models/user';
 
 /**
- * Enhanced user interface with computed display properties for template use
+ * Display user interface with additional properties for template use
  */
-export interface EnhancedUser extends RegisteredUser {
+export interface DisplayUser extends RegisteredUser {
   displayName: string;
   roleNames: string[];
   sortName: string;
@@ -76,11 +76,11 @@ export class UserService {
   }
 
   /**
-   * Enhances a raw user with computed properties
+   * Creates a display user with computed properties for UI consumption
    * @param user - raw user from backend
-   * @returns enhanced user with display properties
+   * @returns display user with additional display properties
    */
-  #enhanceUser(user: RegisteredUser): EnhancedUser {
+  #createDisplayUser(user: RegisteredUser): DisplayUser {
     return {
       ...user,
       displayName: user.title ? `${user.title} ${user.name}` : user.name,
@@ -92,15 +92,15 @@ export class UserService {
   }
 
   /**
-   * Resource for loading all users with enhanced properties.
+   * Resource for loading all users with display properties.
    * Automatically loads when the service is instantiated and transforms
    * raw user data to include computed display properties.
    * Note: We do the filtering currently only on the client side,
    * but in principle we can also do some filtering on the server.
    */
-  users = httpResource<EnhancedUser[]>(() => ({ url: this.#usersUrl }), {
+  users = httpResource<DisplayUser[]>(() => ({ url: this.#usersUrl }), {
     parse: (rawUsers: unknown) =>
-      (rawUsers as RegisteredUser[]).map((user) => this.#enhanceUser(user)),
+      (rawUsers as RegisteredUser[]).map((user) => this.#createDisplayUser(user)),
     defaultValue: [],
   });
 }
