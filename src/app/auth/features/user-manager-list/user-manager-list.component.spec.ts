@@ -77,15 +77,28 @@ describe('UserManagerListComponent', () => {
         name: 'Jane Smith',
         roles: ['data_steward'],
       },
+      {
+        name: 'Jeffrey Spence Slate Sr.',
+        title: 'Prof.' as const,
+        roles: ['data_steward'],
+      },
     ] as any;
-    
+
     mockUserService.allUsers.value.mockReturnValue(usersWithVariousTitles);
-    
+
     const enhancedUsers = component.users();
-    
+
     expect(enhancedUsers[0].displayName).toBe('Dr. John Doe');
+    expect(enhancedUsers[0].sortName).toBe('Doe, John, Dr.');
+
     expect(enhancedUsers[1].displayName).toBe('Jane Smith');
+    expect(enhancedUsers[1].sortName).toBe('Smith, Jane');
+
+    expect(enhancedUsers[2].displayName).toBe('Prof. Jeffrey Spence Slate Sr.');
+    expect(enhancedUsers[2].sortName).toBe('Slate, Jeffrey Spence Sr., Prof.');
+
     expect(enhancedUsers[0].roleNames).toEqual(['Data Steward']);
     expect(enhancedUsers[1].roleNames).toEqual(['Data Steward']);
+    expect(enhancedUsers[2].roleNames).toEqual(['Data Steward']);
   });
 });

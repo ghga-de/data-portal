@@ -31,6 +31,7 @@ import { DatePipe } from '@app/shared/pipes/date.pipe';
 interface EnhancedUser extends RegisteredUser {
   displayName: string;
   roleNames: string[];
+  sortName: string;
 }
 
 /**
@@ -58,7 +59,53 @@ export class UserManagerListComponent implements AfterViewInit {
   #userService = inject(UserService);
 
   #rawUsers = this.#userService.allUsers;
-  
+
+  /**
+   * Creates a sortable name format by moving the last non-abbreviated word to front
+   * and optionally adding title at the end
+   * @param name - the user's full name
+   * @param title - optional academic title
+   * @returns formatted sort name (e.g., "Doe, John" or "Slate, Jeffrey Spencer Sr., Prof.")
+   */
+  #createSortName(name: string, title?: string): string {
+    const words = name.trim().split(/\s+/);
+
+    if (words.length === 1) {
+      // Single name, just return as is with optional title
+      return title ? `${name}, ${title}` : name;
+    }
+
+    // Find the last non-abbreviated word (not ending with a period and longer than 2 chars)
+    let lastNameIndex = -1;
+    for (let i = words.length - 1; i >= 0; i--) {
+      const word = words[i];
+      if (!word.endsWith('.') && word.length > 2) {
+        lastNameIndex = i;
+        break;
+      }
+    }
+
+    // If no suitable last name found, use the last word
+    if (lastNameIndex === -1) {
+      lastNameIndex = words.length - 1;
+    }
+
+    const lastName = words[lastNameIndex];
+    const beforeLastName = words.slice(0, lastNameIndex);
+    const afterLastName = words.slice(lastNameIndex + 1);
+
+    // Construct the sort name: "LastName, FirstName Middle Suffix"
+    const restOfName = [...beforeLastName, ...afterLastName].join(' ');
+    let sortName = restOfName ? `${lastName}, ${restOfName}` : lastName;
+
+    // Add title at the end if present
+    if (title) {
+      sortName += `, ${title}`;
+    }
+
+    return sortName;
+  }
+
   // Computed signal that transforms users with display properties
   users = computed((): EnhancedUser[] =>
     this.#rawUsers.value().map((user) => ({
@@ -67,6 +114,7 @@ export class UserManagerListComponent implements AfterViewInit {
       roleNames: user.roles.map(
         (role) => RoleNames[role as keyof typeof RoleNames] || role,
       ),
+      sortName: this.#createSortName(user.name, user.title || undefined),
     })),
   );
 
@@ -85,7 +133,7 @@ export class UserManagerListComponent implements AfterViewInit {
       case 'email':
         return user.email;
       case 'name':
-        return user.name;
+        return user.sortName;
       case 'roles':
         return user.roleNames.join(', ');
       case 'status':
