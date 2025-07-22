@@ -48,7 +48,11 @@
         >
           Status
         </th>
-        <td mat-cell class="capitalize" *matCellDef="let user">
+        <td
+          mat-cell
+          class="{{ user.status | UserStatusClassPipe }} capitalize"
+          *matCellDef="let user"
+        >
           {{ user.status }}
         </td>
       </ng-container>

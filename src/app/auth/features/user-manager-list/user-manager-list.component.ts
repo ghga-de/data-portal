@@ -20,6 +20,7 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { RegisteredUser, RoleNames } from '@app/auth/models/user';
+import { UserStatusClassPipe } from '@app/auth/pipes/user-status-class.pipe';
 import { UserService } from '@app/auth/services/user.service';
 import { DatePipe } from '@app/shared/pipes/date.pipe';
 
@@ -38,6 +39,7 @@ import { DatePipe } from '@app/shared/pipes/date.pipe';
     DatePipe,
     MatIconModule,
     MatChipsModule,
+    UserStatusClassPipe,
   ],
   providers: [CommonDatePipe],
   templateUrl: './user-manager-list.component.html',
