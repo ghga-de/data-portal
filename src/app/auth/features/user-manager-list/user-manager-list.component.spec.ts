@@ -8,6 +8,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { Router } from '@angular/router';
 import { UserService } from '@app/auth/services/user.service';
 import { UserManagerListComponent } from './user-manager-list.component';
 
@@ -22,18 +23,28 @@ class MockUserService {
   };
 }
 
+/**
+ * Mock Router for testing
+ */
+class MockRouter {
+  navigate = jest.fn();
+}
+
 describe('UserManagerListComponent', () => {
   let component: UserManagerListComponent;
   let fixture: ComponentFixture<UserManagerListComponent>;
   let mockUserService: MockUserService;
+  let mockRouter: MockRouter;
 
   beforeEach(async () => {
     mockUserService = new MockUserService();
+    mockRouter = new MockRouter();
 
     await TestBed.configureTestingModule({
       imports: [UserManagerListComponent, NoopAnimationsModule],
       providers: [
         { provide: UserService, useValue: mockUserService },
+        { provide: Router, useValue: mockRouter },
         provideHttpClient(),
         provideHttpClientTesting(),
       ],
@@ -60,6 +71,10 @@ describe('UserManagerListComponent', () => {
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.textContent).toContain('No users found');
+
+    // Check that the colspan is correct for 6 columns
+    const noDataCell = compiled.querySelector('[colspan="6"]');
+    expect(noDataCell).toBeTruthy();
   });
 
   it('should initialize table data source', () => {
@@ -114,5 +129,11 @@ describe('UserManagerListComponent', () => {
     expect(enhancedUsers[3].displayName).toBe('Prof. Thomas H. Morgan Sr.');
     expect(enhancedUsers[3].sortName).toBe('Morgan, Thomas H. Sr., Prof.');
     expect(enhancedUsers[3].roleNames).toEqual([]);
+  });
+
+  it('should navigate to user details when viewDetails is called', () => {
+    const mockUser = { id: '123', name: 'Test User' } as any;
+    component.viewDetails(mockUser);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/user-manager', '123']);
   });
 });

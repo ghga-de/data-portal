@@ -83,6 +83,15 @@ export const routes: Routes = [
       ),
     title: 'User Manager',
   },
+  {
+    path: 'user-manager/:id',
+    canActivate: [() => inject(AuthService).guardDataSteward()],
+    loadComponent: () =>
+      import('./auth/features/user-manager-detail/user-manager-detail.component').then(
+        (m) => m.UserManagerDetailComponent,
+      ),
+    title: 'User Details',
+  },
   // routes used in the authentication flows
   {
     path: 'oauth/callback',

@@ -15,11 +15,13 @@ import {
   ViewChild,
   ViewChildren,
 } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { Router } from '@angular/router';
 import { RegisteredUser, RoleNames } from '@app/auth/models/user';
 import { UserStatusClassPipe } from '@app/auth/pipes/user-status-class.pipe';
 import { UserService } from '@app/auth/services/user.service';
@@ -46,6 +48,7 @@ interface EnhancedUser extends RegisteredUser {
     MatTableModule,
     MatSortModule,
     MatPaginatorModule,
+    MatButtonModule,
     DatePipe,
     MatIconModule,
     MatChipsModule,
@@ -57,6 +60,7 @@ interface EnhancedUser extends RegisteredUser {
 })
 export class UserManagerListComponent implements AfterViewInit {
   #userService = inject(UserService);
+  #router = inject(Router);
 
   #rawUsers = this.#userService.users;
 
@@ -180,11 +184,18 @@ export class UserManagerListComponent implements AfterViewInit {
   }
 
   /**
+   * Navigate to user details page
+   * @param user - the selected user
+   */
+  viewDetails(user: EnhancedUser): void {
+    this.#router.navigate(['/user-manager', user.id]);
+  }
+
+  /**
    * Open the details view for a user (placeholder for future implementation)
    * @param row - the selected user row
    */
   openDetails(row: EnhancedUser): void {
-    // TODO: Implement user details dialog
-    console.log('User details clicked:', row);
+    this.viewDetails(row);
   }
 }
