@@ -3,6 +3,7 @@
   mat-button
   routerLink="/"
   class="homeLink mx-1"
+  (click)="sidenav()?.close()"
   data-umami-event="Site Header Home Clicked"
   >Home</a
 ><a
@@ -10,6 +11,7 @@
   mat-button
   routerLink="/browse"
   class="mx-1"
+  (click)="sidenav()?.close()"
   data-umami-event="Site Header Browse Clicked"
   >Browse Data</a
 >
@@ -19,6 +21,7 @@
   target="_blank"
   rel="noreferrer noopener"
   class="mx-1 flex-row-reverse"
+  (click)="sidenav()?.close()"
   data-umami-event="Site Header Open FAQ Clicked"
   >FAQ<mat-icon class="float-right">open_in_new</mat-icon></a
 >
@@ -28,6 +31,7 @@
   target="_blank"
   rel="noreferrer noopener"
   class="mx-1 flex-row-reverse"
+  (click)="sidenav()?.close()"
   data-umami-event="Site Header Open Documentation Clicked"
   >Docs<mat-icon class="float-right">open_in_new</mat-icon></a
-><app-admin-menu></app-admin-menu>
+><app-admin-menu [sidenav]="sidenav()"></app-admin-menu>
