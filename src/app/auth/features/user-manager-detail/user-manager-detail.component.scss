@@ -12,10 +12,6 @@
   background-color: var(--mat-sys-surface-container-low);
 }
 
-.container {
-  max-width: 1200px;
-}
-
 // Consistent mat-chip styling with list view
 mat-chip {
   @include mat.chips-overrides(
