@@ -94,7 +94,7 @@
     </table>
   </div>
 
-  @if (users.length > 10) {
+  @if (users().length > 10) {
     <mat-paginator
       [pageSize]="defaultTablePageSize"
       [pageSizeOptions]="tablePageSizeOptions"

@@ -51,16 +51,17 @@ export class UserManagerListComponent implements AfterViewInit {
   #userService = inject(UserService);
   #router = inject(Router);
 
-  users = this.#userService.users;
-  usersAreLoading = this.users.isLoading;
-  usersError = this.users.error;
+  #users = this.#userService.users;
+  users = this.#users.value;
+  usersAreLoading = this.#users.isLoading;
+  usersError = this.#users.error;
 
   source = new MatTableDataSource<DisplayUser>([]);
 
   defaultTablePageSize = 10;
   tablePageSizeOptions = [10, 25, 50, 100, 250, 500];
 
-  #updateSourceEffect = effect(() => (this.source.data = this.users.value()));
+  #updateSourceEffect = effect(() => (this.source.data = this.#users.value()));
 
   #userSortingAccessor = (user: DisplayUser, key: string) => {
     switch (key) {
