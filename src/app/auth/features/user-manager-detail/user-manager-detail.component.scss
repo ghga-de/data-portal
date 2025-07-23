@@ -6,13 +6,6 @@
 
 @use '@angular/material' as mat;
 
-:host {
-  display: block;
-  padding-bottom: 1em;
-  background-color: var(--mat-sys-surface-container-low);
-}
-
-// Consistent mat-chip styling with list view
 mat-chip {
   @include mat.chips-overrides(
     (
@@ -21,13 +14,4 @@ mat-chip {
       with-trailing-icon-trailing-icon-color: var(--mat-sys-tertiary),
     )
   );
-}
-
-// Status color overrides if needed
-.status-active {
-  color: var(--mat-sys-primary);
-}
-
-.status-inactive {
-  color: var(--mat-sys-error);
 }
