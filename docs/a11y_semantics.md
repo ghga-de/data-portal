@@ -12,13 +12,13 @@ There is no real shortcut to this process.
 Proper compliance requires a deep understanding of both guidelines.
 
 Evaluating our compliance with WCAG 2.1 AA and EN 301 549 is best done with professional external auditing; however, when developing, we have access to a large number of tools to validate many aspects of our website's compliance.
-The W3C has an [entire guide on web accessibility evaluation](https://www.w3.org/WAI/test-evaluate/), including a [list of evaluation tools](https://www.w3.org/WAI/test-evaluate/tools/list/), and browsers already come with their own set of accessibility tools as well.
-The [Skynet Technologies Free Accessibility Checker](https://www.skynettechnologies.com/accessibility-checker) is (despite the company name) a great tool to obtain a broad overview of current compliance.
+The W3C has an [entire guide on web accessibility evaluation](https://www.w3.org/WAI/test-evaluate/), including a [list of evaluation tools (both online and browser extensions)](https://www.w3.org/WAI/test-evaluate/tools/list/), and browsers already come with their own set of accessibility tools as well.
+The [WAVE Web Accessibility Evaluation Tool](https://wave.webaim.org), the [ARC Toolkit](https://www.tpgi.com/arc-platform/arc-toolkit/), and the [Skynet Technologies Free Accessibility Checker](https://www.skynettechnologies.com/accessibility-checker) are great extensions and online tools to obtain a broad overview of current compliance.
 
 It is important that these tools are adopted and consistently used, since all (existing and) new code for public-facing (i.e.
 non-data steward) pages in the data portal MUST be compliant with EAA requirements.
-[Note, however, that many of these compliance checking tools provide very inconsistent results, therefore no single tool should be relied on.
-Accessibility testing cannot be done fully automated as well, so manual evaluation must be performed for complete results, which nearly invariably requires a paid audit.](https://www.w3.org/WAI/test-evaluate/tools/selecting/) We must also highlight that in almost all cases, these tools can only test the _deployed_ version of the data portal; therefore, improving accessibility is especially for us an [iterative process](https://www.wcag.com/solutions/accessibility-checker/#Implementation_process).
+[Note, however, that many of these compliance checking tools provide very inconsistent results, therefore no single tool should be relied on.\
+Accessibility testing cannot be done fully automated as well, so manual evaluation must be performed for complete results, which nearly invariably requires a paid audit.](https://www.w3.org/WAI/test-evaluate/tools/selecting/) We must also highlight that in almost all cases, unless an extension is installed, these tools can only test the _deployed_ version of the data portal; therefore, improving accessibility can become an [iterative process](https://www.wcag.com/solutions/accessibility-checker/#Implementation_process).
 Developers must, however, at least include [screen reader testing, contrast testing, and the like](https://www.w3.org/WAI/test-evaluate/easy-checks/) in the process of development to verify at least basic compliance, as well as verify the compliance of other developers' code.
 
 There is an additional consideration for GHGA itself; our brand colours are not high-contrast enough to be compliant.
