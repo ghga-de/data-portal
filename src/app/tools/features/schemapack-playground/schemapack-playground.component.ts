@@ -20,6 +20,8 @@ import { StatusTextBoxComponent } from '../status-text-box/status-text-box.compo
 const PLAYGROUND_SCHEMA_PYODIDE_PATH = '/playground/schema.yaml';
 const PLAYGROUND_JSON_PYODIDE_PATH = '/playground/data.json';
 const PLAYGROUND_SCHEMA_ASSET_PATH = 'assets/schemas/demo_schema.schemapack.yaml';
+const PLAYGROUND_DEMO_JSON_VALUE =
+  '{"datapack":"4.0.0","resources":{"File":{"file_a":{"content":{"filename":"file_a.fastq","format":"FASTQ","checksum":"1a5ac10ab42911dc0224172c118a326d9a4c03969112a2f3eb1ad971e96e92b8","size":12321}},"file_b":{"content":{"filename":"file_b.fastq","format":"FASTQ","checksum":"2b5ac10ab42911dc0224172c118a326d9a4c03969112a2f3eb1ad971e96e92c9","size":12314}},"file_c":{"content":{"filename":"file_c.fastq","format":"FASTQ","checksum":"a9c24870071da03f78515e6197048f3a2172e90e597e9250cd01a0cb8f0986ed","size":12123}}},"Dataset":{"dataset_1":{"content":{"dac_contact":"dac@example.org"},"relations":{"files":{"targetClass":"File","targetResources":["file_a","file_b","file_c"]}}}},"Sample":{"sample_x":{"content":{"description":"Some sample."},"relations":{"files":{"targetClass":"File","targetResources":["file_a","file_b"]}}},"sample_y":{"content":{},"relations":{"files":{"targetClass":"File","targetResources":["file_c"]}}}},"Experiment":{"experiment_i":{"content":{},"relations":{"samples":{"targetClass":"Sample","targetResources":["sample_x","sample_y"]}}}}}}';
 
 /**
  * This component uses schemapack to validate metadata files. It serves as a demo for that library.
@@ -59,7 +61,7 @@ export class SchemapackPlaygroundComponent {
       this.#http.get(PLAYGROUND_SCHEMA_ASSET_PATH, { responseType: 'text' }),
     );
     this.schemaYaml.set(this.defaultSchema);
-    this.jsonData.set(JSON.stringify({}));
+    this.jsonData.set(JSON.stringify(JSON.parse(PLAYGROUND_DEMO_JSON_VALUE), null, 2));
     this.statusText.set('Default example loaded. Ready to validate.');
     this.isStatusError.set(false);
     this.validationDetails.set(null);
