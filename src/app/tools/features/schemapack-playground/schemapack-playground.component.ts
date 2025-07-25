@@ -10,10 +10,12 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { SchemapackOutputStatus } from '@app/tools/models/status-text';
 import { PyodideService } from '@app/tools/services/pyodide.service';
 import { MetadataValidationService } from '@app/tools/services/validator.service';
 import { firstValueFrom } from 'rxjs';
 import { FormatSchemapackErrorPipe } from '../../pipes/schemapack-error.pipe';
+import { StatusTextBoxComponent } from '../status-text-box/status-text-box.component';
 
 const PLAYGROUND_SCHEMA_PYODIDE_PATH = '/playground/schema.yaml';
 const PLAYGROUND_JSON_PYODIDE_PATH = '/playground/data.json';
@@ -32,6 +34,7 @@ const PLAYGROUND_SCHEMA_ASSET_PATH = 'assets/schemas/demo_schema.schemapack.yaml
     FormsModule,
     MatIconModule,
     FormatSchemapackErrorPipe,
+    StatusTextBoxComponent,
   ],
 })
 export class SchemapackPlaygroundComponent {
@@ -41,15 +44,17 @@ export class SchemapackPlaygroundComponent {
   schemaYaml = signal<string>('');
   jsonData = signal<string>('');
   defaultSchema = '';
-  statusText = signal<string>('Ready. Load a default or paste your content.');
   isStatusError = signal<boolean>(false);
   showSpinner = signal<boolean>(false);
   validationDetails = signal<string | null>(null);
+  statusText = signal<string>('Ready. Load a default or paste your content.');
+  status = signal<SchemapackOutputStatus>(SchemapackOutputStatus.READY);
 
   /**
    * Loads the default schema and JSON data into the text areas.
    */
   async loadDefault() {
+    this.status.set(SchemapackOutputStatus.LOADING);
     this.defaultSchema = await firstValueFrom(
       this.#http.get(PLAYGROUND_SCHEMA_ASSET_PATH, { responseType: 'text' }),
     );
@@ -58,12 +63,14 @@ export class SchemapackPlaygroundComponent {
     this.statusText.set('Default example loaded. Ready to validate.');
     this.isStatusError.set(false);
     this.validationDetails.set(null);
+    this.status.set(SchemapackOutputStatus.READY);
   }
 
   /**
    * This function starts the validation process.
    */
   async validate(): Promise<void> {
+    this.status.set(SchemapackOutputStatus.LOADING);
     this.showSpinner.set(true);
     this.isStatusError.set(false);
     this.validationDetails.set(null);
@@ -82,7 +89,9 @@ export class SchemapackPlaygroundComponent {
       PLAYGROUND_JSON_PYODIDE_PATH,
       PLAYGROUND_SCHEMA_PYODIDE_PATH,
     );
-
+    this.status.set(
+      result.success ? SchemapackOutputStatus.SUCCESS : SchemapackOutputStatus.ERROR,
+    );
     if (!result.success) {
       this.statusText.set('Validation failed. Check the details below.');
       this.isStatusError.set(true);
