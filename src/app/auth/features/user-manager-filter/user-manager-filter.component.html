@@ -17,14 +17,61 @@
             [class.invisible]="!this.name()"
             class="pb-2.5"
             (click)="this.name.set('')"
-            data-umami-event="IVA Manager Filters User Name Clear Clicked"
+            data-umami-event="User Manager Filters User Name Clear Clicked"
           >
             <mat-icon>cancel</mat-icon>
           </button>
         </div>
         <div class="flex gap-2">
           <mat-form-field class="grow">
-            <mat-label>Last modified from</mat-label>
+            <mat-label>Role</mat-label>
+            <mat-select matInput [(ngModel)]="roles" multiple>
+              <mat-option [value]="null">No assigned role</mat-option>
+              @for (opt of roleOptions; track opt) {
+                <mat-option [value]="opt.value">{{ opt.text }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <button
+            mat-icon-button
+            aria-label="Remove filter for user role"
+            [class.invisible]="!this.roles() || this.roles()?.length === 0"
+            class="pb-2.5"
+            (click)="this.roles.set(undefined)"
+            data-umami-event="User Manager Filters User Role Clear Clicked"
+          >
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </div>
+        <div class="flex gap-2">
+          <mat-form-field class="grow">
+            <mat-label>
+              @if (status()) {
+                Status value
+              } @else {
+                All status values
+              }
+            </mat-label>
+            <mat-select [(ngModel)]="status">
+              @for (opt of statusOptions; track opt) {
+                <mat-option [value]="opt.value">{{ opt.text }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <button
+            mat-icon-button
+            aria-label="Remove filter for status"
+            [class.invisible]="!this.status()"
+            class="pb-2.5"
+            (click)="this.status.set(undefined)"
+            data-umami-event="User Manager Filters State Clear Clicked"
+          >
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </div>
+        <div class="flex gap-2">
+          <mat-form-field class="grow">
+            <mat-label>Registration date from</mat-label>
             <input matInput [matDatepicker]="fromPicker" [(ngModel)]="fromDate" />
             <mat-hint>{{ dateInputFormatHint }}</mat-hint>
             <mat-datepicker-toggle
@@ -39,14 +86,14 @@
             [class.invisible]="!this.fromDate()"
             class="pb-2.5"
             (click)="this.fromDate.set(undefined)"
-            data-umami-event="IVA Manager Filters Changed Dates From Clear Clicked"
+            data-umami-event="User Manager Filters Changed Dates From Clear Clicked"
           >
             <mat-icon>cancel</mat-icon>
           </button>
         </div>
         <div class="flex gap-2">
           <mat-form-field class="grow">
-            <mat-label>Last modified until</mat-label>
+            <mat-label>Registration date until</mat-label>
             <input matInput [matDatepicker]="toPicker" [(ngModel)]="toDate" />
             <mat-hint>{{ dateInputFormatHint }}</mat-hint>
             <mat-datepicker-toggle
@@ -62,32 +109,6 @@
             class="pb-2.5"
             (click)="this.toDate.set(undefined)"
             data-umami-event="IVA Manager Filters Changed Dates To Clear Clicked"
-          >
-            <mat-icon>cancel</mat-icon>
-          </button>
-        </div>
-        <div class="flex gap-2">
-          <mat-form-field class="grow">
-            <mat-label>
-              @if (state()) {
-                Status value
-              } @else {
-                All status values
-              }
-            </mat-label>
-            <mat-select [(ngModel)]="state">
-              @for (opt of stateOptions; track opt) {
-                <mat-option [value]="opt.value">{{ opt.text }}</mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
-          <button
-            mat-icon-button
-            aria-label="Remove filter for status"
-            [class.invisible]="!this.state()"
-            class="pb-2.5"
-            (click)="this.state.set(undefined)"
-            data-umami-event="IVA Manager Filters State Clear Clicked"
           >
             <mat-icon>cancel</mat-icon>
           </button>

@@ -25,7 +25,7 @@ class MockConfigService {
  * Mock UserService for testing
  */
 class MockUserService {
-  users = {
+  allUsers = {
     value: jest.fn(() => [
       {
         id: '123',
@@ -137,7 +137,7 @@ describe('UserManagerDetailComponent', () => {
   it('should show not found message when user is not found', () => {
     // Create a new mock that returns empty array
     const emptyMockUserService = {
-      users: {
+      allUsers: {
         value: jest.fn(() => []),
         isLoading: jest.fn(() => false),
         error: jest.fn(() => null),

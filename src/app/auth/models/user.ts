@@ -49,7 +49,10 @@ export type UserRole = keyof typeof RoleNames;
 /**
  * All possible user states
  */
-export type UserState = 'active' | 'inactive';
+export enum UserStatus {
+  active = 'active',
+  inactive = 'inactive',
+}
 
 /**
  * Data of a fully registered user interface
@@ -57,7 +60,7 @@ export type UserState = 'active' | 'inactive';
 export interface RegisteredUser extends UserRegisteredData {
   id: string;
   roles: UserRole[];
-  status: UserState;
+  status: UserStatus;
   registration_date: string; // ISO date string
 }
 
@@ -84,4 +87,15 @@ export interface UserSession extends UserRegisteredData {
  */
 export enum RoleNames {
   data_steward = 'Data Steward',
+}
+
+/**
+ * Interface for filter object for registered user
+ */
+export interface RegisteredUserFilter {
+  name: string;
+  roles: (UserRole | null)[] | undefined;
+  status: UserStatus | undefined;
+  fromDate: Date | undefined; // ISO date string
+  toDate: Date | undefined; // ISO date string
 }
