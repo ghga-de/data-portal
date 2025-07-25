@@ -8,9 +8,7 @@ export interface PyodideOutput {
   json_output: string | null;
   error_message: string | null;
   success: boolean;
-  validation_success?: boolean;
-  validation_stdout?: string;
-  validation_stderr?: string;
+  output?: string;
 }
 
 export interface LogEntry {

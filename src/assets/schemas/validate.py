@@ -73,8 +73,8 @@ def validate():
 
     return {
         "success": success,
-        "stdout": stdout.getvalue(),
-        "stderr": stderr.getvalue(),
+        "output": stdout.getvalue(),
+        "error_message": stderr.getvalue(),
     }
 
 def main():

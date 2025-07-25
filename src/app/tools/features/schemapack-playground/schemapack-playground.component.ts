@@ -10,6 +10,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { PyodideOutput } from '@app/tools/models/pyodide';
 import { SchemapackOutputStatus } from '@app/tools/models/status-text';
 import { PyodideService } from '@app/tools/services/pyodide.service';
 import { MetadataValidationService } from '@app/tools/services/validator.service';
@@ -99,7 +100,7 @@ export class SchemapackPlaygroundComponent {
       PLAYGROUND_JSON_PYODIDE_PATH,
     );
 
-    const result = await this.#validationService.runValidator(
+    const result: PyodideOutput = await this.#validationService.runValidator(
       PLAYGROUND_JSON_PYODIDE_PATH,
       PLAYGROUND_SCHEMA_PYODIDE_PATH,
     );
@@ -109,7 +110,7 @@ export class SchemapackPlaygroundComponent {
     if (!result.success) {
       this.statusText.set('Validation failed. Check the details below.');
       this.isStatusError.set(true);
-      this.validationDetails.set(result.stderr);
+      this.validationDetails.set(result.error_message);
     } else {
       this.statusText.set('Validation successful. No issues found.');
     }

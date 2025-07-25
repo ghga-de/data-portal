@@ -271,20 +271,20 @@ export class MetadataValidatorComponent {
           this.#setStepStatus(2, 'succeeded');
           this.#updateStatus('Transpilation and validation successful!', false, false);
 
-          if (validationResult.stdout && validationResult.stdout.trim()) {
+          if (validationResult.output && validationResult.output.trim()) {
             this.#pyodideService.log(
-              `Validation Output (stdout):\n${validationResult.stdout.trim()}`,
+              `Validation Output:\n${validationResult.output.trim()}`,
               'info',
             );
           }
 
-          if (validationResult.stderr && validationResult.stderr.trim()) {
+          if (validationResult.error_message && validationResult.error_message.trim()) {
             this.#pyodideService.log(
-              `Validation Info/Warnings (stderr):\n${validationResult.stderr.trim()}`,
+              `Validation Info/Warnings:\n${validationResult.error_message.trim()}`,
               'info',
             );
             this.validationOutputDetails.set(
-              this.#formatSchemapackError(validationResult.stderr.trim()),
+              this.#formatSchemapackError(validationResult.error_message.trim()),
             );
           }
         } else {
@@ -297,17 +297,17 @@ export class MetadataValidatorComponent {
           );
 
           let combinedValidationError = '';
-          if (validationResult.stdout && validationResult.stdout.trim()) {
-            combinedValidationError += `Validation Output (stdout):\n${validationResult.stdout.trim()}\n\n`;
+          if (validationResult.output && validationResult.output.trim()) {
+            combinedValidationError += `Validation Output (stdout):\n${validationResult.output.trim()}\n\n`;
             this.#pyodideService.log(
-              `Validation Output (stdout):\n${validationResult.stdout.trim()}`,
+              `Validation Output (stdout):\n${validationResult.output.trim()}`,
               'info',
             );
           }
-          if (validationResult.stderr && validationResult.stderr.trim()) {
-            combinedValidationError += `Validation Errors (stderr):\n${validationResult.stderr.trim()}`;
+          if (validationResult.error_message && validationResult.error_message.trim()) {
+            combinedValidationError += `Validation Errors (stderr):\n${validationResult.error_message.trim()}`;
             this.#pyodideService.log(
-              `Validation Errors (stderr):\n${validationResult.stderr.trim()}`,
+              `Validation Errors (stderr):\n${validationResult.error_message.trim()}`,
               'error',
             );
           } else {

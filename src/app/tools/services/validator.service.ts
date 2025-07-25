@@ -7,6 +7,7 @@
 import { HttpClient } from '@angular/common/http';
 import { effect, inject, Injectable, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
+import { PyodideOutput } from '../models/pyodide';
 import { PyodideService } from './pyodide.service';
 
 const YAML_SCHEMA_ASSET_PATH =
@@ -95,7 +96,7 @@ export class MetadataValidationService {
   async runValidator(
     input_datapack_path: string = DEFAULT_JSON_DATAPACK_PATH,
     schema_file_path: string = SCHEMA_FILE_PATH,
-  ) {
+  ): Promise<PyodideOutput> {
     const validatorArgs = [schema_file_path, input_datapack_path];
     const ret = await this.#pyodideService.runScript(
       validatorScriptPath,
