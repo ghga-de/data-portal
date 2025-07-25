@@ -12,6 +12,7 @@ import { LogEntry, PyodideOutput } from '@app/tools/models/pyodide';
 import { StepDetails, StepStatus } from '@app/tools/models/stepper';
 import { PyodideService } from '@app/tools/services/pyodide.service';
 import { MetadataValidationService } from '@app/tools/services/validator.service';
+import { FormatSchemapackErrorPipe } from '../../pipes/schemapack-error.pipe';
 import { TranspilerService } from '../../services/transpiler.service';
 import { StepperComponent } from '../stepper/stepper.component';
 
@@ -25,7 +26,13 @@ import { StepperComponent } from '../stepper/stepper.component';
   selector: 'app-metadata-validator',
   templateUrl: './metadata-validator.component.html',
   styleUrls: ['./metadata-validator.component.scss'],
-  imports: [CommonModule, MatButtonModule, MatIconModule, StepperComponent],
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    MatIconModule,
+    StepperComponent,
+    FormatSchemapackErrorPipe,
+  ],
 })
 export class MetadataValidatorComponent {
   #validationService = inject(MetadataValidationService);
@@ -283,9 +290,7 @@ export class MetadataValidatorComponent {
               `Validation Info/Warnings:\n${validationResult.error_message.trim()}`,
               'info',
             );
-            this.validationOutputDetails.set(
-              this.#formatSchemapackError(validationResult.error_message.trim()),
-            );
+            this.validationOutputDetails.set(validationResult.error_message);
           }
         } else {
           this.#setStepStatus(2, 'failed');
@@ -318,9 +323,7 @@ export class MetadataValidatorComponent {
               'error',
             );
           }
-          this.validationOutputDetails.set(
-            this.#formatSchemapackError(combinedValidationError.trim()),
-          );
+          this.validationOutputDetails.set(combinedValidationError.trim());
         }
       } else {
         this.#pyodideService.log(
@@ -370,53 +373,6 @@ export class MetadataValidatorComponent {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-  }
-
-  /**
-   * Formats the schemapack error string to remove box-drawing characters
-   * and replace them with standard characters for better display in a pre tag.
-   * @param errorString The raw error string from schemapack.
-   * @returns The formatted error string.
-   */
-  #formatSchemapackError(errorString: string): string {
-    // Remove specific box-drawing characters and replace with spaces or empty string
-    let formattedError = errorString.replace(/[╭─╮│╰╯]/g, (match) => {
-      switch (match) {
-        case '╭':
-          return ''; // Remove top-left corner
-        case '─':
-          return ''; // Replace horizontal lines with empty string (will let content wrap naturally)
-        case '╮':
-          return ''; // Remove top-right corner
-        case '│':
-          return '  '; // Replace vertical line with two spaces for indentation
-        case '╰':
-          return ''; // Remove bottom-left corner
-        case '╯':
-          return ''; // Remove bottom-right corner
-        default:
-          return match; // Keep other characters as is
-      }
-    });
-
-    formattedError = formattedError
-      .split('\n')
-      .filter((line) => line.trim() !== '')
-      .join('\n');
-
-    formattedError = formattedError
-      .split('\n')
-      .map((line) => line.trimEnd())
-      .join('\n');
-
-    formattedError = formattedError
-      .split('\n')
-      .map((line) => {
-        return line.replace(/^ {2,}/, '  ');
-      })
-      .join('\n');
-
-    return formattedError.trim();
   }
 
   /**

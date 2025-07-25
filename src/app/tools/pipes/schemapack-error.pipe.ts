@@ -39,12 +39,24 @@ export class FormatSchemapackErrorPipe implements PipeTransform {
           return match;
       }
     });
-
+    console.log(formattedError);
     formattedError = formattedError
       .split('\n')
       .filter((line) => line.trim() !== '')
       .map((line) => line.trimEnd())
       .map((line) => line.replace(/^ {2,}/, '  '))
+      .map((line) => {
+        if (
+          line.indexOf('errors.pydantic.dev') !== -1 ||
+          line.indexOf('for DataPack') !== -1
+        ) {
+          return line + '\n';
+        } else if (line.indexOf('The provided datapack is not valid') !== -1) {
+          return '\n' + line;
+        } else {
+          return line;
+        }
+      })
       .join('\n');
 
     return formattedError.trim();
