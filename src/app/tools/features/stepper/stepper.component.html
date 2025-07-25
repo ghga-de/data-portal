@@ -5,20 +5,23 @@
     }
     <div
       class="flex flex-1 items-center justify-center"
-      [ngClass]="{
-        'text-blue-600': step.status === 'idle' || step.status === 'ongoing',
-        'text-green-600': step.status === 'succeeded',
-        'text-red-600': step.status === 'failed',
-      }"
+      [class.text-blue-600]="step.status === 'idle' || step.status === 'ongoing'"
+      [class.text-green-600]="step.status === 'succeeded'"
+      [class.text-red-600]="step.status === 'failed'"
     >
-      @if (step.status === 'ongoing') {
-        <mat-icon class="animate-spin text-current">sync</mat-icon>
-      } @else if (step.status === 'succeeded') {
-        <mat-icon class="text-green-600">check_circle</mat-icon>
-      } @else if (step.status === 'failed') {
-        <mat-icon class="text-red-600">error</mat-icon>
-      } @else {
-        <mat-icon class="text-gray-400">circle</mat-icon>
+      @switch (step.status) {
+        @case ('ongoing') {
+          <mat-icon class="animate-spin text-current">sync</mat-icon>
+        }
+        @case ('succeeded') {
+          <mat-icon class="text-green-600">check_circle</mat-icon>
+        }
+        @case ('failed') {
+          <mat-icon class="text-red-600">error</mat-icon>
+        }
+        @default {
+          <mat-icon class="text-gray-400">circle</mat-icon>
+        }
       }
     </div>
   }
