@@ -35,7 +35,7 @@ export class UserManagerDetailComponent {
   #userService = inject(UserService);
 
   #userId = computed(() => this.#route.snapshot.params['id']);
-  #users = this.#userService.users;
+  #users = this.#userService.allUsers;
 
   /**
    * Get the specific user based on the route parameter

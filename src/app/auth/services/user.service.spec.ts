@@ -37,6 +37,6 @@ describe('UserService', () => {
   });
 
   it('should have users resource with default empty array', () => {
-    expect(service.users.value()).toEqual([]);
+    expect(service.allUsers.value()).toEqual([]);
   });
 });

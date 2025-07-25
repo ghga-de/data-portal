@@ -5,9 +5,9 @@
  */
 
 import { httpResource } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { ConfigService } from '@app/shared/services/config.service';
-import { RegisteredUser, RoleNames } from '../models/user';
+import { RegisteredUser, RegisteredUserFilter, RoleNames } from '../models/user';
 
 /**
  * Display user interface with additional properties for template use
@@ -22,12 +22,14 @@ export interface DisplayUser extends RegisteredUser {
  * Service for managing users in the GHGA Data Portal.
  * This service handles fetching and managing user data for data stewards.
  */
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class UserService {
   #config = inject(ConfigService);
 
   #authUrl = this.#config.authUrl;
   #usersUrl = `${this.#authUrl}/users`;
+
+  #allUsersFilter = signal<RegisteredUserFilter | undefined>(undefined);
 
   /**
    * Creates a sortable name format by moving the last non-abbreviated word to front
@@ -91,16 +93,104 @@ export class UserService {
     };
   }
 
+  // signal to load all users
+  #loadAll = signal<boolean>(false);
+
+  /**
+   * Load all users
+   */
+  loadAllUsers(): void {
+    this.#loadAll.set(true);
+  }
+
+  /**
+   * Reload all users' IVAs
+   */
+  reloadAllUsers(): void {
+    this.allUsers.reload();
+  }
+
+  /**
+   * The current filter for the list of all users
+   */
+  allUsersFilter = computed(
+    () =>
+      this.#allUsersFilter() ?? {
+        name: '',
+        roles: undefined,
+        status: undefined,
+        fromDate: undefined,
+        toDate: undefined,
+      },
+  );
+
+  /**
+   * Set a filter for the list of all Users
+   * @param filter - the filter to apply
+   */
+  setAllUsersFilter(filter: RegisteredUserFilter): void {
+    this.#allUsersFilter.set(
+      filter.name ||
+        filter.roles?.length ||
+        filter.status ||
+        filter.fromDate ||
+        filter.toDate
+        ? filter
+        : undefined,
+    );
+  }
+
   /**
    * Resource for loading all users with display properties.
-   * Automatically loads when the service is instantiated and transforms
+   * Automatically loads when the #loadAll signal is set to true
    * raw user data to include computed display properties.
    * Note: We do the filtering currently only on the client side,
    * but in principle we can also do some filtering on the server.
    */
-  users = httpResource<DisplayUser[]>(() => ({ url: this.#usersUrl }), {
-    parse: (rawUsers: unknown) =>
-      (rawUsers as RegisteredUser[]).map((user) => this.#createDisplayUser(user)),
-    defaultValue: [],
+  allUsers = httpResource<DisplayUser[]>(
+    () => (this.#loadAll() ? this.#usersUrl : undefined),
+    {
+      parse: (rawUsers: unknown) =>
+        (rawUsers as RegisteredUser[]).map((user) => this.#createDisplayUser(user)),
+      defaultValue: [],
+    },
+  );
+
+  /**
+   * Signal that gets all users filtered by the current filter
+   */
+  allUsersFiltered = computed(() => {
+    let users = this.allUsers.value();
+    const filter = this.#allUsersFilter();
+    if (users.length > 0 && filter !== undefined) {
+      const name = filter.name.trim().toLowerCase();
+      if (name) {
+        users = users.filter((user) => user.displayName.toLowerCase().includes(name));
+      }
+      if (filter.roles && filter.roles.length) {
+        const roles = filter.roles;
+        users = users.filter((user) =>
+          roles?.some((x) => {
+            if (x !== null) {
+              return user.roles.includes(x);
+            } else {
+              return user.roles.length === 0;
+            }
+          }),
+        );
+      }
+      if (filter.status) {
+        users = users.filter((user) => user.status === filter.status);
+      }
+      if (filter.fromDate) {
+        const fromDate = filter.fromDate.toISOString();
+        users = users.filter((user) => user.registration_date >= fromDate);
+      }
+      if (filter.toDate) {
+        const toDate = filter.toDate.toISOString();
+        users = users.filter((user) => user.registration_date <= toDate);
+      }
+    }
+    return users;
   });
 }
