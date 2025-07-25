@@ -72,6 +72,18 @@ export class SchemapackPlaygroundComponent {
    * This function starts the validation process.
    */
   async validate(): Promise<void> {
+    try {
+      const ret = JSON.parse(this.jsonData());
+      console.log('JSON data:', ret);
+    } catch (error) {
+      this.statusText.set('Invalid JSON data. Please check your input.');
+      this.isStatusError.set(true);
+      this.validationDetails.set(
+        (error as Error).message.replace('JSON.parse: ', 'Error: '),
+      );
+      this.status.set(SchemapackOutputStatus.ERROR);
+      return;
+    }
     this.status.set(SchemapackOutputStatus.LOADING);
     this.showSpinner.set(true);
     this.isStatusError.set(false);
@@ -98,6 +110,8 @@ export class SchemapackPlaygroundComponent {
       this.statusText.set('Validation failed. Check the details below.');
       this.isStatusError.set(true);
       this.validationDetails.set(result.stderr);
+    } else {
+      this.statusText.set('Validation successful. No issues found.');
     }
 
     this.showSpinner.set(false);
