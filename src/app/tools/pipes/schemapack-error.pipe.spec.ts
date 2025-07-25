@@ -91,7 +91,7 @@ describe('FormatSchemapackErrorPipe', () => {
       Some text with ╭ and ─ and │ and ╰ and ╮ and ╯.
       Other symbols like @#$%^&*() should remain.
     `;
-    const expected = `Some text with  and  and    and  and  and .
+    const expected = `Some text with  and  and    and  and  and\n.
   Other symbols like @#$%^&*() should remain.`;
     expect(pipe.transform(input)).toBe(expected);
   });

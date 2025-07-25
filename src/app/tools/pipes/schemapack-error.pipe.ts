@@ -19,7 +19,7 @@ export class FormatSchemapackErrorPipe implements PipeTransform {
    * @param errorString The raw string to format.
    * @returns A formatted, more readable error string.
    */
-  transform(errorString: string | null): string {
+  static transform(errorString: string | null): string {
     if (!errorString) {
       return '';
     }
@@ -29,9 +29,10 @@ export class FormatSchemapackErrorPipe implements PipeTransform {
         case '╭':
         case '╮':
         case '╰':
-        case '╯':
         case '─':
           return '';
+        case '╯':
+          return '\n';
         case '│':
           return '  ';
         default:
@@ -47,5 +48,14 @@ export class FormatSchemapackErrorPipe implements PipeTransform {
       .join('\n');
 
     return formattedError.trim();
+  }
+
+  /**
+   * Transforms the input value using the static transform method.
+   * @param value The raw error string to format.
+   * @returns A formatted, more readable error string.
+   */
+  transform(value: string | null): string {
+    return FormatSchemapackErrorPipe.transform(value);
   }
 }

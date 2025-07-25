@@ -12,7 +12,7 @@ schema_filename, in_filename = args_js.to_py()
 def validate():
     """Validate the JSON using schemapack."""
 
-    validation_success = False
+    success = False
     stdout = io.StringIO()
     stderr = io.StringIO()
 

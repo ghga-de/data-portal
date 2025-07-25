@@ -45,7 +45,11 @@ export class PyodideService {
   ): void {
     const time = new Date().toLocaleTimeString();
     this.#processLog.update((currentLog) => [...currentLog, { message, type, time }]);
-    console.log(`[Log ${type.toUpperCase()}] ${message}`);
+    if (type === 'success') {
+      console.log(message);
+    } else {
+      console[type](message);
+    }
   }
 
   /**
