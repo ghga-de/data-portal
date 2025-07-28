@@ -24,12 +24,12 @@ class MockConfigService {
  * Mock UserService for testing
  */
 class MockUserService {
-  allUsers = {
+  users = {
     value: jest.fn(() => []),
     isLoading: jest.fn(() => false),
     error: jest.fn(() => null),
   };
-  allUsersFiltered = () => this.allUsers.value();
+  usersFiltered = () => this.users.value();
 }
 
 /**
@@ -69,15 +69,15 @@ describe('UserManagerListComponent', () => {
   });
 
   it('should display loading message when users are loading', () => {
-    mockUserService.allUsers.isLoading.mockReturnValue(true);
+    mockUserService.users.isLoading.mockReturnValue(true);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.textContent).toContain('Loading users...');
   });
 
   it('should display "No users found" when no users exist', () => {
-    mockUserService.allUsers.isLoading.mockReturnValue(false);
-    mockUserService.allUsers.value.mockReturnValue([]);
+    mockUserService.users.isLoading.mockReturnValue(false);
+    mockUserService.users.value.mockReturnValue([]);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.textContent).toContain('No users found');
@@ -132,7 +132,7 @@ describe('UserManagerListComponent', () => {
       },
     ] as any;
 
-    mockUserService.allUsers.value.mockReturnValue(usersWithVariousTitles);
+    mockUserService.users.value.mockReturnValue(usersWithVariousTitles);
 
     const users = component.users();
 

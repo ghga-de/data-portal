@@ -24,7 +24,7 @@ class MockConfigService {
  * Mock UserService for testing
  */
 const MockUserService = {
-  loadAllUsers: jest.fn(),
+  loadUsers: jest.fn(),
 };
 
 describe('UserManagerComponent', () => {

@@ -7,25 +7,34 @@
       <div class="flex grow flex-col gap-2">
         <div class="flex gap-2">
           <mat-form-field class="grow">
-            <mat-label>Name of user</mat-label>
-            <input matInput [(ngModel)]="name" />
-            <mat-hint>You can also filter with partial names</mat-hint>
+            <mat-label>Name, email, or LS ID of user</mat-label>
+            <input matInput [(ngModel)]="idStrings" />
+            <mat-hint>Filter by name, email, or LifeScience ID.</mat-hint>
           </mat-form-field>
           <button
             mat-icon-button
-            aria-label="Remove filter for user name"
-            [class.invisible]="!this.name()"
+            aria-label="Remove filter for user name, email, and LS ID"
+            [class.invisible]="!this.idStrings()"
             class="pb-2.5"
-            (click)="this.name.set('')"
-            data-umami-event="User Manager Filters User Name Clear Clicked"
+            (click)="this.idStrings.set('')"
+            data-umami-event="User Manager Filters User Name Email LSID Clear Clicked"
           >
             <mat-icon>cancel</mat-icon>
           </button>
         </div>
         <div class="flex gap-2">
           <mat-form-field class="grow">
-            <mat-label>Role</mat-label>
+            <mat-label>
+              @if (roles()?.length) {
+                Roles
+              } @else {
+                Any role
+              }
+            </mat-label>
             <mat-select matInput [(ngModel)]="roles" multiple>
+              <mat-select-trigger>
+                {{ roleSelection() }}
+              </mat-select-trigger>
               <mat-option [value]="null">No assigned role</mat-option>
               @for (opt of roleOptions; track opt) {
                 <mat-option [value]="opt.value">{{ opt.text }}</mat-option>
@@ -108,7 +117,7 @@
             [class.invisible]="!this.toDate()"
             class="pb-2.5"
             (click)="this.toDate.set(undefined)"
-            data-umami-event="IVA Manager Filters Changed Dates To Clear Clicked"
+            data-umami-event="User Manager Filters Changed Dates To Clear Clicked"
           >
             <mat-icon>cancel</mat-icon>
           </button>

@@ -93,7 +93,7 @@ export enum RoleNames {
  * Interface for filter object for registered user
  */
 export interface RegisteredUserFilter {
-  name: string;
+  idStrings: string;
   roles: (UserRole | null)[] | undefined;
   status: UserStatus | undefined;
   fromDate: Date | undefined; // ISO date string

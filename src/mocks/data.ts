@@ -19,7 +19,7 @@ import { WorkPackageResponse } from '@app/work-packages/models/work-package';
  * Users
  */
 
-export const allUsers: RegisteredUser[] = [
+export const users: RegisteredUser[] = [
   {
     id: 'doe@test.dev',
     ext_id: 'aacaffeecaffeecaffeecaffeecaffeecaffeeaad@lifescience-ri.eu',

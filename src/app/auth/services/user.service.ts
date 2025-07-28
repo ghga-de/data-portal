@@ -22,14 +22,14 @@ export interface DisplayUser extends RegisteredUser {
  * Service for managing users in the GHGA Data Portal.
  * This service handles fetching and managing user data for data stewards.
  */
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class UserService {
   #config = inject(ConfigService);
 
   #authUrl = this.#config.authUrl;
   #usersUrl = `${this.#authUrl}/users`;
 
-  #allUsersFilter = signal<RegisteredUserFilter | undefined>(undefined);
+  #usersFilter = signal<RegisteredUserFilter | undefined>(undefined);
 
   /**
    * Creates a sortable name format by moving the last non-abbreviated word to front
@@ -99,24 +99,24 @@ export class UserService {
   /**
    * Load all users
    */
-  loadAllUsers(): void {
+  loadUsers(): void {
     this.#loadAll.set(true);
   }
 
   /**
    * Reload all users' IVAs
    */
-  reloadAllUsers(): void {
-    this.allUsers.reload();
+  reloadUsers(): void {
+    this.users.reload();
   }
 
   /**
    * The current filter for the list of all users
    */
-  allUsersFilter = computed(
+  usersFilter = computed(
     () =>
-      this.#allUsersFilter() ?? {
-        name: '',
+      this.#usersFilter() ?? {
+        idStrings: '',
         roles: undefined,
         status: undefined,
         fromDate: undefined,
@@ -128,9 +128,9 @@ export class UserService {
    * Set a filter for the list of all Users
    * @param filter - the filter to apply
    */
-  setAllUsersFilter(filter: RegisteredUserFilter): void {
-    this.#allUsersFilter.set(
-      filter.name ||
+  setUsersFilter(filter: RegisteredUserFilter): void {
+    this.#usersFilter.set(
+      filter.idStrings ||
         filter.roles?.length ||
         filter.status ||
         filter.fromDate ||
@@ -147,7 +147,7 @@ export class UserService {
    * Note: We do the filtering currently only on the client side,
    * but in principle we can also do some filtering on the server.
    */
-  allUsers = httpResource<DisplayUser[]>(
+  users = httpResource<DisplayUser[]>(
     () => (this.#loadAll() ? this.#usersUrl : undefined),
     {
       parse: (rawUsers: unknown) =>
@@ -159,13 +159,18 @@ export class UserService {
   /**
    * Signal that gets all users filtered by the current filter
    */
-  allUsersFiltered = computed(() => {
-    let users = this.allUsers.value();
-    const filter = this.#allUsersFilter();
+  usersFiltered = computed(() => {
+    let users = this.users.value();
+    const filter = this.#usersFilter();
     if (users.length > 0 && filter !== undefined) {
-      const name = filter.name.trim().toLowerCase();
-      if (name) {
-        users = users.filter((user) => user.displayName.toLowerCase().includes(name));
+      const idStrings = filter.idStrings.trim().toLowerCase();
+      if (idStrings) {
+        users = users.filter(
+          (user) =>
+            user.displayName.toLowerCase().includes(idStrings) ||
+            user.email.toLowerCase().includes(idStrings) ||
+            user.ext_id.toLowerCase().includes(idStrings),
+        );
       }
       if (filter.roles && filter.roles.length) {
         const roles = filter.roles;

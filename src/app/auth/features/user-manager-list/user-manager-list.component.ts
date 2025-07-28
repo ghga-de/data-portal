@@ -51,8 +51,8 @@ export class UserManagerListComponent implements AfterViewInit {
   #router = inject(Router);
   #userService = inject(UserService);
 
-  #users = this.#userService.allUsers;
-  users = this.#userService.allUsersFiltered;
+  #users = this.#userService.users;
+  users = this.#userService.usersFiltered;
   usersAreLoading = this.#users.isLoading;
   usersError = this.#users.error;
 

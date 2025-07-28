@@ -21,14 +21,14 @@ import userEvent from '@testing-library/user-event';
  * Mock the user service as needed by the user manager filter component
  */
 const mockUserService = {
-  allUsersFilter: () => ({
-    name: '',
+  usersFilter: () => ({
+    idStrings: '',
     role: undefined,
     status: undefined,
     fromDate: undefined,
     toDate: undefined,
   }),
-  setAllUsersFilter: jest.fn(),
+  setUsersFilter: jest.fn(),
 };
 
 /**
@@ -66,8 +66,8 @@ describe('UserManagerFilterComponent', () => {
   });
 
   it('should reset the filter upon initialization', async () => {
-    expect(userService.setAllUsersFilter).toHaveBeenCalledWith({
-      name: '',
+    expect(userService.setUsersFilter).toHaveBeenCalledWith({
+      idStrings: '',
       roles: undefined,
       status: undefined,
       fromDate: undefined,
@@ -76,14 +76,35 @@ describe('UserManagerFilterComponent', () => {
   });
 
   it('should set the filter after typing a name', async () => {
-    const textbox = screen.getByRole('textbox', { name: 'Name of user' });
+    const textbox = screen.getByRole('textbox', {
+      name: 'Name, email, or LS ID of user',
+    });
 
     await userEvent.type(textbox, 'Doe');
     await fixture.whenStable();
 
-    expect(userService.setAllUsersFilter).toHaveBeenCalledWith({
-      name: 'Doe',
+    expect(userService.setUsersFilter).toHaveBeenCalledWith({
+      idStrings: 'Doe',
       roles: undefined,
+      status: undefined,
+      fromDate: undefined,
+      toDate: undefined,
+    });
+  });
+
+  it('should set the filter after choosing a role', async () => {
+    const select = screen.getByRole('combobox', {
+      name: 'Any role',
+    });
+
+    await userEvent.click(select);
+    const dataSteward = screen.getByRole('option', { name: 'Data Steward' });
+    await userEvent.click(dataSteward);
+    await fixture.whenStable();
+
+    expect(userService.setUsersFilter).toHaveBeenCalledWith({
+      idStrings: '',
+      roles: ['data_steward'],
       status: undefined,
       fromDate: undefined,
       toDate: undefined,
@@ -100,12 +121,46 @@ describe('UserManagerFilterComponent', () => {
     await userEvent.click(option);
     await fixture.whenStable();
 
-    expect(userService.setAllUsersFilter).toHaveBeenCalledWith({
-      name: '',
+    expect(userService.setUsersFilter).toHaveBeenCalledWith({
+      idStrings: '',
       roles: undefined,
       status: UserStatus.active,
       fromDate: undefined,
       untilDate: undefined,
+    });
+  });
+
+  it('should set the filter after typing a from date', async () => {
+    const textbox = screen.getByRole('textbox', {
+      name: 'Registration date from',
+    });
+
+    await userEvent.type(textbox, '2024-09-01');
+    await fixture.whenStable();
+
+    expect(userService.setUsersFilter).toHaveBeenCalledWith({
+      idStrings: '',
+      roles: undefined,
+      status: undefined,
+      fromDate: '2024-09-01T00:00:00.000Z',
+      toDate: undefined,
+    });
+  });
+
+  it('should set the filter after typing an until date', async () => {
+    const textbox = screen.getByRole('textbox', {
+      name: 'Registration date until',
+    });
+
+    await userEvent.type(textbox, '2022-06-01');
+    await fixture.whenStable();
+
+    expect(userService.setUsersFilter).toHaveBeenCalledWith({
+      idStrings: '',
+      roles: undefined,
+      status: undefined,
+      fromDate: undefined,
+      toDate: '2022-06-01T00:00:00.000Z',
     });
   });
 });

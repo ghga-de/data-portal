@@ -4,7 +4,7 @@
  * @license Apache-2.0
  */
 
-import { Component, effect, inject, model } from '@angular/core';
+import { Component, computed, effect, inject, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -41,7 +41,7 @@ import { DATE_INPUT_FORMAT_HINT } from '@app/shared/utils/date-formats';
 export class UserManagerFilterComponent {
   #userService = inject(UserService);
 
-  #filter = this.#userService.allUsersFilter;
+  #filter = this.#userService.usersFilter;
 
   #capitalisePipe = inject(Capitalise);
 
@@ -50,7 +50,7 @@ export class UserManagerFilterComponent {
   /**
    * The model for the filter properties
    */
-  name = model<string>(this.#filter().name);
+  idStrings = model<string>(this.#filter().idStrings);
   roles = model<(UserRole | null)[] | undefined>(this.#filter().roles);
   status = model<UserStatus | undefined>(this.#filter().status);
   fromDate = model<Date | undefined>(this.#filter().fromDate);
@@ -60,8 +60,8 @@ export class UserManagerFilterComponent {
    * Communicate filter changes to the user service
    */
   #filterEffect = effect(() => {
-    this.#userService.setAllUsersFilter({
-      name: this.name(),
+    this.#userService.setUsersFilter({
+      idStrings: this.idStrings(),
       roles: this.roles(),
       status: this.status(),
       fromDate: this.fromDate(),
@@ -84,4 +84,15 @@ export class UserManagerFilterComponent {
     value: entry[0] as keyof typeof UserStatus,
     text: this.#capitalisePipe.transform(entry[1]),
   }));
+
+  /**
+   * Provides a custom label using OR as joiners, rather than commas.
+   */
+  roleSelection = computed(() => {
+    return this.roles()
+      ?.map((role: keyof typeof RoleNames | null) =>
+        role ? RoleNames[role] : 'No assigned role',
+      )
+      .join(' OR ');
+  });
 }
