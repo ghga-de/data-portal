@@ -4,12 +4,11 @@
  * @license Apache-2.0
  */
 
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatSidenav } from '@angular/material/sidenav';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import { AuthService } from '@app/auth/services/auth.service';
@@ -34,7 +33,6 @@ import { ConfigService } from '@app/shared/services/config.service';
   styleUrl: './account-button.component.scss',
 })
 export class AccountButtonComponent {
-  sidenav = input<MatSidenav | undefined>();
   #router = inject(Router);
   #config = inject(ConfigService);
   #auth = inject(AuthService);
@@ -50,7 +48,6 @@ export class AccountButtonComponent {
    * User login
    */
   onLogin(): void {
-    this.sidenav()?.close();
     this.#auth.login();
   }
 
@@ -58,7 +55,6 @@ export class AccountButtonComponent {
    * User logout
    */
   onLogout(): void {
-    this.sidenav()?.close();
     this.#auth.logout();
   }
 
@@ -87,7 +83,6 @@ export class AccountButtonComponent {
    * Navigate to the account page
    */
   gotoAccount(): void {
-    this.sidenav()?.close();
     this.#router.navigate(['/account']);
   }
 
@@ -95,7 +90,6 @@ export class AccountButtonComponent {
    * Open the (external) LS login page
    */
   manageLsLogin(): void {
-    this.sidenav()?.close();
     window.open(this.#config.oidcAccountUrl, '_blank');
   }
 }
