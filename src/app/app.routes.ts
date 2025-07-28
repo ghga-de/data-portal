@@ -29,6 +29,22 @@ export const routes: Routes = [
     title: 'Browse Datasets',
   },
   {
+    path: 'metadata-validator',
+    loadComponent: () =>
+      import('./tools/features/metadata-validator/metadata-validator.component').then(
+        (m) => m.MetadataValidatorComponent,
+      ),
+    title: 'Validate Metadata',
+  },
+  {
+    path: 'schemapack-playground',
+    loadComponent: () =>
+      import(
+        './tools/features/schemapack-playground/schemapack-playground.component'
+      ).then((m) => m.SchemapackPlaygroundComponent),
+    title: 'Schemapack Playground',
+  },
+  {
     path: 'dataset/:id',
     loadComponent: () =>
       import('./metadata/features/dataset-details/dataset-details.component').then(
@@ -73,6 +89,24 @@ export const routes: Routes = [
         './access-requests/features/access-request-manager/access-request-manager.component'
       ).then((m) => m.AccessRequestManagerComponent),
     title: 'Access Request Manager',
+  },
+  {
+    path: 'user-manager',
+    canActivate: [() => inject(AuthService).guardDataSteward()],
+    loadComponent: () =>
+      import('./auth/features/user-manager/user-manager.component').then(
+        (m) => m.UserManagerComponent,
+      ),
+    title: 'User Manager',
+  },
+  {
+    path: 'user-manager/:id',
+    canActivate: [() => inject(AuthService).guardDataSteward()],
+    loadComponent: () =>
+      import('./auth/features/user-manager-detail/user-manager-detail.component').then(
+        (m) => m.UserManagerDetailComponent,
+      ),
+    title: 'User Details',
   },
   // routes used in the authentication flows
   {
