@@ -114,15 +114,20 @@ export class UserService {
    * The current filter for the list of all users
    */
   usersFilter = computed(() => {
-    const stored = sessionStorage.getItem('usersFilter');
-    const filter = stored ? (JSON.parse(stored) as RegisteredUserFilter) : undefined;
+    let filter = this.#usersFilter();
+    if (!filter) {
+      const filterStr = sessionStorage.getItem('usersFilter');
+      if (filterStr) {
+        try {
+          filter = JSON.parse(filterStr) as RegisteredUserFilter;
+        } catch {}
+      }
+    }
     return (
-      this.#usersFilter() ?? {
-        idStrings: filter?.idStrings ?? '',
-        roles: filter?.roles ?? undefined,
-        status: filter?.status ?? undefined,
-        fromDate: filter?.fromDate ?? undefined,
-        toDate: filter?.toDate ?? undefined,
+      filter || {
+        idStrings: '',
+        roles: undefined,
+        status: undefined,
       }
     );
   });
@@ -133,13 +138,7 @@ export class UserService {
    */
   setUsersFilter(filter: RegisteredUserFilter): void {
     this.#usersFilter.set(
-      filter.idStrings ||
-        filter.roles?.length ||
-        filter.status ||
-        filter.fromDate ||
-        filter.toDate
-        ? filter
-        : undefined,
+      filter.idStrings || filter.roles?.length || filter.status ? filter : undefined,
     );
   }
 
@@ -165,7 +164,9 @@ export class UserService {
   usersFiltered = computed(() => {
     let users = this.users.value();
     const filter = this.#usersFilter();
-    sessionStorage.setItem('usersFilter', JSON.stringify(filter ? filter : null));
+    filter
+      ? sessionStorage.setItem('usersFilter', JSON.stringify(filter))
+      : sessionStorage.removeItem('usersFilter');
     if (users.length > 0 && filter !== undefined) {
       const idStrings = filter.idStrings.trim().toLowerCase();
       if (idStrings) {
@@ -190,14 +191,6 @@ export class UserService {
       }
       if (filter.status) {
         users = users.filter((user) => user.status === filter.status);
-      }
-      if (filter.fromDate) {
-        const fromDate = filter.fromDate.toISOString();
-        users = users.filter((user) => user.registration_date >= fromDate);
-      }
-      if (filter.toDate) {
-        const toDate = filter.toDate.toISOString();
-        users = users.filter((user) => user.registration_date <= toDate);
       }
     }
     return users;

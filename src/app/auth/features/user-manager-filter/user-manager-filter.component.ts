@@ -7,6 +7,7 @@
 import { Component, computed, effect, inject, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -33,6 +34,7 @@ import { DATE_INPUT_FORMAT_HINT } from '@app/shared/utils/date-formats';
     MatButtonModule,
     MatDatepickerModule,
     MatSelectModule,
+    MatButtonToggleModule,
     MatFormFieldModule,
     MatIconModule,
   ],
@@ -56,9 +58,7 @@ export class UserManagerFilterComponent {
    */
   idStrings = model<string>(this.#filter().idStrings);
   roles = model<(UserRole | null)[] | undefined>(this.#filter().roles);
-  status = model<UserStatus | undefined>(this.#filter().status);
-  fromDate = model<Date | undefined>(this.#filter().fromDate);
-  toDate = model<Date | undefined>(this.#filter().toDate);
+  status = model<UserStatus | string | undefined>(this.#filter().status);
 
   /**
    * Communicate filter changes to the user service
@@ -67,9 +67,7 @@ export class UserManagerFilterComponent {
     this.#userService.setUsersFilter({
       idStrings: this.idStrings(),
       roles: this.roles(),
-      status: this.status(),
-      fromDate: this.fromDate(),
-      toDate: this.toDate(),
+      status: this.status() === 'all' ? undefined : (this.status() as UserStatus),
     });
   });
 

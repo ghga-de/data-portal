@@ -25,8 +25,6 @@ const mockUserService = {
     idStrings: '',
     role: undefined,
     status: undefined,
-    fromDate: undefined,
-    toDate: undefined,
   }),
   setUsersFilter: jest.fn(),
 };
@@ -70,8 +68,6 @@ describe('UserManagerFilterComponent', () => {
       idStrings: '',
       roles: undefined,
       status: undefined,
-      fromDate: undefined,
-      toDate: undefined,
     });
   });
 
@@ -87,8 +83,6 @@ describe('UserManagerFilterComponent', () => {
       idStrings: 'Doe',
       roles: undefined,
       status: undefined,
-      fromDate: undefined,
-      toDate: undefined,
     });
   });
 
@@ -106,18 +100,16 @@ describe('UserManagerFilterComponent', () => {
       idStrings: '',
       roles: ['data_steward'],
       status: undefined,
-      fromDate: undefined,
-      toDate: undefined,
     });
   });
 
   it('should set the filter after selecting a state', async () => {
-    const combobox = screen.getByRole('combobox', { name: 'All status values' });
+    const combobox = screen.getByRole('radiogroup');
 
     await userEvent.click(combobox);
     await fixture.whenStable();
 
-    const option = screen.getByRole('option', { name: 'Active' });
+    const option = screen.getByRole('radio', { name: 'Active' });
     await userEvent.click(option);
     await fixture.whenStable();
 
@@ -125,42 +117,6 @@ describe('UserManagerFilterComponent', () => {
       idStrings: '',
       roles: undefined,
       status: UserStatus.active,
-      fromDate: undefined,
-      untilDate: undefined,
-    });
-  });
-
-  it('should set the filter after typing a from date', async () => {
-    const textbox = screen.getByRole('textbox', {
-      name: 'Registration date from',
-    });
-
-    await userEvent.type(textbox, '2024-09-01');
-    await fixture.whenStable();
-
-    expect(userService.setUsersFilter).toHaveBeenLastCalledWith({
-      idStrings: '',
-      roles: undefined,
-      status: undefined,
-      fromDate: new Date('2024-09-01'),
-      toDate: undefined,
-    });
-  });
-
-  it('should set the filter after typing an until date', async () => {
-    const textbox = screen.getByRole('textbox', {
-      name: 'Registration date until',
-    });
-
-    await userEvent.type(textbox, '2022-06-01');
-    await fixture.whenStable();
-
-    expect(userService.setUsersFilter).toHaveBeenLastCalledWith({
-      idStrings: '',
-      roles: undefined,
-      status: undefined,
-      fromDate: undefined,
-      toDate: new Date('2022-06-01'),
     });
   });
 });

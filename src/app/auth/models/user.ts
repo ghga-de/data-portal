@@ -96,6 +96,4 @@ export interface RegisteredUserFilter {
   idStrings: string;
   roles: (UserRole | null)[] | undefined;
   status: UserStatus | undefined;
-  fromDate: Date | undefined; // ISO date string
-  toDate: Date | undefined; // ISO date string
 }
