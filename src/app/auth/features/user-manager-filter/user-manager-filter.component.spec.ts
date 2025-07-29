@@ -121,7 +121,7 @@ describe('UserManagerFilterComponent', () => {
     await userEvent.click(option);
     await fixture.whenStable();
 
-    expect(userService.setUsersFilter).toHaveBeenCalledWith({
+    expect(userService.setUsersFilter).toHaveBeenLastCalledWith({
       idStrings: '',
       roles: undefined,
       status: UserStatus.active,
@@ -138,11 +138,11 @@ describe('UserManagerFilterComponent', () => {
     await userEvent.type(textbox, '2024-09-01');
     await fixture.whenStable();
 
-    expect(userService.setUsersFilter).toHaveBeenCalledWith({
+    expect(userService.setUsersFilter).toHaveBeenLastCalledWith({
       idStrings: '',
       roles: undefined,
       status: undefined,
-      fromDate: '2024-09-01T00:00:00.000Z',
+      fromDate: new Date('2024-09-01'),
       toDate: undefined,
     });
   });
@@ -155,12 +155,12 @@ describe('UserManagerFilterComponent', () => {
     await userEvent.type(textbox, '2022-06-01');
     await fixture.whenStable();
 
-    expect(userService.setUsersFilter).toHaveBeenCalledWith({
+    expect(userService.setUsersFilter).toHaveBeenLastCalledWith({
       idStrings: '',
       roles: undefined,
       status: undefined,
       fromDate: undefined,
-      toDate: '2022-06-01T00:00:00.000Z',
+      toDate: new Date('2022-06-01'),
     });
   });
 });

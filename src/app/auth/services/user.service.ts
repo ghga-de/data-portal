@@ -113,16 +113,19 @@ export class UserService {
   /**
    * The current filter for the list of all users
    */
-  usersFilter = computed(
-    () =>
+  usersFilter = computed(() => {
+    const stored = sessionStorage.getItem('usersFilter');
+    const filter = stored ? (JSON.parse(stored) as RegisteredUserFilter) : undefined;
+    return (
       this.#usersFilter() ?? {
-        idStrings: '',
-        roles: undefined,
-        status: undefined,
-        fromDate: undefined,
-        toDate: undefined,
-      },
-  );
+        idStrings: filter?.idStrings ?? '',
+        roles: filter?.roles ?? undefined,
+        status: filter?.status ?? undefined,
+        fromDate: filter?.fromDate ?? undefined,
+        toDate: filter?.toDate ?? undefined,
+      }
+    );
+  });
 
   /**
    * Set a filter for the list of all Users
@@ -162,6 +165,7 @@ export class UserService {
   usersFiltered = computed(() => {
     let users = this.users.value();
     const filter = this.#usersFilter();
+    sessionStorage.setItem('usersFilter', JSON.stringify(filter ? filter : null));
     if (users.length > 0 && filter !== undefined) {
       const idStrings = filter.idStrings.trim().toLowerCase();
       if (idStrings) {
