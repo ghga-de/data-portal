@@ -239,7 +239,7 @@ mat-sidenav-container.mat-sidenav-container {
 @supports (view-transition-name: none) {
   ::view-transition-old(root),
   ::view-transition-new(root) {
-    animation-duration: 400ms;
+    animation-duration: 275ms;
     animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   }
 
