@@ -98,6 +98,7 @@ export const routes: Routes = [
         (m) => m.UserManagerComponent,
       ),
     title: 'User Manager',
+    data: { transition: 'list' },
   },
   {
     path: 'user-manager/:id',
@@ -107,6 +108,7 @@ export const routes: Routes = [
         (m) => m.UserManagerDetailComponent,
       ),
     title: 'User Details',
+    data: { transition: 'detail' },
   },
   // routes used in the authentication flows
   {

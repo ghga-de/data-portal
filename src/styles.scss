@@ -234,3 +234,86 @@ mat-sidenav-container > div.mat-drawer-backdrop.mat-drawer-shown {
 mat-sidenav-container.mat-sidenav-container {
   z-index: 2;
 }
+
+/* View transitions for list-detail navigation */
+@supports (view-transition-name: none) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 400ms;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Slide-in from right animation for detail view */
+  ::view-transition-old(list) {
+    animation-name: slide-out-left;
+  }
+
+  ::view-transition-new(detail) {
+    animation-name: slide-in-right;
+  }
+
+  /* Slide-out to right animation when going back */
+  ::view-transition-old(detail) {
+    animation-name: slide-out-right;
+  }
+
+  ::view-transition-new(list) {
+    animation-name: slide-in-left;
+  }
+
+  /* Keyframe animations */
+  @keyframes slide-in-right {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slide-out-left {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+  }
+
+  @keyframes slide-in-left {
+    from {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slide-out-right {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+  }
+
+  /* Ensure proper stacking during transitions */
+  ::view-transition-new(detail),
+  ::view-transition-old(list) {
+    z-index: 2;
+  }
+
+  ::view-transition-new(list),
+  ::view-transition-old(detail) {
+    z-index: 1;
+  }
+}
