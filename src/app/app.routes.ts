@@ -98,7 +98,6 @@ export const routes: Routes = [
         (m) => m.UserManagerComponent,
       ),
     title: 'User Manager',
-    data: { transition: 'list' },
   },
   {
     path: 'user-manager/:id',
