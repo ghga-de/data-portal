@@ -58,7 +58,7 @@ export class UserManagerFilterComponent {
    */
   idStrings = model<string>(this.#filter().idStrings);
   roles = model<(UserRole | null)[] | undefined>(this.#filter().roles);
-  status = model<UserStatus | string | undefined>(this.#filter().status);
+  status = model<UserStatus | string | undefined>(this.#filter().status ?? 'all');
 
   /**
    * Communicate filter changes to the user service
