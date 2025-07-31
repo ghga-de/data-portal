@@ -91,6 +91,16 @@ export const routes: Routes = [
     title: 'Access Request Manager',
   },
   {
+    path: 'access-request-manager/:id',
+    canActivate: [() => inject(AuthService).guardDataSteward()],
+    loadComponent: () =>
+      import(
+        './access-requests/features/access-request-manager-detail/access-request-manager-detail.component'
+      ).then((m) => m.AccessRequestManagerDetailComponent),
+    title: 'Access Request Details',
+    data: { transition: 'detail' },
+  },
+  {
     path: 'user-manager',
     canActivate: [() => inject(AuthService).guardDataSteward()],
     loadComponent: () =>

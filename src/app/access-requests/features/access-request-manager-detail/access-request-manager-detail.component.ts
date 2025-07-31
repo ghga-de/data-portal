@@ -1,16 +1,17 @@
 /**
- * Dialog allowing a data steward to manage an individual access request.
+ * View allowing a data steward to manage an individual access request.
  * @copyright The GHGA Authors
  * @license Apache-2.0
  */
 
 import { DatePipe } from '@angular/common';
-import { httpResource } from '@angular/common/http';
+import { HttpErrorResponse, httpResource } from '@angular/common/http';
 import {
   Component,
   computed,
   effect,
   inject,
+  input,
   model,
   OnInit,
   signal,
@@ -20,14 +21,10 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
-import {
-  MAT_DIALOG_DATA,
-  MatDialogModule,
-  MatDialogRef,
-} from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
+import { Router } from '@angular/router';
 import {
   AccessRequest,
   AccessRequestStatus,
@@ -48,15 +45,14 @@ import { AccessRequestDurationEditComponent } from '../access-request-duration-e
 import { AccessRequestFieldEditComponent } from '../access-request-field-edit/access-request-field-edit.component';
 
 /**
- * The dialog component used for managing access requests in the access request manager.
- * Currently, the data steward can only allow or deny requests, and select and IVA.
+ * The view component used for managing access requests in the access request manager.
+ * Currently, the data steward can only allow or deny requests, and select an IVA.
  */
 @Component({
   selector: 'app-access-request-manager-dialog',
-  styleUrl: './access-request-manager-dialog.component.scss',
+  styleUrl: './access-request-manager-detail.component.scss',
   imports: [
     FormsModule,
-    MatDialogModule,
     MatCardModule,
     MatButtonModule,
     MatRadioModule,
@@ -72,12 +68,11 @@ import { AccessRequestFieldEditComponent } from '../access-request-field-edit/ac
     AccessRequestDurationEditComponent,
   ],
   providers: [IvaTypePipe, DatePipe],
-  templateUrl: './access-request-manager-dialog.component.html',
+  templateUrl: './access-request-manager-detail.component.html',
 })
-export class AccessRequestManagerDialogComponent implements OnInit {
-  readonly dialogRef = inject(MatDialogRef<AccessRequestManagerDialogComponent>);
-  readonly data = inject<AccessRequest>(MAT_DIALOG_DATA);
+export class AccessRequestManagerDetailComponent implements OnInit {
   readonly friendlyDateFormat = FRIENDLY_DATE_FORMAT;
+  showTransition = false;
   allowedState = AccessRequestStatus.allowed;
   #config = inject(ConfigService);
   #ivaService = inject(IvaService);
@@ -88,7 +83,31 @@ export class AccessRequestManagerDialogComponent implements OnInit {
   #authUrl = this.#config.authUrl;
   #usersUrl = `${this.#authUrl}/users`;
 
-  #request = signal(this.data);
+  #router = inject(Router);
+
+  id = input.required<string>();
+  #request = this.#accessRequestService.accessRequest;
+  #requests = this.#accessRequestService.allAccessRequests;
+
+  #cachedRequest = signal<AccessRequest | undefined>(undefined);
+
+  request = computed<AccessRequest | undefined>(
+    () => this.#cachedRequest() || this.#request.value(),
+  );
+
+  loading = computed<boolean>(
+    () => !this.#cachedRequest() && this.#request.isLoading(),
+  );
+
+  error = computed<undefined | 'not found' | 'other'>(() => {
+    if (this.#cachedRequest()) return undefined;
+    const error = this.#request.error();
+    if (!error) return undefined;
+
+    return (this.#request.error() as HttpErrorResponse)?.status === 404
+      ? 'not found'
+      : 'other';
+  });
 
   #ivas = this.#ivaService.userIvas;
   ivas = this.#ivas.value;
@@ -103,11 +122,18 @@ export class AccessRequestManagerDialogComponent implements OnInit {
   #pendingEdits = new Set<keyof AccessRequest>();
 
   /**
+   * Computed signal for the user ID of the access request
+   */
+  #userId = computed(() => this.request()?.user_id);
+
+  /**
    * Resource for loading the external ID of the user who made the access request
+   * Only loads when userId is set
    */
   userExtId = httpResource<string | undefined>(
     () => {
-      const userId = this.#request().user_id;
+      const userId = this.#userId();
+      if (!userId) return undefined;
       return `${this.#usersUrl}/${userId}`;
     },
     {
@@ -120,7 +146,7 @@ export class AccessRequestManagerDialogComponent implements OnInit {
    * Get the IVA associated with the access request.
    */
   associatedIva: Signal<Iva | undefined> = computed(() => {
-    const ivaId = this.#request().iva_id;
+    const ivaId = this.request()?.iva_id;
     return ivaId ? this.ivas().find((iva) => iva.id === ivaId) : undefined;
   });
 
@@ -129,7 +155,7 @@ export class AccessRequestManagerDialogComponent implements OnInit {
    * Currently the backend only allows to changed pending requests.
    */
   changeable: Signal<boolean> = computed(
-    () => this.#request().status === AccessRequestStatus.pending,
+    () => this.request()?.status === AccessRequestStatus.pending,
   );
 
   #ivasErrorEffect = effect(() => {
@@ -156,27 +182,61 @@ export class AccessRequestManagerDialogComponent implements OnInit {
   /**
    * Load the IVAs of the user when the component is initialized
    */
+  #loadUserIvasEffect = effect(() => {
+    const userId = this.#userId();
+    if (userId) {
+      this.#ivaService.loadUserIvas(userId);
+    }
+  });
+
+  /**
+   * On initialization, fetch the access request if needed
+   */
   ngOnInit(): void {
-    this.#ivaService.loadUserIvas(this.#request().user_id);
+    this.showTransition = true;
+    setTimeout(() => (this.showTransition = false), 300);
+    const id = this.id();
+    if (id) {
+      // Has it been fetched individually already?
+      let ar = this.#request.value();
+      if (ar && ar.id === id) {
+        this.#cachedRequest.set(ar);
+      } else {
+        // Has it been fetched as part of a list?
+        const requests = this.#requests.value();
+        ar = requests.find((ar: AccessRequest) => ar.id === id);
+        if (ar) {
+          this.#cachedRequest.set(ar);
+        } else {
+          // If not, we need to fetch it now
+          this.#accessRequestService.loadAccessRequest(id);
+        }
+      }
+    }
   }
 
-  cancel = () => {
-    this.dialogRef.close(undefined);
-  };
+  /**
+   * Navigate back to the access request manager list
+   */
+  goBack(): void {
+    this.showTransition = true;
+    setTimeout(() => {
+      this.#router.navigate(['/access-request-manager']);
+    });
+  }
 
   /**
    * Update the request.
    * @param changes - The changes to apply
    */
   #update(changes: Partial<AccessRequest>): void {
-    const id = this.#request().id;
+    const id = this.request()?.id;
+    if (!id) return;
     this.#accessRequestService.updateRequest(id, changes).subscribe({
       next: () => {
         this.#notificationService.showSuccess(
           `Access request was successfully modified.`,
         );
-        const request = this.#request();
-        this.#request.update(() => ({ ...request, ...changes }));
       },
       error: (err) => {
         console.debug(err);
@@ -217,17 +277,18 @@ export class AccessRequestManagerDialogComponent implements OnInit {
    * Allow the access request after confirmation.
    */
   safeAllow(): void {
-    if (!this.selectedIvaIdRadioButton()) return;
+    const request = this.request();
+    if (!request || !this.selectedIvaIdRadioButton()) return;
     const iva = this.ivas().find((iva) => iva.id === this.selectedIvaIdRadioButton());
     if (!iva) return;
     const ivaType = this.#ivaTypeName(iva);
     const startDate = this.#datePipe.transform(
-      this.#request().access_starts,
+      request.access_starts,
       this.friendlyDateFormat,
     );
-    const startDateInFuture = new Date(this.#request().access_starts) > new Date();
+    const startDateInFuture = new Date(request.access_starts) > new Date();
     const endDate = this.#datePipe.transform(
-      this.#request().access_ends,
+      request.access_ends,
       this.friendlyDateFormat,
     );
     this.#confirmationService.confirm({
@@ -300,7 +361,7 @@ export class AccessRequestManagerDialogComponent implements OnInit {
     this.#update({
       status: AccessRequestStatus.allowed,
     });
-    this.dialogRef.close();
+    this.goBack();
   };
 
   /**
@@ -310,7 +371,7 @@ export class AccessRequestManagerDialogComponent implements OnInit {
     this.#update({
       status: AccessRequestStatus.denied,
     });
-    this.dialogRef.close();
+    this.goBack();
   };
 
   /**
@@ -318,7 +379,8 @@ export class AccessRequestManagerDialogComponent implements OnInit {
    * (the IVA that is already selected or the best option otherwise)
    */
   #preSelectIvaRadioButton(): void {
-    this.selectedIvaIdRadioButton.set(this.data.iva_id || this.#findBestIvaId());
+    const ivaId = this.request()?.iva_id;
+    this.selectedIvaIdRadioButton.set(ivaId || this.#findBestIvaId());
   }
 
   /**

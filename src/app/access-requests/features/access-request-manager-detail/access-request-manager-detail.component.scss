@@ -23,18 +23,14 @@ mat-card {
 }
 
 th {
-  width: 144px;
-  min-width: 144px;
+  width: 6em;
+  min-width: 6em;
   text-align: left;
   vertical-align: top;
 }
 
 p.last {
   margin-bottom: 0;
-}
-
-mat-dialog-actions {
-  border-top: 1px solid rgba(0, 0, 0, 0.12);
 }
 
 a mat-icon {
