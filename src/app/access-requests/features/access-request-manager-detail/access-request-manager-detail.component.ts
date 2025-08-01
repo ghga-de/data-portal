@@ -4,7 +4,7 @@
  * @license Apache-2.0
  */
 
-import { DatePipe } from '@angular/common';
+import { DatePipe, Location } from '@angular/common';
 import { HttpErrorResponse, httpResource } from '@angular/common/http';
 import {
   Component,
@@ -24,7 +24,6 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatIcon } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
-import { Router } from '@angular/router';
 import {
   AccessRequest,
   AccessRequestStatus,
@@ -32,6 +31,7 @@ import {
 import { AccessRequestStatusClassPipe } from '@app/access-requests/pipes/access-request-status-class.pipe';
 import { AccessRequestService } from '@app/access-requests/services/access-request.service';
 import { UserSession } from '@app/auth/models/user';
+import { HasPendingEdits } from '@app/shared/features/pending-edits.guard';
 import { SplitLinesPipe } from '@app/shared/pipes/split-lines.pipe';
 import { ConfigService } from '@app/shared/services/config.service';
 import { ConfirmationService } from '@app/shared/services/confirmation.service';
@@ -70,7 +70,7 @@ import { AccessRequestFieldEditComponent } from '../access-request-field-edit/ac
   providers: [IvaTypePipe, DatePipe],
   templateUrl: './access-request-manager-detail.component.html',
 })
-export class AccessRequestManagerDetailComponent implements OnInit {
+export class AccessRequestManagerDetailComponent implements OnInit, HasPendingEdits {
   readonly friendlyDateFormat = FRIENDLY_DATE_FORMAT;
   showTransition = false;
   allowedState = AccessRequestStatus.allowed;
@@ -83,7 +83,7 @@ export class AccessRequestManagerDetailComponent implements OnInit {
   #authUrl = this.#config.authUrl;
   #usersUrl = `${this.#authUrl}/users`;
 
-  #router = inject(Router);
+  #location = inject(Location);
 
   id = input.required<string>();
   #request = this.#accessRequestService.accessRequest;
@@ -120,6 +120,14 @@ export class AccessRequestManagerDetailComponent implements OnInit {
   selectedIvaIdRadioButton = model<string | undefined>(undefined);
 
   #pendingEdits = new Set<keyof AccessRequest>();
+
+  /**
+   * Check if there are pending edits (implements the HasPendingEdits interface)
+   * @returns true if there are pending edits, false otherwise
+   */
+  hasPendingEdits(): boolean {
+    return this.#pendingEdits.size > 0;
+  }
 
   /**
    * Computed signal for the user ID of the access request
@@ -216,12 +224,12 @@ export class AccessRequestManagerDetailComponent implements OnInit {
   }
 
   /**
-   * Navigate back to the access request manager list
+   * Navigate back to the last page (usually the access request manager)
    */
   goBack(): void {
     this.showTransition = true;
     setTimeout(() => {
-      this.#router.navigate(['/access-request-manager']);
+      this.#location.back();
     });
   }
 
@@ -253,6 +261,7 @@ export class AccessRequestManagerDetailComponent implements OnInit {
    */
   edited(event: [keyof AccessRequest, boolean]): void {
     const [name, edited] = event;
+    console.log('EDITED', name, edited);
     if (edited) this.#pendingEdits.add(name);
     else this.#pendingEdits.delete(name);
   }
@@ -304,7 +313,7 @@ export class AccessRequestManagerDetailComponent implements OnInit {
       confirmText: 'Confirm allowance',
       confirmClass: 'success',
       callback: (approvalConfirmed) => {
-        if (approvalConfirmed) this.#allowAndClose();
+        if (approvalConfirmed) this.#allowAndGoBack();
       },
     });
   }
@@ -322,7 +331,7 @@ export class AccessRequestManagerDetailComponent implements OnInit {
       confirmText: 'Confirm denial',
       confirmClass: 'error',
       callback: (denialConfirmed) => {
-        if (denialConfirmed) this.#denyAndClose();
+        if (denialConfirmed) this.#denyAndGoBack();
       },
     });
   }
@@ -333,7 +342,7 @@ export class AccessRequestManagerDetailComponent implements OnInit {
    * @param action String literal specifying the desired status change.
    */
   saveBeforeStatusChange(action: 'deny' | 'allow'): void {
-    if (this.#pendingEdits.size) {
+    if (this.hasPendingEdits()) {
       this.#confirmationService.confirm({
         title: 'Unsaved changes',
         message: 'Do you want to continue without saving your changes?',
@@ -354,9 +363,9 @@ export class AccessRequestManagerDetailComponent implements OnInit {
   }
 
   /**
-   * Allow the access request and close the dialog.
+   * Allow the access request and go back to the last page.
    */
-  #allowAndClose = () => {
+  #allowAndGoBack = () => {
     if (!this.selectedIvaIdRadioButton()) return;
     this.#update({
       status: AccessRequestStatus.allowed,
@@ -365,9 +374,9 @@ export class AccessRequestManagerDetailComponent implements OnInit {
   };
 
   /**
-   * Deny the access request and close the dialog.
+   * Deny the access request and go back to the last page.
    */
-  #denyAndClose = () => {
+  #denyAndGoBack = () => {
     this.#update({
       status: AccessRequestStatus.denied,
     });

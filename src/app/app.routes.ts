@@ -7,8 +7,9 @@
 import { inject, Injectable } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { RouterStateSnapshot, Routes, TitleStrategy } from '@angular/router';
-import { AuthService } from '@app/auth/services/auth.service';
 import { canDeactivate as canDeactivateAuth } from './auth/features/can-deactivate.guard';
+import { AuthService } from './auth/services/auth.service';
+import { pendingEditsGuard } from './shared/features/pending-edits.guard';
 
 export const routes: Routes = [
   // public routes
@@ -93,6 +94,7 @@ export const routes: Routes = [
   {
     path: 'access-request-manager/:id',
     canActivate: [() => inject(AuthService).guardDataSteward()],
+    canDeactivate: [pendingEditsGuard],
     loadComponent: () =>
       import(
         './access-requests/features/access-request-manager-detail/access-request-manager-detail.component'

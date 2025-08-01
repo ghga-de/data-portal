@@ -6,6 +6,7 @@
     <button
       mat-icon-button
       (click)="goBack()"
+      data-umami-event="Access Request Manager Back Link Clicked"
       aria-label="Go back to user list"
       class="text-primary float-left mt-1 mr-4"
     >
@@ -254,9 +255,9 @@
         <button
           mat-stroked-button
           (click)="goBack()"
-          data-umami-event="Access Request Manager Close Clicked"
+          data-umami-event="Access Request Manager Back Button Clicked"
         >
-          Close
+          Back
         </button>
       } @else {
         <div class="w-full sm:w-auto">
@@ -265,9 +266,9 @@
             mat-stroked-button
             class="w-full sm:w-auto"
             (click)="goBack()"
-            data-umami-event="Access Request Manager Close Clicked"
+            data-umami-event="Access Request Manager Back Button Clicked"
           >
-            Close
+            Back
           </button>
         </div>
         <div class="flex-grow"></div>
