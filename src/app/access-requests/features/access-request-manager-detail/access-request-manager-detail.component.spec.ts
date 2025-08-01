@@ -130,8 +130,8 @@ describe('AccessRequestManagerDetailComponent', () => {
     expect(button).toBeEnabled();
   });
 
-  it('should have an enabled close button', () => {
-    const button = screen.getByRole('button', { name: 'Close' });
+  it('should have an enabled back button', () => {
+    const button = screen.getByRole('button', { name: 'Back' });
     expect(button).toBeEnabled();
   });
 });
