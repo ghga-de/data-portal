@@ -1,19 +1,19 @@
-<div class="clearfix mb-6">
-  <button
-    mat-icon-button
-    (click)="goBack()"
-    aria-label="Go back to user list"
-    class="text-primary float-left mt-1 mr-4"
-  >
-    <mat-icon>chevron_left</mat-icon>
-  </button>
-  <h1>Access Request Detail</h1>
-</div>
-@if (request(); as ar) {
-  <div
-    class="mx-auto max-w-[1440px] p-6"
-    [style.view-transition-name]="showTransition ? 'detail' : null"
-  >
+<div
+  class="mx-auto max-w-[1440px] p-6"
+  [style.view-transition-name]="showTransition ? 'detail' : null"
+>
+  <div class="clearfix mb-6">
+    <button
+      mat-icon-button
+      (click)="goBack()"
+      aria-label="Go back to user list"
+      class="text-primary float-left mt-1 mr-4"
+    >
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+    <h1>Access Request Detail</h1>
+  </div>
+  @if (request(); as ar) {
     <div class="grid grid-cols-1 gap-3 xl:grid-cols-2">
       <div class="my-2 flex flex-col items-start gap-3">
         <mat-card>
@@ -309,18 +309,18 @@
         </div>
       }
     </div>
-  </div>
-} @else if (loading()) {
-  <p>Loading request details...</p>
-} @else {
-  <div class="container mx-auto p-6">
-    <p class="text-center text-red-600">
-      @if (error() === 'not found') {
-        The selected access request could not be found.
-      } @else {
-        An error occurred while loading the access request details. Please try again
-        later.
-      }
-    </p>
-  </div>
-}
+  } @else if (loading()) {
+    <p>Loading request details...</p>
+  } @else {
+    <div class="container mx-auto p-6">
+      <p class="text-center text-red-600">
+        @if (error() === 'not found') {
+          The selected access request could not be found.
+        } @else {
+          An error occurred while loading the access request details. Please try again
+          later.
+        }
+      </p>
+    </div>
+  }
+</div>
