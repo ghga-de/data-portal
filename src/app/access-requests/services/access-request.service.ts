@@ -152,21 +152,7 @@ export class AccessRequestService {
    * @param filter - the filter to apply
    */
   setAllAccessRequestsFilter(filter: AccessRequestFilter): void {
-    this.#allAccessRequestsFilter.set(
-      filter.ticketId ||
-        filter.datasetId ||
-        filter.datasetTitle ||
-        filter.name ||
-        filter.dac ||
-        filter.fromDate ||
-        filter.toDate ||
-        filter.status ||
-        filter.requestText ||
-        filter.noteToRequester ||
-        filter.internalNote
-        ? filter
-        : undefined,
-    );
+    this.#allAccessRequestsFilter.set(filter);
   }
 
   /**
