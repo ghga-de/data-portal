@@ -1,5 +1,5 @@
 /**
- * Component that lists all the access requests.
+ * Component that lists all the access grants.
  * @copyright The GHGA Authors
  * @license Apache-2.0
  */
@@ -32,7 +32,7 @@ import {
  * Access Grant Manager List component.
  *
  * This component lists all the access grants of all users
- * in the Access Grant Manager. Filter conditions can be applied to the list.
+ * in the Access Grant Manager. Filter conditions can be applied to the list and there is a details view.
  */
 @Component({
   selector: 'app-access-grant-manager-list',
@@ -52,9 +52,7 @@ export class AccessGrantManagerListComponent implements AfterViewInit {
   #ars = inject(AccessRequestService);
   #router = inject(Router);
 
-  #accessGrants = this.#ars.allAccessGrants;
   accessGrants = this.#ars.allAccessGrantsFiltered;
-
   source = new MatTableDataSource<AccessGrant>([]);
 
   defaultTablePageSize = 10;

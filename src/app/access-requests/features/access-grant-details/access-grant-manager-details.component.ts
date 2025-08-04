@@ -33,7 +33,6 @@ import { ActivatedRoute } from '@angular/router';
     MatIconModule,
   ],
   templateUrl: './access-grant-manager-details.component.html',
-  styleUrl: './access-grant-manager-details.component.scss',
 })
 export class AccessGrantManagerDetailsComponent implements OnInit {
   id: string | null = null;
