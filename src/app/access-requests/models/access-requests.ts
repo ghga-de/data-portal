@@ -11,9 +11,9 @@ export enum AccessRequestStatus {
 }
 
 export enum AccessGrantStatus {
-  active = 'active',
-  expired = 'expired',
-  waiting = 'waiting',
+  active = 'Active',
+  expired = 'Expired',
+  waiting = 'Waiting',
 }
 
 export type CombinedStatus = AccessRequestStatus | AccessGrantStatus;
@@ -24,9 +24,9 @@ export const AccessRequestStatusClass: Record<CombinedStatus, string> = {
   pending: 'text-info',
   allowed: 'text-success',
   // from AccessGrantStatus
-  waiting: 'text-info',
-  expired: 'text-error',
-  active: 'text-success',
+  Waiting: 'text-info',
+  Expired: 'text-error',
+  Active: 'text-success',
 };
 
 export interface AccessRequest {
@@ -94,6 +94,7 @@ export interface AccessGrant {
   dac_alias: string;
   dac_email: string;
   iva_id: string | null;
+  status?: AccessGrantStatus;
 }
 
 export interface AccessGrantFilter {

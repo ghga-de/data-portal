@@ -1,89 +1,86 @@
-@if (accessGrantsAreLoading()) {
-  <p class="text-base">Loading access requests...</p>
-} @else {
-  @let columns = ['dataset', 'user', 'status', 'starts', 'ends', 'details'];
-  <div class="overflow-auto">
-    <table
-      mat-table
-      [dataSource]="source"
-      class="mat-elevation-z8"
-      matSort
-      #sort="matSort"
-    >
-      <ng-container matColumnDef="dataset">
-        <th mat-header-cell *matHeaderCellDef class="w-32" mat-sort-header>
-          Dataset ID
-        </th>
-        <td mat-cell *matCellDef="let ag">
-          {{ ag.dataset_id }}
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="user">
-        <th mat-header-cell *matHeaderCellDef class="min-w-40" mat-sort-header>User</th>
-        <td mat-cell *matCellDef="let ag">
-          {{ ag.user_name }}
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="status">
-        <th
-          mat-header-cell
-          *matHeaderCellDef
-          class="min-w-40 capitalize"
-          mat-sort-header
-        >
-          Status
-        </th>
-        <td
-          mat-cell
-          class="{{ ag.status | AccessRequestStatusClassPipe }} capitalize"
-          *matCellDef="let ag"
-        >
-          {{ ag }}
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="starts">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Access start</th>
-        <td mat-cell *matCellDef="let ag">
-          {{ ag.valid_from | date: periodFormat : periodTimeZone }}
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="ends">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Access end</th>
-        <td mat-cell *matCellDef="let ag">
-          {{ ag.valid_until | date: periodFormat : periodTimeZone }}
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="details">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Details</th>
-        <td mat-cell *matCellDef="let ag">&gt;</td>
-      </ng-container>
+@let columns = ['id', 'dataset', 'user', 'status', 'starts', 'ends', 'details'];
+<div class="overflow-auto">
+  <table
+    mat-table
+    [dataSource]="source"
+    class="mat-elevation-z8"
+    matSort
+    #sort="matSort"
+  >
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef class="min-w-64" mat-sort-header>
+        Grant ID
+      </th>
+      <td mat-cell *matCellDef="let ag">
+        {{ ag.id }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="dataset">
+      <th mat-header-cell *matHeaderCellDef class="w-64" mat-sort-header>Dataset ID</th>
+      <td mat-cell *matCellDef="let ag">
+        {{ ag.dataset_id }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="user">
+      <th mat-header-cell *matHeaderCellDef class="min-w-32" mat-sort-header>User</th>
+      <td mat-cell *matCellDef="let ag">{{ ag.user_name }} ({{ ag.user_email }})</td>
+    </ng-container>
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef class="min-w-32 capitalize" mat-sort-header>
+        Status
+      </th>
+      <td
+        mat-cell
+        class="{{ ag.status | AccessRequestStatusClassPipe }} capitalize w-24"
+        *matCellDef="let ag"
+      >
+        {{ ag.status }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="starts">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header class="w-40">
+        Access start
+      </th>
+      <td mat-cell *matCellDef="let ag">
+        {{ ag.valid_from | date: periodFormat : periodTimeZone }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="ends">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header class="w-40">Access end</th>
+      <td mat-cell *matCellDef="let ag">
+        {{ ag.valid_until | date: periodFormat : periodTimeZone }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="details">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Details</th>
+      <td mat-cell *matCellDef="let ag">&gt;</td>
+    </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="columns"></tr>
-      <tr
-        mat-row
-        *matRowDef="let row; columns: columns"
-        class="duration-200 hover:cursor-pointer hover:bg-black/[0.05] hover:transition"
-        (click)="openDetails(row)"
-      ></tr>
+    <tr mat-header-row *matHeaderRowDef="columns"></tr>
+    <tr
+      mat-row
+      *matRowDef="let row; columns: columns"
+      class="duration-200 hover:cursor-pointer hover:bg-black/[0.05] hover:transition"
+      (click)="openDetails(row)"
+    ></tr>
 
-      <tr class="mat-row" *matNoDataRow>
-        <td class="mat-cell p-4 text-base" colspan="6">
-          No access grants found. Try removing some filter conditions.
-        </td>
-      </tr>
-    </table>
-  </div>
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell p-4 text-base" colspan="6">
+        No access grants found. Try removing some filter conditions.
+      </td>
+    </tr>
+  </table>
+</div>
 
-  @if (accessGrants().length > 10) {
-    <mat-paginator
-      [pageSize]="defaultTablePageSize"
-      [pageSizeOptions]="tablePageSizeOptions"
-      showFirstLastButtons
-      class="sticky left-0"
-      itemsPerPageLabel="Access grants per page"
-      aria-label="Select page of access grants"
-      #paginator
-    >
-    </mat-paginator>
-  }
+@if (accessGrants().length > 10) {
+  <mat-paginator
+    [pageSize]="defaultTablePageSize"
+    [pageSizeOptions]="tablePageSizeOptions"
+    showFirstLastButtons
+    class="sticky left-0"
+    itemsPerPageLabel="Access grants per page"
+    aria-label="Select page of access grants"
+    #paginator
+  >
+  </mat-paginator>
 }

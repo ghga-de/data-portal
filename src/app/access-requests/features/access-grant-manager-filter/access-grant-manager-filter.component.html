@@ -58,6 +58,8 @@
                 <mat-icon>cancel</mat-icon>
               </button>
             </div>
+          </div>
+          <div class="flex grow flex-col gap-2">
             <div class="flex gap-2">
               <mat-form-field class="grow">
                 <mat-label>Email</mat-label>
@@ -70,6 +72,22 @@
                 class="pb-2.5"
                 (click)="this.email.set('')"
                 data-umami-event="Access Request Filters Email Clear Clicked"
+              >
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </div>
+            <div class="flex gap-2">
+              <mat-form-field class="grow">
+                <mat-label>Grant ID</mat-label>
+                <input matInput [(ngModel)]="grant_id" />
+              </mat-form-field>
+              <button
+                mat-icon-button
+                aria-label="Remove filter for Grant ID"
+                [class.invisible]="!this.grant_id()"
+                class="pb-2.5"
+                (click)="this.grant_id.set('')"
+                data-umami-event="Access Request Filters ID Clear Clicked"
               >
                 <mat-icon>cancel</mat-icon>
               </button>

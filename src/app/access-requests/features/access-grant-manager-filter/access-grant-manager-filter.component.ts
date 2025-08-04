@@ -4,7 +4,7 @@
  * @license Apache-2.0
  */
 
-import { Component, inject, model } from '@angular/core';
+import { Component, effect, inject, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -13,6 +13,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { AccessGrantStatus } from '@app/access-requests/models/access-requests';
 import { AccessRequestService } from '@app/access-requests/services/access-request.service';
 
 /**
@@ -45,4 +46,18 @@ export class AccessGrantManagerFilterComponent {
   name = model<string | undefined>(this.#filter().name);
   grantId = model<string | undefined>(this.#filter().grant_id);
   datasetId = model<string | undefined>(this.#filter().dataset_id);
+  grant_id = model<string | undefined>(this.#filter().grant_id);
+
+  /**
+   * Communicate filter changes to the access request service
+   */
+  #filterEffect = effect(() => {
+    this.#ars.setAllAccessGrantsFilter({
+      grant_id: this.grantId(),
+      email: this.email(),
+      dataset_id: this.datasetId(),
+      name: this.name(),
+      status: this.status() as AccessGrantStatus,
+    });
+  });
 }

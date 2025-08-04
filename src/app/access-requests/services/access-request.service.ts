@@ -13,6 +13,7 @@ import { Observable, tap } from 'rxjs';
 import {
   AccessGrant,
   AccessGrantFilter,
+  AccessGrantStatus,
   AccessRequest,
   AccessRequestDialogData,
   AccessRequestFilter,
@@ -319,15 +320,40 @@ export class AccessRequestService {
     );
   }
 
-  allAccessGrants = httpResource<AccessGrant[]>(
+  allAccessGrantsResource = httpResource<AccessGrant[]>(
     () => (this.#loadAll() ? this.#arsManagementUrl : undefined),
     {
       defaultValue: [],
     },
   );
 
+  allAccessGrants = computed<AccessGrant[]>(() => {
+    const grants = this.allAccessGrantsResource.value();
+    if (grants && Array.isArray(grants)) {
+      return grants.map((grant) => {
+        const updatedGrant = { ...grant };
+        updatedGrant.status = this.computeStatusForAccessGrant(grant);
+        return updatedGrant;
+      });
+    }
+    return [];
+  });
+
+  computeStatusForAccessGrant = (grant: AccessGrant): AccessGrantStatus => {
+    const now = new Date();
+    const hasStarted = now >= new Date(grant.valid_from);
+    const hasEnded = now >= new Date(grant.valid_until);
+    if (hasStarted && !hasEnded) {
+      return AccessGrantStatus.active;
+    } else if (hasEnded) {
+      return AccessGrantStatus.expired;
+    } else {
+      return AccessGrantStatus.waiting;
+    }
+  };
+
   allAccessGrantsFiltered = computed(() => {
-    let grants = this.allAccessGrants.value();
+    let grants = this.allAccessGrants();
     const filter = this.#allAccessGrantsFilter();
     if (grants.length && filter) {
       if (filter.dataset_id !== undefined && filter.dataset_id !== '') {
@@ -336,11 +362,18 @@ export class AccessRequestService {
         );
       }
       if (filter.email) {
-        grants = grants.filter((g) => g.user_email.includes(filter.email as string));
+        grants = grants.filter((g) =>
+          g.user_email.toLowerCase().includes(filter.email?.toLowerCase() as string),
+        );
       }
       if (filter.dataset_id) {
         grants = grants.filter((g) =>
           g.dataset_id.includes(filter.dataset_id as string),
+        );
+      }
+      if (filter.name) {
+        grants = grants.filter((g) =>
+          g.user_name.toLowerCase().includes((filter.name as string).toLowerCase()),
         );
       }
       if (filter.status !== undefined) {
@@ -350,9 +383,9 @@ export class AccessRequestService {
           const has_started = now >= new Date(g.valid_from);
           const has_ended = now >= new Date(g.valid_until);
           return (
-            (filter.status === 'active' && has_started && !has_ended) ||
-            (filter.status === 'expired' && has_ended) ||
-            (filter.status === 'waiting' && !has_started)
+            (filter.status === 'Active' && has_started && !has_ended) ||
+            (filter.status === 'Expired' && has_ended) ||
+            (filter.status === 'Waiting' && !has_started)
           );
         });
       }

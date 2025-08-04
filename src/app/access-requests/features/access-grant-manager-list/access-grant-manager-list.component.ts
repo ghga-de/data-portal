@@ -18,6 +18,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { Router } from '@angular/router';
 import { AccessGrant } from '@app/access-requests/models/access-requests';
 import { AccessRequestStatusClassPipe } from '@app/access-requests/pipes/access-request-status-class.pipe';
 import { AccessRequestService } from '@app/access-requests/services/access-request.service';
@@ -49,10 +50,10 @@ import {
 })
 export class AccessGrantManagerListComponent implements AfterViewInit {
   #ars = inject(AccessRequestService);
+  #router = inject(Router);
 
   #accessGrants = this.#ars.allAccessGrants;
   accessGrants = this.#ars.allAccessGrantsFiltered;
-  accessGrantsAreLoading = this.#accessGrants.isLoading;
 
   source = new MatTableDataSource<AccessGrant>([]);
 
@@ -117,8 +118,16 @@ export class AccessGrantManagerListComponent implements AfterViewInit {
     this.matPaginators.changes.subscribe(() => this.#addPagination());
   }
 
+  /**
+   * This function navigates to the details page for the selected access grant
+   * @param grant - The access grant to view details for
+   */
   openDetails(grant: AccessGrant) {
-    // This method can be implemented to open a dialog or navigate to a details page
-    console.log('Open details for grant:', grant);
+    if (grant && grant.id) {
+      // Navigate to the access-grant-details/:id route
+      this.#router.navigate(['access-grant-details', grant.id]);
+    } else {
+      console.error('Cannot navigate: Grant or grant ID is missing.');
+    }
   }
 }
