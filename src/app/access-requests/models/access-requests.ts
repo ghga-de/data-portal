@@ -19,12 +19,10 @@ export enum AccessGrantStatus {
 export type CombinedStatus = AccessRequestStatus | AccessGrantStatus;
 
 export const AccessRequestStatusClass: Record<CombinedStatus, string> = {
-  // from AccessRequestStatus
   denied: 'text-error',
   pending: 'text-info',
   allowed: 'text-success',
-  // from AccessGrantStatus
-  Waiting: 'text-info',
+  Waiting: 'text-warning',
   Expired: 'text-error',
   Active: 'text-success',
 };
