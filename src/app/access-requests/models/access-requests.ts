@@ -10,12 +10,23 @@ export enum AccessRequestStatus {
   pending = 'pending',
 }
 
-export const AccessRequestStatusClass: {
-  [K in keyof typeof AccessRequestStatus]: string;
-} = {
+export enum AccessGrantStatus {
+  active = 'active',
+  expired = 'expired',
+  waiting = 'waiting',
+}
+
+export type CombinedStatus = AccessRequestStatus | AccessGrantStatus;
+
+export const AccessRequestStatusClass: Record<CombinedStatus, string> = {
+  // from AccessRequestStatus
   denied: 'text-error',
   pending: 'text-info',
   allowed: 'text-success',
+  // from AccessGrantStatus
+  waiting: 'text-info',
+  expired: 'text-error',
+  active: 'text-success',
 };
 
 export interface AccessRequest {
@@ -67,4 +78,28 @@ export interface AccessRequestFilter {
   requestText: string | undefined;
   noteToRequester: string | undefined;
   internalNote: string | undefined;
+}
+
+export interface AccessGrant {
+  id: string;
+  user_id: string;
+  created: string;
+  dataset_id: string;
+  dataset_title: string;
+  valid_from: string;
+  valid_until: string;
+  user_email: string;
+  user_name: string;
+  user_title: string | null;
+  dac_alias: string;
+  dac_email: string;
+  iva_id: string | null;
+}
+
+export interface AccessGrantFilter {
+  status: AccessGrantStatus | undefined;
+  name: string | undefined;
+  email: string | undefined;
+  dataset_id: string | undefined;
+  grant_id: string | undefined;
 }

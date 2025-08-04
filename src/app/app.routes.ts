@@ -108,6 +108,15 @@ export const routes: Routes = [
       ),
     title: 'User Details',
   },
+  {
+    path: 'access-grant-manager',
+    canActivate: [() => inject(AuthService).guardDataSteward()],
+    loadComponent: () =>
+      import(
+        './access-requests/features/access-grant-manager/access-grant-manager.component'
+      ).then((m) => m.AccessGrantManagerComponent),
+    title: 'Access Grant Manager',
+  },
   // routes used in the authentication flows
   {
     path: 'oauth/callback',

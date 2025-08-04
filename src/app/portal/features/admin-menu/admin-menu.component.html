@@ -18,6 +18,14 @@
       ><mat-icon>people</mat-icon> User Manager</a
     >
     <a
+      [id]="isAccessGrantManagerRoute() ? 'activePage' : ''"
+      mat-menu-item
+      routerLink="/access-grant-manager"
+      class="mx-1"
+      data-umami-event="Admin Menu Access Grant Manager Clicked"
+      ><mat-icon>people</mat-icon> Access Grant Manager</a
+    >
+    <a
       [id]="isIvaManagerRoute() ? 'activePage' : ''"
       mat-menu-item
       routerLink="/iva-manager"

@@ -4,7 +4,7 @@
  * @license Apache-2.0
  */
 
-import { Component } from '@angular/core';
+import { Component, inject, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -13,7 +13,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { Capitalise } from '@app/shared/pipes/capitalise.pipe';
+import { AccessRequestService } from '@app/access-requests/services/access-request.service';
 
 /**
  * Access Grant Manager Filter component.
@@ -32,9 +32,17 @@ import { Capitalise } from '@app/shared/pipes/capitalise.pipe';
     MatSelectModule,
     MatFormFieldModule,
     MatIconModule,
-    Capitalise,
   ],
   templateUrl: './access-grant-manager-filter.component.html',
   styleUrl: './access-grant-manager-filter.component.scss',
 })
-export class AccessGrantManagerFilterComponent {}
+export class AccessGrantManagerFilterComponent {
+  displayFilters = true;
+  #ars = inject(AccessRequestService);
+  #filter = this.#ars.allAccessGrantsFilter;
+  status = model<string | undefined>(this.#filter().status);
+  email = model<string | undefined>(this.#filter().email);
+  name = model<string | undefined>(this.#filter().name);
+  grantId = model<string | undefined>(this.#filter().grant_id);
+  datasetId = model<string | undefined>(this.#filter().dataset_id);
+}
