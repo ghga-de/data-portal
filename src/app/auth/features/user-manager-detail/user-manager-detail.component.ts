@@ -4,15 +4,27 @@
  * @license Apache-2.0
  */
 
-import { DatePipe as CommonDatePipe } from '@angular/common';
-import { Component, computed, inject, OnInit } from '@angular/core';
+import { DatePipe as CommonDatePipe, Location } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
-import { ActivatedRoute, Router } from '@angular/router';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { AccessRequest } from '@app/access-requests/models/access-requests';
+import { AccessRequestStatusClassPipe } from '@app/access-requests/pipes/access-request-status-class.pipe';
+import { AccessRequestService } from '@app/access-requests/services/access-request.service';
+import { UserStatus } from '@app/auth/models/user';
 import { DisplayUser, UserService } from '@app/auth/services/user.service';
 import { DatePipe } from '@app/shared/pipes/date.pipe';
+import { ConfirmationService } from '@app/shared/services/confirmation.service';
+import { NotificationService } from '@app/shared/services/notification.service';
 import { FRIENDLY_DATE_FORMAT } from '@app/shared/utils/date-formats';
+import { IvaStatePipe } from '@app/verification-addresses/pipes/iva-state.pipe';
+import { IvaTypePipe } from '@app/verification-addresses/pipes/iva-type.pipe';
+import { IvaService } from '@app/verification-addresses/services/iva.service';
 
 /**
  * User Manager Detail component.
@@ -22,7 +34,19 @@ import { FRIENDLY_DATE_FORMAT } from '@app/shared/utils/date-formats';
  */
 @Component({
   selector: 'app-user-manager-detail',
-  imports: [MatButtonModule, MatChipsModule, MatIconModule, DatePipe],
+  imports: [
+    MatButtonModule,
+    MatChipsModule,
+    MatIconModule,
+    MatCardModule,
+    MatButtonModule,
+    MatTooltipModule,
+    DatePipe,
+    RouterLink,
+    IvaStatePipe,
+    IvaTypePipe,
+    AccessRequestStatusClassPipe,
+  ],
   providers: [UserService, CommonDatePipe],
   templateUrl: './user-manager-detail.component.html',
   styleUrl: './user-manager-detail.component.scss',
@@ -33,20 +57,46 @@ export class UserManagerDetailComponent implements OnInit {
   showTransition = false;
 
   #route = inject(ActivatedRoute);
-  #router = inject(Router);
   #userService = inject(UserService);
 
+  #location = inject(Location);
+
   #userId = computed(() => this.#route.snapshot.params['id']);
+  #user = this.#userService.singleUser;
   #users = this.#userService.users;
 
-  /**
-   * Get the specific user based on the route parameter
-   */
-  user = computed(() => {
-    const userId = this.#userId();
-    const users = this.#users.value();
-    return users.find((user: DisplayUser) => user.id === userId);
+  #cachedUser = signal<DisplayUser | undefined>(undefined);
+
+  user = computed<DisplayUser | undefined>(
+    () => this.#cachedUser() || this.#user.value(),
+  );
+
+  loading = computed<boolean>(
+    () => !this.#cachedUser() && this.#user.isLoading() && !this.#user.error(),
+  );
+
+  error = computed<undefined | 'not found' | 'other'>(() => {
+    if (this.#cachedUser()) return undefined;
+    const error = this.#user.error();
+    if (!error) return undefined;
+
+    return (this.#user.error() as HttpErrorResponse)?.status === 404
+      ? 'not found'
+      : 'other';
   });
+
+  #confirmationService = inject(ConfirmationService);
+  #notificationService = inject(NotificationService);
+
+  #ivaService = inject(IvaService);
+  userIvas = computed(() => this.#ivaService.userIvas.value());
+
+  #accessRequestService = inject(AccessRequestService);
+  userRequests = computed(() => this.#accessRequestService.userAccessRequests.value());
+
+  // #accessGrantService = inject(AccessGrantService);
+  // userGrants = computed(() => this.#accessGrantService.userAccessGrants.value());
+  userGrants = signal<AccessRequest[]>([]); // Placeholder for access grants, not implemented yet
 
   /**
    * On initialization, allow the transition effect,
@@ -55,15 +105,110 @@ export class UserManagerDetailComponent implements OnInit {
   ngOnInit() {
     this.showTransition = true;
     setTimeout(() => (this.showTransition = false), 300);
+    const id = this.#userId();
+    if (id) {
+      // Has it been fetched individually already?
+      let user = this.#user.value();
+      if (user && user.id === id) {
+        this.#cachedUser.set(user);
+      } else {
+        // Has it been fetched as part of a list?
+        const users = this.#users.value();
+        user = users.find((user: DisplayUser) => user.id === id);
+        if (user) {
+          this.#cachedUser.set(user);
+        } else {
+          // If not, we need to fetch it now
+          this.#userService.loadSingleUser(id);
+        }
+      }
+    }
+    this.#ivaService.loadUserIvas(this.#userId());
+    this.#accessRequestService.setUserId(this.#userId());
   }
 
   /**
-   * Navigate back to the user list
+   * Navigate back to the last page (usually the user manager)
    */
   goBack(): void {
     this.showTransition = true;
     setTimeout(() => {
-      this.#router.navigate(['/user-manager']);
+      this.#location.back();
+    });
+  }
+
+  /**
+   * Delete the user.
+   */
+  #delete(): void {
+    const id = this.user()?.id;
+    if (!id) return;
+    this.#userService.deleteUser(id).subscribe({
+      next: () => {
+        this.#notificationService.showSuccess(`User account was successfully deleted.`);
+      },
+      error: (err) => {
+        console.debug(err);
+        this.#notificationService.showError(
+          'User account could not be deleted. Please try again later',
+        );
+      },
+    });
+  }
+
+  /**
+   * Update the user data.
+   * @param changes - The changes to apply
+   */
+  #update(changes: Partial<DisplayUser>): void {
+    const id = this.user()?.id;
+    if (!id) return;
+    this.#userService.updateUser(id, changes).subscribe({
+      next: () => {
+        this.#notificationService.showSuccess(`User data was successfully modified.`);
+      },
+      error: (err) => {
+        console.debug(err);
+        this.#notificationService.showError(
+          'User data could not be modified. Please try again later',
+        );
+      },
+    });
+  }
+
+  /**
+   * Activate and deactivate the user after confirmation.
+   * @param isDeactivated Whether the user is currently deactivated (thus we want to reactivate the account)
+   */
+  safeStatusChange(isDeactivated: Boolean = false): void {
+    this.#confirmationService.confirm({
+      title: 'Confirm user account deactivation',
+      message: `<p>Please confirm that the user account of ${this.user()!.displayName} shall be <strong>${!isDeactivated ? 'de' : ''}activated</strong>.`,
+      cancelText: 'Cancel',
+      confirmText: `Confirm ${!isDeactivated ? 'de' : ''}activation`,
+      confirmClass: 'error',
+      callback: (statusChangeConfirmed) => {
+        if (statusChangeConfirmed)
+          this.#update({
+            status: isDeactivated ? UserStatus.active : UserStatus.active,
+          });
+      },
+    });
+  }
+
+  /**
+   * Delete the user after confirmation.
+   */
+  safeDeletion(): void {
+    this.#confirmationService.confirm({
+      title: 'Confirm user account deactivation',
+      message: `<p>Please confirm that the user account of ${this.user()!.displayName} shall be <strong>deleted</strong> by writing the user's email in the box below.`,
+      cancelText: 'Cancel',
+      confirmText: `Confirm deletion`,
+      confirmClass: 'error',
+      callback: (statusChangeConfirmed) => {
+        if (statusChangeConfirmed) this.#delete();
+      },
     });
   }
 }

@@ -384,7 +384,7 @@ export class AuthService {
   #setNewState(state: LoginState): void {
     this.#userSignal.update((user) => {
       if (user && user.state !== state) {
-        user = { ...user, state };
+        user = { ...user, state: state };
       }
       return user;
     });

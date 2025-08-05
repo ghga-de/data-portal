@@ -61,6 +61,14 @@ export class AccessRequestService {
   };
 
   /**
+   * Set a user ID to grab their access requests from the service
+   * @param userId the user ID to set
+   */
+  setUserId(userId: string): void {
+    this.#userId = computed(() => userId);
+  }
+
+  /**
    * Resource for loading the current user's access requests
    */
   userAccessRequests = httpResource<AccessRequest[]>(

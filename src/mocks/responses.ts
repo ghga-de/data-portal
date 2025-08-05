@@ -4,8 +4,6 @@
  * @license Apache-2.0
  */
 
-import { user } from './auth';
-
 import {
   accessRequests,
   allIvas,
@@ -40,7 +38,7 @@ export const responses: { [endpoint: string]: ResponseValue } = {
    */
 
   // User Data
-  'GET /api/auth/users/doe@test.dev': user,
+  'GET /api/auth/users/doe@test.dev': users[0],
   'GET /api/auth/users/roe@test.dev': users[1],
   'GET /api/auth/users/mar@test.dev': users[2],
 

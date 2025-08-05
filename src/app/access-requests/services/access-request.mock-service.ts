@@ -33,4 +33,5 @@ export class MockAccessRequestService {
   pendingUserAccessRequests = signal(
     accessRequests.filter((ar) => ar.status === 'pending'),
   );
+  setUserId = jest.fn(() => null);
 }

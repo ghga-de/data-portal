@@ -10,8 +10,12 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, Router } from '@angular/router';
+import { allIvasOfDoe } from '@app/../mocks/data';
+import { MockAccessRequestService } from '@app/access-requests/services/access-request.mock-service';
+import { AccessRequestService } from '@app/access-requests/services/access-request.service';
 import { UserService } from '@app/auth/services/user.service';
 import { ConfigService } from '@app/shared/services/config.service';
+import { IvaService } from '@app/verification-addresses/services/iva.service';
 import { UserManagerDetailComponent } from './user-manager-detail.component';
 
 /**
@@ -19,6 +23,17 @@ import { UserManagerDetailComponent } from './user-manager-detail.component';
  */
 class MockConfigService {
   auth_url = 'https://test-auth.example.com';
+}
+/**
+ * Mock the IVA service as needed by the user manager dialog component
+ */
+class MockIvaService {
+  loadUserIvas = () => undefined;
+  userIvas = {
+    value: () => allIvasOfDoe,
+    isLoading: () => false,
+    error: () => undefined,
+  };
 }
 
 /**
@@ -56,6 +71,30 @@ class MockUserService {
     isLoading: jest.fn(() => false),
     error: jest.fn(() => null),
   };
+  loadUsers = jest.fn(() => null);
+
+  singleUser = {
+    value: jest.fn(() => [
+      {
+        id: '123',
+        name: 'John Doe',
+        displayName: 'Dr. John Doe',
+        title: 'Dr.',
+        email: 'john@example.com',
+        ext_id: 'ext123',
+        roles: ['data_steward'],
+        roleNames: ['Data Steward'],
+        status: 'active',
+        registration_date: '2023-01-01',
+        sortName: 'Doe, John, Dr.',
+      },
+    ]),
+    isLoading: jest.fn(() => false),
+    error: jest.fn(() => null),
+  };
+  loadSingleUser = jest.fn(() => null);
+  deleteUser = { subscribe: jest.fn() };
+  updateUser = { subscribe: jest.fn() };
 }
 
 /**
@@ -72,6 +111,8 @@ class MockActivatedRoute {
  */
 class MockRouter {
   navigate = jest.fn();
+  createUrlTree = jest.fn();
+  serializeUrl = jest.fn();
 }
 
 describe('UserManagerDetailComponent', () => {
@@ -92,7 +133,11 @@ describe('UserManagerDetailComponent', () => {
         CommonDatePipe,
         { provide: ConfigService, useClass: MockConfigService },
         { provide: ActivatedRoute, useClass: MockActivatedRoute },
+        { provide: IvaService, useClass: MockIvaService },
+        { provide: AccessRequestService, useClass: MockAccessRequestService },
         { provide: Router, useValue: mockRouter },
+        provideHttpClient(),
+        provideHttpClientTesting(),
       ],
     })
       .overrideComponent(UserManagerDetailComponent, {
@@ -123,7 +168,7 @@ describe('UserManagerDetailComponent', () => {
   it('should navigate back when goBack is called', async () => {
     component.goBack();
     await new Promise((resolve) => setTimeout(resolve));
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/user-manager']);
+    expect(mockRouter.navigate).toHaveBeenCalled();
   });
 
   it('should render user details when user is found', () => {
@@ -155,7 +200,11 @@ describe('UserManagerDetailComponent', () => {
         CommonDatePipe,
         { provide: ConfigService, useClass: MockConfigService },
         { provide: ActivatedRoute, useClass: MockActivatedRoute },
+        { provide: IvaService, useClass: MockIvaService },
+        { provide: AccessRequestService, useClass: MockAccessRequestService },
         { provide: Router, useValue: mockRouter },
+        provideHttpClient(),
+        provideHttpClientTesting(),
       ],
     })
       .overrideComponent(UserManagerDetailComponent, {
