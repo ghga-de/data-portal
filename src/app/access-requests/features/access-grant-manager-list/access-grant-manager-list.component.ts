@@ -67,15 +67,21 @@ export class AccessGrantManagerListComponent implements AfterViewInit {
     switch (key) {
       case 'dataset':
         return ag.dataset_id;
-      case 'name':
-        const parts = ag.user_name.split(' ');
-        return parts.reverse().join(',');
-      case 'starts':
+      case 'status':
+        switch (ag.status) {
+          case 'Active':
+            return '0 ' + ag.valid_from;
+          case 'Waiting':
+            return '1 ' + ag.valid_from;
+          case 'Expired':
+            return '2 ' + ag.valid_from;
+          default:
+            return '3 ' + ag.valid_from;
+        }
+      case 'user':
+        return ag.user_name + '(' + ag.user_email + ')';
+      case 'period':
         return ag.valid_from;
-      case 'ends':
-        return ag.valid_until;
-      case 'created':
-        return ag.created;
       default:
         const value = ag[key as keyof AccessGrant];
         if (typeof value === 'string' || typeof value === 'number') {
