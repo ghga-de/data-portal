@@ -6,6 +6,8 @@
 
 import { HttpClient, httpResource } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
+// eslint-disable-next-line boundaries/element-types
+import { accessGrants } from '@app/../mocks/data';
 import { AuthService } from '@app/auth/services/auth.service';
 import { ConfigService } from '@app/shared/services/config.service';
 import { NotificationService } from '@app/shared/services/notification.service';
@@ -297,10 +299,8 @@ export class AccessRequestService {
     () =>
       this.#allAccessGrantsFilter() ?? {
         status: undefined,
-        name: undefined,
-        email: undefined,
+        user: undefined,
         dataset_id: undefined,
-        grant_id: undefined,
       },
   );
 
@@ -309,15 +309,7 @@ export class AccessRequestService {
    * @param filter the filter to apply
    */
   setAllAccessGrantsFilter(filter: AccessGrantFilter): void {
-    this.#allAccessGrantsFilter.set(
-      filter.name ||
-        filter.status ||
-        filter.dataset_id ||
-        filter.email ||
-        filter.grant_id
-        ? filter
-        : undefined,
-    );
+    this.#allAccessGrantsFilter.set(filter);
   }
 
   allAccessGrantsResource = httpResource<AccessGrant[]>(
@@ -361,19 +353,16 @@ export class AccessRequestService {
           g.dataset_id.includes(filter.dataset_id as string),
         );
       }
-      if (filter.email) {
-        grants = grants.filter((g) =>
-          g.user_email.toLowerCase().includes(filter.email?.toLowerCase() as string),
-        );
-      }
       if (filter.dataset_id) {
         grants = grants.filter((g) =>
           g.dataset_id.includes(filter.dataset_id as string),
         );
       }
-      if (filter.name) {
-        grants = grants.filter((g) =>
-          g.user_name.toLowerCase().includes((filter.name as string).toLowerCase()),
+      if (filter.user) {
+        grants = grants.filter(
+          (g) =>
+            g.user_name.toLowerCase().includes((filter.user as string).toLowerCase()) ||
+            g.user_email.toLowerCase().includes((filter.user as string).toLowerCase()),
         );
       }
       if (filter.status !== undefined) {
@@ -412,6 +401,14 @@ export class MockAccessRequestService {
     isLoading: signal(false),
     error: signal(undefined),
   };
+  loadAllAccessRequests = () => {};
+  allAccessGrantsFilter = () => ({
+    status: undefined,
+    user: undefined,
+    dataset_id: undefined,
+  });
+  setAllAccessGrantsFilter = (filter: AccessGrantFilter) => {};
+  allAccessGrantsFiltered = () => accessGrants;
   grantedUserAccessRequests = signal([
     {
       request: {

@@ -6,21 +6,11 @@
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { accessGrants } from '@app/../mocks/data';
-import { AccessRequestService } from '@app/access-requests/services/access-request.service';
+import {
+  AccessRequestService,
+  MockAccessRequestService,
+} from '@app/access-requests/services/access-request.service';
 import { AccessGrantManagerListComponent } from './access-grant-manager-list.component';
-
-/**
- * Mock the access request service as needed by the access grant manager list
- */
-const mockAccessRequestService = {
-  allAccessGrants: {
-    value: () => accessGrants,
-    isLoading: () => false,
-    error: () => undefined,
-  },
-  allAccessGrantsFiltered: () => accessGrants,
-};
 
 describe('AccessGrantManagerListComponent', () => {
   let component: AccessGrantManagerListComponent;
@@ -30,7 +20,7 @@ describe('AccessGrantManagerListComponent', () => {
     await TestBed.configureTestingModule({
       imports: [],
       providers: [
-        { provide: AccessRequestService, useValue: mockAccessRequestService },
+        { provide: AccessRequestService, useClass: MockAccessRequestService },
       ],
     }).compileComponents();
 

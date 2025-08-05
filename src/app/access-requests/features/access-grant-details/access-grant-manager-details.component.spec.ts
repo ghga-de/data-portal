@@ -7,13 +7,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ActivatedRoute } from '@angular/router';
-import { AccessRequestService } from '@app/access-requests/services/access-request.service';
+import {
+  AccessRequestService,
+  MockAccessRequestService,
+} from '@app/access-requests/services/access-request.service';
 import { AccessGrantManagerDetailsComponent } from './access-grant-manager-details.component';
-
-/**
- * Mock the access request service as needed by the access grant filter component
- */
-const mockAccessRequestService = {};
 
 describe('AccessGrantManagerDetailsComponent', () => {
   let component: AccessGrantManagerDetailsComponent;
@@ -23,7 +21,7 @@ describe('AccessGrantManagerDetailsComponent', () => {
     await TestBed.configureTestingModule({
       imports: [AccessGrantManagerDetailsComponent],
       providers: [
-        { provide: AccessRequestService, useValue: mockAccessRequestService },
+        { provide: AccessRequestService, useClass: MockAccessRequestService },
         { provide: ActivatedRoute, useValue: { snapshot: { paramMap: new Map() } } },
       ],
     }).compileComponents();

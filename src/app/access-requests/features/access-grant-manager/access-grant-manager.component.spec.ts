@@ -6,18 +6,14 @@
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AccessRequestService } from '@app/access-requests/services/access-request.service';
+import {
+  AccessRequestService,
+  MockAccessRequestService,
+} from '@app/access-requests/services/access-request.service';
 import { AccessGrantManagerComponent } from './access-grant-manager.component';
 
 import { AccessGrantManagerFilterComponent } from '../access-grant-manager-filter/access-grant-manager-filter.component';
 import { AccessGrantManagerListComponent } from '../access-grant-manager-list/access-grant-manager-list.component';
-
-/**
- * Mock the access request service as needed by the access grant manager
- */
-const mockAccessRequestService = {
-  loadAllAccessRequests: () => jest.fn(),
-};
 
 describe('AccessGrantManagerComponent', () => {
   let component: AccessGrantManagerComponent;
@@ -28,7 +24,7 @@ describe('AccessGrantManagerComponent', () => {
     await TestBed.configureTestingModule({
       imports: [AccessGrantManagerComponent],
       providers: [
-        { provide: AccessRequestService, useValue: mockAccessRequestService },
+        { provide: AccessRequestService, useClass: MockAccessRequestService },
       ],
     })
       .overrideComponent(AccessGrantManagerComponent, {

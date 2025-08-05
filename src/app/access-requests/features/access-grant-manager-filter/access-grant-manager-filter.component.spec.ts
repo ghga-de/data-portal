@@ -6,22 +6,11 @@
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AccessRequestService } from '@app/access-requests/services/access-request.service';
+import {
+  AccessRequestService,
+  MockAccessRequestService,
+} from '@app/access-requests/services/access-request.service';
 import { AccessGrantManagerFilterComponent } from './access-grant-manager-filter.component';
-
-/**
- * Mock the access request service as needed by the access grant filter component
- */
-const mockAccessRequestService = {
-  allAccessGrantsFilter: () => ({
-    status: undefined,
-    name: undefined,
-    email: undefined,
-    dataset_id: undefined,
-    grant_id: undefined,
-  }),
-  setAllAccessGrantsFilter: jest.fn(),
-};
 
 describe('AccessGrantManagerFilterComponent', () => {
   let component: AccessGrantManagerFilterComponent;
@@ -31,7 +20,7 @@ describe('AccessGrantManagerFilterComponent', () => {
     await TestBed.configureTestingModule({
       imports: [AccessGrantManagerFilterComponent],
       providers: [
-        { provide: AccessRequestService, useValue: mockAccessRequestService },
+        { provide: AccessRequestService, useClass: MockAccessRequestService },
       ],
     }).compileComponents();
 

@@ -97,8 +97,6 @@ export interface AccessGrant {
 
 export interface AccessGrantFilter {
   status: AccessGrantStatus | undefined;
-  name: string | undefined;
-  email: string | undefined;
+  user: string | undefined;
   dataset_id: string | undefined;
-  grant_id: string | undefined;
 }

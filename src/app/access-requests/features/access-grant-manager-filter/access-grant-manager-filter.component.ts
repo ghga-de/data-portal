@@ -42,21 +42,16 @@ export class AccessGrantManagerFilterComponent {
   #ars = inject(AccessRequestService);
   #filter = this.#ars.allAccessGrantsFilter;
   status = model<string | undefined>(this.#filter().status);
-  email = model<string | undefined>(this.#filter().email);
-  name = model<string | undefined>(this.#filter().name);
-  grantId = model<string | undefined>(this.#filter().grant_id);
+  user = model<string | undefined>(this.#filter().user);
   datasetId = model<string | undefined>(this.#filter().dataset_id);
-  grant_id = model<string | undefined>(this.#filter().grant_id);
 
   /**
    * Communicate filter changes to the access request service
    */
   #filterEffect = effect(() => {
     this.#ars.setAllAccessGrantsFilter({
-      grant_id: this.grantId(),
-      email: this.email(),
       dataset_id: this.datasetId(),
-      name: this.name(),
+      user: this.user(),
       status: this.status() as AccessGrantStatus,
     });
   });
