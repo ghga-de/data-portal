@@ -25,6 +25,6 @@ export class AccessGrantManagerComponent implements OnInit {
    * Load the access grants when the component is initialized
    */
   ngOnInit(): void {
-    this.#ars.loadAllAccessRequests();
+    this.#ars.loadAllAccessGrants();
   }
 }

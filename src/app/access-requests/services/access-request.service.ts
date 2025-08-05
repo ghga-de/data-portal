@@ -125,13 +125,13 @@ export class AccessRequestService {
   #allAccessRequestsFilter = signal<AccessRequestFilter | undefined>(undefined);
 
   // signal to load all users' access requests
-  #loadAll = signal<boolean>(false);
+  #loadAllAccessRequests = signal<boolean>(false);
 
   /**
    * Load all users' access requests
    */
   loadAllAccessRequests(): void {
-    this.#loadAll.set(true);
+    this.#loadAllAccessRequests.set(true);
   }
 
   /**
@@ -182,7 +182,7 @@ export class AccessRequestService {
    * but in principle we can also do some filtering on the sever.
    */
   allAccessRequests = httpResource<AccessRequest[]>(
-    () => (this.#loadAll() ? this.#arsEndpointUrl : undefined),
+    () => (this.#loadAllAccessRequests() ? this.#arsEndpointUrl : undefined),
     {
       defaultValue: [],
     },
@@ -293,6 +293,16 @@ export class AccessRequestService {
       .pipe(tap(() => this.#updateAccessRequestLocally(id, changes)));
   }
 
+  // signal to load all users' access grants
+  #loadAllAccessGrants = signal<boolean>(false);
+
+  /**
+   * Load all users' access grants
+   */
+  loadAllAccessGrants(): void {
+    this.#loadAllAccessGrants.set(true);
+  }
+
   // Similar structure to what we do for access requests but for access grants
   #allAccessGrantsFilter = signal<AccessGrantFilter | undefined>(undefined);
   allAccessGrantsFilter = computed(
@@ -313,7 +323,7 @@ export class AccessRequestService {
   }
 
   allAccessGrantsResource = httpResource<AccessGrant[]>(
-    () => (this.#loadAll() ? this.#arsManagementUrl : undefined),
+    () => (this.#loadAllAccessGrants() ? this.#arsManagementUrl : undefined),
     {
       defaultValue: [],
     },
@@ -402,6 +412,7 @@ export class MockAccessRequestService {
     error: signal(undefined),
   };
   loadAllAccessRequests = () => {};
+  loadAllAccessGrants = () => {};
   allAccessGrantsFilter = () => ({
     status: undefined,
     user: undefined,
