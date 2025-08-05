@@ -35,11 +35,13 @@ export class MockAccessRequestService {
     accessRequests.filter((ar) => ar.status === 'pending'),
   );
   loadAllAccessGrants = () => {};
+  loadAllAccessRequests = () => {};
   allAccessGrantsFilter = () => ({
     status: undefined,
     user: undefined,
     dataset_id: undefined,
   });
+  allAccessGrants = () => accessGrants;
   setAllAccessGrantsFilter = (filter: AccessGrantFilter) => {};
   allAccessGrantsFiltered = () => accessGrants;
 }

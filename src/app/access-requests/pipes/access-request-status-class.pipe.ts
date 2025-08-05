@@ -6,6 +6,7 @@
 
 import { Pipe, PipeTransform } from '@angular/core';
 import {
+  AccessGrantStatus,
   AccessRequestStatus,
   AccessRequestStatusClass,
 } from '../models/access-requests';
@@ -22,7 +23,10 @@ export class AccessRequestStatusClassPipe implements PipeTransform {
    * @param status The access request status to process
    * @returns The class based on the status of the access request status sent
    */
-  transform(status: AccessRequestStatus): string {
-    return AccessRequestStatusClass[status];
+  transform(status: AccessRequestStatus | AccessGrantStatus | undefined): string {
+    if (status) {
+      return AccessRequestStatusClass[status];
+    }
+    return '';
   }
 }
