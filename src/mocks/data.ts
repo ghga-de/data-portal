@@ -5,7 +5,7 @@
  */
 
 import { AccessGrant } from '@app/access-requests/models/access-requests';
-import { RegisteredUser } from '@app/auth/models/user';
+import { RegisteredUser, UserStatus } from '@app/auth/models/user';
 import { DatasetDetailsRaw } from '@app/metadata/models/dataset-details';
 import { DatasetInformation } from '@app/metadata/models/dataset-information';
 import { DatasetSummary } from '@app/metadata/models/dataset-summary';
@@ -28,7 +28,7 @@ export const users: RegisteredUser[] = [
     title: 'Dr.',
     email: 'doe@home.org',
     roles: ['data_steward'],
-    status: 'active',
+    status: UserStatus.active,
     registration_date: '2022-06-01T00:00:00',
   },
   {
@@ -38,8 +38,18 @@ export const users: RegisteredUser[] = [
     title: 'Prof.',
     email: 'roe@home.org',
     roles: [],
-    status: 'active',
+    status: UserStatus.active,
     registration_date: '2023-01-01T00:00:00',
+  },
+  {
+    id: 'mar@test.dev',
+    ext_id: 'aacaffeecaffeecaffeecaffeecaffeecaffeeaaf@lifescience-ri.eu',
+    name: 'Joan Mar',
+    title: 'Dr.',
+    email: 'mar@home.or',
+    roles: [],
+    status: UserStatus.active,
+    registration_date: '2023-03-01T00:00:00',
   },
   {
     id: 'fred.flintstone@test.dev',
@@ -48,7 +58,7 @@ export const users: RegisteredUser[] = [
     title: null,
     email: 'fred@flintstones.org',
     roles: [],
-    status: 'active',
+    status: UserStatus.active,
     registration_date: '2023-08-15T00:00:00',
   },
   {
@@ -58,7 +68,7 @@ export const users: RegisteredUser[] = [
     title: null,
     email: 'wilma@flintstones.org',
     roles: [],
-    status: 'active',
+    status: UserStatus.active,
     registration_date: '2023-08-15T00:00:00',
   },
   {
@@ -68,7 +78,7 @@ export const users: RegisteredUser[] = [
     title: null,
     email: 'barnie@flintstones.org',
     roles: [],
-    status: 'inactive',
+    status: UserStatus.inactive,
     registration_date: '2024-08-15T00:00:00',
   },
   {
@@ -78,7 +88,7 @@ export const users: RegisteredUser[] = [
     title: 'Prof.',
     email: 'jeff@flintstones.org',
     roles: ['data_steward'],
-    status: 'inactive',
+    status: UserStatus.inactive,
     registration_date: '2024-09-01T00:00:00',
   },
 ];

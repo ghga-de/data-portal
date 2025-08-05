@@ -55,7 +55,7 @@ export interface GrantedAccessRequest {
   daysRemaining: number;
 }
 
-export interface AccessRequestDialogData {
+export interface AccessRequestDetailData {
   datasetID: string;
   email: string;
   description: string;

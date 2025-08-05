@@ -48,11 +48,11 @@ import { DatePipe } from '@app/shared/pipes/date.pipe';
   styleUrl: './user-manager-list.component.scss',
 })
 export class UserManagerListComponent implements AfterViewInit {
-  #userService = inject(UserService);
   #router = inject(Router);
+  #userService = inject(UserService);
 
   #users = this.#userService.users;
-  users = this.#users.value;
+  users = this.#userService.usersFiltered;
   usersAreLoading = this.#users.isLoading;
   usersError = this.#users.error;
 
@@ -61,7 +61,7 @@ export class UserManagerListComponent implements AfterViewInit {
   defaultTablePageSize = 10;
   tablePageSizeOptions = [10, 25, 50, 100, 250, 500];
 
-  #updateSourceEffect = effect(() => (this.source.data = this.#users.value()));
+  #updateSourceEffect = effect(() => (this.source.data = this.users()));
 
   #userSortingAccessor = (user: DisplayUser, key: string) => {
     switch (key) {
@@ -121,13 +121,5 @@ export class UserManagerListComponent implements AfterViewInit {
    */
   viewDetails(user: DisplayUser): void {
     this.#router.navigate(['/user-manager', user.id]);
-  }
-
-  /**
-   * Open the details view for a user (placeholder for future implementation)
-   * @param row - the selected user row
-   */
-  openDetails(row: DisplayUser): void {
-    this.viewDetails(row);
   }
 }
