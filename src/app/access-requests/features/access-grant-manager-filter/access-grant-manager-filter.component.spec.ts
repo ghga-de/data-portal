@@ -6,10 +6,8 @@
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import {
-  AccessRequestService,
-  MockAccessRequestService,
-} from '@app/access-requests/services/access-request.service';
+import { MockAccessRequestService } from '@app/access-requests/services/access-request.mock-service';
+import { AccessRequestService } from '@app/access-requests/services/access-request.service';
 import { AccessGrantManagerFilterComponent } from './access-grant-manager-filter.component';
 
 describe('AccessGrantManagerFilterComponent', () => {

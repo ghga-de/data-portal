@@ -6,8 +6,6 @@
 
 import { HttpClient, httpResource } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
-// eslint-disable-next-line boundaries/element-types
-import { accessGrants } from '@app/../mocks/data';
 import { AuthService } from '@app/auth/services/auth.service';
 import { ConfigService } from '@app/shared/services/config.service';
 import { NotificationService } from '@app/shared/services/notification.service';
