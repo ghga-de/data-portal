@@ -91,8 +91,8 @@ export class AccessRequestManagerDetailComponent implements OnInit, HasPendingEd
 
   #cachedRequest = signal<AccessRequest | undefined>(undefined);
 
-  request = computed<AccessRequest | undefined>(
-    () => this.#cachedRequest() || this.#request.value(),
+  request = computed<AccessRequest | undefined>(() =>
+    this.#cachedRequest() || !this.#request.error() ? this.#request.value() : undefined,
   );
 
   loading = computed<boolean>(
@@ -206,13 +206,13 @@ export class AccessRequestManagerDetailComponent implements OnInit, HasPendingEd
     const id = this.id();
     if (id) {
       // Has it been fetched individually already?
-      let ar = this.#request.value();
+      let ar = !this.#request.error() ? this.#request.value() : undefined;
       if (ar && ar.id === id) {
         this.#cachedRequest.set(ar);
       } else {
         // Has it been fetched as part of a list?
-        const requests = this.#requests.value();
-        ar = requests.find((ar: AccessRequest) => ar.id === id);
+        const requests = !this.#requests.error() ? this.#requests.value() : undefined;
+        ar = requests?.find((ar: AccessRequest) => ar.id === id);
         if (ar) {
           this.#cachedRequest.set(ar);
         } else {
