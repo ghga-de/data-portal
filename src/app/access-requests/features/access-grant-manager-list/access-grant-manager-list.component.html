@@ -38,8 +38,7 @@
         Validity Period
       </th>
       <td mat-cell *matCellDef="let ag">
-        {{ ag.valid_from | date: periodFormat : periodTimeZone }}
-        <span>until</span>
+        {{ ag.valid_from | date: periodFormat : periodTimeZone }} to
         {{ ag.valid_until | date: periodFormat : periodTimeZone }}
       </td>
     </ng-container>
