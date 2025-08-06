@@ -67,8 +67,8 @@ export class UserManagerDetailComponent implements OnInit {
 
   #cachedUser = signal<DisplayUser | undefined>(undefined);
 
-  user = computed<DisplayUser | undefined>(
-    () => this.#cachedUser() || this.#user.value(),
+  user = computed<DisplayUser | undefined>(() =>
+    this.#cachedUser() || !this.#user.error() ? this.#user.value() : undefined,
   );
 
   loading = computed<boolean>(
@@ -78,23 +78,32 @@ export class UserManagerDetailComponent implements OnInit {
   error = computed<undefined | 'not found' | 'other'>(() => {
     if (this.#cachedUser()) return undefined;
     const error = this.#user.error();
+    console.log(error);
     if (!error) return undefined;
 
-    return (this.#user.error() as HttpErrorResponse)?.status === 404
-      ? 'not found'
-      : 'other';
+    return (error as HttpErrorResponse)?.status === 404 ? 'not found' : 'other';
   });
 
   #confirmationService = inject(ConfirmationService);
   #notificationService = inject(NotificationService);
 
   #ivaService = inject(IvaService);
-  userIvas = computed(() => this.#ivaService.userIvas.value());
+  userIvas = computed(() =>
+    !this.#ivaService.userIvas.error() ? this.#ivaService.userIvas.value() : undefined,
+  );
 
   #accessRequestService = inject(AccessRequestService);
-  userRequests = computed(() => this.#accessRequestService.userAccessRequests.value());
+  userRequests = computed(() =>
+    this.#accessRequestService.userAccessRequests.error()
+      ? this.#accessRequestService.userAccessRequests.value()
+      : undefined,
+  );
 
-  userGrants = computed(() => this.#accessRequestService.userAccessGrants.value());
+  userGrants = computed(() =>
+    this.#accessRequestService.userAccessGrants.error()
+      ? this.#accessRequestService.userAccessGrants.value()
+      : undefined,
+  );
 
   /**
    * On initialization, allow the transition effect,
@@ -106,13 +115,13 @@ export class UserManagerDetailComponent implements OnInit {
     const id = this.id();
     if (id) {
       // Has it been fetched individually already?
-      let user = this.#user.value();
+      let user = !this.#user.error() ? this.#user.value() : undefined;
       if (user && user.id === id) {
         this.#cachedUser.set(user);
       } else {
         // Has it been fetched as part of a list?
-        const users = this.#users.value();
-        user = users.find((user: DisplayUser) => user.id === id);
+        const users = !this.#users.error() ? this.#users.value() : undefined;
+        user = users?.find((user: DisplayUser) => user.id === id);
         if (user) {
           this.#cachedUser.set(user);
         } else {
@@ -121,8 +130,11 @@ export class UserManagerDetailComponent implements OnInit {
         }
       }
     }
-    this.#ivaService.loadUserIvas(this.id());
-    this.#accessRequestService.loadUserAccessRequests(this.id());
+    if (this.user()) {
+      this.#ivaService.loadUserIvas(this.id());
+      this.#accessRequestService.loadUserAccessRequests(this.id());
+      this.#accessRequestService.loadUserAccessGrants(this.id());
+    }
   }
 
   /**

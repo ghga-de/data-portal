@@ -142,7 +142,7 @@
       <mat-card-content
         class="divide-outline space-y-3 divide-y-1 divide-solid overflow-x-auto"
       >
-        @if (userIvas().length) {
+        @if (userIvas()?.length) {
           @for (iva of userIvas(); track iva.id) {
             <div class="flex min-w-2xl items-center gap-x-4 gap-y-4 pb-3">
               <span class="min-w-42"
@@ -168,7 +168,7 @@
       <mat-card-content
         class="divide-outline space-y-3 divide-y-1 divide-solid overflow-x-auto"
       >
-        @if (userGrants().length) {
+        @if (userGrants()?.length) {
           @for (ag of userGrants(); track ag.id) {
             <div class="min-w-xl">
               <p>
@@ -202,7 +202,7 @@
       <mat-card-content
         class="divide-outline space-y-3 divide-y-1 divide-solid overflow-x-auto"
       >
-        @if (userRequests().length) {
+        @if (userRequests()?.length) {
           @for (ar of userRequests(); track ar.id) {
             <div class="min-w-xl">
               <p [class.lg:mb-0]="ar.internal_note">

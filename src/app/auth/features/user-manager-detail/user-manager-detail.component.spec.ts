@@ -4,12 +4,15 @@
  * @license Apache-2.0
  */
 
-import { DatePipe as CommonDatePipe } from '@angular/common';
-import { provideHttpClient } from '@angular/common/http';
+import { DatePipe as CommonDatePipe, Location } from '@angular/common';
+import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { ActivatedRoute, Router } from '@angular/router';
+import {
+  NoopAnimationsModule,
+  provideNoopAnimations,
+} from '@angular/platform-browser/animations';
+import { provideRouter } from '@angular/router';
 import { allIvasOfDoe } from '@app/../mocks/data';
 import { MockAccessRequestService } from '@app/access-requests/services/access-request.mock-service';
 import { AccessRequestService } from '@app/access-requests/services/access-request.service';
@@ -22,7 +25,7 @@ import { UserManagerDetailComponent } from './user-manager-detail.component';
  * Mock ConfigService for testing
  */
 class MockConfigService {
-  auth_url = 'https://test-auth.example.com';
+  authUrl = 'http://mock.dev/auth';
 }
 /**
  * Mock the IVA service as needed by the user manager dialog component
@@ -74,8 +77,8 @@ class MockUserService {
   loadUsers = () => {};
 
   user = {
-    value: jest.fn(() => [
-      {
+    value: jest.fn(() => {
+      return {
         id: '123',
         name: 'John Doe',
         displayName: 'Dr. John Doe',
@@ -87,8 +90,8 @@ class MockUserService {
         status: 'active',
         registration_date: '2023-01-01',
         sortName: 'Doe, John, Dr.',
-      },
-    ]),
+      };
+    }),
     isLoading: jest.fn(() => false),
     error: jest.fn(() => null),
   };
@@ -106,49 +109,41 @@ class MockActivatedRoute {
   };
 }
 
-/**
- * Mock Router for testing
- */
-class MockRouter {
-  navigate = jest.fn();
-  createUrlTree = jest.fn();
-  serializeUrl = jest.fn();
-}
-
 describe('UserManagerDetailComponent', () => {
   let component: UserManagerDetailComponent;
   let fixture: ComponentFixture<UserManagerDetailComponent>;
-
+  let location: Location;
   let mockUserService = new MockUserService();
-  let mockRouter = new MockRouter();
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [UserManagerDetailComponent, NoopAnimationsModule],
+    const testBed = TestBed.configureTestingModule({
+      imports: [UserManagerDetailComponent],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
+        provideNoopAnimations(),
+        provideRouter([
+          { path: 'user-manager/doe@test.dev', component: UserManagerDetailComponent },
+        ]),
         CommonDatePipe,
         { provide: ConfigService, useClass: MockConfigService },
-        { provide: ActivatedRoute, useClass: MockActivatedRoute },
         { provide: IvaService, useClass: MockIvaService },
         { provide: AccessRequestService, useClass: MockAccessRequestService },
-        { provide: Router, useValue: mockRouter },
       ],
-    })
-      .overrideComponent(UserManagerDetailComponent, {
-        set: {
-          providers: [{ provide: UserService, useValue: mockUserService }],
-        },
-      })
-      .compileComponents();
+    }).overrideComponent(UserManagerDetailComponent, {
+      set: {
+        // the user service is provided at the component level
+        providers: [{ provide: UserService, useValue: mockUserService }],
+      },
+    });
+    await testBed.compileComponents();
+    location = testBed.inject(Location);
 
     fixture = TestBed.createComponent(UserManagerDetailComponent);
-
+    component = fixture.componentInstance;
     fixture.componentRef.setInput('id', 'doe@test.dev');
 
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    await fixture.whenStable();
   });
 
   it('should create', () => {
@@ -165,9 +160,10 @@ describe('UserManagerDetailComponent', () => {
   });
 
   it('should navigate back when goBack is called', async () => {
+    jest.spyOn(location, 'back');
     component.goBack();
     await new Promise((resolve) => setTimeout(resolve));
-    expect(mockRouter.navigate).toHaveBeenCalled();
+    expect(location.back).toHaveBeenCalled();
   });
 
   it('should render user details when user is found', () => {
@@ -182,11 +178,17 @@ describe('UserManagerDetailComponent', () => {
   it('should show not found message when user is not found', () => {
     // Create a new mock that returns empty array
     const emptyMockUserService = {
+      user: {
+        value: jest.fn(() => undefined),
+        isLoading: jest.fn(() => false),
+        error: jest.fn(() => new HttpErrorResponse({ status: 404 })),
+      },
       users: {
-        value: jest.fn(() => []),
+        value: jest.fn(() => undefined),
         isLoading: jest.fn(() => false),
         error: jest.fn(() => null),
       },
+      loadUser: () => {},
     };
 
     // Create a new component with the updated mock
@@ -196,12 +198,10 @@ describe('UserManagerDetailComponent', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        CommonDatePipe,
+        provideNoopAnimations(),
         { provide: ConfigService, useClass: MockConfigService },
-        { provide: ActivatedRoute, useClass: MockActivatedRoute },
         { provide: IvaService, useClass: MockIvaService },
         { provide: AccessRequestService, useClass: MockAccessRequestService },
-        { provide: Router, useValue: mockRouter },
         provideHttpClient(),
         provideHttpClientTesting(),
       ],
@@ -214,8 +214,9 @@ describe('UserManagerDetailComponent', () => {
       .compileComponents();
 
     const emptyFixture = TestBed.createComponent(UserManagerDetailComponent);
+    emptyFixture.componentRef.setInput('id', 'error');
     emptyFixture.detectChanges();
     const compiled = emptyFixture.nativeElement as HTMLElement;
-    expect(compiled.textContent).toContain('User Not Found');
+    expect(compiled.textContent).toContain('The selected user could not be found');
   });
 });
