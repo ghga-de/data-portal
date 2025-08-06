@@ -194,7 +194,7 @@ export class UserManagerDetailComponent implements OnInit {
       message: `<p>Please confirm that the user account of ${this.user()!.displayName} shall be <strong>${!isDeactivated ? 'de' : ''}activated</strong>.`,
       cancelText: 'Cancel',
       confirmText: `Confirm ${!isDeactivated ? 'de' : ''}activation`,
-      confirmClass: 'error',
+      confirmClass: 'danger',
       callback: (statusChangeConfirmed) => {
         if (statusChangeConfirmed)
           this.#update({
