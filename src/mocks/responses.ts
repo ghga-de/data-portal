@@ -43,8 +43,6 @@ export const responses: { [endpoint: string]: ResponseValue } = {
   'GET /api/auth/users/roe@test.dev': users[1],
   'GET /api/auth/users/mar@test.dev': users[2],
 
-  'GET /api/auth/users/*': 404,
-
   'GET /api/auth/users': users,
 
   // User IVAs

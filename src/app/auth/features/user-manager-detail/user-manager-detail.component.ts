@@ -94,13 +94,13 @@ export class UserManagerDetailComponent implements OnInit {
 
   #accessRequestService = inject(AccessRequestService);
   userRequests = computed(() =>
-    this.#accessRequestService.userAccessRequests.error()
+    !this.#accessRequestService.userAccessRequests.error()
       ? this.#accessRequestService.userAccessRequests.value()
       : undefined,
   );
 
   userGrants = computed(() =>
-    this.#accessRequestService.userAccessGrants.error()
+    !this.#accessRequestService.userAccessGrants.error()
       ? this.#accessRequestService.userAccessGrants.value()
       : undefined,
   );
@@ -130,7 +130,7 @@ export class UserManagerDetailComponent implements OnInit {
         }
       }
     }
-    if (this.user()) {
+    if (this.id()) {
       this.#ivaService.loadUserIvas(this.id());
       this.#accessRequestService.loadUserAccessRequests(this.id());
       this.#accessRequestService.loadUserAccessGrants(this.id());

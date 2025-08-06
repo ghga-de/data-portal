@@ -88,10 +88,6 @@ export class AccessRequestService {
         : undefined;
     },
     {
-      parse: (raw) =>
-        (raw as AccessRequest[]).filter(
-          ({ status }) => status === 'pending' || status === 'allowed',
-        ),
       defaultValue: [],
     },
   );
@@ -432,7 +428,7 @@ export class AccessRequestService {
   userAccessGrants = httpResource<AccessGrant[]>(
     () => {
       const userId = this.#userId();
-      return userId && this.#loadUserAccessRequests()
+      return userId && this.#loadUserAccessGrants()
         ? `${this.#arsManagementUrl}/${userId}`
         : undefined;
     },
