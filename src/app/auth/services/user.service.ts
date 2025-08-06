@@ -14,7 +14,6 @@ import {
   RoleNames,
   UserStatus,
 } from '../models/user';
-import { AuthService } from './auth.service';
 
 /**
  * Display user interface with additional properties for template use
@@ -33,7 +32,6 @@ export interface DisplayUser extends RegisteredUser {
 export class UserService {
   #config = inject(ConfigService);
   #http = inject(HttpClient);
-  #auth = inject(AuthService);
 
   #authUrl = this.#config.authUrl;
   #usersUrl = `${this.#authUrl}/users`;
@@ -209,11 +207,11 @@ export class UserService {
    * Load single user details
    * @param userId ID of the user to load
    */
-  loadSingleUser(userId: string) {
+  loadUser(userId: string) {
     this.#userId.set(userId);
   }
 
-  singleUser = httpResource<DisplayUser>(
+  user = httpResource<DisplayUser>(
     () => (this.#userId() ? `${this.#usersUrl}/${this.#userId()}` : undefined),
     {
       parse: (rawUser: unknown) => this.#createDisplayUser(rawUser as RegisteredUser),

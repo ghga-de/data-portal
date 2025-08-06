@@ -71,9 +71,9 @@ class MockUserService {
     isLoading: jest.fn(() => false),
     error: jest.fn(() => null),
   };
-  loadUsers = jest.fn(() => null);
+  loadUsers = () => {};
 
-  singleUser = {
+  user = {
     value: jest.fn(() => [
       {
         id: '123',
@@ -92,9 +92,9 @@ class MockUserService {
     isLoading: jest.fn(() => false),
     error: jest.fn(() => null),
   };
-  loadSingleUser = jest.fn(() => null);
-  deleteUser = { subscribe: jest.fn() };
-  updateUser = { subscribe: jest.fn() };
+  loadUser = () => {};
+  deleteUser = () => {};
+  updateUser = () => {};
 }
 
 /**
@@ -118,13 +118,11 @@ class MockRouter {
 describe('UserManagerDetailComponent', () => {
   let component: UserManagerDetailComponent;
   let fixture: ComponentFixture<UserManagerDetailComponent>;
-  let mockUserService: MockUserService;
-  let mockRouter: MockRouter;
+
+  let mockUserService = new MockUserService();
+  let mockRouter = new MockRouter();
 
   beforeEach(async () => {
-    mockUserService = new MockUserService();
-    mockRouter = new MockRouter();
-
     await TestBed.configureTestingModule({
       imports: [UserManagerDetailComponent, NoopAnimationsModule],
       providers: [
@@ -136,8 +134,6 @@ describe('UserManagerDetailComponent', () => {
         { provide: IvaService, useClass: MockIvaService },
         { provide: AccessRequestService, useClass: MockAccessRequestService },
         { provide: Router, useValue: mockRouter },
-        provideHttpClient(),
-        provideHttpClientTesting(),
       ],
     })
       .overrideComponent(UserManagerDetailComponent, {

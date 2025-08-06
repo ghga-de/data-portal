@@ -65,12 +65,16 @@ export class AccessRequestService {
       });
   };
 
+  // signal to load all users' access requests
+  #loadUserAccessRequests = signal<boolean>(false);
+
   /**
    * Set a user ID to grab their access requests from the service
    * @param userId the user ID to set
    */
-  setUserId(userId: string): void {
+  loadUserAccessRequests(userId: string): void {
     this.#userId = computed(() => userId);
+    this.#loadUserAccessRequests.set(true);
   }
 
   /**
@@ -79,7 +83,9 @@ export class AccessRequestService {
   userAccessRequests = httpResource<AccessRequest[]>(
     () => {
       const userId = this.#userId();
-      return userId ? this.#userAccessRequestsUrl(userId) : undefined;
+      return userId && this.#loadUserAccessRequests()
+        ? this.#userAccessRequestsUrl(userId)
+        : undefined;
     },
     {
       parse: (raw) =>
@@ -398,13 +404,46 @@ export class AccessRequestService {
           const has_started = now >= new Date(g.valid_from);
           const has_ended = now >= new Date(g.valid_until);
           return (
-            (filter.status === 'Active' && has_started && !has_ended) ||
-            (filter.status === 'Expired' && has_ended) ||
-            (filter.status === 'Waiting' && !has_started)
+            (filter.status === 'active' && has_started && !has_ended) ||
+            (filter.status === 'expired' && has_ended) ||
+            (filter.status === 'waiting' && !has_started)
           );
         });
       }
     }
     return grants;
   });
+
+  // signal to load all users' access grants
+  #loadUserAccessGrants = signal<boolean>(false);
+
+  /**
+   * Set a user ID to grab their access grants from the service
+   * @param userId the user ID to set
+   */
+  loadUserAccessGrants(userId: string): void {
+    this.#userId = computed(() => userId);
+    this.#loadUserAccessGrants.set(true);
+  }
+
+  /**
+   * Resource for loading the current user's access grants
+   */
+  userAccessGrants = httpResource<AccessGrant[]>(
+    () => {
+      const userId = this.#userId();
+      return userId && this.#loadUserAccessRequests()
+        ? `${this.#arsManagementUrl}/${userId}`
+        : undefined;
+    },
+    {
+      parse: (raw) =>
+        (raw as AccessGrant[]).map((grant) => {
+          const updatedGrant = { ...grant };
+          updatedGrant.status = this.computeStatusForAccessGrant(grant);
+          return updatedGrant;
+        }),
+      defaultValue: [],
+    },
+  );
 }

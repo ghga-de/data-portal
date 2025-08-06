@@ -2,53 +2,56 @@
   class="mx-auto flex max-w-[1440px] flex-col gap-6 p-6"
   [style.view-transition-name]="showTransition ? 'detail' : null"
 >
-  <div class="clearfix mb-6">
-    <button
-      mat-icon-button
-      (click)="goBack()"
-      data-umami-event="User Manager Back Link Clicked"
-      aria-label="Go back to previous page"
-      class="text-primary float-left mt-1 mr-4"
-    >
-      <mat-icon>chevron_left</mat-icon>
-    </button>
-    <h1>User{{ user() ? ': ' + user()!.displayName : ' Details' }}</h1>
+  <div class="mb-6 justify-between md:flex">
+    <div class="grow">
+      <button
+        mat-icon-button
+        (click)="goBack()"
+        data-umami-event="User Manager Back Link Clicked"
+        aria-label="Go back to previous page"
+        class="text-primary float-left mt-1 mr-4"
+      >
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+      <h1>User{{ user() ? ': ' + user()!.displayName : ' Details' }}</h1>
+    </div>
+    @if (user(); as user) {
+      <div class="float-right space-x-3 text-end lg:col-start-2">
+        @if (user.status === 'active') {
+          <button
+            matIconButton
+            matTooltip="Deactivate User"
+            aria-label="Deactivate User"
+            (click)="safeStatusChange()"
+          >
+            <mat-icon>person_remove</mat-icon>
+          </button>
+        } @else {
+          <button
+            matIconButton
+            matTooltip="Activate User"
+            aria-label="Activate User"
+            (click)="safeStatusChange(true)"
+          >
+            <mat-icon>person_check</mat-icon>
+          </button>
+        }
+        <button
+          matIconButton
+          class="remove-user"
+          matTooltip="Delete User"
+          aria-label="Delete User"
+          (click)="safeDeletion()"
+        >
+          <mat-icon>person_off</mat-icon>
+        </button>
+      </div>
+    }
   </div>
   @if (user(); as user) {
     <mat-card
       ><mat-card-content class="overflow-x-auto">
         <div class="flex flex-col gap-6 lg:grid lg:grid-cols-2">
-          <div class="space-x-3 text-end lg:col-start-2 lg:w-full">
-            @if (user.status === 'active') {
-              <button
-                matIconButton
-                matTooltip="Deactivate User"
-                aria-label="Deactivate User"
-                (click)="safeStatusChange()"
-              >
-                <mat-icon>person_remove</mat-icon>
-              </button>
-            } @else {
-              <button
-                matIconButton
-                matTooltip="Activate User"
-                aria-label="Activate User"
-                (click)="safeStatusChange(true)"
-              >
-                <mat-icon>person_check</mat-icon>
-              </button>
-            }
-            <button
-              matIconButton
-              class="remove-user"
-              matTooltip="Delete User"
-              aria-label="Delete User"
-              (click)="safeDeletion()"
-            >
-              <mat-icon>person_off</mat-icon>
-            </button>
-          </div>
-
           <div>
             <h2 class="mb-4 font-semibold">Basic Information</h2>
             <div class="space-y-3">
@@ -67,10 +70,20 @@
                 <p class="mt-1 text-gray-900">{{ user.email }}</p>
               </div>
             </div>
+            <div>
+              <strong>Roles:</strong>
+              <div class="mt-1 flex flex-wrap gap-1">
+                @for (roleName of user.roleNames; track roleName) {
+                  <mat-chip>{{ roleName }}</mat-chip>
+                } @empty {
+                  <p class="text-gray-500">No roles assigned</p>
+                }
+              </div>
+            </div>
           </div>
 
           <div>
-            <h2 class="mb-4 text-xl font-semibold">Account Details</h2>
+            <h2 class="mb-4 font-semibold">Account Details</h2>
             <div class="space-y-3">
               <div>
                 <strong>Status:</strong>
@@ -88,14 +101,23 @@
                 </p>
               </div>
               <div>
-                <strong>Roles:</strong>
-                <div class="mt-1 flex flex-wrap gap-1">
-                  @for (roleName of user.roleNames; track roleName) {
-                    <mat-chip>{{ roleName }}</mat-chip>
-                  } @empty {
-                    <p class="text-gray-500">No roles assigned</p>
+                <strong
+                  >{{
+                    user.status_change
+                      ? user.status === 'active'
+                        ? 'Re-activation'
+                        : 'Deactivation'
+                      : 'Status Change'
+                  }}
+                  Date:</strong
+                >
+                <p class="mt-1 text-gray-900">
+                  @if (user.status_change) {
+                    {{ user.status_change | date: friendlyDateFormat }}
+                  } @else {
+                    Not applicable
                   }
-                </div>
+                </p>
               </div>
             </div>
           </div>
@@ -128,7 +150,7 @@
               >
               <span class="min-w-54 grow">{{ iva.value }}</span>
 
-              <span [class]="(iva.state | IvaStatePipe).class" class="min-w-60">
+              <span [class]="(iva.state | IvaStatePipe).class" class="min-w-54">
                 {{ (iva.state | IvaStatePipe).name }}
               </span>
             </div>
@@ -150,16 +172,25 @@
           @for (ag of userGrants(); track ag.id) {
             <div class="min-w-xl">
               <p>
-                <a [routerLink]="`/access-grant-manager/${ag.id}`">Grant</a> for the
-                dataset
+                <span
+                  class="{{
+                    ag.status! | AccessRequestAndGrantStatusClassPipe
+                  }} capitalize inline-block w-21"
+                >
+                  {{ ag.status }}
+                </span>
+                <a [routerLink]="`/access-grant-manager/${ag.id}`" class="text-black"
+                  >grant</a
+                >
+                for the dataset
                 <a [routerLink]="`/dataset/${ag.dataset_id}`">{{ ag.dataset_id }}</a>
-                from {{ ag.access_starts | date: friendlyDateFormat }} to
-                {{ ag.access_ends | date: friendlyDateFormat }}
+                from {{ ag.valid_from | date: friendlyDateFormat }} to
+                {{ ag.valid_until | date: friendlyDateFormat }}
               </p>
             </div>
           }
         } @else {
-          <p>No access requests could be found for the user.</p>
+          <p>No access grants could be found for the user.</p>
         }
       </mat-card-content>
     </mat-card>
@@ -174,12 +205,18 @@
         @if (userRequests().length) {
           @for (ar of userRequests(); track ar.id) {
             <div class="min-w-xl">
-              <p [class.lg:zero-p-margin]="ar.internal_note">
-                <span class="{{ ar.status | AccessRequestStatusClassPipe }} capitalize">
+              <p [class.lg:mb-0]="ar.internal_note">
+                <span
+                  class="{{
+                    ar.status | AccessRequestAndGrantStatusClassPipe
+                  }} capitalize inline-block w-21"
+                >
                   {{ ar.status }}
                 </span>
-                <a [routerLink]="`/access-request-manager/${ar.id}`">request</a> for the
-                dataset
+                <a [routerLink]="`/access-request-manager/${ar.id}`" class="text-black"
+                  >request</a
+                >
+                for the dataset
                 <a [routerLink]="`/dataset/${ar.dataset_id}`">{{ ar.dataset_id }}</a>
                 from {{ ar.access_starts | date: friendlyDateFormat }} to
                 {{ ar.access_ends | date: friendlyDateFormat }}

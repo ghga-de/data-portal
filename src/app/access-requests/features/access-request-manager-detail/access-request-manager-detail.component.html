@@ -2,7 +2,7 @@
   class="mx-auto max-w-[1440px] p-6"
   [style.view-transition-name]="showTransition ? 'detail' : null"
 >
-  <div class="clearfix mb-6">
+  <div class="mb-6">
     <button
       mat-icon-button
       (click)="goBack()"
@@ -51,9 +51,10 @@
                 <tr>
                   <th>Status:</th>
                   <td>
-                    <strong class="{{ ar.status | AccessRequestStatusClassPipe }}">{{
-                      ar.status
-                    }}</strong>
+                    <strong
+                      class="{{ ar.status | AccessRequestAndGrantStatusClassPipe }}"
+                      >{{ ar.status }}</strong
+                    >
                   </td>
                 </tr>
               </tbody>

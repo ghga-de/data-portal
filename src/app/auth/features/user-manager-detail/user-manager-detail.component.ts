@@ -10,11 +10,11 @@ import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { AccessRequest } from '@app/access-requests/models/access-requests';
-import { AccessRequestStatusClassPipe } from '@app/access-requests/pipes/access-request-status-class.pipe';
+import { AccessRequestAndGrantStatusClassPipe } from '@app/access-requests/pipes/access-request-status-class.pipe';
 import { AccessRequestService } from '@app/access-requests/services/access-request.service';
 import { UserStatus } from '@app/auth/models/user';
 import { DisplayUser, UserService } from '@app/auth/services/user.service';
@@ -25,6 +25,7 @@ import { FRIENDLY_DATE_FORMAT } from '@app/shared/utils/date-formats';
 import { IvaStatePipe } from '@app/verification-addresses/pipes/iva-state.pipe';
 import { IvaTypePipe } from '@app/verification-addresses/pipes/iva-type.pipe';
 import { IvaService } from '@app/verification-addresses/services/iva.service';
+import { DeletionConfirmationDialogComponent } from '../deletion-confirmation-dialog/deletion-confirmation-dialog.component';
 
 /**
  * User Manager Detail component.
@@ -45,7 +46,7 @@ import { IvaService } from '@app/verification-addresses/services/iva.service';
     RouterLink,
     IvaStatePipe,
     IvaTypePipe,
-    AccessRequestStatusClassPipe,
+    AccessRequestAndGrantStatusClassPipe,
   ],
   providers: [UserService, CommonDatePipe],
   templateUrl: './user-manager-detail.component.html',
@@ -62,7 +63,7 @@ export class UserManagerDetailComponent implements OnInit {
   #location = inject(Location);
 
   #userId = computed(() => this.#route.snapshot.params['id']);
-  #user = this.#userService.singleUser;
+  #user = this.#userService.user;
   #users = this.#userService.users;
 
   #cachedUser = signal<DisplayUser | undefined>(undefined);
@@ -94,9 +95,7 @@ export class UserManagerDetailComponent implements OnInit {
   #accessRequestService = inject(AccessRequestService);
   userRequests = computed(() => this.#accessRequestService.userAccessRequests.value());
 
-  // #accessGrantService = inject(AccessGrantService);
-  // userGrants = computed(() => this.#accessGrantService.userAccessGrants.value());
-  userGrants = signal<AccessRequest[]>([]); // Placeholder for access grants, not implemented yet
+  userGrants = computed(() => this.#accessRequestService.userAccessGrants.value());
 
   /**
    * On initialization, allow the transition effect,
@@ -119,12 +118,12 @@ export class UserManagerDetailComponent implements OnInit {
           this.#cachedUser.set(user);
         } else {
           // If not, we need to fetch it now
-          this.#userService.loadSingleUser(id);
+          this.#userService.loadUser(id);
         }
       }
     }
     this.#ivaService.loadUserIvas(this.#userId());
-    this.#accessRequestService.setUserId(this.#userId());
+    this.#accessRequestService.loadUserAccessRequests(this.#userId());
   }
 
   /**
@@ -196,19 +195,18 @@ export class UserManagerDetailComponent implements OnInit {
     });
   }
 
+  #dialog = inject(MatDialog);
+
   /**
    * Delete the user after confirmation.
    */
   safeDeletion(): void {
-    this.#confirmationService.confirm({
-      title: 'Confirm user account deactivation',
-      message: `<p>Please confirm that the user account of ${this.user()!.displayName} shall be <strong>deleted</strong> by writing the user's email in the box below.`,
-      cancelText: 'Cancel',
-      confirmText: `Confirm deletion`,
-      confirmClass: 'error',
-      callback: (statusChangeConfirmed) => {
-        if (statusChangeConfirmed) this.#delete();
-      },
+    const dialogRef = this.#dialog.open(DeletionConfirmationDialogComponent, {
+      data: { user: this.user()! },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) this.#delete();
     });
   }
 }

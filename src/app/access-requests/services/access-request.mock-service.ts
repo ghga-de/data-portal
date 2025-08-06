@@ -28,6 +28,11 @@ export class MockAccessRequestService {
     error: signal(undefined),
     value: signal(accessRequests.filter((ar) => ar.user_id === 'doe@test.dev')),
   };
+  userAccessGrants = {
+    isLoading: signal(false),
+    error: signal(undefined),
+    value: signal(accessGrants.filter((ar) => ar.user_id === 'doe@test.dev')),
+  };
   grantedUserAccessRequests = signal(
     accessRequests.filter((ar) => ar.status === 'approved'),
   );
@@ -35,6 +40,8 @@ export class MockAccessRequestService {
     accessRequests.filter((ar) => ar.status === 'pending'),
   );
   setUserId = jest.fn(() => null);
+  loadUserAccessRequests = () => {};
+  loadUserAccessGrants = () => {};
   loadAllAccessGrants = () => {};
   allAccessGrantsFilter = () => ({
     status: undefined,

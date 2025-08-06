@@ -158,6 +158,9 @@ export const responses: { [endpoint: string]: ResponseValue } = {
   // All access grants
   'GET /api/ars/access-grants': accessGrants,
 
+  // User Grants
+  'GET /api/ars/access-grants/doe@test.dev': accessGrants,
+
   // Create an access request
   'POST /api/ars/access-requests': 204,
 
