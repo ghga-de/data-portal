@@ -40,14 +40,16 @@ export class MockAccessRequestService {
     accessRequests.filter((ar) => ar.status === 'pending'),
   );
   setUserId = jest.fn(() => null);
-  loadUserAccessRequests = () => {};
-  loadUserAccessGrants = () => {};
-  loadAllAccessGrants = () => {};
+  loadUserAccessRequests = () => undefined;
+  loadUserAccessGrants = () => undefined;
+  loadAllAccessRequests = () => undefined;
+  loadAllAccessGrants = () => undefined;
   allAccessGrantsFilter = () => ({
     status: undefined,
     user: undefined,
     dataset_id: undefined,
   });
+  allAccessGrants = () => accessGrants;
   setAllAccessGrantsFilter = (filter: AccessGrantFilter) => {};
   allAccessGrantsFiltered = () => accessGrants;
 }

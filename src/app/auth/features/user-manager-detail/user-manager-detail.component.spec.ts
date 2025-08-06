@@ -5,28 +5,17 @@
  */
 
 import { DatePipe as CommonDatePipe, Location } from '@angular/common';
-import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { HttpErrorResponse } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import {
-  NoopAnimationsModule,
-  provideNoopAnimations,
-} from '@angular/platform-browser/animations';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { allIvasOfDoe } from '@app/../mocks/data';
 import { MockAccessRequestService } from '@app/access-requests/services/access-request.mock-service';
 import { AccessRequestService } from '@app/access-requests/services/access-request.service';
 import { UserService } from '@app/auth/services/user.service';
-import { ConfigService } from '@app/shared/services/config.service';
 import { IvaService } from '@app/verification-addresses/services/iva.service';
 import { UserManagerDetailComponent } from './user-manager-detail.component';
 
-/**
- * Mock ConfigService for testing
- */
-class MockConfigService {
-  authUrl = 'http://mock.dev/auth';
-}
 /**
  * Mock the IVA service as needed by the user manager dialog component
  */
@@ -74,7 +63,7 @@ class MockUserService {
     isLoading: jest.fn(() => false),
     error: jest.fn(() => null),
   };
-  loadUsers = () => {};
+  loadUsers = () => undefined;
 
   user = {
     value: jest.fn(() => {
@@ -95,18 +84,9 @@ class MockUserService {
     isLoading: jest.fn(() => false),
     error: jest.fn(() => null),
   };
-  loadUser = () => {};
-  deleteUser = () => {};
-  updateUser = () => {};
-}
-
-/**
- * Mock ActivatedRoute for testing
- */
-class MockActivatedRoute {
-  snapshot = {
-    params: { id: '123' },
-  };
+  loadUser = () => undefined;
+  deleteUser = () => undefined;
+  updateUser = () => undefined;
 }
 
 describe('UserManagerDetailComponent', () => {
@@ -119,14 +99,11 @@ describe('UserManagerDetailComponent', () => {
     const testBed = TestBed.configureTestingModule({
       imports: [UserManagerDetailComponent],
       providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
         provideNoopAnimations(),
         provideRouter([
           { path: 'user-manager/doe@test.dev', component: UserManagerDetailComponent },
         ]),
         CommonDatePipe,
-        { provide: ConfigService, useClass: MockConfigService },
         { provide: IvaService, useClass: MockIvaService },
         { provide: AccessRequestService, useClass: MockAccessRequestService },
       ],
@@ -184,26 +161,21 @@ describe('UserManagerDetailComponent', () => {
         error: jest.fn(() => new HttpErrorResponse({ status: 404 })),
       },
       users: {
-        value: jest.fn(() => undefined),
+        value: jest.fn(() => []),
         isLoading: jest.fn(() => false),
         error: jest.fn(() => null),
       },
-      loadUser: () => {},
+      loadUser: () => undefined,
     };
 
     // Create a new component with the updated mock
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({
-      imports: [UserManagerDetailComponent, NoopAnimationsModule],
+      imports: [UserManagerDetailComponent],
       providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
         provideNoopAnimations(),
-        { provide: ConfigService, useClass: MockConfigService },
         { provide: IvaService, useClass: MockIvaService },
         { provide: AccessRequestService, useClass: MockAccessRequestService },
-        provideHttpClient(),
-        provideHttpClientTesting(),
       ],
     })
       .overrideComponent(UserManagerDetailComponent, {
