@@ -123,7 +123,7 @@
           </div>
 
           <!-- External ID in full row -->
-          <div class="col-span-2 pt-6">
+          <div class="col-span-2 pt-2">
             <div>
               <strong>Life Science (LS) ID:</strong>
               <p class="mt-1 font-mono break-all text-gray-900">
@@ -205,7 +205,7 @@
         @if (userRequests()?.length) {
           @for (ar of userRequests(); track ar.id) {
             <div class="min-w-xl">
-              <p [class.lg:mb-0]="ar.internal_note">
+              <p [class.lg:mb-0]="ar.internal_note" class="mb-3">
                 <span
                   class="{{
                     ar.status | AccessRequestAndGrantStatusClassPipe
@@ -222,7 +222,7 @@
                 {{ ar.access_ends | date: friendlyDateFormat }}
               </p>
               @if (ar.internal_note) {
-                <p class="text-gray">
+                <p class="text-gray mt-2 mb-3 text-base">
                   <strong>Internal Note:</strong> {{ ar.internal_note }}
                 </p>
               }
