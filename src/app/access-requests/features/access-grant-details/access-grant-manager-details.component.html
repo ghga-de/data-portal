@@ -16,7 +16,7 @@
 
     @if (grant(); as ag) {
       <div class="my-6">
-        <div>
+        <div class="mb-2">
           <span class="font-bold">Status:</span>
           <span class="{{ ag?.status | AccessGrantStatusClassPipe }} capitalize w-24">
             {{ ag.status }}
@@ -98,13 +98,13 @@
                       <tr>
                         <th>Access Request:</th>
                         <td>
-                          For the dataset
+                          for the dataset
                           <a
                             class="text-quaternary hover:text-secondary focus:text-secondary"
                             routerLink="/dataset/{{ request.dataset_id }}"
                             data-umami-event="Access Grant Details Access Requests List Dataset Clicked"
                             >{{ request.dataset_id }}</a
-                          >
+                          ><br />
                           from {{ request.access_starts | date: friendlyDateFormat }} to
                           {{ request.access_ends | date: friendlyDateFormat }}
                         </td>
@@ -114,8 +114,8 @@
                       <tr>
                         <td colspan="2">
                           <span class="warn"
-                            >Warning: There were multiple Access Requess and Access
-                            Grants for this user and this dataset!</span
+                            >Warning: Found multiple requests by this user for this
+                            dataset!</span
                           >
                         </td>
                       </tr>
@@ -130,7 +130,7 @@
                               routerLink="/dataset/{{ request.dataset_id }}"
                               data-umami-event="Granted Access Requests List Dataset Clicked"
                               >{{ request.dataset_id }}</a
-                            >
+                            ><br />
                             from
                             {{ request.access_starts | date: friendlyDateFormat }} to
                             {{ request.access_ends | date: friendlyDateFormat }}.
