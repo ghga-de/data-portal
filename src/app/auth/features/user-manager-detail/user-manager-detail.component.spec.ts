@@ -144,6 +144,9 @@ describe('UserManagerDetailComponent', () => {
       .compileComponents();
 
     fixture = TestBed.createComponent(UserManagerDetailComponent);
+
+    fixture.componentRef.setInput('id', 'doe@test.dev');
+
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

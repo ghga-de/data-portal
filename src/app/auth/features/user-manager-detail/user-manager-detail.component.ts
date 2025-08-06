@@ -6,14 +6,14 @@
 
 import { DatePipe as CommonDatePipe, Location } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { AccessRequestAndGrantStatusClassPipe } from '@app/access-requests/pipes/access-request-status-class.pipe';
 import { AccessRequestService } from '@app/access-requests/services/access-request.service';
 import { UserStatus } from '@app/auth/models/user';
@@ -57,12 +57,11 @@ export class UserManagerDetailComponent implements OnInit {
 
   showTransition = false;
 
-  #route = inject(ActivatedRoute);
   #userService = inject(UserService);
 
   #location = inject(Location);
 
-  #userId = computed(() => this.#route.snapshot.params['id']);
+  id = input.required<string>();
   #user = this.#userService.user;
   #users = this.#userService.users;
 
@@ -104,7 +103,7 @@ export class UserManagerDetailComponent implements OnInit {
   ngOnInit() {
     this.showTransition = true;
     setTimeout(() => (this.showTransition = false), 300);
-    const id = this.#userId();
+    const id = this.id();
     if (id) {
       // Has it been fetched individually already?
       let user = this.#user.value();
@@ -122,8 +121,8 @@ export class UserManagerDetailComponent implements OnInit {
         }
       }
     }
-    this.#ivaService.loadUserIvas(this.#userId());
-    this.#accessRequestService.loadUserAccessRequests(this.#userId());
+    this.#ivaService.loadUserIvas(this.id());
+    this.#accessRequestService.loadUserAccessRequests(this.id());
   }
 
   /**
