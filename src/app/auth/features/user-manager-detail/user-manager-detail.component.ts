@@ -71,9 +71,7 @@ export class UserManagerDetailComponent implements OnInit {
     this.#cachedUser() || !this.#user.error() ? this.#user.value() : undefined,
   );
 
-  loading = computed<boolean>(
-    () => !this.#cachedUser() && this.#user.isLoading() && !this.#user.error(),
-  );
+  loading = computed<boolean>(() => !this.#cachedUser() && this.#user.isLoading());
 
   error = computed<undefined | 'not found' | 'other'>(() => {
     if (this.#cachedUser()) return undefined;
@@ -89,20 +87,20 @@ export class UserManagerDetailComponent implements OnInit {
 
   #ivaService = inject(IvaService);
   userIvas = computed(() =>
-    !this.#ivaService.userIvas.error() ? this.#ivaService.userIvas.value() : undefined,
+    this.#ivaService.userIvas.error() ? undefined : this.#ivaService.userIvas.value(),
   );
 
   #accessRequestService = inject(AccessRequestService);
   userRequests = computed(() =>
-    !this.#accessRequestService.userAccessRequests.error()
-      ? this.#accessRequestService.userAccessRequests.value()
-      : undefined,
+    this.#accessRequestService.userAccessRequests.error()
+      ? undefined
+      : this.#accessRequestService.userAccessRequests.value(),
   );
 
   userGrants = computed(() =>
-    !this.#accessRequestService.userAccessGrants.error()
-      ? this.#accessRequestService.userAccessGrants.value()
-      : undefined,
+    this.#accessRequestService.userAccessGrants.error()
+      ? undefined
+      : this.#accessRequestService.userAccessGrants.value(),
   );
 
   /**
@@ -115,12 +113,12 @@ export class UserManagerDetailComponent implements OnInit {
     const id = this.id();
     if (id) {
       // Has it been fetched individually already?
-      let user = !this.#user.error() ? this.#user.value() : undefined;
+      let user = this.#user.error() ? undefined : this.#user.value();
       if (user && user.id === id) {
         this.#cachedUser.set(user);
       } else {
         // Has it been fetched as part of a list?
-        const users = !this.#users.error() ? this.#users.value() : undefined;
+        const users = this.#users.error() ? undefined : this.#users.value();
         user = users?.find((user: DisplayUser) => user.id === id);
         if (user) {
           this.#cachedUser.set(user);
