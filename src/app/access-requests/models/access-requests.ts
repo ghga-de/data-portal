@@ -11,20 +11,21 @@ export enum AccessRequestStatus {
 }
 
 export enum AccessGrantStatus {
-  active = 'Active',
-  expired = 'Expired',
-  waiting = 'Waiting',
+  active = 'active',
+  expired = 'expired',
+  waiting = 'waiting',
 }
 
-export type CombinedStatus = AccessRequestStatus | AccessGrantStatus;
-
-export const AccessRequestStatusClass: Record<CombinedStatus, string> = {
+export const AccessRequestStatusClass: Record<AccessRequestStatus, string> = {
+  allowed: 'text-success',
   denied: 'text-error',
   pending: 'text-info',
-  allowed: 'text-success',
-  Waiting: 'text-warning',
-  Expired: 'text-error',
-  Active: 'text-success',
+};
+
+export const AccessGrantStatusClass: Record<AccessGrantStatus, string> = {
+  active: 'text-success',
+  waiting: 'text-warning',
+  expired: 'text-error',
 };
 
 export interface AccessRequest {
@@ -66,9 +67,8 @@ export interface AccessRequestDetailData {
 
 export interface AccessRequestFilter {
   ticketId: string | undefined;
-  datasetId: string | undefined;
-  datasetTitle: string | undefined;
-  name: string | undefined;
+  dataset: string | undefined;
+  requester: string | undefined;
   dac: string | undefined;
   fromDate: Date | undefined;
   toDate: Date | undefined;

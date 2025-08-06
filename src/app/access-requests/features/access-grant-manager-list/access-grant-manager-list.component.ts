@@ -14,13 +14,14 @@ import {
   ViewChild,
   ViewChildren,
 } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { AccessGrant } from '@app/access-requests/models/access-requests';
-import { AccessRequestStatusClassPipe } from '@app/access-requests/pipes/access-request-status-class.pipe';
+import { AccessGrantStatusClassPipe } from '@app/access-requests/pipes/access-grant-status-class.pipe';
 import { AccessRequestService } from '@app/access-requests/services/access-request.service';
 import { DatePipe } from '@app/shared/pipes/date.pipe';
 import {
@@ -40,8 +41,10 @@ import {
     MatTableModule,
     MatSortModule,
     MatPaginatorModule,
+    MatButtonModule,
+    MatIconModule,
     DatePipe,
-    AccessRequestStatusClassPipe,
+    AccessGrantStatusClassPipe,
     MatIconModule,
   ],
   providers: [CommonDatePipe],
@@ -68,20 +71,14 @@ export class AccessGrantManagerListComponent implements AfterViewInit {
       case 'dataset':
         return ag.dataset_id;
       case 'status':
-        switch (ag.status) {
-          case 'Active':
-            return '0 ' + ag.valid_from;
-          case 'Waiting':
-            return '1 ' + ag.valid_from;
-          case 'Expired':
-            return '2 ' + ag.valid_from;
-          default:
-            return '3 ' + ag.valid_from;
-        }
+        const rank = { Active: 0, Waiting: 1, Expired: 2 }[ag.status as string] ?? 3;
+        return `${rank}:${ag.valid_from}-${ag.valid_until})`;
       case 'user':
-        return ag.user_name + '(' + ag.user_email + ')';
+        const parts = ag.user_name.split(' ');
+        parts.push(ag.user_email);
+        return parts.reverse().join(',');
       case 'period':
-        return ag.valid_from;
+        return `${ag.valid_from}-${ag.valid_until})`;
       default:
         const value = ag[key as keyof AccessGrant];
         if (typeof value === 'string' || typeof value === 'number') {
@@ -123,15 +120,10 @@ export class AccessGrantManagerListComponent implements AfterViewInit {
   }
 
   /**
-   * This function navigates to the details page for the selected access grant
-   * @param grant - The access grant to view details for
+   * Navigate to access grant details page
+   * @param ag - the selected access grant
    */
-  openDetails(grant: AccessGrant) {
-    if (grant && grant.id) {
-      // Navigate to the access-grant-details/:id route
-      this.#router.navigate(['access-grant-details', grant.id]);
-    } else {
-      console.error('Cannot navigate: Grant or grant ID is missing.');
-    }
+  viewDetails(ag: AccessGrant): void {
+    this.#router.navigate(['/access-grant-manager', ag.id]);
   }
 }

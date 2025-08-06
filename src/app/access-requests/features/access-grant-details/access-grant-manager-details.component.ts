@@ -15,9 +15,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterLink } from '@angular/router';
+import { AccessGrantStatusClassPipe } from '@app/access-requests/pipes/access-grant-status-class.pipe';
 import { AccessRequestService } from '@app/access-requests/services/access-request.service';
 import { FRIENDLY_DATE_FORMAT } from '@app/shared/utils/date-formats';
-import { AccessRequestStatusClassPipe } from '../../pipes/access-request-status-class.pipe';
 
 /**
  * Access Grant Manager Details component.
@@ -35,7 +35,7 @@ import { AccessRequestStatusClassPipe } from '../../pipes/access-request-status-
     MatSelectModule,
     MatFormFieldModule,
     MatIconModule,
-    AccessRequestStatusClassPipe,
+    AccessGrantStatusClassPipe,
     RouterLink,
     DatePipe,
   ],

@@ -28,14 +28,21 @@ export class MockAccessRequestService {
     error: signal(undefined),
     value: signal(accessRequests.filter((ar) => ar.user_id === 'doe@test.dev')),
   };
+  userAccessGrants = {
+    isLoading: signal(false),
+    error: signal(undefined),
+    value: signal(accessGrants.filter((ar) => ar.user_id === 'doe@test.dev')),
+  };
   grantedUserAccessRequests = signal(
     accessRequests.filter((ar) => ar.status === 'approved'),
   );
   pendingUserAccessRequests = signal(
     accessRequests.filter((ar) => ar.status === 'pending'),
   );
-  loadAllAccessGrants = () => {};
-  loadAllAccessRequests = () => {};
+  loadUserAccessRequests = () => undefined;
+  loadUserAccessGrants = () => undefined;
+  loadAllAccessRequests = () => undefined;
+  loadAllAccessGrants = () => undefined;
   allAccessGrantsFilter = () => ({
     status: undefined,
     user: undefined,
@@ -47,6 +54,6 @@ export class MockAccessRequestService {
     value: () => accessGrants,
   };
   allAccessGrants = () => accessGrants;
-  setAllAccessGrantsFilter = (filter: AccessGrantFilter) => {};
+  setAllAccessGrantsFilter = (filter: AccessGrantFilter) => undefined;
   allAccessGrantsFiltered = () => accessGrants;
 }
