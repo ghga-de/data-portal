@@ -24,9 +24,6 @@ export class AccessRequestStatusClassPipe implements PipeTransform {
    * @returns The class based on the status of the access request status sent
    */
   transform(status: AccessRequestStatus | AccessGrantStatus | undefined): string {
-    if (status) {
-      return AccessRequestStatusClass[status];
-    }
-    return '';
+    return status ? AccessRequestStatusClass[status] : '';
   }
 }
