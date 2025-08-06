@@ -65,29 +65,19 @@ export class AccessRequestService {
       });
   };
 
-  // signal to load all users' access requests
-  #loadUserAccessRequests = signal<boolean>(false);
-
   /**
-   * Set a user ID to grab their access requests from the service
-   * @param userId the user ID to set
-   */
-  loadUserAccessRequests(userId: string): void {
-    this.#userId = computed(() => userId);
-    this.#loadUserAccessRequests.set(true);
-  }
-
-  /**
-   * Resource for loading the current user's access requests
+   * Resource for loading the currently logged-in user's access requests
    */
   userAccessRequests = httpResource<AccessRequest[]>(
     () => {
       const userId = this.#userId();
-      return userId && this.#loadUserAccessRequests()
-        ? this.#userAccessRequestsUrl(userId)
-        : undefined;
+      return userId ? this.#userAccessRequestsUrl(userId) : undefined;
     },
     {
+      parse: (raw) =>
+        (raw as AccessRequest[]).filter(
+          ({ status }) => status === 'pending' || status === 'allowed',
+        ),
       defaultValue: [],
     },
   );
@@ -349,15 +339,13 @@ export class AccessRequestService {
   );
 
   allAccessGrants = computed<AccessGrant[]>(() => {
-    const grants = this.allAccessGrantsResource.value();
-    if (grants && Array.isArray(grants)) {
-      return grants.map((grant) => {
-        const updatedGrant = { ...grant };
-        updatedGrant.status = this.computeStatusForAccessGrant(grant);
-        return updatedGrant;
-      });
-    }
-    return [];
+    return this.allAccessGrantsResource.error()
+      ? []
+      : this.allAccessGrantsResource.value().map((grant) => {
+          const updatedGrant = { ...grant };
+          updatedGrant.status = this.computeStatusForAccessGrant(grant);
+          return updatedGrant;
+        });
   });
 
   computeStatusForAccessGrant = (grant: AccessGrant): AccessGrantStatus => {
@@ -410,37 +398,4 @@ export class AccessRequestService {
     }
     return grants;
   });
-
-  // signal to load all users' access grants
-  #loadUserAccessGrants = signal<boolean>(false);
-
-  /**
-   * Set a user ID to grab their access grants from the service
-   * @param userId the user ID to set
-   */
-  loadUserAccessGrants(userId: string): void {
-    this.#userId = computed(() => userId);
-    this.#loadUserAccessGrants.set(true);
-  }
-
-  /**
-   * Resource for loading the current user's access grants
-   */
-  userAccessGrants = httpResource<AccessGrant[]>(
-    () => {
-      const userId = this.#userId();
-      return userId && this.#loadUserAccessGrants()
-        ? `${this.#arsManagementUrl}/${userId}`
-        : undefined;
-    },
-    {
-      parse: (raw) =>
-        (raw as AccessGrant[]).map((grant) => {
-          const updatedGrant = { ...grant };
-          updatedGrant.status = this.computeStatusForAccessGrant(grant);
-          return updatedGrant;
-        }),
-      defaultValue: [],
-    },
-  );
 }

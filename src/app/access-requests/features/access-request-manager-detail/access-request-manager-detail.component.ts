@@ -213,8 +213,8 @@ export class AccessRequestManagerDetailComponent implements OnInit, HasPendingEd
         this.#cachedRequest.set(ar);
       } else {
         // Has it been fetched as part of a list?
-        const requests = this.#requests.error() ? undefined : this.#requests.value();
-        ar = requests?.find((ar: AccessRequest) => ar.id === id);
+        const requests = this.#requests.error() ? [] : this.#requests.value();
+        ar = requests.find((ar: AccessRequest) => ar.id === id);
         if (ar) {
           this.#cachedRequest.set(ar);
         } else {

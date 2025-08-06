@@ -67,8 +67,8 @@ export class UserManagerDetailComponent implements OnInit {
 
   #cachedUser = signal<DisplayUser | undefined>(undefined);
 
-  user = computed<DisplayUser | undefined>(() =>
-    this.#cachedUser() || !this.#user.error() ? this.#user.value() : undefined,
+  user = computed<DisplayUser | undefined>(
+    () => this.#cachedUser() || (this.#user.error() ? undefined : this.#user.value()),
   );
 
   loading = computed<boolean>(() => !this.#cachedUser() && this.#user.isLoading());
@@ -87,21 +87,22 @@ export class UserManagerDetailComponent implements OnInit {
 
   #ivaService = inject(IvaService);
   userIvas = computed(() =>
-    this.#ivaService.userIvas.error() ? undefined : this.#ivaService.userIvas.value(),
+    this.#ivaService.userIvas.error() ? [] : this.#ivaService.userIvas.value(),
   );
 
   #accessRequestService = inject(AccessRequestService);
-  userRequests = computed(() =>
-    this.#accessRequestService.userAccessRequests.error()
-      ? undefined
-      : this.#accessRequestService.userAccessRequests.value(),
-  );
 
-  userGrants = computed(() =>
-    this.#accessRequestService.userAccessGrants.error()
-      ? undefined
-      : this.#accessRequestService.userAccessGrants.value(),
-  );
+  userRequests = computed(() => {
+    const id = this.id();
+    const requests = this.#accessRequestService.allAccessRequests;
+    if (requests.error()) return [];
+    return requests.value().filter((r) => r.user_id === id);
+  });
+
+  userGrants = computed(() => {
+    const id = this.id();
+    return this.#accessRequestService.allAccessGrants().filter((g) => g.user_id === id);
+  });
 
   /**
    * On initialization, allow the transition effect,
@@ -118,8 +119,8 @@ export class UserManagerDetailComponent implements OnInit {
         this.#cachedUser.set(user);
       } else {
         // Has it been fetched as part of a list?
-        const users = this.#users.error() ? undefined : this.#users.value();
-        user = users?.find((user: DisplayUser) => user.id === id);
+        const users = this.#users.error() ? [] : this.#users.value();
+        user = users.find((user: DisplayUser) => user.id === id);
         if (user) {
           this.#cachedUser.set(user);
         } else {
@@ -130,8 +131,11 @@ export class UserManagerDetailComponent implements OnInit {
     }
     if (this.id()) {
       this.#ivaService.loadUserIvas(this.id());
-      this.#accessRequestService.loadUserAccessRequests(this.id());
-      this.#accessRequestService.loadUserAccessGrants(this.id());
+      // Note: The following two calls are inefficient.
+      // We need to add a way to load only a given user's access requests and grants.
+      // This can be also useful for the access grants detail view.
+      this.#accessRequestService.loadAllAccessGrants();
+      this.#accessRequestService.loadAllAccessRequests();
     }
   }
 
