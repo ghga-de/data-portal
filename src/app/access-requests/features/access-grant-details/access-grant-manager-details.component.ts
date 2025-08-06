@@ -5,7 +5,7 @@
  */
 
 import { DatePipe } from '@angular/common';
-import { Component, computed, inject, input, OnInit, Signal } from '@angular/core';
+import { Component, computed, inject, input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -48,8 +48,23 @@ export class AccessGrantManagerDetailsComponent implements OnInit {
   #ars = inject(AccessRequestService);
   showTransition = false;
   #router = inject(Router);
-  isLoading: Signal<boolean> | undefined = undefined;
-  error = false;
+  isLoading = this.#ars.allAccessGrantsResource.isLoading;
+  error = computed(() => {
+    const ags = this.#ars.allAccessGrants()?.filter((ag) => ag.id === this.id());
+    if (ags.length !== 1) {
+      return true;
+    } else {
+      return false;
+    }
+  });
+  grant = computed(() => {
+    const ags = this.#ars.allAccessGrants()?.filter((ag) => ag.id === this.id());
+    if (ags.length !== 1) {
+      return undefined;
+    } else {
+      return ags[0];
+    }
+  });
   hasStarted = computed(() => {
     const grant = this.grant();
     if (grant) {
@@ -63,15 +78,6 @@ export class AccessGrantManagerDetailsComponent implements OnInit {
       return new Date() > new Date(grant.valid_until);
     }
     return false;
-  });
-  grant = computed(() => {
-    const ags = this.#ars.allAccessGrants()?.filter((ag) => ag.id === this.id());
-    if (ags.length !== 1) {
-      this.error = true;
-      return undefined;
-    } else {
-      return ags[0];
-    }
   });
 
   ar = computed(() => {
@@ -93,7 +99,6 @@ export class AccessGrantManagerDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.#ars.loadAllAccessGrants();
     this.#ars.loadAllAccessRequests();
-    this.isLoading = this.#ars.allAccessGrantsResource?.isLoading;
     this.showTransition = true;
     setTimeout(() => (this.showTransition = false), 300);
   }

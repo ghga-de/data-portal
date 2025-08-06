@@ -41,6 +41,11 @@ export class MockAccessRequestService {
     user: undefined,
     dataset_id: undefined,
   });
+  allAccessGrantsResource = {
+    isLoading: () => false,
+    error: () => false,
+    value: () => accessGrants,
+  };
   allAccessGrants = () => accessGrants;
   setAllAccessGrantsFilter = (filter: AccessGrantFilter) => {};
   allAccessGrantsFiltered = () => accessGrants;
