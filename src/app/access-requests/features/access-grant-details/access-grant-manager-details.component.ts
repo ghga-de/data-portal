@@ -17,7 +17,11 @@ import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterLink } from '@angular/router';
 import { AccessGrantStatusClassPipe } from '@app/access-requests/pipes/access-grant-status-class.pipe';
 import { AccessRequestService } from '@app/access-requests/services/access-request.service';
-import { FRIENDLY_DATE_FORMAT } from '@app/shared/utils/date-formats';
+import {
+  DEFAULT_DATE_OUTPUT_FORMAT,
+  DEFAULT_TIME_ZONE,
+  FRIENDLY_DATE_FORMAT,
+} from '@app/shared/utils/date-formats';
 
 /**
  * Access Grant Manager Details component.
@@ -44,11 +48,18 @@ import { FRIENDLY_DATE_FORMAT } from '@app/shared/utils/date-formats';
 })
 export class AccessGrantManagerDetailsComponent implements OnInit {
   readonly friendlyDateFormat = FRIENDLY_DATE_FORMAT;
+  readonly periodFormat = DEFAULT_DATE_OUTPUT_FORMAT;
+  readonly periodTimeZone = DEFAULT_TIME_ZONE;
+
+  showTransition = false;
+
+  #router = inject(Router);
+
   id = input.required<string>();
   #ars = inject(AccessRequestService);
-  showTransition = false;
-  #router = inject(Router);
+
   isLoading = this.#ars.allAccessGrantsResource.isLoading;
+
   error = computed(() => {
     const ags = this.#ars.allAccessGrants()?.filter((ag) => ag.id === this.id());
     if (ags.length !== 1) {
@@ -65,6 +76,7 @@ export class AccessGrantManagerDetailsComponent implements OnInit {
       return ags[0];
     }
   });
+
   hasStarted = computed(() => {
     const grant = this.grant();
     if (grant) {

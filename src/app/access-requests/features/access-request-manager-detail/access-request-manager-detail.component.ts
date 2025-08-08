@@ -24,6 +24,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatIcon } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
+import { RouterLink } from '@angular/router';
 import {
   AccessRequest,
   AccessRequestStatus,
@@ -65,6 +66,7 @@ import { AccessRequestFieldEditComponent } from '../access-request-field-edit/ac
     MatChipsModule,
     MatInputModule,
     SplitLinesPipe,
+    RouterLink,
     AccessRequestDurationEditComponent,
   ],
   providers: [IvaTypePipe, DatePipe],
