@@ -15,6 +15,7 @@ import {
   ViewChildren,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
@@ -43,6 +44,7 @@ import {
     MatPaginatorModule,
     MatButtonModule,
     MatIconModule,
+    MatRippleModule,
     DatePipe,
     AccessGrantStatusClassPipe,
     MatIconModule,
