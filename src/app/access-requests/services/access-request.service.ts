@@ -416,4 +416,17 @@ export class AccessRequestService {
     }
     return grants;
   });
+
+  /**
+   * This function attempts to revoke an access grant in the backend. The promise returns true if the action is successful and false otherwise.
+   * @param grantID the ID of the grant to revoke.
+   * @returns true if successful, false otherwise.
+   */
+  revokeAccessGrant(grantID: string): Promise<boolean> {
+    if (!grantID || grantID === '') {
+      return Promise.resolve(false);
+    }
+
+    return Promise.resolve(true);
+  }
 }

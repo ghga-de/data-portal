@@ -1,0 +1,19 @@
+<div class="w-full sm:p-8">
+  <h2 mat-dialog-title>
+    <span class="fa-file-download"></span>Revoke access grant {{ grantID() }}
+  </h2>
+  <mat-dialog-content>
+    <p>Type the grant ID ({{ grantID() }}) and click 'Revoke' to revoke the grant.</p>
+    <input [(ngModel)]="idInput" />
+  </mat-dialog-content>
+  <mat-dialog-actions class="gap-y-2">
+    <button
+      matButton="filled"
+      (click)="(onClickRevoke)"
+      disabled="{{ grantID() !== idInput() }}"
+    >
+      Revoke
+    </button>
+    <button matButton="filled" (click)="(onClickCancel)">Cancel</button>
+  </mat-dialog-actions>
+</div>
