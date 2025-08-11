@@ -87,16 +87,14 @@ describe('AccessRequestManagerDetailComponent', () => {
   });
 
   it('should show the dataset ID in a link', () => {
-    const a = screen.getByText('GHGAD12345678901235', {
-      selector: 'a',
-    });
+    const a = screen.getByRole('link', { name: 'GHGAD12345678901235' });
     expect(a).toBeVisible();
   });
 
   it('should show the requester with email in two links', () => {
-    const a = screen.getByText('Dr. John Doe', { selector: 'a' });
+    const a = screen.getByRole('link', { name: 'Dr. John Doe' });
     expect(a).toBeVisible();
-    const email = screen.getByText('doe@home.org', { selector: 'a' });
+    const email = screen.getByRole('link', { name: 'doe@home.org' });
     expect(email).toBeVisible();
   });
 

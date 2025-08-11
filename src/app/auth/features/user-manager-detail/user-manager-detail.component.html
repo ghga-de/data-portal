@@ -97,9 +97,7 @@
               <div>
                 <strong>Registration Date:</strong>
                 <p class="mt-1 text-gray-900">
-                  {{
-                    user.registration_date | date: friendlyDateFormat : periodTimeZone
-                  }}
+                  {{ user.registration_date | date: friendlyDateFormat }}
                 </p>
               </div>
               <div>
