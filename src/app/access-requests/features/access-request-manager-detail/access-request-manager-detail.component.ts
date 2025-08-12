@@ -371,6 +371,7 @@ export class AccessRequestManagerDetailComponent implements OnInit, HasPendingEd
   #allowAndGoBack = () => {
     if (!this.selectedIvaIdRadioButton()) return;
     this.#update({
+      iva_id: this.selectedIvaIdRadioButton(),
       status: AccessRequestStatus.allowed,
     });
     this.goBack();
