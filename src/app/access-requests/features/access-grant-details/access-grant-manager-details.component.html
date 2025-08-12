@@ -46,16 +46,15 @@
           <mat-card-content class="min-w-2xl md:min-w-xl">
             <p>
               <strong class="inline-block w-44">Email:</strong>
-              <span>
-                <a [href]="'mailto:' + ag.user_email" target="_blank" tabindex="-1"
-                  >{{ ag.user_email
-                  }}<mat-icon aria-hidden="true">open_in_new</mat-icon>
-                </a>
-              </span>
+              <a [href]="'mailto:' + ag.user_email" target="_blank" tabindex="-1"
+                >{{ ag.user_email }}<mat-icon aria-hidden="true">open_in_new</mat-icon>
+              </a>
             </p>
             <p>
               <strong class="inline-block w-44">Name:</strong>
-              <span>{{ ag.user_title }} {{ ag.user_name }}</span>
+              <a [routerLink]="'/user-manager/' + ag.user_id"
+                >{{ ag.user_title }} {{ ag.user_name }}</a
+              >
             </p>
           </mat-card-content>
         </mat-card>
@@ -95,7 +94,6 @@
                   <span
                     >for the dataset
                     <a
-                      class="text-quaternary hover:text-secondary focus:text-secondary"
                       routerLink="/dataset/{{ request.dataset_id }}"
                       data-umami-event="Access Grant Details Access Requests List Dataset Clicked"
                       >{{ request.dataset_id }}</a

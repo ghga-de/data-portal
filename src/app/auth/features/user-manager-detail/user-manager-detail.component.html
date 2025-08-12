@@ -179,7 +179,9 @@
                 >
                   {{ ag.status }}
                 </strong>
-                <a [routerLink]="`/access-grant-manager/${ag.id}`" class="text-black"
+                <a
+                  [routerLink]="`/access-grant-manager/${ag.id}`"
+                  class="hover:text-primary focus:text-primary text-black"
                   >grant</a
                 >
                 for the dataset
@@ -213,7 +215,9 @@
                 >
                   {{ ar.status }}
                 </strong>
-                <a [routerLink]="`/access-request-manager/${ar.id}`" class="text-black"
+                <a
+                  [routerLink]="`/access-request-manager/${ar.id}`"
+                  class="hover:text-primary focus:text-primary text-black"
                   >request</a
                 >
                 for the dataset
