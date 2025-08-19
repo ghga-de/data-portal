@@ -11,13 +11,13 @@ The main requirements of the most recent legislation, the [European Accessibilit
 There is no real shortcut to this process.
 Proper compliance requires a deep understanding of both guidelines.
 
-A list of the ten most crucial accessibility requirements specifically for websites can be provided here as a starting point:
+We can provide a list of the ten most crucial accessibility requirements specifically for websites here as a starting point:
 
 - Accessibility for keyboard-only users (e.g. tab-based navigation).
 - Screen reader accessible content.
 - Clearly labelled forms with clear instructions.
 - ARIA labels and roles of custom components (Angular and Angular Material already specify these for most components, and most semantic HTML elements do not need label or role specification).
-- Colour contrast (in the case of WCAG 2.1 of minimum 4.5 to 1).
+- Colour contrast (in the case of WCAG 2.1 AA of minimum 4.5 to 1).
 - Correct heading and content structure.
 - Consistent navigation elements.
 - Accessibility of on hover and on focus content.
@@ -32,7 +32,7 @@ The [WAVE Web Accessibility Evaluation Tool](https://wave.webaim.org), the [ARC 
 Moreover, Angular ESLint also provides a [template plugin](https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/README.md) with several rules specific for accessibility, such as [`alt-text`](https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/alt-text.md) and [`mouse-events-have-key-events`](https://github.com/angular-eslint/angular-eslint/blob/main/packages/eslint-plugin-template/docs/rules/mouse-events-have-key-events.md). See also this three-part Angular ESLint Rules for Accessibility series of articles ([Part 1](https://dev.to/angular/angular-eslint-rules-for-keyboard-accessibility-236f), [Part 2](https://dev.to/angular/angular-eslint-rules-for-aria-3ba1), [Part 3](https://dev.to/angular/angular-eslint-rules-for-accessible-html-content-kf5)).
 
 It is important that these tools are adopted and consistently used, since all (existing and) new code for public-facing pages (including pages for authenticated users, but not administrator pages) in the data portal MUST be compliant with EAA requirements.
-[Note, however, that many of these compliance checking tools provide very inconsistent results, therefore no single tool should be relied on. Accessibility testing cannot be done fully automated as well, so the use of multiple tools along with manual evaluation must be performed for complete results.](https://www.w3.org/WAI/test-evaluate/tools/selecting/) We must also highlight that in almost all cases, unless an extension is installed, these tools can only test the _deployed_ version of the data portal; therefore, improving accessibility can become an [iterative process](https://www.wcag.com/solutions/accessibility-checker/#Implementation_process).
+[Note, however, that these compliance checking tools can never check adherence to _all_ the WCAG 2.1 AA guidelines, and thus provide very inconsistent results across one another. Therefore, no single tool should be relied on. Accessibility testing cannot be done fully automated as well, so the use of multiple tools along with manual evaluation must be performed for complete results.](https://www.w3.org/WAI/test-evaluate/tools/selecting/) We must also highlight that in almost all cases, unless an extension is installed, these tools can only test the _deployed_ version of the data portal; therefore, improving accessibility can become an [iterative process](https://www.wcag.com/solutions/accessibility-checker/#Implementation_process).
 Developers must, however, at least include [screen reader testing, contrast testing, and the like](https://www.w3.org/WAI/test-evaluate/easy-checks/) in the process of development to verify at least basic compliance, as well as verify the compliance of other developers' code.
 For administration pages (currently available to data stewards only), we can be less strict since they are not publicly accessible, but it would be ideal to maintain the same accessibility standards for all pages across the data portal.
 
