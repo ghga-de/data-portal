@@ -28,15 +28,16 @@
           </button>
         }
       </div>
-      <div class="my-6">
-        <div class="mb-2">
-          <span class="font-bold">Status:</span>
+      <div>
+        <p>
+          <strong>Status:</strong>&nbsp;
           <span class="{{ ag?.status | AccessGrantStatusClassPipe }} capitalize w-24">
             {{ ag.status }}
           </span>
-        </div>
-        <div>
-          <span class="font-bold">Dataset:</span>
+        </p>
+
+        <p>
+          <strong>Dataset:</strong>&nbsp;
           <span class="w-24 capitalize"
             >&nbsp;
             <a
@@ -45,7 +46,7 @@
               >{{ ag?.dataset_id }}</a
             >
           </span>
-        </div>
+        </p>
       </div>
       <div class="grid grid-cols-1 gap-3 xl:grid-cols-2">
         <div class="my-2 flex flex-col items-start gap-3">
