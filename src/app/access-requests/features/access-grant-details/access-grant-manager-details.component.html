@@ -15,6 +15,19 @@
     <h1>Access Grant Detail</h1>
 
     @if (grant(); as ag) {
+      <div class="float-right space-x-3 text-end lg:col-start-2">
+        @if (ag.status === 'active') {
+          <button
+            mat-raised-button
+            matTooltip="Revoke Access Grant"
+            aria-label="Revoke Access Grant"
+            (click)="openRevokeDialog()"
+          >
+            Revoke Access Grant
+            <mat-icon>block</mat-icon>
+          </button>
+        }
+      </div>
       <div class="my-6">
         <div class="mb-2">
           <span class="font-bold">Status:</span>
