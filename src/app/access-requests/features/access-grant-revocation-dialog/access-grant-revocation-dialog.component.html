@@ -3,13 +3,13 @@
     <span class="fa-file-download"></span>Access Grant Revocation
   </h2>
   <mat-dialog-content>
-    <p>Type the Grant Id ({{ grantID }}) and click 'Revoke' to revoke the grant.</p>
+    <p>Type the Grant ID ({{ grantID }}) and click 'Revoke' to revoke the grant.</p>
     <mat-form-field class="w-full">
       <input
         [(ngModel)]="idInput"
         matInput
         class="w-full"
-        placeholder="Type the Grant Id here"
+        placeholder="Type the Grant ID here"
       />
     </mat-form-field>
     @if (errorMessage) {

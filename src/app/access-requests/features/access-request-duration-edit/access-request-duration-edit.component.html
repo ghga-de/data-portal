@@ -1,7 +1,7 @@
 @if (!locked()) {
   @if (isOpen()) {
     <div class="mb-2 flex items-center">
-      <strong class="w-48 min-w-48 pb-1 text-start">Access duration:</strong>
+      <strong class="w-50 min-w-50 pb-1 text-start">Access Duration:</strong>
       <div class="min-w-60 grow">
         <div class="flex items-center">
           <div class="flex grow gap-x-2">
@@ -64,7 +64,7 @@
     </div>
   } @else {
     <p class="flex items-start">
-      <strong class="min-w-48 pe-1 text-start align-middle">Access duration:</strong>
+      <strong class="min-w-50 pe-1 text-start align-middle">Access duration:</strong>
       <span class="flex min-w-60 grow items-center pb-1">
         <span class="grow">
           {{ fromField() | date: periodFormat : periodTimeZone }} until
