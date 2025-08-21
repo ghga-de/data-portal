@@ -134,22 +134,37 @@
             <mat-card-title><h2>Notes</h2></mat-card-title>
           </mat-card-header>
           <mat-card-content class="min-w-xl">
-            <app-access-request-field-edit
-              [request]="ar"
-              name="note_to_requester"
-              label="Note to requester"
-              (saved)="saved($event)"
-              (edited)="edited($event)"
-              class="contents"
-            ></app-access-request-field-edit>
-            <app-access-request-field-edit
-              [request]="ar"
-              name="internal_note"
-              label="Internal note"
-              (saved)="saved($event)"
-              (edited)="edited($event)"
-              class="contents"
-            ></app-access-request-field-edit>
+            @if (ar.status === 'pending') {
+              <app-access-request-field-edit
+                [request]="ar"
+                name="note_to_requester"
+                label="Note to requester"
+                (saved)="saved($event)"
+                (edited)="edited($event)"
+                class="contents"
+              ></app-access-request-field-edit>
+              <app-access-request-field-edit
+                [request]="ar"
+                name="internal_note"
+                label="Internal note"
+                (saved)="saved($event)"
+                (edited)="edited($event)"
+                class="contents"
+              ></app-access-request-field-edit>
+            } @else {
+              <p class="flex">
+                <strong class="inline-block min-w-48">Note to requester:</strong>
+                <span>
+                  {{ ar.note_to_requester }}
+                </span>
+              </p>
+              <p class="flex">
+                <strong class="inline-block min-w-48">Internal note:</strong>
+                <span>
+                  {{ ar.internal_note }}
+                </span>
+              </p>
+            }
           </mat-card-content>
         </mat-card>
         <mat-card class="w-full overflow-x-auto">
