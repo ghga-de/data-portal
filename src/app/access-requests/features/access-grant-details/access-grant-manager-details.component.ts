@@ -153,7 +153,7 @@ export class AccessGrantManagerDetailsComponent implements OnInit {
 
     if (result === true) {
       this.#notificationService.showSuccess(
-        'Access grant revoked successfully. Reloading data...',
+        'Access grant revoked successfully. Exiting details view...',
       );
       await this.delay(3000);
       this.#ars.loadAllAccessGrants(true);
