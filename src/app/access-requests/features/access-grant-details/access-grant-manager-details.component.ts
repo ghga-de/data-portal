@@ -4,7 +4,7 @@
  * @license Apache-2.0
  */
 
-import { DatePipe, Location } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { Component, computed, inject, input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -21,6 +21,7 @@ import { AccessRequestService } from '@app/access-requests/services/access-reque
 import { NotificationService } from '@app/shared/services/notification.service';
 import { lastValueFrom } from 'rxjs';
 import { AccessGrantRevocationDialogComponent } from '../access-grant-revocation-dialog/access-grant-revocation-dialog.component';
+import { NavigationTrackingService } from '@app/shared/services/navigation.service';
 import {
   DEFAULT_DATE_OUTPUT_FORMAT,
   DEFAULT_TIME_ZONE,
@@ -57,7 +58,9 @@ export class AccessGrantManagerDetailsComponent implements OnInit {
   id = input.required<string>();
   showTransition = false;
 
-  #location = inject(Location);
+  #location = inject(NavigationTrackingService);
+
+  id = input.required<string>();
   #ars = inject(AccessRequestService);
   #dialog = inject(MatDialog);
   #notificationService = inject(NotificationService);
@@ -127,7 +130,7 @@ export class AccessGrantManagerDetailsComponent implements OnInit {
   goBack(): void {
     this.showTransition = true;
     setTimeout(() => {
-      this.#location.back();
+      this.#location.back(['/access-grant-manager']);
     });
   }
 
