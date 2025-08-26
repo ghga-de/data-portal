@@ -21,7 +21,7 @@ describe('AccessGrantRevocationDialogComponent', () => {
   };
 
   const testGrantId = 'GHGAD12345678901236';
-  const placeholderText = 'Type the Grant Id here';
+  const placeholderText = 'Type the Grant ID here';
 
   beforeEach(async () => {
     const mockAccessRequestService = {
