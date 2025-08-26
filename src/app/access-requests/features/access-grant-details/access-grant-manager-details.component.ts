@@ -18,15 +18,15 @@ import { MatSelectModule } from '@angular/material/select';
 import { RouterLink } from '@angular/router';
 import { AccessGrantStatusClassPipe } from '@app/access-requests/pipes/access-grant-status-class.pipe';
 import { AccessRequestService } from '@app/access-requests/services/access-request.service';
-import { NotificationService } from '@app/shared/services/notification.service';
-import { lastValueFrom } from 'rxjs';
-import { AccessGrantRevocationDialogComponent } from '../access-grant-revocation-dialog/access-grant-revocation-dialog.component';
 import { NavigationTrackingService } from '@app/shared/services/navigation.service';
+import { NotificationService } from '@app/shared/services/notification.service';
 import {
   DEFAULT_DATE_OUTPUT_FORMAT,
   DEFAULT_TIME_ZONE,
   FRIENDLY_DATE_FORMAT,
 } from '@app/shared/utils/date-formats';
+import { lastValueFrom } from 'rxjs';
+import { AccessGrantRevocationDialogComponent } from '../access-grant-revocation-dialog/access-grant-revocation-dialog.component';
 
 /**
  * Access Grant Manager Details component.
@@ -55,16 +55,14 @@ export class AccessGrantManagerDetailsComponent implements OnInit {
   readonly friendlyDateFormat = FRIENDLY_DATE_FORMAT;
   readonly periodFormat = DEFAULT_DATE_OUTPUT_FORMAT;
   readonly periodTimeZone = DEFAULT_TIME_ZONE;
-  id = input.required<string>();
-  showTransition = false;
 
   #location = inject(NavigationTrackingService);
-
-  id = input.required<string>();
   #ars = inject(AccessRequestService);
   #dialog = inject(MatDialog);
   #notificationService = inject(NotificationService);
 
+  id = input.required<string>();
+  showTransition = false;
   isLoading = this.#ars.allAccessGrantsResource.isLoading;
 
   error = computed(() => {
