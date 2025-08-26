@@ -5,7 +5,6 @@
  */
 
 import { ClipboardModule } from '@angular/cdk/clipboard';
-import { Location } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   AfterViewInit,
@@ -40,6 +39,8 @@ import { WellKnownValueService } from '@app/metadata/services/well-known-value.s
 import { AddPluralS } from '@app/shared/pipes/add-plural-s.pipe';
 import { ParseBytes } from '@app/shared/pipes/parse-bytes.pipe';
 import { UnderscoreToSpace } from '@app/shared/pipes/underscore-to-space.pipe';
+import { ConfigService } from '@app/shared/services/config.service';
+import { NavigationTrackingService } from '@app/shared/services/navigation.service';
 import { NotificationService } from '@app/shared/services/notification.service';
 import { ParagraphsComponent } from '../../../shared/ui/paragraphs/paragraphs.component';
 
@@ -80,12 +81,18 @@ const COLUMNS = {
 })
 export class DatasetDetailsComponent implements OnInit, AfterViewInit {
   id = input.required<string>();
-  #location = inject(Location);
+  #config = inject(ConfigService);
+  #location = inject(NavigationTrackingService);
   #title = inject(Title);
   #notify = inject(NotificationService);
   #metadata = inject(MetadataService);
   #dins = inject(DatasetInformationService);
   #wkvs = inject(WellKnownValueService);
+
+  #rtsUrl = this.#config.rtsUrl;
+  metadataDownloadUrl = computed(
+    () => `${this.#rtsUrl}/studies/${this.study().accession}`,
+  );
 
   #datasetDetails = this.#metadata.datasetDetails;
   #datasetDetailsError = this.#datasetDetails.error;
@@ -292,7 +299,7 @@ export class DatasetDetailsComponent implements OnInit, AfterViewInit {
    * Function to go back to previous page
    */
   goBack() {
-    this.#location.back();
+    this.#location.back(['browse']);
   }
 
   /**

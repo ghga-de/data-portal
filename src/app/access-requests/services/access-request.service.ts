@@ -11,8 +11,11 @@ import { ConfigService } from '@app/shared/services/config.service';
 import { NotificationService } from '@app/shared/services/notification.service';
 import { Observable, tap } from 'rxjs';
 import {
+  AccessGrant,
+  AccessGrantFilter,
+  AccessGrantStatus,
   AccessRequest,
-  AccessRequestDialogData,
+  AccessRequestDetailData,
   AccessRequestFilter,
   AccessRequestStatus,
   GrantedAccessRequest,
@@ -31,10 +34,12 @@ export class AccessRequestService {
 
   #arsBaseUrl = this.#config.arsUrl;
   #arsEndpointUrl = `${this.#arsBaseUrl}/access-requests`;
+  #arsManagementUrl = `${this.#arsBaseUrl}/access-grants`;
+
   #userAccessRequestsUrl = (userId: string) =>
     `${this.#arsEndpointUrl}?user_id=${userId}`;
 
-  performAccessRequest = (data: AccessRequestDialogData) => {
+  performAccessRequest = (data: AccessRequestDetailData) => {
     this.#http
       .post<void>(this.#arsEndpointUrl, {
         user_id: data.userId,
@@ -61,7 +66,7 @@ export class AccessRequestService {
   };
 
   /**
-   * Resource for loading the current user's access requests
+   * Resource for loading the currently logged-in user's access requests
    */
   userAccessRequests = httpResource<AccessRequest[]>(
     () => {
@@ -118,13 +123,13 @@ export class AccessRequestService {
   #allAccessRequestsFilter = signal<AccessRequestFilter | undefined>(undefined);
 
   // signal to load all users' access requests
-  #loadAll = signal<boolean>(false);
+  #loadAllAccessRequests = signal<boolean>(false);
 
   /**
    * Load all users' access requests
    */
   loadAllAccessRequests(): void {
-    this.#loadAll.set(true);
+    this.#loadAllAccessRequests.set(true);
   }
 
   /**
@@ -134,9 +139,8 @@ export class AccessRequestService {
     () =>
       this.#allAccessRequestsFilter() ?? {
         ticketId: '',
-        datasetId: '',
-        datasetTitle: '',
-        name: '',
+        dataset: '',
+        requester: '',
         dac: '',
         fromDate: undefined,
         toDate: undefined,
@@ -152,21 +156,7 @@ export class AccessRequestService {
    * @param filter - the filter to apply
    */
   setAllAccessRequestsFilter(filter: AccessRequestFilter): void {
-    this.#allAccessRequestsFilter.set(
-      filter.ticketId ||
-        filter.datasetId ||
-        filter.datasetTitle ||
-        filter.name ||
-        filter.dac ||
-        filter.fromDate ||
-        filter.toDate ||
-        filter.status ||
-        filter.requestText ||
-        filter.noteToRequester ||
-        filter.internalNote
-        ? filter
-        : undefined,
-    );
+    this.#allAccessRequestsFilter.set(filter);
   }
 
   /**
@@ -175,7 +165,7 @@ export class AccessRequestService {
    * but in principle we can also do some filtering on the sever.
    */
   allAccessRequests = httpResource<AccessRequest[]>(
-    () => (this.#loadAll() ? this.#arsEndpointUrl : undefined),
+    () => (this.#loadAllAccessRequests() ? this.#arsEndpointUrl : undefined),
     {
       defaultValue: [],
     },
@@ -194,27 +184,29 @@ export class AccessRequestService {
           ar.ticket_id?.toLowerCase().includes(ticketId),
         );
       }
-      const datasetId = filter.datasetId?.trim().toLowerCase();
-      if (datasetId) {
-        requests = requests.filter((ar) =>
-          ar.dataset_id.toLowerCase().includes(datasetId),
+      const dataset = filter.dataset?.trim().toLowerCase();
+      if (dataset) {
+        requests = requests.filter(
+          (ar) =>
+            ar.dataset_id.toLowerCase().includes(dataset) ||
+            ar.dataset_title.toLowerCase().includes(dataset),
         );
       }
-      const datasetTitle = filter.datasetTitle?.trim().toLowerCase();
-      if (datasetTitle) {
-        requests = requests.filter((ar) =>
-          ar.dataset_title.toLowerCase().includes(datasetTitle),
-        );
-      }
-      const name = filter.name?.trim().toLowerCase();
+      const name = filter.requester?.trim().toLowerCase();
       if (name) {
-        requests = requests.filter((ar) =>
-          ar.full_user_name.toLowerCase().includes(name),
+        requests = requests.filter(
+          (ar) =>
+            ar.full_user_name.toLowerCase().includes(name) ||
+            ar.email.toLowerCase().includes(name),
         );
       }
       const dac = filter.dac?.trim().toLowerCase();
       if (dac) {
-        requests = requests.filter((ar) => ar.dac_alias.toLowerCase().includes(dac));
+        requests = requests.filter(
+          (ar) =>
+            ar.dac_alias.toLowerCase().includes(dac) ||
+            ar.dac_email.toLowerCase().includes(dac),
+        );
       }
       if (filter.fromDate) {
         const fromDate = filter.fromDate.toISOString();
@@ -249,27 +241,69 @@ export class AccessRequestService {
     return requests;
   });
 
+  // signal to load an individual access request
+  #loadSingle = signal<string>('');
+
+  /**
+   * Load an individual access request
+   * @param id - the ID of the access request to load
+   */
+  loadAccessRequest(id: string): void {
+    this.#loadSingle.set(id);
+  }
+
+  /** Resource for loading an individual access request. */
+  accessRequest = httpResource<AccessRequest>(
+    () => {
+      const id = this.#loadSingle();
+      if (!id) return undefined;
+      return `${this.#arsEndpointUrl}/${id}`;
+    },
+    {
+      defaultValue: undefined,
+      parse: (raw) => raw as AccessRequest,
+    },
+  );
+
   /**
    * Update the lists of access requests locally.
    * @param id - the ID of the updated access request
    * @param changes - the changes to the access request which may be partial
    */
   #updateAccessRequestLocally(id: string, changes: any): void {
-    const oldRequest = this.allAccessRequests.value().find((ar) => ar.id === id);
-    if (!oldRequest) return;
-
-    if (changes.status != oldRequest.status) {
-      changes.status_changed = new Date().toISOString();
-      changes.changed_by = this.#auth.user()?.id || null;
+    const withStatusChange = (request: AccessRequest, changes: any) =>
+      'status' in changes && request.status !== changes.status
+        ? {
+            ...changes,
+            status_changed: new Date().toISOString(),
+            changed_by: this.#auth.user()?.id || null,
+          }
+        : changes;
+    if (!this.accessRequest.error()) {
+      const oldRequest = this.accessRequest.value();
+      if (oldRequest && oldRequest.id === id) {
+        const newRequest = { ...oldRequest, ...withStatusChange(oldRequest, changes) };
+        this.accessRequest.value.set(newRequest);
+      }
     }
-
-    const newRequest = { ...oldRequest, ...changes };
-
-    const update = (accessRequests: AccessRequest[]) =>
-      accessRequests.map((ar) => (ar.id === id ? newRequest : ar));
-
-    this.userAccessRequests.value.set(update(this.userAccessRequests.value()));
-    this.allAccessRequests.value.set(update(this.allAccessRequests.value()));
+    if (!this.userAccessRequests.error()) {
+      const oldRequest = this.userAccessRequests.value().find((ar) => ar.id === id);
+      if (oldRequest) {
+        const newRequest = { ...oldRequest, ...withStatusChange(oldRequest, changes) };
+        const update = (accessRequests: AccessRequest[]) =>
+          accessRequests.map((ar) => (ar.id === id ? newRequest : ar));
+        this.userAccessRequests.value.set(update(this.userAccessRequests.value()));
+      }
+    }
+    if (!this.allAccessRequests.error()) {
+      const oldRequest = this.allAccessRequests.value().find((ar) => ar.id === id);
+      if (oldRequest) {
+        const newRequest = { ...oldRequest, ...withStatusChange(oldRequest, changes) };
+        const update = (accessRequests: AccessRequest[]) =>
+          accessRequests.map((ar) => (ar.id === id ? newRequest : ar));
+        this.allAccessRequests.value.set(update(this.allAccessRequests.value()));
+      }
+    }
   }
 
   /**
@@ -285,81 +319,101 @@ export class AccessRequestService {
       .patch<null>(`${this.#arsEndpointUrl}/${id}`, changes)
       .pipe(tap(() => this.#updateAccessRequestLocally(id, changes)));
   }
-}
 
-let dateInOneYear = new Date();
-dateInOneYear.setDate(dateInOneYear.getDate() + 365);
-dateInOneYear.setTime(dateInOneYear.getTime() + 60 * 60 * 1000);
+  // signal to load all users' access grants
+  #loadAllAccessGrants = signal<boolean>(false);
 
-let dateYesterday = new Date();
-dateYesterday.setDate(dateYesterday.getDate() - 1);
+  /**
+   * Load all users' access grants
+   */
+  loadAllAccessGrants(): void {
+    this.#loadAllAccessGrants.set(true);
+  }
 
-let dateOneYearAgo = new Date();
-dateOneYearAgo.setDate(dateOneYearAgo.getDate() - 365);
+  // Similar structure to what we do for access requests but for access grants
+  #allAccessGrantsFilter = signal<AccessGrantFilter | undefined>(undefined);
+  allAccessGrantsFilter = computed(
+    () =>
+      this.#allAccessGrantsFilter() ?? {
+        status: undefined,
+        user: undefined,
+        dataset_id: undefined,
+      },
+  );
 
-/**
- * Mock for the Access Request Service
- */
-export class MockAccessRequestService {
-  userAccessRequests = {
-    isLoading: signal(false),
-    error: signal(undefined),
+  /**
+   * Load all access grants
+   * @param filter the filter to apply
+   */
+  setAllAccessGrantsFilter(filter: AccessGrantFilter): void {
+    this.#allAccessGrantsFilter.set(filter);
+  }
+
+  allAccessGrantsResource = httpResource<AccessGrant[]>(
+    () => (this.#loadAllAccessGrants() ? this.#arsManagementUrl : undefined),
+    {
+      defaultValue: [],
+    },
+  );
+
+  allAccessGrants = computed<AccessGrant[]>(() => {
+    return this.allAccessGrantsResource.error()
+      ? []
+      : this.allAccessGrantsResource.value().map((grant) => {
+          const updatedGrant = { ...grant };
+          updatedGrant.status = this.computeStatusForAccessGrant(grant);
+          return updatedGrant;
+        });
+  });
+
+  computeStatusForAccessGrant = (grant: AccessGrant): AccessGrantStatus => {
+    const now = new Date();
+    const hasStarted = now >= new Date(grant.valid_from);
+    const hasEnded = now >= new Date(grant.valid_until);
+    if (hasStarted && !hasEnded) {
+      return AccessGrantStatus.active;
+    } else if (hasEnded) {
+      return AccessGrantStatus.expired;
+    } else {
+      return AccessGrantStatus.waiting;
+    }
   };
-  grantedUserAccessRequests = signal([
-    {
-      request: {
-        id: 'GHGAR12345678901234',
-        user_id: '',
-        dataset_id: 'GHGAD12345678901234',
-        full_user_name: 'aacaffeecaffeecaffeecaffeecaffeecaffeeaad@lifescience-ri.eu',
-        email: 'aacaffeecaffeecaffeecaffeecaffeecaffeeaad@lifescience-ri.eu',
-        request_text: 'unit test request',
-        access_starts: Date.now().toString(),
-        access_ends: dateInOneYear.toString(),
-        request_created: Date.now().toString(),
-        status: 'approved',
-        status_changed: '',
-        changed_by: '',
-        iva_id: '',
-      },
-      isExpired: false,
-      daysRemaining: 365,
-    },
-    {
-      request: {
-        id: 'GHGAR12345678901235',
-        user_id: '',
-        dataset_id: 'GHGAD12345678901234',
-        full_user_name: 'aacaffeecaffeecaffeecaffeecaffeecaffeeaad@lifescience-ri.eu',
-        email: 'aacaffeecaffeecaffeecaffeecaffeecaffeeaad@lifescience-ri.eu',
-        request_text: 'unit test request 2',
-        access_starts: dateOneYearAgo.toString(),
-        access_ends: dateYesterday.toString(),
-        request_created: dateOneYearAgo.toString(),
-        status: 'approved',
-        status_changed: '',
-        changed_by: '',
-        iva_id: '',
-      },
-      isExpired: false,
-      daysRemaining: -1,
-    },
-  ]);
-  pendingUserAccessRequests = signal([
-    {
-      id: 'GHGAR12345678901236',
-      user_id: '',
-      dataset_id: 'GHGAD12345678901234',
-      full_user_name: 'aacaffeecaffeecaffeecaffeecaffeecaffeeaad@lifescience-ri.eu',
-      email: 'aacaffeecaffeecaffeecaffeecaffeecaffeeaad@lifescience-ri.eu',
-      request_text: 'unit test request',
-      access_starts: Date.now().toString(),
-      access_ends: Date.now().toString(),
-      request_created: Date.now().toString(),
-      status: 'pending',
-      status_changed: '',
-      changed_by: '',
-      iva_id: '',
-    },
-  ]);
+
+  allAccessGrantsFiltered = computed(() => {
+    let grants = this.allAccessGrants();
+    const filter = this.#allAccessGrantsFilter();
+    if (grants.length && filter) {
+      if (filter.dataset_id !== undefined && filter.dataset_id !== '') {
+        grants = grants.filter((g) =>
+          g.dataset_id.includes(filter.dataset_id as string),
+        );
+      }
+      if (filter.dataset_id) {
+        grants = grants.filter((g) =>
+          g.dataset_id.includes(filter.dataset_id as string),
+        );
+      }
+      if (filter.user) {
+        grants = grants.filter(
+          (g) =>
+            g.user_name.toLowerCase().includes((filter.user as string).toLowerCase()) ||
+            g.user_email.toLowerCase().includes((filter.user as string).toLowerCase()),
+        );
+      }
+      if (filter.status !== undefined) {
+        const now = new Date();
+
+        grants = grants.filter((g) => {
+          const has_started = now >= new Date(g.valid_from);
+          const has_ended = now >= new Date(g.valid_until);
+          return (
+            (filter.status === 'active' && has_started && !has_ended) ||
+            (filter.status === 'expired' && has_ended) ||
+            (filter.status === 'waiting' && !has_started)
+          );
+        });
+      }
+    }
+    return grants;
+  });
 }

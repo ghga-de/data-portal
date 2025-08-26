@@ -6,21 +6,19 @@
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { accessRequests, allIvasOfDoe } from '@app/../mocks/data';
+import { allIvasOfDoe } from '@app/../mocks/data';
 import { IvaService } from '@app/verification-addresses/services/iva.service';
-import { AccessRequestManagerDialogComponent } from './access-request-manager-dialog.component';
+import { AccessRequestManagerDetailComponent } from './access-request-manager-detail.component';
 
 import { provideHttpClient } from '@angular/common/http';
 import {
   HttpTestingController,
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
-import {
-  AccessRequestService,
-  MockAccessRequestService,
-} from '@app/access-requests/services/access-request.service';
+import { ActivatedRoute } from '@angular/router';
+import { MockAccessRequestService } from '@app/access-requests/services/access-request.mock-service';
+import { AccessRequestService } from '@app/access-requests/services/access-request.service';
 import { ConfigService } from '@app/shared/services/config.service';
 import { screen } from '@testing-library/angular';
 
@@ -44,24 +42,20 @@ class MockConfigService {
   helpdeskTicketUrl = 'http:/helpdesk.test/ticket/';
 }
 
-describe('AccessRequestManagerDialogComponent', () => {
-  let component: AccessRequestManagerDialogComponent;
-  let fixture: ComponentFixture<AccessRequestManagerDialogComponent>;
+describe('AccessRequestManagerDetailComponent', () => {
+  let component: AccessRequestManagerDetailComponent;
+  let fixture: ComponentFixture<AccessRequestManagerDetailComponent>;
   let httpMock: HttpTestingController;
   let testBed: TestBed;
 
   beforeEach(async () => {
     testBed = TestBed.configureTestingModule({
-      imports: [AccessRequestManagerDialogComponent],
+      imports: [AccessRequestManagerDetailComponent],
       providers: [
         { provide: IvaService, useClass: MockIvaService },
         { provide: AccessRequestService, useClass: MockAccessRequestService },
         { provide: ConfigService, useClass: MockConfigService },
-        {
-          provide: MAT_DIALOG_DATA,
-          useValue: { ...accessRequests[0], status: 'pending' },
-        },
-        { provide: MatDialogRef, useValue: {} },
+        { provide: ActivatedRoute, useValue: { snapshot: { paramMap: new Map() } } },
         provideHttpClient(),
         provideHttpClientTesting(),
         provideNoopAnimations(),
@@ -69,13 +63,13 @@ describe('AccessRequestManagerDialogComponent', () => {
     });
 
     await testBed.compileComponents();
-    fixture = testBed.createComponent(AccessRequestManagerDialogComponent);
+    fixture = testBed.createComponent(AccessRequestManagerDetailComponent);
     component = fixture.componentInstance;
     httpMock = testBed.inject(HttpTestingController);
 
+    fixture.componentRef.setInput('id', '9409db13-e23e-433e-9afa-544d8f25b720');
+
     testBed.tick();
-    let row = screen.getByRole('row', { name: 'LifeScience ID: Loading...' });
-    expect(row).toBeVisible();
     const req = httpMock.expectOne('http://mock.dev/auth/users/doe@test.dev');
     expect(req.request.method).toBe('GET');
     req.flush({ ext_id: 'ls-id-of-joe@ls-aai.dev' });
@@ -88,34 +82,33 @@ describe('AccessRequestManagerDialogComponent', () => {
   });
 
   it('should show the proper heading', () => {
-    const heading = screen.getByRole('heading', { level: 2 });
-    expect(heading).toHaveTextContent('Access Request Detail');
+    const heading = screen.getByRole('heading', { level: 1 });
+    expect(heading).toHaveTextContent('Access Request Details');
   });
 
-  it('should show the dataset ID in a table row', () => {
-    const row = screen.getByRole('row', { name: 'Dataset ID: GHGAD12345678901234' });
-    expect(row).toBeVisible();
+  it('should show the dataset ID in a link', () => {
+    const a = screen.getByRole('link', { name: 'GHGAD12345678901235' });
+    expect(a).toBeVisible();
   });
 
-  it('should show the requester with email in a table row', () => {
-    const row = screen.getByRole('row', {
-      name: 'Requester: Dr. John Doe - doe@home.org',
-    });
-    expect(row).toBeVisible();
+  it('should show the requester with email in two links', () => {
+    const a = screen.getByRole('link', { name: 'Dr. John Doe' });
+    expect(a).toBeVisible();
+    const email = screen.getByRole('link', { name: 'doe@home.org' });
+    expect(email).toBeVisible();
   });
 
-  it('should load the LD ID and show it in a table row', () => {
-    let row = screen.getByRole('row', {
-      name: 'LifeScience ID: ls-id-of-joe​@ls-aai.dev',
-    });
-    expect(row).toBeVisible();
+  it('should load the LD ID and show it in a code', () => {
+    let code = screen.getByText('ls-id-of-joe​@ls-aai.dev', { selector: 'code' });
+    expect(code).toBeVisible();
   });
 
-  it('should show the request details in a table row', () => {
-    const row = screen.getByRole('row', {
-      name: 'Request details: This is a test request for dataset GHGAD12345678901234. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-    });
-    expect(row).toBeVisible();
+  it('should show the request details in a paragraph', () => {
+    const p = screen.getByText(
+      'This is a test request for dataset GHGAD12345678901236.',
+      { selector: 'p' },
+    );
+    expect(p).toBeVisible();
   });
 
   it('should show the first IVA as a radio button and preselected', () => {
@@ -140,8 +133,8 @@ describe('AccessRequestManagerDialogComponent', () => {
     expect(button).toBeEnabled();
   });
 
-  it('should have an enabled cancel button', () => {
-    const button = screen.getByRole('button', { name: 'Cancel' });
+  it('should have an enabled back button', () => {
+    const button = screen.getByRole('button', { name: 'Back' });
     expect(button).toBeEnabled();
   });
 });

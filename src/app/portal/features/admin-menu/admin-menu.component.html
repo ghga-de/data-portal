@@ -10,6 +10,22 @@
   </a>
   <mat-menu #menu="matMenu">
     <a
+      [id]="isAccessRequestsManagerRoute() ? 'activePage' : ''"
+      mat-menu-item
+      routerLink="/access-request-manager"
+      class="mx-1"
+      data-umami-event="Admin Menu Access Request Manager Clicked"
+      ><mat-icon>person_raised_hand</mat-icon> Access Request Manager</a
+    >
+    <a
+      [id]="isAccessGrantManagerRoute() ? 'activePage' : ''"
+      mat-menu-item
+      routerLink="/access-grant-manager"
+      class="mx-1"
+      data-umami-event="Admin Menu Access Grant Manager Clicked"
+      ><mat-icon>admin_panel_settings</mat-icon> Access Grant Manager</a
+    >
+    <a
       [id]="isIvaManagerRoute() ? 'activePage' : ''"
       mat-menu-item
       routerLink="/iva-manager"
@@ -18,12 +34,12 @@
       ><mat-icon>contact_mail</mat-icon> IVA Manager</a
     >
     <a
-      [id]="isAccessRequestsManagerRoute() ? 'activePage' : ''"
+      [id]="isUserManagerRoute() ? 'activePage' : ''"
       mat-menu-item
-      routerLink="/access-request-manager"
+      routerLink="/user-manager"
       class="mx-1"
-      data-umami-event="Admin Menu Access Request Manager Clicked"
-      ><mat-icon>person_raised_hand</mat-icon> Access Request Manager</a
+      data-umami-event="Admin Menu User Manager Clicked"
+      ><mat-icon>people</mat-icon> User Manager</a
     >
   </mat-menu>
 }

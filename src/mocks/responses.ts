@@ -4,9 +4,9 @@
  * @license Apache-2.0
  */
 
-import { user } from './auth';
-
 import {
+  accessGrants,
+  accessRequests,
   allIvas,
   allIvasOfDoe,
   allIvasOfMar,
@@ -19,6 +19,7 @@ import {
   metadataGlobalSummary,
   searchResults,
   storageLabels,
+  users,
   workPackageResponse,
 } from './data';
 
@@ -38,7 +39,11 @@ export const responses: { [endpoint: string]: ResponseValue } = {
    */
 
   // User Data
-  'GET /api/auth/users/doe@test.dev': user,
+  'GET /api/auth/users/doe@test.dev': users[0],
+  'GET /api/auth/users/roe@test.dev': users[1],
+  'GET /api/auth/users/mar@test.dev': users[2],
+
+  'GET /api/auth/users': users,
 
   // User IVAs
   'GET /api/auth/users/doe@test.dev/ivas': allIvasOfDoe,
@@ -134,6 +139,10 @@ export const responses: { [endpoint: string]: ResponseValue } = {
   /**
    * ARS API
    */
+
+  // Specific access request
+  'GET /api/ars/access-requests/*': accessRequests[4],
+
   // Specific dataset and user access requests
   'GET /api/ars/access-requests?dataset_id=GHGAD12345678901234&*': getAccessRequests(
     'doe@test.dev',
@@ -146,11 +155,23 @@ export const responses: { [endpoint: string]: ResponseValue } = {
   // All access requests
   'GET /api/ars/access-requests': getAccessRequests(),
 
+  // All access grants
+  'GET /api/ars/access-grants': accessGrants,
+
+  // User Grants
+  'GET /api/ars/access-grants/doe@test.dev': accessGrants,
+
   // Create an access request
   'POST /api/ars/access-requests': 204,
 
   // Patch an access request
   'PATCH /api/ars/access-requests/*': 204,
+
+  /**
+   * RTS API
+   */
+  // Download metadata for a study
+  'GET /api/rts/studies/GHGAS12345678901234': 404,
 
   /**
    * WKVS API

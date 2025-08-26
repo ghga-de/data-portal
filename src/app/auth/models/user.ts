@@ -47,6 +47,25 @@ export interface UserRegisteredData extends UserBasicData {
 export type UserRole = keyof typeof RoleNames;
 
 /**
+ * All possible user states
+ */
+export enum UserStatus {
+  active = 'active',
+  inactive = 'inactive',
+}
+
+/**
+ * Data of a fully registered user interface
+ */
+export interface RegisteredUser extends UserRegisteredData {
+  id: string;
+  roles: UserRole[];
+  status: UserStatus;
+  registration_date: string; // ISO date string
+  status_change?: string; // ISO date string
+}
+
+/**
  * User session interface
  *
  * Contains all data describing the user and the user session.
@@ -54,7 +73,7 @@ export type UserRole = keyof typeof RoleNames;
  * Note that this is different from the low-level oidcUser object,
  * which does not contain the user data from the backend.
  */
-export interface User extends UserRegisteredData {
+export interface UserSession extends UserRegisteredData {
   id?: string;
   full_name: string;
   state: LoginState;
@@ -69,4 +88,13 @@ export interface User extends UserRegisteredData {
  */
 export enum RoleNames {
   data_steward = 'Data Steward',
+}
+
+/**
+ * Interface for filter object for registered user
+ */
+export interface RegisteredUserFilter {
+  idStrings: string;
+  roles: (UserRole | null)[] | undefined;
+  status: UserStatus | undefined;
 }

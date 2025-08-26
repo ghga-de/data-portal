@@ -25,9 +25,9 @@ import {
 } from '@angular/material/dialog';
 import { MatFormField, MatHint, MatLabel } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { AccessRequestDialogData } from '@app/access-requests/models/access-requests';
+import { AccessRequestDetailData } from '@app/access-requests/models/access-requests';
 import { ConfigService } from '@app/shared/services/config.service';
-import { DATE_INPUT_FORMAT_HINT } from '@app/shared/utils/date-formats';
+import { DATE_INPUT_FORMAT_HINT, timeZoneToUTC } from '@app/shared/utils/date-formats';
 
 /**
  * This component contains a form for all the data needed for an access request.
@@ -49,7 +49,7 @@ import { DATE_INPUT_FORMAT_HINT } from '@app/shared/utils/date-formats';
 })
 export class AccessRequestDialogComponent {
   readonly dialogRef = inject(MatDialogRef<AccessRequestDialogComponent>);
-  readonly data = inject<AccessRequestDialogData>(MAT_DIALOG_DATA);
+  readonly data = inject<AccessRequestDetailData>(MAT_DIALOG_DATA);
   #config = inject(ConfigService);
   readonly dateInputFormatHint = DATE_INPUT_FORMAT_HINT;
   readonly emailFormControl = new FormControl(this.data.email, [
@@ -271,29 +271,16 @@ export class AccessRequestDialogComponent {
    */
   submit(): void {
     const description = this.descriptionFormControl.value;
-    const fromDate = new Date(
-      Date.UTC(
-        this.fromDate()!.getFullYear(),
-        this.fromDate()!.getMonth(),
-        this.fromDate()!.getDate(),
-        0,
-        0,
-        0,
-        0,
-      ),
-    );
-    const untilDate = new Date(
-      Date.UTC(
-        this.untilDate()!.getFullYear(),
-        this.untilDate()!.getMonth(),
-        this.untilDate()!.getDate(),
-        23,
-        59,
-        59,
-        999,
-      ),
-    );
     const email = this.emailFormControl.value;
+    const from = this.fromDate()!;
+    const until = this.untilDate()!;
+    const fromDate = timeZoneToUTC(from.getFullYear(), from.getMonth(), from.getDate());
+    const untilDate = timeZoneToUTC(
+      until.getFullYear(),
+      until.getMonth(),
+      until.getDate(),
+      true,
+    );
     const data = { ...this.data, description, fromDate, untilDate, email };
     this.dialogRef.close(data);
   }

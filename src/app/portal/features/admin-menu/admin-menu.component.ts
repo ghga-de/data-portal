@@ -26,11 +26,20 @@ export class AdminMenuComponent {
   #baseRoute = inject(BaseRouteService);
   #route = this.#baseRoute.route;
   isDataSteward = computed(() => this.#auth.roles().includes('data_steward'));
+  isUserManagerRoute = computed<boolean>(() => this.#route() === 'user-manager');
   isIvaManagerRoute = computed<boolean>(() => this.#route() === 'iva-manager');
+  isAccessGrantManagerRoute = computed<boolean>(
+    () => this.#route() === 'access-grant-manager',
+  );
   isAccessRequestsManagerRoute = computed<boolean>(
     () => this.#route() === 'access-request-manager',
   );
   isAdminRoute = computed<boolean>(
-    () => this.isIvaManagerRoute() || this.isAccessRequestsManagerRoute(),
+    () =>
+      this.isUserManagerRoute() ||
+      this.isIvaManagerRoute() ||
+      this.isAccessRequestsManagerRoute() ||
+      this.isAccessGrantManagerRoute() ||
+      this.isAccessRequestsManagerRoute(),
   );
 }

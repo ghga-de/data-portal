@@ -4,6 +4,8 @@
  * @license Apache-2.0
  */
 
+import { AccessGrant } from '@app/access-requests/models/access-requests';
+import { RegisteredUser, UserStatus } from '@app/auth/models/user';
 import { DatasetDetailsRaw } from '@app/metadata/models/dataset-details';
 import { DatasetInformation } from '@app/metadata/models/dataset-information';
 import { DatasetSummary } from '@app/metadata/models/dataset-summary';
@@ -13,6 +15,83 @@ import { BaseStorageLabels } from '@app/metadata/models/well-known-values';
 import { IvaState, IvaType, UserWithIva } from '@app/verification-addresses/models/iva';
 import { DatasetWithExpiration } from '@app/work-packages/models/dataset';
 import { WorkPackageResponse } from '@app/work-packages/models/work-package';
+
+/**
+ * Users
+ */
+
+export const users: RegisteredUser[] = [
+  {
+    id: 'doe@test.dev',
+    ext_id: 'aacaffeecaffeecaffeecaffeecaffeecaffeeaad@lifescience-ri.eu',
+    name: 'John Doe',
+    title: 'Dr.',
+    email: 'doe@home.org',
+    roles: ['data_steward'],
+    status: UserStatus.active,
+    registration_date: '2022-06-01T00:00:00',
+  },
+  {
+    id: 'roe@test.dev',
+    ext_id: 'aacaffeecaffeecaffeecaffeecaffeecaffeeaae@lifescience-ri.eu',
+    name: 'Jane Roe',
+    title: 'Prof.',
+    email: 'roe@home.org',
+    roles: [],
+    status: UserStatus.active,
+    registration_date: '2023-01-01T00:00:00',
+  },
+  {
+    id: 'mar@test.dev',
+    ext_id: 'aacaffeecaffeecaffeecaffeecaffeecaffeeaaf@lifescience-ri.eu',
+    name: 'Joan Mar',
+    title: 'Dr.',
+    email: 'mar@home.org',
+    roles: [],
+    status: UserStatus.active,
+    registration_date: '2023-03-01T00:00:00',
+  },
+  {
+    id: 'fred.flintstone@test.dev',
+    ext_id: 'caffeecaffeecaffeecaffeecaffeecaffeeaafaa@lifescience-ri.eu',
+    name: 'Fred Flintstone',
+    title: null,
+    email: 'fred@flintstones.org',
+    roles: [],
+    status: UserStatus.active,
+    registration_date: '2023-08-15T00:00:00',
+  },
+  {
+    id: 'wilma.flintstone@test.dev',
+    ext_id: 'caffeecaffeecaffeecaffeecaffeecaffeeabaaa@lifescience-ri.eu',
+    name: 'Wilma Flintstone',
+    title: null,
+    email: 'wilma@flintstones.org',
+    roles: [],
+    status: UserStatus.active,
+    registration_date: '2023-08-15T00:00:00',
+  },
+  {
+    id: 'barney.gumble@test.dev',
+    ext_id: 'caffeecaffeecaffeecaffeecaffeecaffeeacdaa@lifescience-ri.eu',
+    name: 'Barney Gumble',
+    title: null,
+    email: 'barnie@flintstones.org',
+    roles: [],
+    status: UserStatus.inactive,
+    registration_date: '2024-08-15T00:00:00',
+  },
+  {
+    id: 'oscar.flintstone@test.dev',
+    ext_id: 'caffeecaffeecaffeecaffeecaffeecaffeeadeaa@lifescience-ri.eu',
+    name: 'Jeffrey Spencer Slate Sr.',
+    title: 'Prof.',
+    email: 'jeff@flintstones.org',
+    roles: ['data_steward'],
+    status: UserStatus.inactive,
+    registration_date: '2024-09-01T00:00:00',
+  },
+];
 
 /**
  * IVAs
@@ -651,6 +730,54 @@ export const accessRequests = [
     internal_note: 'We need to ask X about this.',
     note_to_requester: 'Please wait for the approval. Additional steps were required.',
     ticket_id: '1138',
+  },
+];
+
+export const accessGrants: AccessGrant[] = [
+  {
+    id: 'grant-ghga-8c4b9d5a1f0a',
+    user_id: 'doe@test.dev',
+    dataset_id: 'GHGAD12345678901234',
+    created: '2025-07-20T10:00:00Z',
+    valid_from: '2025-08-01T00:00:00Z',
+    valid_until: '2026-08-01T00:00:00Z',
+    user_name: 'John Doe',
+    user_title: 'Dr.',
+    user_email: 'test@home.org',
+    dataset_title: 'Test dataset for details',
+    dac_alias: 'SOME-DAC',
+    dac_email: 'dac-main@some.org',
+    iva_id: '32b50c92-489f-4418-ace8-e7552e3cf36d',
+  },
+  {
+    id: 'grant-ghga-8c4b9d5a1f0b',
+    user_id: 'doe@test.dev',
+    dataset_id: 'GHGAD12345678901235',
+    created: '2025-01-01T10:00:00Z',
+    valid_from: '2025-01-05T00:00:00Z',
+    valid_until: '2025-01-10T00:00:00Z',
+    user_name: 'John Doe',
+    user_title: 'Dr.',
+    user_email: 'doe@home.org',
+    dataset_title: 'Test dataset for details',
+    dac_alias: 'SOME-DAC',
+    dac_email: 'dac-main@some.org',
+    iva_id: '32b50c92-489f-4418-ace8-e7552e3cf36d',
+  },
+  {
+    id: 'grant-ghga-8c4b9d5a1f0c',
+    user_id: 'doe@test.dev',
+    dataset_id: 'GHGAD12345678901236',
+    created: '2025-07-20T10:00:00Z',
+    valid_from: '2027-08-01T00:00:00Z',
+    valid_until: '2028-08-01T00:00:00Z',
+    user_name: 'Jane Doe',
+    user_title: 'Dr.',
+    user_email: 'doe@home.org',
+    dataset_title: 'Test dataset for details',
+    dac_alias: 'SOME-DAC',
+    dac_email: 'dac-main@some.org',
+    iva_id: '32b50c92-489f-4418-ace8-e7552e3cf36d',
   },
 ];
 

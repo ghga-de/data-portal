@@ -1,5 +1,5 @@
 /**
- * This pipe takes an access request status and returns a specific class or classes to use
+ * This pipe takes an access request status and returns a specific class to use
  * @copyright The GHGA Authors
  * @license Apache-2.0
  */
@@ -18,11 +18,11 @@ import {
 })
 export class AccessRequestStatusClassPipe implements PipeTransform {
   /**
-   * This method will return a class or set of classes based on the access request status provided
+   * This method will return a class based on the access request status provided
    * @param status The access request status to process
-   * @returns The class based on the status of the access request status sent
+   * @returns The class based on the status of the access request
    */
-  transform(status: AccessRequestStatus): string {
-    return AccessRequestStatusClass[status];
+  transform(status: AccessRequestStatus | undefined): string {
+    return status ? AccessRequestStatusClass[status] : '';
   }
 }

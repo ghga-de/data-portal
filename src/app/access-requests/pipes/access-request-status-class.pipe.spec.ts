@@ -13,6 +13,12 @@ describe('AccessRequestStatusClassPipe', () => {
     expect(pipe).toBeTruthy();
   });
 
+  it('should return "" for undefined', () => {
+    const pipe = new AccessRequestStatusClassPipe();
+    const result = pipe.transform(undefined);
+    expect(result).toBe('');
+  });
+
   it('should return "text-error" for denied', () => {
     const pipe = new AccessRequestStatusClassPipe();
     const result = pipe.transform(AccessRequestStatus['denied']);

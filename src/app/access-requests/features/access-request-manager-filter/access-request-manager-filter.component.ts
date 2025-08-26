@@ -6,6 +6,7 @@
 
 import { Component, effect, inject, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -29,6 +30,7 @@ import { DATE_INPUT_FORMAT_HINT } from '@app/shared/utils/date-formats';
     FormsModule,
     MatCardModule,
     MatInputModule,
+    MatButtonModule,
     MatDatepickerModule,
     MatSelectModule,
     MatFormFieldModule,
@@ -45,13 +47,14 @@ export class AccessRequestManagerFilterComponent {
 
   readonly dateInputFormatHint = DATE_INPUT_FORMAT_HINT;
 
+  displayFilters = false;
+
   /**
    * The model for the filter properties
    */
   ticketId = model<string | undefined>(this.#filter().ticketId);
-  datasetId = model<string | undefined>(this.#filter().datasetId);
-  datasetTitle = model<string | undefined>(this.#filter().datasetTitle);
-  name = model<string | undefined>(this.#filter().name);
+  dataset = model<string | undefined>(this.#filter().dataset);
+  name = model<string | undefined>(this.#filter().requester);
   dac = model<string | undefined>(this.#filter().dac);
   fromDate = model<Date | undefined>(this.#filter().fromDate);
   toDate = model<Date | undefined>(this.#filter().toDate);
@@ -66,9 +69,8 @@ export class AccessRequestManagerFilterComponent {
   #filterEffect = effect(() => {
     this.#ars.setAllAccessRequestsFilter({
       ticketId: this.ticketId(),
-      datasetId: this.datasetId(),
-      datasetTitle: this.datasetTitle(),
-      name: this.name(),
+      dataset: this.dataset(),
+      requester: this.name(),
       dac: this.dac(),
       fromDate: this.fromDate(),
       toDate: this.toDate(),

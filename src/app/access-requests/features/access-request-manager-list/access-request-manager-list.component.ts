@@ -4,25 +4,33 @@
  * @license Apache-2.0
  */
 
-import { DatePipe } from '@angular/common';
+import { DatePipe as CommonDatePipe } from '@angular/common';
 import {
   AfterViewInit,
   Component,
+  computed,
   effect,
   inject,
   QueryList,
   ViewChild,
   ViewChildren,
 } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { Router, RouterLink } from '@angular/router';
 import { AccessRequest } from '@app/access-requests/models/access-requests';
 import { AccessRequestStatusClassPipe } from '@app/access-requests/pipes/access-request-status-class.pipe';
 import { AccessRequestService } from '@app/access-requests/services/access-request.service';
-import { AccessRequestManagerDialogComponent } from '../access-request-manager-dialog/access-request-manager-dialog.component';
+import { DatePipe } from '@app/shared/pipes/date.pipe';
+import { ConfigService } from '@app/shared/services/config.service';
+import {
+  DEFAULT_DATE_OUTPUT_FORMAT,
+  DEFAULT_TIME_ZONE,
+} from '@app/shared/utils/date-formats';
 
 /**
  * Access Request Manager List component.
@@ -36,16 +44,23 @@ import { AccessRequestManagerDialogComponent } from '../access-request-manager-d
     MatTableModule,
     MatSortModule,
     MatPaginatorModule,
+    MatButtonModule,
+    MatRippleModule,
     DatePipe,
     AccessRequestStatusClassPipe,
     MatIconModule,
+    RouterLink,
   ],
+  providers: [CommonDatePipe],
   templateUrl: './access-request-manager-list.component.html',
   styleUrl: './access-request-manager-list.component.scss',
 })
 export class AccessRequestManagerListComponent implements AfterViewInit {
+  #config = inject(ConfigService);
+  #baseTicketUrl = this.#config.helpdeskTicketUrl;
+
+  #router = inject(Router);
   #ars = inject(AccessRequestService);
-  #dialog = inject(MatDialog);
 
   #accessRequests = this.#ars.allAccessRequests;
   accessRequests = this.#ars.allAccessRequestsFiltered;
@@ -57,6 +72,19 @@ export class AccessRequestManagerListComponent implements AfterViewInit {
   defaultTablePageSize = 10;
   tablePageSizeOptions = [10, 25, 50, 100, 250, 500];
 
+  periodFormat = DEFAULT_DATE_OUTPUT_FORMAT;
+  periodTimeZone = DEFAULT_TIME_ZONE;
+
+  ticketUrl = computed<Map<string, string | null>>(
+    () =>
+      new Map(
+        this.accessRequests().map((ar) => [
+          ar.id,
+          ar.ticket_id ? this.#baseTicketUrl + ar.ticket_id : null,
+        ]),
+      ),
+  );
+
   #updateSourceEffect = effect(() => (this.source.data = this.accessRequests()));
 
   #accessRequestSortingAccessor = (ar: AccessRequest, key: string) => {
@@ -65,13 +93,15 @@ export class AccessRequestManagerListComponent implements AfterViewInit {
         return ar.ticket_id || '';
       case 'dataset':
         return ar.dataset_id;
-      case 'user':
+      case 'requester':
         const parts = ar.full_user_name.split(' ');
+        parts.push(ar.email);
         return parts.reverse().join(',');
-      case 'starts':
-        return ar.access_starts;
-      case 'ends':
-        return ar.access_ends;
+      case 'status':
+        const rank = { allowed: 0, pending: 1, denied: 2 }[ar.status as string] ?? 3;
+        return `${rank}:${ar.access_starts}-${ar.access_ends})`;
+      case 'period':
+        return `${ar.access_starts}-${ar.access_ends})`;
       case 'requested':
         return ar.request_created;
       default:
@@ -115,14 +145,12 @@ export class AccessRequestManagerListComponent implements AfterViewInit {
   }
 
   /**
-   * Open the details dialog
-   * @param row - the selected row to open the details for
+   * Navigate to access request details page
+   * @param event - the PointerEvent object to check if there is an anchor inside
+   * @param ar - the selected access request
    */
-  openDetails(row: AccessRequest): void {
-    this.#dialog.open(AccessRequestManagerDialogComponent, {
-      data: row,
-      width: '80vw',
-      maxWidth: '1200px',
-    });
+  viewDetails(event: MouseEvent, ar: AccessRequest): void {
+    if ((event.target as HTMLElement | null)?.closest('a')) return;
+    this.#router.navigate(['/access-request-manager', ar.id]);
   }
 }

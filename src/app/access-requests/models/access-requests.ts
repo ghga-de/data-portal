@@ -10,12 +10,22 @@ export enum AccessRequestStatus {
   pending = 'pending',
 }
 
-export const AccessRequestStatusClass: {
-  [K in keyof typeof AccessRequestStatus]: string;
-} = {
+export enum AccessGrantStatus {
+  active = 'active',
+  expired = 'expired',
+  waiting = 'waiting',
+}
+
+export const AccessRequestStatusClass: Record<AccessRequestStatus, string> = {
+  allowed: 'text-success',
   denied: 'text-error',
   pending: 'text-info',
-  allowed: 'text-success',
+};
+
+export const AccessGrantStatusClass: Record<AccessGrantStatus, string> = {
+  active: 'text-success',
+  waiting: 'text-warning',
+  expired: 'text-error',
 };
 
 export interface AccessRequest {
@@ -46,7 +56,7 @@ export interface GrantedAccessRequest {
   daysRemaining: number;
 }
 
-export interface AccessRequestDialogData {
+export interface AccessRequestDetailData {
   datasetID: string;
   email: string;
   description: string;
@@ -57,9 +67,8 @@ export interface AccessRequestDialogData {
 
 export interface AccessRequestFilter {
   ticketId: string | undefined;
-  datasetId: string | undefined;
-  datasetTitle: string | undefined;
-  name: string | undefined;
+  dataset: string | undefined;
+  requester: string | undefined;
   dac: string | undefined;
   fromDate: Date | undefined;
   toDate: Date | undefined;
@@ -67,4 +76,27 @@ export interface AccessRequestFilter {
   requestText: string | undefined;
   noteToRequester: string | undefined;
   internalNote: string | undefined;
+}
+
+export interface AccessGrant {
+  id: string;
+  user_id: string;
+  created: string;
+  dataset_id: string;
+  dataset_title: string;
+  valid_from: string;
+  valid_until: string;
+  user_email: string;
+  user_name: string;
+  user_title: string | null;
+  dac_alias: string;
+  dac_email: string;
+  iva_id: string | null;
+  status?: AccessGrantStatus;
+}
+
+export interface AccessGrantFilter {
+  status: AccessGrantStatus | undefined;
+  user: string | undefined;
+  dataset_id: string | undefined;
 }
