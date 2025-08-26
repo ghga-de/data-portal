@@ -17,6 +17,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { RouterModule } from '@angular/router';
 import { AccessRequestService } from '@app/access-requests/services/access-request.service';
+import { NotificationService } from '@app/shared/services/notification.service';
 
 /**
  * This component contains the logic to re-check the id before revoking an access grant
@@ -41,6 +42,7 @@ export class AccessGrantRevocationDialogComponent {
   readonly grantID = this.dialogData.grantID;
   idInput = model<string>();
   #ars = inject(AccessRequestService);
+  #notificationService = inject(NotificationService);
 
   isRevoking = false;
   errorMessage: string | null = null;
@@ -58,11 +60,17 @@ export class AccessGrantRevocationDialogComponent {
       if (wasSuccessful) {
         this.dialogRef.close(true);
       } else {
-        this.errorMessage = 'Failed to revoke the access grant. Please try again.';
+        const message = `Failed to revoke access grant with ID ${this.grantID}. Please try again.`;
+        this.errorMessage = message;
+        this.#notificationService.showError(message);
       }
     } catch (error) {
-      console.error('An unexpected error occurred:', error);
-      this.errorMessage = 'An unexpected error occurred. Please contact support.';
+      const message =
+        'An unexpected error occurred while revoking the access grant with ID ' +
+        this.grantID +
+        '. Please contact support.';
+      this.errorMessage = message;
+      this.#notificationService.showError(message);
     } finally {
       this.isRevoking = false;
     }
