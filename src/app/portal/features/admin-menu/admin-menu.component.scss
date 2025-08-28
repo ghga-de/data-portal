@@ -1,7 +1,11 @@
 @use '@angular/material' as mat;
 
-button.activePage {
+a#activePage {
   background-color: var(--mat-sys-tertiary);
+  color: var(--mat-sys-on-tertiary);
+  mat-icon {
+    color: var(--mat-sys-on-tertiary);
+  }
 }
 
 button.activePage mat-icon {
@@ -10,6 +14,10 @@ button.activePage mat-icon {
 
 a.activeSubPage {
   background-color: var(--mat-sys-tertiary-fixed-dim);
+  color: var(--mat-sys-on-tertiary-fixed);
+  mat-icon {
+    color: var(--mat-sys-on-tertiary-fixed);
+  }
 }
 
 a.flex-row-reverse mat-icon {
