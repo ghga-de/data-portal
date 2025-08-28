@@ -1,8 +1,14 @@
-a#activePage {
+@use '@angular/material' as mat;
+
+button.activePage {
   background-color: var(--mat-sys-tertiary);
 }
 
-a.mat-mdc-menu-item#activePage {
+button.activePage mat-icon {
+  margin-right: -4px;
+}
+
+a.activeSubPage {
   background-color: var(--mat-sys-tertiary-fixed-dim);
 }
 

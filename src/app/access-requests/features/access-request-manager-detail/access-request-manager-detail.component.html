@@ -11,7 +11,7 @@
         aria-label="Go back to previous page"
         class="text-primary float-left mt-1 mr-4"
       >
-        <mat-icon>chevron_left</mat-icon>
+        <mat-icon fontIcon="chevron_left"></mat-icon>
       </button>
       <h1>Access Request Details</h1>
     </div>
@@ -37,9 +37,8 @@
               <span
                 ><a [href]="'/dataset/' + ar.dataset_id" target="_blank" tabindex="-1"
                   >{{ ar.dataset_id
-                  }}<mat-icon aria-hidden="true">open_in_new</mat-icon></a
-                ></span
-              >
+                  }}<mat-icon aria-hidden="true" fontIcon="open_in_new"></mat-icon></a
+              ></span>
             </p>
             <p>
               <strong class="inline-block w-48">Dataset title:</strong>
