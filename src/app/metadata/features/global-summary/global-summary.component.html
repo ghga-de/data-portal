@@ -4,9 +4,9 @@
   }
   <h2>Statistics</h2>
   <div
-    class="flex grid grid-cols-1 justify-center gap-4 sm:grid-cols-2 md:gap-x-[6%] md:gap-y-8 md:px-4 lg:grid-cols-4 lg:gap-x-[2%] lg:gap-y-0 lg:px-1 xl:gap-x-[4%] xl:px-8 2xl:gap-x-[8%] 2xl:px-16"
+    class="flex grid grid-cols-1 justify-center gap-4 *:min-h-56 *:p-4 sm:grid-cols-2 md:gap-x-[6%] md:gap-y-8 md:px-4 lg:grid-cols-4 lg:gap-x-[2%] lg:gap-y-0 lg:px-1 xl:gap-x-[4%] xl:px-8 2xl:gap-x-[8%] 2xl:px-16"
   >
-    <mat-card appearance="outlined" class="card-primary min-h-56 p-4 text-white"
+    <mat-card appearance="outlined" class="card-primary text-white"
       ><mat-card-title class="text-center"
         ><span class="text-3xl"
           ><mat-icon inline class="rounded-full border-4 border-white px-1"
@@ -23,7 +23,7 @@
         </div></mat-card-content
       ></mat-card
     >
-    <mat-card appearance="outlined" class="text-primary min-h-56 p-4"
+    <mat-card appearance="outlined" class="text-primary"
       ><mat-card-title class="text-tertiary text-center"
         ><span class="text-3xl"
           ><mat-icon inline class="border-tertiary rounded-full border-4 px-1"
@@ -36,37 +36,45 @@
           {{ methods().count | number }}
         }</mat-card-title
       ><mat-card-content class="mt-4 text-sm">
-        <div class="mx-auto table w-auto">
-          @if (isLoading()) {
-            @for (i of [1, 2, 3]; track i) {
-              <span class="table-row">
-                <span class="table-cell pe-2 text-right font-bold">
-                  <app-stencil class="inline-flex w-10" />
-                </span>
-                <span class="table-cell text-left uppercase">
-                  <app-stencil class="inline-flex w-16" />
-                </span>
-              </span>
+        <table class="mx-auto w-auto">
+          <thead>
+            <tr class="italic">
+              <th scope="col" class="pe-3 text-end">Count</th>
+              <th scope="col" class="text-start">Platform</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (isLoading()) {
+              @for (i of [1, 2, 3]; track i) {
+                <tr>
+                  <td class="text-end font-bold">
+                    <app-stencil class="inline-flex w-10" />
+                  </td>
+                  <td class="text-left uppercase">
+                    <app-stencil class="inline-flex w-16" />
+                  </td>
+                </tr>
+              }
+            } @else {
+              @for (
+                platform of methods().stats?.instrument_model ?? [];
+                track platform.value
+              ) {
+                <tr>
+                  <td class="pe-3 text-right font-bold">
+                    {{ platform.count | number }}
+                  </td>
+                  <td class="text-left uppercase">
+                    {{ platform.value | underscoreToSpace }}
+                  </td>
+                </tr>
+              }
             }
-          } @else {
-            @for (
-              platform of methods().stats?.instrument_model ?? [];
-              track platform.value
-            ) {
-              <span class="table-row">
-                <span class="table-cell pe-2 text-right font-bold">{{
-                  platform.count | number
-                }}</span>
-                <span class="table-cell text-left uppercase">{{
-                  platform.value | underscoreToSpace
-                }}</span>
-              </span>
-            }
-          }
-        </div>
+          </tbody>
+        </table>
       </mat-card-content></mat-card
     >
-    <mat-card appearance="outlined" class="card-primary min-h-56 p-4 text-white"
+    <mat-card appearance="outlined" class="card-primary text-white"
       ><mat-card-title class="text-center"
         ><span class="text-3xl"
           ><mat-icon inline class="rounded-full border-4 border-white px-1"
@@ -79,30 +87,42 @@
           {{ individuals().count | number }}
         }</mat-card-title
       ><mat-card-content class="mt-4 text-sm">
-        <div class="mx-auto table w-auto">
-          @if (isLoading()) {
-            @for (i of [1, 2, 3]; track i) {
-              <span class="table-row">
-                <span class="pe-2 text-right font-bold">
-                  <app-stencil class="inline-flex w-10" />
-                </span>
-                <span class="text-left uppercase">
-                  <app-stencil class="inline-flex w-16" />
-                </span>
-              </span>
+        <table class="mx-auto w-auto">
+          <thead>
+            <tr class="italic">
+              <th scope="col" class="pe-3 text-end">Count</th>
+              <th scope="col" class="text-start">Sex</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (isLoading()) {
+              @for (i of [1, 2, 3]; track i) {
+                <tr>
+                  <td class="pe-2">
+                    <app-stencil class="inline-flex w-10" />
+                  </td>
+                  <td>
+                    <app-stencil class="inline-flex w-16" />
+                  </td>
+                </tr>
+              }
+            } @else {
+              @for (sex of individuals().stats?.sex ?? []; track sex.value) {
+                <tr>
+                  <td class="pe-3 text-right font-bold">
+                    {{ sex.count | number }}
+                  </td>
+                  <td class="text-left">
+                    {{ sex.value }}
+                  </td>
+                </tr>
+              }
             }
-          } @else {
-            @for (sex of individuals().stats?.sex ?? []; track sex.value) {
-              <span class="table-row">
-                <span class="pe-2 text-right font-bold">{{ sex.count | number }}</span>
-                <span class="text-left">{{ sex.value }}</span>
-              </span>
-            }
-          }
-        </div>
+          </tbody>
+        </table>
       </mat-card-content></mat-card
     >
-    <mat-card appearance="outlined" class="text-primary min-h-56 p-4"
+    <mat-card appearance="outlined" class="text-primary"
       ><mat-card-title class="text-tertiary text-center"
         ><span class="text-3xl"
           ><mat-icon inline class="border-tertiary rounded-full border-4 px-1"
@@ -115,29 +135,39 @@
           {{ files().count | number }}
         }</mat-card-title
       ><mat-card-content class="mt-4 text-sm">
-        <div class="mx-auto table w-auto">
-          @if (isLoading()) {
-            @for (i of [1, 2, 3]; track i) {
-              <span class="table-row">
-                <span class="pe-2 text-right font-bold">
-                  <app-stencil class="inline-flex w-10" />
-                </span>
-                <span class="text-left uppercase">
-                  <app-stencil class="inline-flex w-16" />
-                </span>
-              </span>
+        <table class="mx-auto w-auto">
+          <thead>
+            <tr class="italic">
+              <th scope="col" class="pe-3 text-end">Count</th>
+              <th scope="col" class="text-start">File Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (isLoading()) {
+              @for (i of [1, 2, 3]; track i) {
+                <tr>
+                  <td class="pe-3 text-right font-bold">
+                    <app-stencil class="inline-flex w-10" />
+                  </td>
+                  <td class="text-left uppercase">
+                    <app-stencil class="inline-flex w-16" />
+                  </td>
+                </tr>
+              }
+            } @else {
+              @for (format of files().stats?.format ?? []; track format.value) {
+                <tr>
+                  <td class="pe-2 text-right font-bold">
+                    {{ format.count | number }}
+                  </td>
+                  <td class="text-left uppercase">
+                    {{ format.value }}
+                  </td>
+                </tr>
+              }
             }
-          } @else {
-            @for (format of files().stats?.format ?? []; track format.value) {
-              <span class="table-row">
-                <span class="table-cell pe-2 text-right font-bold">{{
-                  format.count | number
-                }}</span>
-                <span class="table-cell text-left uppercase">{{ format.value }}</span>
-              </span>
-            }
-          }
-        </div>
+          </tbody>
+        </table>
       </mat-card-content></mat-card
     >
   </div>
