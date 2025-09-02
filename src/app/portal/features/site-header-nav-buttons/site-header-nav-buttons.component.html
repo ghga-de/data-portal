@@ -41,7 +41,7 @@
       >Docs<mat-icon class="float-right" fontIcon="open_in_new"></mat-icon
     ></a>
   </li>
-  <li>
-    <app-admin-menu class="contents"></app-admin-menu>
-  </li>
+  @if (isDataSteward()) {
+    <li><app-admin-menu class="contents"></app-admin-menu></li>
+  }
 </ul>
