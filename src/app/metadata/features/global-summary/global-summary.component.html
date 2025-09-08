@@ -47,7 +47,7 @@
             @if (isLoading()) {
               @for (i of [1, 2, 3]; track i) {
                 <tr>
-                  <td class="text-end font-bold">
+                  <td class="pe-3 text-end font-bold">
                     <app-stencil class="inline-flex w-10" />
                   </td>
                   <td class="text-left uppercase">
@@ -98,7 +98,7 @@
             @if (isLoading()) {
               @for (i of [1, 2, 3]; track i) {
                 <tr>
-                  <td class="pe-2">
+                  <td class="pe-3 text-right font-bold">
                     <app-stencil class="inline-flex w-10" />
                   </td>
                   <td>
@@ -157,7 +157,7 @@
             } @else {
               @for (format of files().stats?.format ?? []; track format.value) {
                 <tr>
-                  <td class="pe-2 text-right font-bold">
+                  <td class="pe-3 text-right font-bold">
                     {{ format.count | number }}
                   </td>
                   <td class="text-left uppercase">
