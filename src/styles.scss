@@ -265,6 +265,10 @@ button.error {
   );
 }
 
+.visibly-hidden {
+  font-size: 0px;
+}
+
 mat-sidenav-container > div.mat-drawer-backdrop.mat-drawer-shown {
   position: fixed;
 }
