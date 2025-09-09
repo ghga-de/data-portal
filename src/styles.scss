@@ -265,8 +265,14 @@ button.error {
   );
 }
 
-.visibly-hidden {
+// Class for hiding visually hiding elements but allowing them to remain visible to screen readers
+.visually-hidden {
   font-size: 0px;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 mat-sidenav-container > div.mat-drawer-backdrop.mat-drawer-shown {
