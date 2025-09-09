@@ -43,7 +43,11 @@
         >Academic title:</span
       >
       <mat-form-field>
-        <mat-select [formControl]="titleControl" aria-labelledby="academic-title">
+        <mat-select
+          [formControl]="titleControl"
+          aria-labelledby="academic-title"
+          autocomplete="honorific-prefix"
+        >
           @for (title of allTitles; track title) {
             <mat-option [value]="title || ''">{{ title || '–' }}</mat-option>
           }

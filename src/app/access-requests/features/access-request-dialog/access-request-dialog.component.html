@@ -12,7 +12,6 @@
         [formControl]="descriptionFormControl"
         (blur)="updateDescriptionErrorMessage()"
         #details
-        autocomplete="off"
         required
       ></textarea>
       @if (descriptionErrorMessage()) {
@@ -32,7 +31,6 @@
         [max]="maxFromDate"
         [(ngModel)]="fromDate"
         (dateInput)="fromDateChanged($event)"
-        autocomplete="off"
         required
       />
       @if (fromDateErrorMessage()) {
@@ -55,7 +53,6 @@
         [min]="minUntilDate"
         [max]="maxUntilDate"
         [(ngModel)]="untilDate"
-        autocomplete="off"
         required
       />
       @if (untilDateErrorMessage()) {
@@ -77,7 +74,6 @@
         #emailField
         [formControl]="emailFormControl"
         (blur)="updateEmailErrorMessage()"
-        autocomplete="off"
         required
       />
       @if (emailFormControl.invalid) {
