@@ -4,7 +4,14 @@
  * @license Apache-2.0
  */
 
-import { AfterViewInit, Directive, ElementRef, inject, Renderer2 } from '@angular/core';
+import {
+  AfterViewInit,
+  Directive,
+  ElementRef,
+  inject,
+  input,
+  Renderer2,
+} from '@angular/core';
 
 /**
  * Directive to mark external links
@@ -20,6 +27,8 @@ import { AfterViewInit, Directive, ElementRef, inject, Renderer2 } from '@angula
   selector: 'a[appExtLink]',
 })
 export class ExternalLinkDirective implements AfterViewInit {
+  inline = input<boolean>(false);
+  iconClasses = input<string>('');
   #el = inject(ElementRef);
   #renderer = inject(Renderer2);
 
@@ -34,5 +43,9 @@ export class ExternalLinkDirective implements AfterViewInit {
 
     const text = anchor.textContent?.trim() || '';
     this.#renderer.setAttribute(anchor, 'aria-label', `${text} (new tab)`);
+
+    if (this.inline()) {
+      this.#renderer.addClass(anchor, 'inline-ext-link');
+    }
   }
 }
