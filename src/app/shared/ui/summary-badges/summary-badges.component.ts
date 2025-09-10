@@ -21,7 +21,7 @@ const MAX_ITEMS = 3;
 })
 export class SummaryBadgesComponent {
   protected readonly maxItems = MAX_ITEMS;
-  protected readonly data = input.required<
+  readonly data = input.required<
     {
       value: string;
       count: number;
