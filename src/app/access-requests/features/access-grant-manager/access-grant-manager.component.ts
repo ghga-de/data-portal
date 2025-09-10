@@ -6,6 +6,7 @@
 
 import { Component, inject, OnInit } from '@angular/core';
 import { AccessRequestService } from '@app/access-requests/services/access-request.service';
+import { ExternalLinkDirective } from '@app/shared/ui/external-link/external-link.directive';
 import { AccessGrantManagerFilterComponent } from '../access-grant-manager-filter/access-grant-manager-filter.component';
 import { AccessGrantManagerListComponent } from '../access-grant-manager-list/access-grant-manager-list.component';
 
@@ -16,7 +17,11 @@ import { AccessGrantManagerListComponent } from '../access-grant-manager-list/ac
  */
 @Component({
   selector: 'app-access-request-manager',
-  imports: [AccessGrantManagerFilterComponent, AccessGrantManagerListComponent],
+  imports: [
+    ExternalLinkDirective,
+    AccessGrantManagerFilterComponent,
+    AccessGrantManagerListComponent,
+  ],
   templateUrl: './access-grant-manager.component.html',
 })
 export class AccessGrantManagerComponent implements OnInit {

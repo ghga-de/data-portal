@@ -265,6 +265,28 @@ button.error {
   );
 }
 
+// Add an icon after all external links
+a[appExtLink]:not(.mdc-button)::after,
+a[appExtLink].mdc-button::before {
+  content: 'open_in_new';
+  font-family: 'material-symbols-outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 1.125rem;
+  line-height: 1;
+  display: inline-block;
+  text-transform: none;
+  text-decoration: none;
+  vertical-align: middle;
+  user-select: none;
+  overflow: hidden;
+  margin-left: 0.125em;
+}
+a[appExtLink].mdc-button::before {
+  margin-left: 0;
+  margin-right: 0.5em;
+}
+
 // Class for visually hiding elements while keeping them visible in screen readers
 .visually-hidden {
   font-size: 0px;
