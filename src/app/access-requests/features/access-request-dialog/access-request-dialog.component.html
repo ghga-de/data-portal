@@ -74,6 +74,7 @@
         #emailField
         [formControl]="emailFormControl"
         (blur)="updateEmailErrorMessage()"
+        autocomplete="email"
         required
       />
       @if (emailFormControl.invalid) {
