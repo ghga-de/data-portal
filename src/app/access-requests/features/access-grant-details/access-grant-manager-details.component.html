@@ -11,7 +11,7 @@
         aria-label="Go back to previous page"
         class="text-primary float-left mt-1 mr-4"
       >
-        <mat-icon>chevron_left</mat-icon>
+        <mat-icon fontIcon="chevron_left"></mat-icon>
       </button>
       <h1>Access Grant Detail</h1>
     </header>
@@ -46,7 +46,7 @@
             (click)="openRevokeDialog()"
           >
             Revoke Access Grant
-            <mat-icon>block</mat-icon>
+            <mat-icon fontIcon="block"></mat-icon>
           </button>
         </div>
       }
@@ -60,9 +60,16 @@
           <mat-card-content class="min-w-2xl md:min-w-xl">
             <p>
               <strong class="inline-block w-44">Email:</strong>
+              <<<<<<< HEAD
+              <a [href]="'mailto:' + ag.user_email" target="_blank" tabindex="-1"
+                >{{ ag.user_email
+                }}<mat-icon aria-hidden="true" fontIcon="open_in_new"></mat-icon>
+              </a>
+              =======
               <a appExtLink [href]="'mailto:' + ag.user_email" tabindex="-1">{{
                 ag.user_email
               }}</a>
+              >>>>>>> origin/main
             </p>
             <p>
               <strong class="inline-block w-44">Name:</strong>
