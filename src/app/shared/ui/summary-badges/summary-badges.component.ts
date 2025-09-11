@@ -4,7 +4,7 @@
  * @license Apache-2.0
  */
 
-import { Component, input } from '@angular/core';
+import { Component, input, model } from '@angular/core';
 import { MatChipsModule } from '@angular/material/chips';
 import { UnderscoreToSpace } from '@app/shared/pipes/underscore-to-space.pipe';
 
@@ -20,11 +20,20 @@ const MAX_ITEMS = 3;
   styleUrl: './summary-badges.component.scss',
 })
 export class SummaryBadgesComponent {
-  protected maxItems = MAX_ITEMS;
-  data = input.required<
+  protected readonly maxItems = MAX_ITEMS;
+  readonly data = input.required<
     {
       value: string;
       count: number;
     }[]
   >();
+
+  protected readonly showMore = model(false);
+
+  /**
+   * Toggle the show more/less state
+   */
+  toggleMoreOrLess() {
+    this.showMore.set(!this.showMore());
+  }
 }

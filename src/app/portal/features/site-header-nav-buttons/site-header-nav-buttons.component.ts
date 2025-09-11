@@ -11,6 +11,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '@app/auth/services/auth.service';
 import { BaseRouteService } from '@app/shared/services/base-route.service';
+import { ExternalLinkDirective } from '@app/shared/ui/external-link/external-link.directive';
 import { AdminMenuComponent } from '../admin-menu/admin-menu.component';
 
 /**
@@ -24,6 +25,7 @@ import { AdminMenuComponent } from '../admin-menu/admin-menu.component';
     RouterLink,
     AdminMenuComponent,
     MatMenuModule,
+    ExternalLinkDirective,
   ],
   templateUrl: './site-header-nav-buttons.component.html',
   styleUrl: './site-header-nav-buttons.component.scss',

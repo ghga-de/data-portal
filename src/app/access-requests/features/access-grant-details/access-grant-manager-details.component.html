@@ -60,10 +60,16 @@
           <mat-card-content class="min-w-2xl md:min-w-xl">
             <p>
               <strong class="inline-block w-44">Email:</strong>
+              <<<<<<< HEAD
               <a [href]="'mailto:' + ag.user_email" target="_blank" tabindex="-1"
                 >{{ ag.user_email
                 }}<mat-icon aria-hidden="true" fontIcon="open_in_new"></mat-icon>
               </a>
+              =======
+              <a appExtLink [href]="'mailto:' + ag.user_email" tabindex="-1">{{
+                ag.user_email
+              }}</a>
+              >>>>>>> origin/main
             </p>
             <p>
               <strong class="inline-block w-44">Name:</strong>
@@ -86,10 +92,10 @@
             <p>
               <strong class="inline-block w-44">DAC Email:</strong>
               <span
-                ><a [href]="'mailto:' + ag.dac_email" target="_blank" tabindex="-1"
-                  >{{ ag.dac_email
-                  }}<mat-icon aria-hidden="true" fontIcon="open_in_new"></mat-icon> </a
-              ></span>
+                ><a appExtLink [href]="'mailto:' + ag.dac_email" tabindex="-1">{{
+                  ag.dac_email
+                }}</a></span
+              >
             </p>
 
             @switch (ar().length) {
