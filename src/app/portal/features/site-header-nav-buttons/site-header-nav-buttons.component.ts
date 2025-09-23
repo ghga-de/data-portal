@@ -28,7 +28,6 @@ import { AdminMenuComponent } from '../admin-menu/admin-menu.component';
     ExternalLinkDirective,
   ],
   templateUrl: './site-header-nav-buttons.component.html',
-  styleUrl: './site-header-nav-buttons.component.scss',
 })
 export class SiteHeaderNavButtonsComponent {
   #baseRoute = inject(BaseRouteService);

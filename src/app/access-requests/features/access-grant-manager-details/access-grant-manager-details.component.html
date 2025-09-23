@@ -52,17 +52,23 @@
       }
     </div>
     <div class="grid grid-cols-1 gap-4 xl:grid-cols-2">
-      <div class="my-2 flex flex-col items-start gap-4">
-        <mat-card class="w-full overflow-x-auto">
+      <div
+        class="*:smaller-mat-card-title my-2 flex flex-col items-start gap-4 *:w-full *:overflow-x-auto"
+      >
+        <mat-card>
           <mat-card-header>
             <mat-card-title><h2>Requester</h2></mat-card-title>
           </mat-card-header>
           <mat-card-content class="min-w-2xl md:min-w-xl">
             <p>
               <strong class="inline-block w-44">Email:</strong>
-              <a appExtLink [href]="'mailto:' + ag.user_email" tabindex="-1">{{
-                ag.user_email
-              }}</a>
+              <a
+                appExtLink
+                class="details-page-icon"
+                [href]="'mailto:' + ag.user_email"
+                tabindex="-1"
+                >{{ ag.user_email }}</a
+              >
             </p>
             <p>
               <strong class="inline-block w-44">Name:</strong>
@@ -73,7 +79,7 @@
           </mat-card-content>
         </mat-card>
 
-        <mat-card class="w-full overflow-x-auto">
+        <mat-card>
           <mat-card-header>
             <mat-card-title><h2>DAC and Access Request</h2></mat-card-title>
           </mat-card-header>
@@ -85,9 +91,13 @@
             <p>
               <strong class="inline-block w-44">DAC Email:</strong>
               <span
-                ><a appExtLink [href]="'mailto:' + ag.dac_email" tabindex="-1">{{
-                  ag.dac_email
-                }}</a></span
+                ><a
+                  appExtLink
+                  class="details-page-icon"
+                  [href]="'mailto:' + ag.dac_email"
+                  tabindex="-1"
+                  >{{ ag.dac_email }}</a
+                ></span
               >
             </p>
 
@@ -160,7 +170,8 @@
             }
           </mat-card-content>
         </mat-card>
-        <mat-card class="w-full overflow-x-auto">
+
+        <mat-card>
           <mat-card-header>
             <mat-card-title><h2>IVA & Status</h2></mat-card-title>
           </mat-card-header>
@@ -172,8 +183,10 @@
           </mat-card-content>
         </mat-card>
       </div>
-      <div class="my-2 flex flex-col items-start gap-4">
-        <mat-card class="w-full overflow-x-auto">
+      <div
+        class="*:smaller-mat-card-title my-2 flex flex-col items-start gap-4 *:w-full *:overflow-x-auto"
+      >
+        <mat-card>
           <mat-card-header>
             <mat-card-title><h2>Audit Log</h2></mat-card-title>
           </mat-card-header>

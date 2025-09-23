@@ -18,18 +18,17 @@ import { BaseRouteService } from '@app/shared/services/base-route.service';
   selector: 'app-admin-menu',
   imports: [MatIconModule, MatButtonModule, MatMenuModule, RouterLink],
   templateUrl: './admin-menu.component.html',
-  styleUrl: './admin-menu.component.scss',
 })
 export class AdminMenuComponent {
   #baseRoute = inject(BaseRouteService);
   #route = this.#baseRoute.route;
-  isUserManagerRoute = computed<boolean>(() => this.#route() === 'user-manager');
-  isIvaManagerRoute = computed<boolean>(() => this.#route() === 'iva-manager');
-  isAccessGrantManagerRoute = computed<boolean>(
-    () => this.#route() === 'access-grant-manager',
+  isUserManagerRoute = computed<boolean>(() => this.#route().includes('user-manager'));
+  isIvaManagerRoute = computed<boolean>(() => this.#route().includes('iva-manager'));
+  isAccessGrantManagerRoute = computed<boolean>(() =>
+    this.#route().includes('access-grant-manager'),
   );
-  isAccessRequestsManagerRoute = computed<boolean>(
-    () => this.#route() === 'access-request-manager',
+  isAccessRequestsManagerRoute = computed<boolean>(() =>
+    this.#route().includes('access-request-manager'),
   );
   isAdminRoute = computed<boolean>(
     () =>

@@ -2,6 +2,7 @@
   @let initials = name() | initials;
   <button
     mat-icon-button
+    class="button-on-primary"
     [class.with-initials]="initials"
     [matMenuTriggerFor]="menu"
     aria-label="Account"
@@ -47,6 +48,7 @@
 } @else if (isLoggedIn()) {
   <button
     mat-icon-button
+    class="button-on-primary"
     [matMenuTriggerFor]="menu"
     aria-label="Log out"
     matTooltip="Log out from the GHGA portal"
@@ -80,6 +82,7 @@
 } @else {
   <button
     mat-icon-button
+    class="button-on-primary"
     [matMenuTriggerFor]="menu"
     aria-label="Log in"
     matTooltip="Log in to the GHGA portal"
