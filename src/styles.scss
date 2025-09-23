@@ -483,16 +483,7 @@ mat-toolbar button:not(.active-page):focus {
   background-color: color-mix(in srgb, var(--mat-sys-primary) 100%, #fff 12%);
 }
 
-mat-chip.chip-tertiary {
-  @include mat.chips-overrides(
-    (
-      outline-color: var(--mat-sys-tertiary),
-      label-text-color: var(--mat-sys-tertiary),
-      with-trailing-icon-trailing-icon-color: var(--mat-sys-tertiary),
-    )
-  );
-}
-
+mat-chip.chip-tertiary,
 mat-chip-set.chip-set-tertiary mat-chip {
   @include mat.chips-overrides(
     (
@@ -562,12 +553,10 @@ a[appExtLink]:not(.mdc-button).inline-ext-link::after {
   vertical-align: middle;
 }
 
-a[appExtLink]:not(.mdc-button).details-page-icon::after {
+p a[appExtLink]:not(.mdc-button)::after {
   scale: 0.6;
-  margin: 0 -5px -2px -3px;
-  transform: translateY(3px);
-  height: 16px;
-  font-size: 18px;
+  margin: 0 -5px 0 -3px;
+  transform: translateY(10px);
 }
 
 mat-nav-list a[appExtLink].mdc-button::before,

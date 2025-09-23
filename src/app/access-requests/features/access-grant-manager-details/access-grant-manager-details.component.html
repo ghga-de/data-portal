@@ -62,13 +62,9 @@
           <mat-card-content class="min-w-2xl md:min-w-xl">
             <p>
               <strong class="inline-block w-44">Email:</strong>
-              <a
-                appExtLink
-                class="details-page-icon"
-                [href]="'mailto:' + ag.user_email"
-                tabindex="-1"
-                >{{ ag.user_email }}</a
-              >
+              <a appExtLink [href]="'mailto:' + ag.user_email" tabindex="-1">{{
+                ag.user_email
+              }}</a>
             </p>
             <p>
               <strong class="inline-block w-44">Name:</strong>
@@ -91,13 +87,9 @@
             <p>
               <strong class="inline-block w-44">DAC Email:</strong>
               <span
-                ><a
-                  appExtLink
-                  class="details-page-icon"
-                  [href]="'mailto:' + ag.dac_email"
-                  tabindex="-1"
-                  >{{ ag.dac_email }}</a
-                ></span
+                ><a appExtLink [href]="'mailto:' + ag.dac_email" tabindex="-1">{{
+                  ag.dac_email
+                }}</a></span
               >
             </p>
 

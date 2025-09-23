@@ -47,19 +47,13 @@
       }
     } @else {
       <div class="flex items-center">
-        <span class="grow">
+        <p class="mb-0 grow">
           @if (ticketUrl()) {
-            <a
-              appExtLink
-              class="details-page-icon"
-              [href]="ticketUrl()"
-              tabindex="-1"
-              >{{ field() }}</a
-            >
+            <a appExtLink [href]="ticketUrl()" tabindex="-1">{{ field() }}</a>
           } @else {
             {{ field() }}
           }
-        </span>
+        </p>
         @if (!locked()) {
           <mat-chip
             class="edit-field-chip smaller-chip interactive-chip edit-button ms-2"
