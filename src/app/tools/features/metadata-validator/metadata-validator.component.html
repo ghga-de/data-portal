@@ -30,15 +30,13 @@
     [class]="
       `mb-6 block w-full border-collapse cursor-pointer` +
       ` rounded-lg border-2 border-dashed border-neutral-300` +
-      ` p-10 text-center transition-colors duration-200 ease-in-out`
+      ` p-10 text-center transition-colors duration-200 ease-in-out` +
+      ` ${!isDragOver() ? 'hover:bg-neutral-50' : 'border-neutral-400 bg-neutral-200'}`
     "
     (click)="xlsxFileInput.click()"
     (dragover)="onDragOver($event)"
     (dragleave)="onDragLeave($event)"
     (drop)="onDrop($event)"
-    [class.hover:bg-neutral-50]="!isDragOver()"
-    [class.bg-neutral-200]="isDragOver()"
-    [class.border-neutral-400]="isDragOver()"
   >
     <input
       type="file"

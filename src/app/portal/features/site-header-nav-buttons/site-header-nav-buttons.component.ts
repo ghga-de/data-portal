@@ -36,6 +36,7 @@ export class SiteHeaderNavButtonsComponent {
   isDataSteward = computed(() => this.#auth.roles().includes('data_steward'));
 
   route = this.#baseRoute.route;
+  homeActive = computed(() => this.route() === '');
   /**
    * Whether the "Browse" navigation button should be highlighted as being active
    */

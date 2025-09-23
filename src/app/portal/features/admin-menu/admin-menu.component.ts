@@ -22,13 +22,15 @@ import { BaseRouteService } from '@app/shared/services/base-route.service';
 export class AdminMenuComponent {
   #baseRoute = inject(BaseRouteService);
   #route = this.#baseRoute.route;
-  isUserManagerRoute = computed<boolean>(() => this.#route().includes('user-manager'));
-  isIvaManagerRoute = computed<boolean>(() => this.#route().includes('iva-manager'));
+  isUserManagerRoute = computed<boolean>(() =>
+    this.#route().startsWith('user-manager'),
+  );
+  isIvaManagerRoute = computed<boolean>(() => this.#route().startsWith('iva-manager'));
   isAccessGrantManagerRoute = computed<boolean>(() =>
-    this.#route().includes('access-grant-manager'),
+    this.#route().startsWith('access-grant-manager'),
   );
   isAccessRequestsManagerRoute = computed<boolean>(() =>
-    this.#route().includes('access-request-manager'),
+    this.#route().startsWith('access-request-manager'),
   );
   isAdminRoute = computed<boolean>(
     () =>
