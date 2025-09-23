@@ -1,15 +1,5 @@
 @use '@angular/material' as mat;
 
-.mat-mdc-menu-item .mat-icon-no-color.text-secondary {
-  color: var(--mat-sys-secondary);
-}
-.mat-mdc-menu-item .mat-icon-no-color.text-quaternary {
-  color: var(--mat-sys-quaternary);
-}
-.mat-mdc-menu-item .mat-icon-no-color.text-tertiary {
-  color: var(--mat-sys-tertiary);
-}
-
 .with-initials {
   border: 2px solid var(--mat-sys-quinary);
   background-color: var(--mat-sys-quaternary);

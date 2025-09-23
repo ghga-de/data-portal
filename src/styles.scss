@@ -420,6 +420,46 @@ a.button-on-primary {
   );
 }
 
+button.button-secondary,
+a.button-secondary {
+  @include mat.button-overrides(
+    (
+      filled-container-color: var(--mat-sys-secondary),
+      filled-label-text-color: var(--mat-sys-on-secondary),
+      protected-container-color: var(--mat-sys-secondary),
+      protected-label-text-color: var(--mat-sys-on-secondary),
+      outlined-outline-color: var(--mat-sys-secondary),
+      outlined-label-text-color: var(--mat-sys-secondary),
+    )
+  );
+  @include mat.icon-button-overrides(
+    (
+      icon-color: var(--mat-sys-secondary),
+      state-layer-color: var(--mat-sys-secondary),
+    )
+  );
+}
+
+button.button-tertiary,
+a.button-tertiary {
+  @include mat.button-overrides(
+    (
+      filled-container-color: var(--mat-sys-tertiary),
+      filled-label-text-color: var(--mat-sys-on-tertiary),
+      protected-container-color: var(--mat-sys-tertiary),
+      protected-label-text-color: var(--mat-sys-on-tertiary),
+      outlined-outline-color: var(--mat-sys-tertiary),
+      outlined-label-text-color: var(--mat-sys-tertiary),
+    )
+  );
+  @include mat.icon-button-overrides(
+    (
+      icon-color: var(--mat-sys-tertiary),
+      state-layer-color: var(--mat-sys-tertiary),
+    )
+  );
+}
+
 button.button-quaternary,
 a.button-quaternary {
   @include mat.button-overrides(
