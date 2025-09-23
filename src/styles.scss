@@ -329,7 +329,7 @@ a.button-success {
       protected-container-color: var(--mat-sys-success),
       protected-label-text-color: var(--mat-sys-on-success),
       outlined-outline-color: var(--mat-sys-success),
-      outlined-label-text-color: var(--mat-sys-on-success),
+      outlined-label-text-color: var(--mat-sys-success),
     )
   );
   @include mat.icon-button-overrides(
@@ -349,7 +349,7 @@ a.button-danger {
       protected-container-color: var(--mat-sys-danger),
       protected-label-text-color: var(--mat-sys-on-danger),
       outlined-outline-color: var(--mat-sys-danger),
-      outlined-label-text-color: var(--mat-sys-on-danger),
+      outlined-label-text-color: var(--mat-sys-danger),
     )
   );
   @include mat.icon-button-overrides(
@@ -369,7 +369,7 @@ a.button-error {
       protected-container-color: var(--mat-sys-error),
       protected-label-text-color: var(--mat-sys-on-error),
       outlined-outline-color: var(--mat-sys-error),
-      outlined-label-text-color: var(--mat-sys-on-error),
+      outlined-label-text-color: var(--mat-sys-error),
     )
   );
   @include mat.icon-button-overrides(
@@ -389,7 +389,7 @@ a.button-primary {
       protected-container-color: var(--mat-sys-primary),
       protected-label-text-color: var(--mat-sys-on-primary),
       outlined-outline-color: var(--mat-sys-primary),
-      outlined-label-text-color: var(--mat-sys-on-primary),
+      outlined-label-text-color: var(--mat-sys-primary),
     )
   );
   @include mat.icon-button-overrides(
@@ -409,7 +409,7 @@ a.button-on-primary {
       protected-container-color: var(--mat-sys-on-primary),
       protected-label-text-color: var(--mat-sys-on-primary),
       outlined-outline-color: var(--mat-sys-on-primary),
-      outlined-label-text-color: var(--mat-sys-on-primary),
+      outlined-label-text-color: var(--mat-sys-primary),
     )
   );
   @include mat.icon-button-overrides(
@@ -429,7 +429,7 @@ a.button-quaternary {
       protected-container-color: var(--mat-sys-quaternary),
       protected-label-text-color: var(--mat-sys-on-quaternary),
       outlined-outline-color: var(--mat-sys-quaternary),
-      outlined-label-text-color: var(--mat-sys-on-quaternary),
+      outlined-label-text-color: var(--mat-sys-quaternary),
     )
   );
   @include mat.icon-button-overrides(
