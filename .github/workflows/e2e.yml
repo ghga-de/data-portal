@@ -41,6 +41,11 @@ jobs:
         run: pnpm run e2e --project=${{ matrix.browser }}
         env:
           CI: true
+          PLAYWRIGHT_HTML_REPORT: playwright-report
+          PLAYWRIGHT_JUNIT_OUTPUT_NAME: results.xml
+          FORCE_COLOR: 1
+          NO_COLOR: 0
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
