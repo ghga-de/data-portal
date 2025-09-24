@@ -167,7 +167,7 @@ export class UserService {
   );
 
   /**
-   * Check for ambiguous users in the list of all IVAs
+   * Check for ambiguous users in the list of all users
    * (users with same name and email but different user ID).
    * This should normally not happen, but want if it does.
    * In that case, the LS ID should be checked for disambiguation.
