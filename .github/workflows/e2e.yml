@@ -46,6 +46,12 @@ jobs:
           FORCE_COLOR: 1
           NO_COLOR: 0
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+          PLAYWRIGHT_WORKERS: 1
+          PLAYWRIGHT_TIMEOUT: 30000
+          PLAYWRIGHT_EXPECT_TIMEOUT: 10000
+          PLAYWRIGHT_CHROMIUM_USE_HEADLESS_NEW: 1
+          PLAYWRIGHT_DISABLE_COLORS: 0
+          PLAYWRIGHT_REPORTER: html,junit
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
