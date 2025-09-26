@@ -49,7 +49,7 @@ export class SearchResultListComponent {
 
   /**
    * Generate ids for the stencils
-   * @yields the stencil id
+   * @yields {number} the stencil id
    */
   *stencils() {
     for (let i = 0; i < NUM_STENCILS; ++i) {

@@ -82,7 +82,7 @@ export class PyodideService {
    * It should be called once at the start of the application.
    * If Pyodide is already loading or initialized, it will return early.
    * @returns A promise that resolves when Pyodide is fully initialized.
-   * @throws Will throw an error if Pyodide fails to initialize or if critical packages fail to load.
+   * @throws {Error} if Pyodide fails to initialize or if critical packages fail to load.
    */
   async #initPyodide(): Promise<void> {
     if (this.#pyodideLoading() || this.#pyodideInitialized()) {

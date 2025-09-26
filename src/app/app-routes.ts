@@ -171,7 +171,7 @@ export const routes: Routes = [
   {
     path: '**',
     loadComponent: () =>
-      import('../app/portal/features/page-not-found/page-not-found').then(
+      import('./portal/features/page-not-found/page-not-found').then(
         (m) => m.PageNotFoundComponent,
       ),
     title: 'Page not found',
