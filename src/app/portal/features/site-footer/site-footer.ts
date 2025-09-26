@@ -5,7 +5,7 @@
  */
 
 import { DatePipe } from '@angular/common';
-import { Component, HostBinding } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
@@ -27,6 +27,9 @@ import { ExternalLinkDirective } from '@app/shared/ui/external-link/external-lin
   ],
   templateUrl: './site-footer.html',
   styleUrl: './site-footer.scss',
+  host: {
+    '[style.--svg-encoded]': 'background',
+  },
 })
 export class SiteFooterComponent {
   date = new Date();
@@ -35,6 +38,5 @@ export class SiteFooterComponent {
     d="M1482 66.8182H1119.93C854.272 66.8182 592.376 0 364.5 0C136.624 0 -8 66.8182 -8 66.8182V120H1482V66.8182Z"
     fill="#fff"/></svg>`;
 
-  @HostBinding('style.--svg-encoded') background: string =
-    'url(data:image/svg+xml;base64,' + btoa(this.svg) + ')';
+  background: string = 'url(data:image/svg+xml;base64,' + btoa(this.svg) + ')';
 }
