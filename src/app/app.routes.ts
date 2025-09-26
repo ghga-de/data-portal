@@ -7,24 +7,22 @@
 import { inject, Injectable } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { RouterStateSnapshot, Routes, TitleStrategy } from '@angular/router';
-import { canDeactivate as canDeactivateAuth } from './auth/features/can-deactivate.guard';
-import { AuthService } from './auth/services/auth.service';
-import { pendingEditsGuard } from './shared/features/pending-edits.guard';
+import { canDeactivate as canDeactivateAuth } from './auth/features/can-deactivate';
+import { AuthService } from './auth/services/auth';
+import { pendingEditsGuard } from './shared/features/pending-edits';
 
 export const routes: Routes = [
   // public routes
   {
     path: '',
     loadComponent: () =>
-      import('./portal/features/home-page/home-page.component').then(
-        (m) => m.HomePageComponent,
-      ),
+      import('./portal/features/home-page/home-page').then((m) => m.HomePageComponent),
     title: 'Home',
   },
   {
     path: 'browse',
     loadComponent: () =>
-      import('./metadata/features/metadata-browser/metadata-browser.component').then(
+      import('./metadata/features/metadata-browser/metadata-browser').then(
         (m) => m.MetadataBrowserComponent,
       ),
     title: 'Browse Datasets',
@@ -32,7 +30,7 @@ export const routes: Routes = [
   {
     path: 'metadata-validator',
     loadComponent: () =>
-      import('./tools/features/metadata-validator/metadata-validator.component').then(
+      import('./tools/features/metadata-validator/metadata-validator').then(
         (m) => m.MetadataValidatorComponent,
       ),
     title: 'Validate Metadata',
@@ -40,15 +38,15 @@ export const routes: Routes = [
   {
     path: 'schemapack-playground',
     loadComponent: () =>
-      import(
-        './tools/features/schemapack-playground/schemapack-playground.component'
-      ).then((m) => m.SchemapackPlaygroundComponent),
+      import('./tools/features/schemapack-playground/schemapack-playground').then(
+        (m) => m.SchemapackPlaygroundComponent,
+      ),
     title: 'Schemapack Playground',
   },
   {
     path: 'dataset/:id',
     loadComponent: () =>
-      import('./metadata/features/dataset-details/dataset-details.component').then(
+      import('./metadata/features/dataset-details/dataset-details').then(
         (m) => m.DatasetDetailsComponent,
       ),
     title: 'Dataset Details',
@@ -58,7 +56,7 @@ export const routes: Routes = [
     path: 'work-package',
     canActivate: [() => inject(AuthService).guardAuthenticated()],
     loadComponent: () =>
-      import('./work-packages/features/work-package/work-package.component').then(
+      import('./work-packages/features/work-package/work-package').then(
         (m) => m.WorkPackageComponent,
       ),
     title: 'Download or Upload Datasets',
@@ -67,9 +65,7 @@ export const routes: Routes = [
     path: 'account',
     canActivate: [() => inject(AuthService).guardAuthenticated()],
     loadComponent: () =>
-      import('./portal/features/account/account.component').then(
-        (m) => m.AccountComponent,
-      ),
+      import('./portal/features/account/account').then((m) => m.AccountComponent),
     title: 'User Account',
   },
   // routes that are only available to data stewards
@@ -77,9 +73,9 @@ export const routes: Routes = [
     path: 'iva-manager',
     canActivate: [() => inject(AuthService).guardDataSteward()],
     loadComponent: () =>
-      import(
-        './verification-addresses/features/iva-manager/iva-manager.component'
-      ).then((m) => m.IvaManagerComponent),
+      import('./verification-addresses/features/iva-manager/iva-manager').then(
+        (m) => m.IvaManagerComponent,
+      ),
     title: 'IVA Manager',
   },
   {
@@ -87,7 +83,7 @@ export const routes: Routes = [
     canActivate: [() => inject(AuthService).guardDataSteward()],
     loadComponent: () =>
       import(
-        './access-requests/features/access-request-manager/access-request-manager.component'
+        './access-requests/features/access-request-manager/access-request-manager'
       ).then((m) => m.AccessRequestManagerComponent),
     title: 'Access Request Manager',
   },
@@ -97,7 +93,7 @@ export const routes: Routes = [
     canDeactivate: [pendingEditsGuard],
     loadComponent: () =>
       import(
-        './access-requests/features/access-request-manager-detail/access-request-manager-detail.component'
+        './access-requests/features/access-request-manager-detail/access-request-manager-detail'
       ).then((m) => m.AccessRequestManagerDetailComponent),
     title: 'Access Request Details',
     data: { transition: 'detail' },
@@ -106,7 +102,7 @@ export const routes: Routes = [
     path: 'user-manager',
     canActivate: [() => inject(AuthService).guardDataSteward()],
     loadComponent: () =>
-      import('./auth/features/user-manager/user-manager.component').then(
+      import('./auth/features/user-manager/user-manager').then(
         (m) => m.UserManagerComponent,
       ),
     title: 'User Manager',
@@ -115,7 +111,7 @@ export const routes: Routes = [
     path: 'user-manager/:id',
     canActivate: [() => inject(AuthService).guardDataSteward()],
     loadComponent: () =>
-      import('./auth/features/user-manager-detail/user-manager-detail.component').then(
+      import('./auth/features/user-manager-detail/user-manager-detail').then(
         (m) => m.UserManagerDetailComponent,
       ),
     title: 'User Details',
@@ -126,7 +122,7 @@ export const routes: Routes = [
     canActivate: [() => inject(AuthService).guardDataSteward()],
     loadComponent: () =>
       import(
-        './access-requests/features/access-grant-manager/access-grant-manager.component'
+        './access-requests/features/access-grant-manager/access-grant-manager'
       ).then((m) => m.AccessGrantManagerComponent),
     title: 'Access Grant Manager',
   },
@@ -135,7 +131,7 @@ export const routes: Routes = [
     canActivate: [() => inject(AuthService).guardDataSteward()],
     loadComponent: () =>
       import(
-        './access-requests/features/access-grant-manager-details/access-grant-manager-details.component'
+        './access-requests/features/access-grant-manager-details/access-grant-manager-details'
       ).then((m) => m.AccessGrantManagerDetailsComponent),
     title: 'Access Grant Manager Details',
   },
@@ -150,9 +146,7 @@ export const routes: Routes = [
     canActivate: [() => inject(AuthService).guardRegister()],
     canDeactivate: [canDeactivateAuth],
     loadComponent: () =>
-      import('./auth/features/register/register.component').then(
-        (m) => m.RegisterComponent,
-      ),
+      import('./auth/features/register/register').then((m) => m.RegisterComponent),
     title: 'Registration',
   },
   {
@@ -160,9 +154,7 @@ export const routes: Routes = [
     canActivate: [() => inject(AuthService).guardSetupTotp()],
     canDeactivate: [canDeactivateAuth],
     loadComponent: () =>
-      import('./auth/features/setup-totp/setup-totp.component').then(
-        (m) => m.SetupTotpComponent,
-      ),
+      import('./auth/features/setup-totp/setup-totp').then((m) => m.SetupTotpComponent),
     title: 'Set up TOTP',
   },
   {
@@ -170,7 +162,7 @@ export const routes: Routes = [
     canActivate: [() => inject(AuthService).guardConfirmTotp()],
     canDeactivate: [canDeactivateAuth],
     loadComponent: () =>
-      import('./auth/features/confirm-totp/confirm-totp.component').then(
+      import('./auth/features/confirm-totp/confirm-totp').then(
         (m) => m.ConfirmTotpComponent,
       ),
     title: 'Confirm TOTP',
@@ -179,7 +171,7 @@ export const routes: Routes = [
   {
     path: '**',
     loadComponent: () =>
-      import('../app/portal/features/page-not-found/page-not-found.component').then(
+      import('../app/portal/features/page-not-found/page-not-found').then(
         (m) => m.PageNotFoundComponent,
       ),
     title: 'Page not found',

@@ -274,7 +274,7 @@ export default [
         {
           type: 'main-app',
           mode: 'full',
-          pattern: 'src/app/app.component.ts',
+          pattern: 'src/app/app.ts',
         },
         {
           type: 'routes',
