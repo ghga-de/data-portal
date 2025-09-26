@@ -4,7 +4,7 @@
  * @license Apache-2.0
  */
 
-import { TruncateString } from './truncate-string.pipe';
+import { TruncateString } from './truncate-string-pipe';
 
 describe('TruncateString', () => {
   it('can create an instance', () => {

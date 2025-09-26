@@ -4,7 +4,7 @@
  * @license Apache-2.0
  */
 
-import { SplitLinesPipe } from './split-lines.pipe';
+import { SplitLinesPipe } from './split-lines-pipe';
 
 describe('NewlineSplit', () => {
   it('can create an instance', () => {

@@ -5,7 +5,7 @@
  */
 
 import { IvaState } from '../models/iva';
-import { IvaStatePipe } from './iva-state.pipe';
+import { IvaStatePipe } from './iva-state-pipe';
 
 describe('IvaStatePipe', () => {
   it('can create an instance', () => {

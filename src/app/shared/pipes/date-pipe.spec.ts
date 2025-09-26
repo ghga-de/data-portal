@@ -6,7 +6,7 @@
 
 import { DatePipe as CommonDatePipe } from '@angular/common';
 import { TestBed } from '@angular/core/testing';
-import { DatePipe } from './date.pipe';
+import { DatePipe } from './date-pipe';
 
 describe('DatePipe', () => {
   let pipe: DatePipe;

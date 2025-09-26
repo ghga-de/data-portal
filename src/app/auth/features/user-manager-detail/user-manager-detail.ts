@@ -14,12 +14,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
-import { AccessGrantStatusClassPipe } from '@app/access-requests/pipes/access-grant-status-class.pipe';
-import { AccessRequestStatusClassPipe } from '@app/access-requests/pipes/access-request-status-class.pipe';
+import { AccessGrantStatusClassPipe } from '@app/access-requests/pipes/access-grant-status-class-pipe';
+import { AccessRequestStatusClassPipe } from '@app/access-requests/pipes/access-request-status-class-pipe';
 import { AccessRequestService } from '@app/access-requests/services/access-request';
 import { UserStatus } from '@app/auth/models/user';
 import { DisplayUser, UserService } from '@app/auth/services/user';
-import { DatePipe } from '@app/shared/pipes/date.pipe';
+import { DatePipe } from '@app/shared/pipes/date-pipe';
 import { ConfirmationService } from '@app/shared/services/confirmation';
 import { NavigationTrackingService } from '@app/shared/services/navigation';
 import { NotificationService } from '@app/shared/services/notification';
@@ -27,8 +27,8 @@ import {
   DEFAULT_TIME_ZONE,
   FRIENDLY_DATE_FORMAT,
 } from '@app/shared/utils/date-formats';
-import { IvaStatePipe } from '@app/verification-addresses/pipes/iva-state.pipe';
-import { IvaTypePipe } from '@app/verification-addresses/pipes/iva-type.pipe';
+import { IvaStatePipe } from '@app/verification-addresses/pipes/iva-state-pipe';
+import { IvaTypePipe } from '@app/verification-addresses/pipes/iva-type-pipe';
 import { IvaService } from '@app/verification-addresses/services/iva';
 import { DeletionConfirmationDialogComponent } from '../deletion-confirmation-dialog/deletion-confirmation-dialog';
 

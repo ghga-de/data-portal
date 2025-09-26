@@ -4,7 +4,7 @@
  * @license Apache-2.0
  */
 
-import { FormatSchemapackErrorPipe } from './schemapack-error.pipe';
+import { FormatSchemapackErrorPipe } from './schemapack-error-pipe';
 
 describe('FormatSchemapackErrorPipe', () => {
   let pipe: FormatSchemapackErrorPipe;

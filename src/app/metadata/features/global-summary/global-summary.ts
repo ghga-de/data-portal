@@ -11,7 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FileStats, ValueCount } from '@app/metadata/models/global-summary';
 import { MetadataStatsService } from '@app/metadata/services/metadata-stats';
-import { UnderscoreToSpace } from '@app/shared/pipes/underscore-to-space.pipe';
+import { UnderscoreToSpace } from '@app/shared/pipes/underscore-to-space-pipe';
 import { NotificationService } from '@app/shared/services/notification';
 import { StencilComponent } from '@app/shared/ui/stencil/stencil/stencil';
 

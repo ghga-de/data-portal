@@ -14,7 +14,7 @@ import { RouterLink } from '@angular/router';
 import { DynamicAccessRequestButtonComponent } from '@app/access-requests/features/dynamic-access-request-button/dynamic-access-request-button';
 import { DatasetSummary } from '@app/metadata/models/dataset-summary';
 import { Hit } from '@app/metadata/models/search-results';
-import { AddPluralS } from '@app/shared/pipes/add-plural-s.pipe';
+import { AddPluralS } from '@app/shared/pipes/add-plural-s-pipe';
 import { ExternalLinkDirective } from '@app/shared/ui/external-link/external-link';
 import { ParagraphsComponent } from '../../../shared/ui/paragraphs/paragraphs';
 import { SummaryBadgesComponent } from '../../../shared/ui/summary-badges/summary-badges';

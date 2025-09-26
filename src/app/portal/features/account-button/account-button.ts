@@ -13,7 +13,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import { AuthService } from '@app/auth/services/auth';
-import { InitialsPipe } from '@app/shared/pipes/initials.pipe';
+import { InitialsPipe } from '@app/shared/pipes/initials-pipe';
 import { ConfigService } from '@app/shared/services/config';
 
 /**

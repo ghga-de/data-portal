@@ -4,7 +4,7 @@
  * @license Apache-2.0
  */
 
-import { UserExtIdPipe } from './user-ext-id.pipe';
+import { UserExtIdPipe } from './user-ext-id-pipe';
 
 describe('UserExtIdPipe', () => {
   let pipe: UserExtIdPipe;

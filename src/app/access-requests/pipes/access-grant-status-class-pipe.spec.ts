@@ -5,7 +5,7 @@
  */
 
 import { AccessGrantStatus } from '../models/access-requests';
-import { AccessGrantStatusClassPipe } from './access-grant-status-class.pipe';
+import { AccessGrantStatusClassPipe } from './access-grant-status-class-pipe';
 
 describe('AccessGrantStatusClassPipe', () => {
   it('can create an instance', () => {

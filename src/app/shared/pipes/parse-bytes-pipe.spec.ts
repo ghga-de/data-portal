@@ -4,7 +4,7 @@
  * @license Apache-2.0
  */
 
-import { ParseBytes } from './parse-bytes.pipe';
+import { ParseBytes } from './parse-bytes-pipe';
 
 describe('ParseBytesPipe', () => {
   it('can create an instance', () => {

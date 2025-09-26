@@ -4,7 +4,7 @@
  * @license Apache-2.0
  */
 
-import { UnderscoreToSpace } from './underscore-to-space.pipe';
+import { UnderscoreToSpace } from './underscore-to-space-pipe';
 
 describe('UnderscoreToSpacePipe', () => {
   it('can create an instance', () => {

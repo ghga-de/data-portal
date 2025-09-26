@@ -5,7 +5,7 @@
  */
 
 import { IvaType } from '../models/iva';
-import { IvaTypePipe } from './iva-type.pipe';
+import { IvaTypePipe } from './iva-type-pipe';
 
 describe('IvaTypePipe', () => {
   it('can create an instance', () => {

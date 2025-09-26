@@ -4,7 +4,7 @@
  * @license Apache-2.0
  */
 
-import { Capitalise } from './capitalise.pipe';
+import { Capitalise } from './capitalise-pipe';
 
 describe('CapitalisePipe', () => {
   it('can create an instance', () => {

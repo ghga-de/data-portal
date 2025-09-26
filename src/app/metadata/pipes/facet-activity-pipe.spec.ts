@@ -4,7 +4,7 @@
  * @license Apache-2.0
  */
 
-import { FacetActivityPipe } from './facet-activity.pipe';
+import { FacetActivityPipe } from './facet-activity-pipe';
 
 describe('FacetActivityPipe', () => {
   it('can create an instance', () => {

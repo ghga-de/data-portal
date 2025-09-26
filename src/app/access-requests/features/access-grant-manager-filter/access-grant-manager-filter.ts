@@ -15,7 +15,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { AccessGrantStatus } from '@app/access-requests/models/access-requests';
 import { AccessRequestService } from '@app/access-requests/services/access-request';
-import { Capitalise } from '@app/shared/pipes/capitalise.pipe';
+import { Capitalise } from '@app/shared/pipes/capitalise-pipe';
 
 /**
  * Access Grant Manager Filter component.

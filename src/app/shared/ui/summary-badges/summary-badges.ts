@@ -6,7 +6,7 @@
 
 import { Component, input, model } from '@angular/core';
 import { MatChipsModule } from '@angular/material/chips';
-import { UnderscoreToSpace } from '@app/shared/pipes/underscore-to-space.pipe';
+import { UnderscoreToSpace } from '@app/shared/pipes/underscore-to-space-pipe';
 
 const MAX_ITEMS = 3;
 

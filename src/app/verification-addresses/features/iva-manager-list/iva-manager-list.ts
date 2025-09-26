@@ -25,8 +25,8 @@ import { RouterLink } from '@angular/router';
 import { ConfirmationService } from '@app/shared/services/confirmation';
 import { NotificationService } from '@app/shared/services/notification';
 import { UserWithIva } from '@app/verification-addresses/models/iva';
-import { IvaStatePipe } from '@app/verification-addresses/pipes/iva-state.pipe';
-import { IvaTypePipe } from '@app/verification-addresses/pipes/iva-type.pipe';
+import { IvaStatePipe } from '@app/verification-addresses/pipes/iva-state-pipe';
+import { IvaTypePipe } from '@app/verification-addresses/pipes/iva-type-pipe';
 import { IvaService } from '@app/verification-addresses/services/iva';
 import { CodeCreationDialogComponent } from '../code-creation-dialog/code-creation-dialog';
 

@@ -4,7 +4,7 @@
  * @license Apache-2.0
  */
 
-import { UserStatusClassPipe } from './user-status-class.pipe';
+import { UserStatusClassPipe } from './user-status-class-pipe';
 
 describe('UserStatusClassPipe', () => {
   let pipe: UserStatusClassPipe;

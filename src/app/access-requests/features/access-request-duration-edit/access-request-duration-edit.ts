@@ -31,7 +31,7 @@ import {
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { AccessRequest } from '@app/access-requests/models/access-requests';
-import { DatePipe } from '@app/shared/pipes/date.pipe';
+import { DatePipe } from '@app/shared/pipes/date-pipe';
 import { ConfigService } from '@app/shared/services/config';
 import {
   DEFAULT_DATE_OUTPUT_FORMAT,

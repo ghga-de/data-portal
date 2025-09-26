@@ -4,7 +4,7 @@
  * @license Apache-2.0
  */
 
-import { AddPluralS } from './add-plural-s.pipe';
+import { AddPluralS } from './add-plural-s-pipe';
 
 describe('AddPluralSPipe', () => {
   it('can create an instance', () => {

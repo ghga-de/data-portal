@@ -16,7 +16,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { RoleNames, UserRole, UserStatus } from '@app/auth/models/user';
 import { UserService } from '@app/auth/services/user';
-import { Capitalise } from '@app/shared/pipes/capitalise.pipe';
+import { Capitalise } from '@app/shared/pipes/capitalise-pipe';
 import { DATE_INPUT_FORMAT_HINT } from '@app/shared/utils/date-formats';
 
 /**

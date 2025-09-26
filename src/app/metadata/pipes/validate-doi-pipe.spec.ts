@@ -4,7 +4,7 @@
  * @license Apache-2.0
  */
 
-import { ValidateDOI } from './validate-doi.pipe';
+import { ValidateDOI } from './validate-doi-pipe';
 
 describe('validateDOI', () => {
   it('can create an instance', () => {

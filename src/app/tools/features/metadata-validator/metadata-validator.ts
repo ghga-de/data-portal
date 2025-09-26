@@ -12,7 +12,7 @@ import { LogEntry, PyodideOutput } from '@app/tools/models/pyodide';
 import { StepDetails, StepStatus } from '@app/tools/models/stepper';
 import { PyodideService } from '@app/tools/services/pyodide';
 import { MetadataValidationService } from '@app/tools/services/validator';
-import { FormatSchemapackErrorPipe } from '../../pipes/schemapack-error.pipe';
+import { FormatSchemapackErrorPipe } from '../../pipes/schemapack-error-pipe';
 import { TranspilerService } from '../../services/transpiler';
 import { StepperComponent } from '../stepper/stepper';
 

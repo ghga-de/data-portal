@@ -18,7 +18,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FacetFilterSetting } from '@app/metadata/models/facet-filter';
-import { FacetActivityPipe } from '@app/metadata/pipes/facet-activity.pipe';
+import { FacetActivityPipe } from '@app/metadata/pipes/facet-activity-pipe';
 import { MetadataSearchService } from '@app/metadata/services/metadata-search';
 import { ConfigService } from '@app/shared/services/config';
 import { NotificationService } from '@app/shared/services/notification';

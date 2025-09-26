@@ -5,7 +5,7 @@
  */
 
 import { Component, computed, input } from '@angular/core';
-import { SplitLinesPipe } from '@app/shared/pipes/split-lines.pipe';
+import { SplitLinesPipe } from '@app/shared/pipes/split-lines-pipe';
 
 /**
  * Component for generating paragraphs by splitting lines of text

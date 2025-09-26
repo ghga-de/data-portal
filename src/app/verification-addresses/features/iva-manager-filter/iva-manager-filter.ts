@@ -15,7 +15,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { DATE_INPUT_FORMAT_HINT } from '@app/shared/utils/date-formats';
 import { IvaState } from '@app/verification-addresses/models/iva';
-import { IvaStatePipe } from '@app/verification-addresses/pipes/iva-state.pipe';
+import { IvaStatePipe } from '@app/verification-addresses/pipes/iva-state-pipe';
 import { IvaService } from '@app/verification-addresses/services/iva';
 
 /**

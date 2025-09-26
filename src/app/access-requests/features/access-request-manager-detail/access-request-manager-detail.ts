@@ -29,11 +29,11 @@ import {
   AccessRequest,
   AccessRequestStatus,
 } from '@app/access-requests/models/access-requests';
-import { AccessRequestStatusClassPipe } from '@app/access-requests/pipes/access-request-status-class.pipe';
+import { AccessRequestStatusClassPipe } from '@app/access-requests/pipes/access-request-status-class-pipe';
 import { AccessRequestService } from '@app/access-requests/services/access-request';
 import { UserSession } from '@app/auth/models/user';
 import { HasPendingEdits } from '@app/shared/features/pending-edits';
-import { SplitLinesPipe } from '@app/shared/pipes/split-lines.pipe';
+import { SplitLinesPipe } from '@app/shared/pipes/split-lines-pipe';
 import { ConfigService } from '@app/shared/services/config';
 import { ConfirmationService } from '@app/shared/services/confirmation';
 import { NavigationTrackingService } from '@app/shared/services/navigation';
@@ -41,8 +41,8 @@ import { NotificationService } from '@app/shared/services/notification';
 import { ExternalLinkDirective } from '@app/shared/ui/external-link/external-link';
 import { FRIENDLY_DATE_FORMAT } from '@app/shared/utils/date-formats';
 import { Iva, IvaState } from '@app/verification-addresses/models/iva';
-import { IvaStatePipe } from '@app/verification-addresses/pipes/iva-state.pipe';
-import { IvaTypePipe } from '@app/verification-addresses/pipes/iva-type.pipe';
+import { IvaStatePipe } from '@app/verification-addresses/pipes/iva-state-pipe';
+import { IvaTypePipe } from '@app/verification-addresses/pipes/iva-type-pipe';
 import { IvaService } from '@app/verification-addresses/services/iva';
 import { AccessRequestDurationEditComponent } from '../access-request-duration-edit/access-request-duration-edit';
 import { AccessRequestFieldEditComponent } from '../access-request-field-edit/access-request-field-edit';

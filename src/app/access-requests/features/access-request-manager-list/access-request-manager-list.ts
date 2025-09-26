@@ -23,9 +23,9 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Router, RouterLink } from '@angular/router';
 import { AccessRequest } from '@app/access-requests/models/access-requests';
-import { AccessRequestStatusClassPipe } from '@app/access-requests/pipes/access-request-status-class.pipe';
+import { AccessRequestStatusClassPipe } from '@app/access-requests/pipes/access-request-status-class-pipe';
 import { AccessRequestService } from '@app/access-requests/services/access-request';
-import { DatePipe } from '@app/shared/pipes/date.pipe';
+import { DatePipe } from '@app/shared/pipes/date-pipe';
 import { ConfigService } from '@app/shared/services/config';
 import {
   DEFAULT_DATE_OUTPUT_FORMAT,

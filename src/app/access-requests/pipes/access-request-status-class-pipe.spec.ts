@@ -5,7 +5,7 @@
  */
 
 import { AccessRequestStatus } from '../models/access-requests';
-import { AccessRequestStatusClassPipe } from './access-request-status-class.pipe';
+import { AccessRequestStatusClassPipe } from './access-request-status-class-pipe';
 
 describe('AccessRequestStatusClassPipe', () => {
   it('can create an instance', () => {

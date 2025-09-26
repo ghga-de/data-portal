@@ -20,7 +20,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NotificationService } from '@app/shared/services/notification';
 import { UserWithIva } from '@app/verification-addresses/models/iva';
-import { IvaTypePipe } from '@app/verification-addresses/pipes/iva-type.pipe';
+import { IvaTypePipe } from '@app/verification-addresses/pipes/iva-type-pipe';
 
 type IvaWithCode = UserWithIva & { code: string };
 

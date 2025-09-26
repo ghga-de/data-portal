@@ -32,13 +32,13 @@ import { Title } from '@angular/platform-browser';
 // eslint-disable-next-line boundaries/element-types
 import { DynamicAccessRequestButtonComponent } from '@app/access-requests/features/dynamic-access-request-button/dynamic-access-request-button';
 import { Experiment, File, Sample } from '@app/metadata/models/dataset-details';
-import { ValidateDOI } from '@app/metadata/pipes/validate-doi.pipe';
+import { ValidateDOI } from '@app/metadata/pipes/validate-doi-pipe';
 import { DatasetInformationService } from '@app/metadata/services/dataset-information';
 import { MetadataService } from '@app/metadata/services/metadata';
 import { WellKnownValueService } from '@app/metadata/services/well-known-value';
-import { AddPluralS } from '@app/shared/pipes/add-plural-s.pipe';
-import { ParseBytes } from '@app/shared/pipes/parse-bytes.pipe';
-import { UnderscoreToSpace } from '@app/shared/pipes/underscore-to-space.pipe';
+import { AddPluralS } from '@app/shared/pipes/add-plural-s-pipe';
+import { ParseBytes } from '@app/shared/pipes/parse-bytes-pipe';
+import { UnderscoreToSpace } from '@app/shared/pipes/underscore-to-space-pipe';
 import { ConfigService } from '@app/shared/services/config';
 import { NavigationTrackingService } from '@app/shared/services/navigation';
 import { NotificationService } from '@app/shared/services/notification';

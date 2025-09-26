@@ -15,7 +15,7 @@ import { SchemapackOutputStatus } from '@app/tools/models/status-text';
 import { PyodideService } from '@app/tools/services/pyodide';
 import { MetadataValidationService } from '@app/tools/services/validator';
 import { firstValueFrom } from 'rxjs';
-import { FormatSchemapackErrorPipe } from '../../pipes/schemapack-error.pipe';
+import { FormatSchemapackErrorPipe } from '../../pipes/schemapack-error-pipe';
 import { StatusTextBoxComponent } from '../status-text-box/status-text-box';
 
 const PLAYGROUND_SCHEMA_PYODIDE_PATH = '/playground/schema.yaml';
