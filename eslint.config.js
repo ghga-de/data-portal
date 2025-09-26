@@ -279,7 +279,7 @@ export default [
         {
           type: 'routes',
           mode: 'full',
-          pattern: 'src/app/**/*.routes.ts',
+          pattern: 'src/app/**/*-routes.ts',
         },
         {
           type: 'features',
