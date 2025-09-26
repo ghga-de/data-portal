@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/devcontainers/typescript-node:2.0.2-22-bookworm
+FROM mcr.microsoft.com/devcontainers/typescript-node:3.0.3-24-bookworm
 
 RUN apt update && apt install -y dnsutils
 
