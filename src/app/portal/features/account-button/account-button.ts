@@ -4,6 +4,7 @@
  * @license Apache-2.0
  */
 
+import { NgOptimizedImage } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
 
 import { MatButtonModule } from '@angular/material/button';
@@ -28,6 +29,7 @@ import { ConfigService } from '@app/shared/services/config';
     MatMenuModule,
     MatTooltipModule,
     InitialsPipe,
+    NgOptimizedImage,
   ],
   templateUrl: './account-button.html',
   styleUrl: './account-button.scss',
