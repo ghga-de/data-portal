@@ -369,6 +369,7 @@ function main() {
   delete settings.ssl_key;
   delete settings.log_level;
   delete settings.basic_auth;
+  delete settings.root_files;
 
   if (DEV) {
     settings.mock_api = !WITH_BACKEND;
