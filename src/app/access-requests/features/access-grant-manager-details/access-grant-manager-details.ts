@@ -25,6 +25,9 @@ import {
   DEFAULT_TIME_ZONE,
   FRIENDLY_DATE_FORMAT,
 } from '@app/shared/utils/date-formats';
+import { IvaStatePipe } from '@app/verification-addresses/pipes/iva-state-pipe';
+import { IvaTypePipe } from '@app/verification-addresses/pipes/iva-type-pipe';
+import { IvaService } from '@app/verification-addresses/services/iva';
 import { lastValueFrom } from 'rxjs';
 import { AccessGrantRevocationDialogComponent } from '../access-grant-revocation-dialog/access-grant-revocation-dialog';
 
@@ -38,6 +41,7 @@ import { AccessGrantRevocationDialogComponent } from '../access-grant-revocation
   imports: [
     FormsModule,
     MatCardModule,
+    MatIconModule,
     MatInputModule,
     MatButtonModule,
     MatDatepickerModule,
@@ -47,6 +51,8 @@ import { AccessGrantRevocationDialogComponent } from '../access-grant-revocation
     AccessGrantStatusClassPipe,
     RouterLink,
     DatePipe,
+    IvaTypePipe,
+    IvaStatePipe,
   ],
   templateUrl: './access-grant-manager-details.html',
 })
@@ -57,6 +63,7 @@ export class AccessGrantManagerDetailsComponent implements OnInit {
 
   #location = inject(NavigationTrackingService);
   #ars = inject(AccessRequestService);
+  #ivaService = inject(IvaService);
   #dialog = inject(MatDialog);
   #notificationService = inject(NotificationService);
 
@@ -111,12 +118,55 @@ export class AccessGrantManagerDetailsComponent implements OnInit {
     });
   });
 
+  iva = computed(() => {
+    return this.#ivaService.allIvas.value().find((iva) => {
+      const grant = this.grant();
+      if (grant) {
+        return iva.id === grant.iva_id;
+      } else {
+        return false;
+      }
+    });
+  });
+
+  sortedArLog = computed(() => {
+    const ar = this.ar();
+    if (ar.length > 1) {
+      const arLog = ar
+        .map((ar) => {
+          return [
+            { status: 'requested', date: ar.request_created },
+            {
+              status: ar.status === 'allowed' ? 'granted' : 'denied',
+              date: ar.status_changed,
+            },
+          ].flat();
+        })
+        .flat();
+      arLog.sort((a, b) => {
+        const dateA = new Date(a.date as string).getTime();
+        const dateB = new Date(b.date as string).getTime();
+        return dateA - dateB;
+      });
+      return arLog;
+    } else if (ar.length === 1) {
+      return [
+        { status: 'requested', date: ar[0].request_created },
+        {
+          status: ar[0].status === 'allowed' ? 'granted' : 'denied',
+          date: ar[0].status_changed,
+        },
+      ].flat();
+    } else return null;
+  });
+
   /**
    * Activates the transition animation and loads the grant.
    */
   ngOnInit(): void {
     this.#ars.loadAllAccessGrants();
     this.#ars.loadAllAccessRequests();
+    this.#ivaService.loadAllIvas();
     this.showTransition = true;
     setTimeout(() => (this.showTransition = false), 300);
   }

@@ -817,7 +817,7 @@ export const accessGrants: AccessGrant[] = [
     dataset_title: 'Test dataset for details',
     dac_alias: 'SOME-DAC',
     dac_email: 'dac-main@some.org',
-    iva_id: '32b50c92-489f-4418-ace8-e7552e3cf36d',
+    iva_id: '0063effb-2c43-4948-ba6f-f15425cb72d7',
   },
 ];
 
