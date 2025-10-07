@@ -152,11 +152,10 @@
           class="min-w-2xl *:mb-2 *:flex md:min-w-xl [&_div>strong]:inline-block [&_div>strong]:min-w-44"
         >
           @if (iva(); as iva) { @if (iva.user_id !== ag.user_id) {
-          <strong class="text-error flex items-center pb-2"
-            ><mat-icon fontIcon="error" class="me-1 shrink-0"></mat-icon> The IVA does
+          <span class="text-error flex items-center pb-2"
+            ><mat-icon fontIcon="error" class="me-4 shrink-0"></mat-icon> The IVA does
             not belong to the same user as the access grant. The access grant is
-            therefore invalid.</strong
-          >
+            therefore considered invalid.</span>
           <div>
             <strong>User:</strong
             ><span
