@@ -6,7 +6,15 @@
 
 import { DatePipe as CommonDatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
@@ -108,6 +116,23 @@ export class UserManagerDetailComponent implements OnInit {
   userGrants = computed(() => {
     const id = this.id();
     return this.#accessRequestService.allAccessGrants().filter((g) => g.user_id === id);
+  });
+
+  statusChangedBy = computed(() => {
+    const changedBy = this.user()?.status_change?.by;
+    if (changedBy) {
+      const user = this.#users.value().find((x) => x.id === changedBy);
+      console.log(this.#users.value());
+      return user;
+    }
+    return undefined;
+  });
+
+  #loadStatusChangedBy = effect(() => {
+    const user = this.user();
+    if (user && user.status_change) {
+      this.#userService.loadUsers();
+    }
   });
 
   /**
