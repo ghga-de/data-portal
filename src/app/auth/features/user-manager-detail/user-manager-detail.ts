@@ -135,39 +135,46 @@ export class UserManagerDetailComponent implements OnInit {
     }
   });
 
+  #loadOnIdChange = effect(() => {
+    const id = this.id();
+    if (!id) return;
+
+    // reset cached user when id changes
+    this.#cachedUser.set(undefined);
+
+    // Try individual loaded user
+    let user = this.#user.error() ? undefined : this.#user.value();
+    if (user && user.id === id) {
+      this.#cachedUser.set(user);
+    } else {
+      // Try from users list
+      const users = this.#users.error() ? [] : this.#users.value();
+      user = users.find((u: DisplayUser) => u.id === id);
+      if (user) {
+        this.#cachedUser.set(user);
+      } else {
+        // fetch if not available
+        this.#userService.loadUser(id);
+      }
+    }
+
+    // Related data loads (could be optimized in future)
+    this.#ivaService.loadUserIvas(id);
+  });
+
   /**
-   * On initialization, allow the transition effect,
-   * but then remove it so it applies only when we navigate back.
+   * On initialization, allow the transition effect only once.
+   * Also, load all access requests and grants.
    */
   ngOnInit() {
     this.showTransition = true;
     setTimeout(() => (this.showTransition = false), 300);
-    const id = this.id();
-    if (id) {
-      // Has it been fetched individually already?
-      let user = this.#user.error() ? undefined : this.#user.value();
-      if (user && user.id === id) {
-        this.#cachedUser.set(user);
-      } else {
-        // Has it been fetched as part of a list?
-        const users = this.#users.error() ? [] : this.#users.value();
-        user = users.find((user: DisplayUser) => user.id === id);
-        if (user) {
-          this.#cachedUser.set(user);
-        } else {
-          // If not, we need to fetch it now
-          this.#userService.loadUser(id);
-        }
-      }
-    }
-    if (this.id()) {
-      this.#ivaService.loadUserIvas(this.id());
-      // Note: The following two calls are inefficient.
-      // We need to add a way to load only a given user's access requests and grants.
-      // This can be also useful for the access grants detail view.
-      this.#accessRequestService.loadAllAccessGrants();
-      this.#accessRequestService.loadAllAccessRequests();
-    }
+    // Note: The following two calls are inefficient.
+    // We need to add a way to load only a given user's access requests and grants.
+    // This can be also useful for the access grants detail view.
+    // These should the be moved to the #loadOnIdChange effect then.
+    this.#accessRequestService.loadAllAccessGrants();
+    this.#accessRequestService.loadAllAccessRequests();
   }
 
   /**

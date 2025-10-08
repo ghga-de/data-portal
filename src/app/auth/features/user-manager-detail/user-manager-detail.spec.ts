@@ -191,4 +191,34 @@ describe('UserManagerDetailComponent', () => {
     const compiled = emptyFixture.nativeElement as HTMLElement;
     expect(compiled.textContent).toContain('The selected user could not be found');
   });
+
+  it('should reload when id input changes', async () => {
+    const loadUserSpy = jest.spyOn(mockUserService, 'loadUser');
+
+    fixture.detectChanges();
+    expect(component.user()?.id).toBe('123');
+
+    mockUserService.user.value = jest.fn(() => ({
+      id: '456',
+      name: 'Jane Smith',
+      displayName: 'Jane Smith',
+      title: '',
+      email: 'jane.smith@example.com',
+      ext_id: 'ext456',
+      roles: ['data_contributor'],
+      roleNames: ['Data Contributor'],
+      status: 'active',
+      registration_date: '2023-01-02',
+      sortName: 'Smith, Jane',
+    }));
+
+    fixture.componentRef.setInput('id', '456');
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    // user 456 exists in users list mock -> loadUser should NOT be called
+    expect(loadUserSpy).not.toHaveBeenCalled();
+    expect(component.user()?.id).toBe('456');
+    expect(component.user()?.name).toBe('Jane Smith');
+  });
 });
