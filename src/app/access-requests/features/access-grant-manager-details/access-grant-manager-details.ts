@@ -131,15 +131,15 @@ export class AccessGrantManagerDetailsComponent implements OnInit {
     });
   });
 
-  sortedLog = computed(() => {
-    const arLogs = this.ar().flatMap((ar) => [
-      { status: 'Access requested', date: ar.request_created },
-      {
-        status: ar.status === 'allowed' ? 'Access granted' : 'Access denied',
-        date: ar.status_changed,
-      },
-    ]);
-    arLogs.push(
+  sortedLog = computed(() =>
+    [
+      ...this.ar().flatMap((ar) => [
+        { status: 'Access requested', date: ar.request_created },
+        {
+          status: ar.status === 'allowed' ? 'Access granted' : 'Access denied',
+          date: ar.status_changed,
+        },
+      ]),
       { status: 'Grant created', date: this.grant()?.created ?? null },
       {
         status: 'Grant started',
@@ -149,10 +149,8 @@ export class AccessGrantManagerDetailsComponent implements OnInit {
         status: 'Grant expired',
         date: this.hasEnded() ? (this.grant()?.valid_until ?? null) : null,
       },
-    );
-    arLogs.sort((a, b) => Date.parse(a.date!) - Date.parse(b.date!));
-    return arLogs;
-  });
+    ].sort((a, b) => Date.parse(a.date!) - Date.parse(b.date!)),
+  );
 
   /**
    * Activates the transition animation and loads the grant.
