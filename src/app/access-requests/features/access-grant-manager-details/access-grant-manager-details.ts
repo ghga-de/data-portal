@@ -15,6 +15,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
 import { AccessGrantStatusClassPipe } from '@app/access-requests/pipes/access-grant-status-class-pipe';
 import { AccessRequestService } from '@app/access-requests/services/access-request';
@@ -46,6 +47,7 @@ import { AccessGrantRevocationDialogComponent } from '../access-grant-revocation
     MatButtonModule,
     MatDatepickerModule,
     MatSelectModule,
+    MatTooltipModule,
     MatFormFieldModule,
     MatIconModule,
     AccessGrantStatusClassPipe,
@@ -129,17 +131,28 @@ export class AccessGrantManagerDetailsComponent implements OnInit {
     });
   });
 
-  sortedArLog = computed(() =>
-    this.ar()
-      .flatMap((ar) => [
-        { status: 'requested', date: ar.request_created },
-        {
-          status: ar.status === 'allowed' ? 'granted' : 'denied',
-          date: ar.status_changed,
-        },
-      ])
-      .sort((a, b) => Date.parse(a.date!) - Date.parse(b.date!)),
-  );
+  sortedLog = computed(() => {
+    const arLogs = this.ar().flatMap((ar) => [
+      { status: 'Access requested', date: ar.request_created },
+      {
+        status: ar.status === 'allowed' ? 'Access granted' : 'Access denied',
+        date: ar.status_changed,
+      },
+    ]);
+    arLogs.push(
+      { status: 'Grant created', date: this.grant()?.created ?? null },
+      {
+        status: 'Grant started',
+        date: this.hasStarted() ? (this.grant()?.valid_from ?? null) : null,
+      },
+      {
+        status: 'Grant expired',
+        date: this.hasEnded() ? (this.grant()?.valid_until ?? null) : null,
+      },
+    );
+    arLogs.sort((a, b) => Date.parse(a.date!) - Date.parse(b.date!));
+    return arLogs;
+  });
 
   /**
    * Activates the transition animation and loads the grant.

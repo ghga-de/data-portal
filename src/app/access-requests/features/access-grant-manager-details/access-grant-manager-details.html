@@ -104,17 +104,27 @@
           } @case (1) { @let request = ar()[0];
           <p class="flex">
             <strong class="inline-block min-w-44">Access Request:</strong>
-            <span
+            <span class="grow"
               >for the dataset
               <a
                 routerLink="/dataset/{{ request.dataset_id }}"
                 data-umami-event="Access Grant Details Access Requests List Dataset Clicked"
+                aria-label="Link to access request manager page for the access request"
                 >{{ request.dataset_id }}</a
               ><br />
               from {{ request.access_starts | date: friendlyDateFormat : periodTimeZone
               }} to {{ request.access_ends | date: friendlyDateFormat : periodTimeZone
               }}</span
             >
+            <a
+              mat-icon-button
+              [routerLink]="`/access-request-manager/${request.id}`"
+              class="button-tertiary ms-4 mt-2 shrink-0 grow-0"
+              matTooltip="Link to access request details"
+              matTooltipPosition="right"
+              [aria-label]="`Link to details page for the access request`"
+              ><mat-icon fontIcon="link" class="mb-1"></mat-icon
+            ></a>
           </p>
           } @default {
           <p>
@@ -124,13 +134,13 @@
             >
           </p>
 
-          @for (request of ar(); track request.id) {
+          @for (request of ar(); track request.id; let idx = $index) {
           <p class="flex">
             <strong class="inline-block w-44">Access Request:</strong>
-            <span
+            <span class="grow"
               >For the dataset
               <a
-                class="text-quaternary hover:text-secondary focus:text-secondary"
+                class="text-tertiary hover:text-secondary focus:text-secondary"
                 routerLink="/dataset/{{ request.dataset_id }}"
                 data-umami-event="Granted Access Requests List Dataset Clicked"
                 >{{ request.dataset_id }}</a
@@ -139,6 +149,15 @@
               }} to {{ request.access_ends | date: friendlyDateFormat : periodTimeZone
               }}.</span
             >
+            <a
+              mat-icon-button
+              [routerLink]="`/access-request-manager/${request.id}`"
+              class="button-tertiary ms-4 mt-2 shrink-0 grow-0"
+              matTooltip="Link to access request details"
+              matTooltipPosition="right"
+              [aria-label]="`Link to details page for access request ${idx}`"
+              ><mat-icon fontIcon="link" class="mb-1"></mat-icon
+            ></a>
           </p>
           } } }
         </mat-card-content>
@@ -155,7 +174,8 @@
           <span class="text-error flex items-center pb-2"
             ><mat-icon fontIcon="error" class="me-4 shrink-0"></mat-icon> The IVA does
             not belong to the same user as the access grant. The access grant is
-            therefore considered invalid.</span>
+            therefore considered invalid.</span
+          >
           <div>
             <strong>User:</strong
             ><span
@@ -182,15 +202,15 @@
               >{{ (iva.state | IvaStatePipe).name }}</span
             >
           </div>
-          <div class="mt-4">
-            <a routerLink="/iva-manager" matButton="outlined">IVA Manager</a>
-          </div>
           } @else {
           <strong class="text-error"
             >IVA details could not be loaded. Please try again later or contact your
             administrator if the issue persists.</strong
           >
           }
+          <div class="mt-4">
+            <a routerLink="/iva-manager" matButton="outlined">IVA Manager</a>
+          </div>
         </mat-card-content>
       </mat-card>
     </div>
@@ -202,32 +222,12 @@
           <mat-card-title><h2>Audit Log</h2></mat-card-title>
         </mat-card-header>
         <mat-card-content class="divide-outline divide-y">
-          @if (ar().length > 0) { @for (item of sortedArLog(); track item) { @if
-          (item.date) {
+          @for (item of sortedLog(); track item) { @if (item.date) {
           <p class="mb-2 pb-2">
             <strong class="inline-block w-44 xl:w-32">{{ item.date | date }}</strong>
-            <span>Access {{item.status}}</span>
+            <span>{{item.status}}</span>
           </p>
-          } } }
-          <p class="mb-2 pb-2">
-            <strong class="inline-block w-44 xl:w-32">{{ ag.created | date }}</strong>
-            <span>Grant created</span>
-          </p>
-          @if (hasStarted()) {
-          <p class="mb-2 pb-2">
-            <strong class="inline-block w-44 xl:w-32"
-              >{{ ag.valid_from | date }}</strong
-            >
-            <span>Grant started</span>
-          </p>
-          } @if (hasEnded()) {
-          <p class="mb-2 pb-2">
-            <strong class="inline-block w-44 xl:w-32"
-              >{{ ag.valid_until | date }}</strong
-            >
-            <span>Grant expired</span>
-          </p>
-          }
+          } }
         </mat-card-content>
       </mat-card>
     </div>
