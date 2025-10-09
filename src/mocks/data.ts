@@ -82,7 +82,7 @@ export const users: RegisteredUser[] = [
     status_change: {
       previous: 'inactive',
       by: 'doe@test.dev',
-      context: 'Resumed activity',
+      context: '',
       change_date: '2025-01-10T00:00:00',
     },
     registration_date: '2023-08-15T00:00:00',

@@ -120,9 +120,8 @@ export class UserManagerDetailComponent implements OnInit {
 
   statusChangedBy = computed(() => {
     const changedBy = this.user()?.status_change?.by;
-    if (changedBy) {
-      const user = this.#users.value().find((x) => x.id === changedBy);
-      console.log(this.#users.value());
+    if (changedBy && !this.#userService.userStatusChangedBy.error()) {
+      const user = this.#userService.userStatusChangedBy.value();
       return user;
     }
     return undefined;
@@ -131,7 +130,7 @@ export class UserManagerDetailComponent implements OnInit {
   #loadStatusChangedBy = effect(() => {
     const user = this.user();
     if (user && user.status_change) {
-      this.#userService.loadUsers();
+      this.#userService.loadUserChangedBy(user.status_change.by);
     }
   });
 

@@ -251,6 +251,27 @@ export class UserService {
     },
   );
 
+  #userStatusChangedById = signal<string | undefined>(undefined);
+
+  /**
+   * Load details of user who last changed the status of the current user
+   * @param userId ID of the user to load
+   */
+  loadUserChangedBy(userId: string) {
+    this.#userStatusChangedById.set(userId);
+  }
+
+  userStatusChangedBy = httpResource<DisplayUser>(
+    () =>
+      this.#userStatusChangedById()
+        ? `${this.#usersUrl}/${this.#userStatusChangedById()}`
+        : undefined,
+    {
+      parse: (rawUser: unknown) => this.#createDisplayUser(rawUser as RegisteredUser),
+      defaultValue: undefined,
+    },
+  );
+
   /**
    * Update the user locally.
    * @param id - the ID of the updated user

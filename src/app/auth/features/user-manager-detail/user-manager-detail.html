@@ -57,12 +57,14 @@
         <div>
           <h2 class="mb-4 font-semibold">Basic Information</h2>
           <div class="space-y-3">
-            @if (user.title) {
             <div>
               <strong>Title:</strong>
+              @if (user.title) {
               <p class="mt-1 text-gray-900">{{ user.title }}</p>
+              } @else {
+              <p class="text-gray-500">N/A</p>
+              }
             </div>
-            }
             <div>
               <strong>Name:</strong>
               <p class="mt-1 text-gray-900">{{ user.name }}</p>
@@ -72,14 +74,6 @@
               <p class="mt-1 text-gray-900">{{ user.email }}</p>
             </div>
           </div>
-          @if (user.status_change) {
-          <div>
-            <strong>Registration Date:</strong>
-            <p class="mt-1 text-gray-900">
-              {{ user.registration_date | date: friendlyDateFormat }}
-            </p>
-          </div>
-          }
           <div>
             <strong>Roles:</strong>
             <div class="mt-1 flex flex-wrap gap-1">
@@ -104,48 +98,32 @@
                 {{ user.status }}
               </p>
             </div>
-            @if (user.status_change) {
-            <div>
-              <strong
-                >{{ user.status === 'active' ? 'Re-activation' : 'Deactivation' }}
-                Date:</strong
-              >
-              <p>
-                {{ user.status_change.change_date| date: friendlyDateFormat :
-                periodTimeZone }}
-              </p>
-            </div>
-            <div>
-              <strong
-                >{{ user.status === 'active' ? 'Re-activation' : 'Deactivation' }}
-                Context:</strong
-              >
-              <p>{{ user.status_change.context }}</p>
-            </div>
-            <div>
-              <strong
-                >{{ user.status === 'active' ? 'Re-activated' : 'Deactivated' }}
-                By:</strong
-              >
-              <p>
-                @if (statusChangedBy()) {
-                <a [routerLink]="`/user-manager/${user.status_change.by}`"
-                  >{{ statusChangedBy()!.displayName }}</a
-                >
-                } @else {<span class="text-warning flex items-center"
-                  ><mat-icon fontIcon="warning" class="me-1 shrink-0"></mat-icon
-                  >Warning: Could not find user details! Please try again later or
-                  contact your administrator</span
-                >
-                }
-              </p>
-            </div>
-            } @else {
             <div>
               <strong>Registration Date:</strong>
               <p class="mt-1 text-gray-900">
                 {{ user.registration_date | date: friendlyDateFormat }}
               </p>
+            </div>
+            @if (user.status_change) {
+            <div>
+              <strong>Status Change Information:</strong>
+              <p class="mb-0">
+                @if (statusChangedBy()) { {{ user.status === 'active' ? 'Re-activated' :
+                'Deactivated' }} by
+                <a [routerLink]="`/user-manager/${user.status_change.by}`"
+                  >{{ statusChangedBy()!.displayName }}</a
+                >} @else {<span class="text-warning mb-2 flex items-center"
+                  ><mat-icon fontIcon="warning" class="me-1 shrink-0"></mat-icon
+                  >Warning: Could not find details of user who performed status change!
+                  Please try again later or contact your administrator</span
+                >
+                {{ user.status === 'active' ? 'Re-activated' : 'Deactivated' }} } on {{
+                user.status_change.change_date| date: friendlyDateFormat :
+                periodTimeZone }}
+              </p>
+              @if (user.status_change.context) {
+              <p>Reason: {{ user.status_change.context }}</p>
+              }
             </div>
             }
           </div>
