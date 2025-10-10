@@ -88,6 +88,15 @@ class MockUserService {
   loadUser = () => undefined;
   deleteUser = () => undefined;
   updateUser = () => undefined;
+
+  createUserResource = () => ({
+    load: () => undefined,
+    resource: {
+      value: () => undefined,
+      isLoading: () => false,
+      error: () => undefined,
+    },
+  });
 }
 
 describe('UserManagerDetailComponent', () => {
@@ -167,6 +176,10 @@ describe('UserManagerDetailComponent', () => {
         error: jest.fn(() => null),
       },
       loadUser: () => undefined,
+      createUserResource: () => undefined,
+      filter: () => {
+        idStrings: [];
+      },
     };
 
     // Create a new component with the updated mock
@@ -176,14 +189,9 @@ describe('UserManagerDetailComponent', () => {
       providers: [
         { provide: IvaService, useClass: MockIvaService },
         { provide: AccessRequestService, useClass: MockAccessRequestService },
+        { provide: UserService, useValue: emptyMockUserService },
       ],
-    })
-      .overrideComponent(UserManagerDetailComponent, {
-        set: {
-          providers: [{ provide: UserService, useValue: emptyMockUserService }],
-        },
-      })
-      .compileComponents();
+    }).compileComponents();
 
     const emptyFixture = TestBed.createComponent(UserManagerDetailComponent);
     emptyFixture.componentRef.setInput('id', 'error');
