@@ -251,27 +251,6 @@ export class UserService {
     },
   );
 
-  #userStatusChangedById = signal<string | undefined>(undefined);
-
-  /**
-   * Load details of user who last changed the status of the current user
-   * @param userId ID of the user to load
-   */
-  loadUserChangedBy(userId: string) {
-    this.#userStatusChangedById.set(userId);
-  }
-
-  userStatusChangedBy = httpResource<DisplayUser>(
-    () =>
-      this.#userStatusChangedById()
-        ? `${this.#usersUrl}/${this.#userStatusChangedById()}`
-        : undefined,
-    {
-      parse: (rawUser: unknown) => this.#createDisplayUser(rawUser as RegisteredUser),
-      defaultValue: undefined,
-    },
-  );
-
   /**
    * Update the user locally.
    * @param id - the ID of the updated user
@@ -336,5 +315,26 @@ export class UserService {
     return this.#http
       .delete<null>(`${this.#usersUrl}/${id}`)
       .pipe(tap(() => this.#removeUserLocally(id)));
+  }
+
+  /**
+   * Factory for creating independent user resources.
+   * Use this in components when you need additional users (e.g., "status changed by").
+   * @returns object with methods to load/clear the user and the user resource itself
+   */
+  createUserResource() {
+    const id = signal<string | undefined>(undefined);
+    const resource = httpResource<DisplayUser>(
+      () => (id() ? `${this.#usersUrl}/${id()}` : undefined),
+      {
+        parse: (rawUser: unknown) => this.#createDisplayUser(rawUser as RegisteredUser),
+        defaultValue: undefined,
+      },
+    );
+    return {
+      load: (userId: string) => id.set(userId),
+      clear: () => id.set(undefined),
+      resource,
+    };
   }
 }

@@ -62,7 +62,7 @@ import { DeletionConfirmationDialogComponent } from '../deletion-confirmation-di
     AccessGrantStatusClassPipe,
     AccessRequestStatusClassPipe,
   ],
-  providers: [UserService, CommonDatePipe],
+  providers: [CommonDatePipe],
   templateUrl: './user-manager-detail.html',
 })
 export class UserManagerDetailComponent implements OnInit {
@@ -118,20 +118,42 @@ export class UserManagerDetailComponent implements OnInit {
     return this.#accessRequestService.allAccessGrants().filter((g) => g.user_id === id);
   });
 
-  statusChangedBy = computed(() => {
-    const changedBy = this.user()?.status_change?.by;
-    if (changedBy && !this.#userService.userStatusChangedBy.error()) {
-      const user = this.#userService.userStatusChangedBy.value();
-      return user;
-    }
-    return undefined;
-  });
+  // create resource for loading the user who changed the status
+  #statusChangedByUser = this.#userService.createUserResource();
 
+  // signal for the user who changed the status (null means error)
+  statusChangedBy = signal<DisplayUser | null | undefined>(undefined);
+
+  // create resource for loading the user who changed the status
   #loadStatusChangedBy = effect(() => {
     const user = this.user();
-    if (user && user.status_change) {
-      this.#userService.loadUserChangedBy(user.status_change.by);
+    const changedById = user?.status_change?.by;
+    if (!changedById) {
+      this.statusChangedBy.set(undefined);
+      return;
     }
+    // Try to get the user from the users list
+    const usersResource = this.#users;
+    if (usersResource.isLoading()) return; // wait until users are loaded
+    const users = usersResource.error() ? [] : usersResource.value();
+    let changedBy = users.find((u: DisplayUser) => u.id === changedById);
+    if (changedBy) {
+      this.statusChangedBy.set(changedBy);
+      return;
+    }
+    // Load the user via separate resource
+    const changedByResource = this.#statusChangedByUser.resource;
+    if (changedByResource.isLoading()) return; // wait until user is loaded
+    if (changedByResource.error()) {
+      this.statusChangedBy.set(null);
+      return;
+    }
+    changedBy = changedByResource.value();
+    if (changedBy && changedBy.id === changedById) {
+      this.statusChangedBy.set(changedBy);
+      return;
+    }
+    this.#statusChangedByUser.load(changedById);
   });
 
   #loadOnIdChange = effect(() => {
@@ -147,6 +169,7 @@ export class UserManagerDetailComponent implements OnInit {
       this.#cachedUser.set(user);
     } else {
       // Try from users list
+      if (this.#users.isLoading()) return; // wait until users are loaded
       const users = this.#users.error() ? [] : this.#users.value();
       user = users.find((u: DisplayUser) => u.id === id);
       if (user) {
