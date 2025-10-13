@@ -9,7 +9,7 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { AuthService } from '@app/auth/services/auth';
 import { ConfigService } from '@app/shared/services/config';
 import { NotificationService } from '@app/shared/services/notification';
-import { catchError, lastValueFrom, map, Observable, of, tap } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import {
   AccessGrant,
   AccessGrantFilter,
@@ -424,20 +424,34 @@ export class AccessRequestService {
   });
 
   /**
-   * This function attempts to revoke an access grant in the backend.
-   * @param grantID the ID of the grant to revoke.
-   * @returns a Promise that evaluates to true if successful, false otherwise.
+   * Remove the grant locally.
+   * @param id - the ID of the grant to remove
    */
-  revokeAccessGrant(grantID: string): Promise<boolean> {
-    if (!grantID || grantID === '') {
-      return Promise.resolve(false);
+  #removeGrantLocally(id: string): void {
+    if (this.allAccessGrantsResource.error()) return;
+    const oldGrant = this.allAccessGrantsResource
+      .value()
+      .find((grant) => grant.id === id);
+    if (oldGrant) {
+      const newGrant = { ...oldGrant };
+      const update = (grants: AccessGrant[]) =>
+        grants.map((grant) => (grant.id === id ? newGrant : grant));
+      this.allAccessGrantsResource.value.set(
+        update(this.allAccessGrantsResource.value()),
+      );
     }
+  }
 
-    const request$ = this.#http.delete(`${this.#grantRevocationUrl}/${grantID}`).pipe(
-      map(() => true),
-      catchError(() => of(false)),
-    );
-
-    return lastValueFrom(request$);
+  /**
+   * Revoke an access grant.
+   * This can only be done by a data steward.
+   * This method also updates the local state if the modification was successful.
+   * @param id - the grant ID
+   * @returns An observable that emits null when the request has been processed
+   */
+  revokeAccessGrant(id: string): Observable<null> {
+    return this.#http
+      .delete<null>(`${this.#grantRevocationUrl}/${id}`)
+      .pipe(tap(() => this.#removeGrantLocally(id)));
   }
 }

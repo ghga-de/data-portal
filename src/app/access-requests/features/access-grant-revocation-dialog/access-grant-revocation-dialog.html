@@ -1,31 +1,42 @@
-<div class="w-full sm:p-8">
+<div class="w-full">
   <h2 mat-dialog-title>
     <span class="fa-file-download"></span>Access Grant Revocation
   </h2>
   <mat-dialog-content>
-    <p>Type the Grant ID ({{ grantID }}) and click 'Revoke' to revoke the grant.</p>
+    <p>
+      Please confirm that the access grant of
+      <strong
+        >{{ grant.user_title ? grant.user_title + ' ' : '' }}{{grant.user_name}}</strong
+      >
+      with email <strong>{{ grant.user_email }}</strong> with ID
+      <strong>{{ grant.id}}</strong> shall be <strong>revoked</strong> by writing the
+      grant ID in the box below.
+    </p>
     <mat-form-field class="w-full">
       <input
-        [(ngModel)]="idInput"
+        [(ngModel)]="userInput"
         matInput
         class="w-full"
-        placeholder="Type the Grant ID here"
+        placeholder="Confirm grant ID"
       />
     </mat-form-field>
-    @if (errorMessage) {
-      <div class="error-message">
-        <mat-error>{{ errorMessage }}</mat-error>
-      </div>
-    }
   </mat-dialog-content>
   <mat-dialog-actions class="gap-y-2">
     <button
-      matButton="filled"
-      (click)="onClickRevoke()"
-      disabled="{{ grantID !== idInput() }}"
+      mat-button
+      (click)="onCancel()"
+      data-umami-event="Confirm Dialog Cancel Clicked"
     >
-      Revoke
+      Cancel
     </button>
-    <button matButton="filled" (click)="(onClickCancel)">Cancel</button>
+    <button
+      mat-flat-button
+      class="button-error"
+      (click)="onConfirm()"
+      data-umami-event="Confirm Dialog Confirm Clicked"
+      disabled="{{ grant.id !== userInput() }}"
+    >
+      Confirm revocation
+    </button>
   </mat-dialog-actions>
 </div>
