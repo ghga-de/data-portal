@@ -429,17 +429,10 @@ export class AccessRequestService {
    */
   #removeGrantLocally(id: string): void {
     if (this.allAccessGrantsResource.error()) return;
-    const oldGrant = this.allAccessGrantsResource
+    const newGrants = this.allAccessGrantsResource
       .value()
-      .find((grant) => grant.id === id);
-    if (oldGrant) {
-      const newGrant = { ...oldGrant };
-      const update = (grants: AccessGrant[]) =>
-        grants.map((grant) => (grant.id === id ? newGrant : grant));
-      this.allAccessGrantsResource.value.set(
-        update(this.allAccessGrantsResource.value()),
-      );
-    }
+      .filter((grant) => grant.id !== id);
+    this.allAccessGrantsResource.value.set(newGrants);
   }
 
   /**

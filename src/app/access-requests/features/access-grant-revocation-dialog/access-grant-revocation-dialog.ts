@@ -41,15 +41,14 @@ export class AccessGrantRevocationDialogComponent {
     grant: AccessGrant;
   }>(MAT_DIALOG_DATA);
 
-  nameInput = model<string | undefined>();
+  emailInput = model<string | undefined>();
   datasetInput = model<string | undefined>();
 
   disabled = computed(
     () =>
       !(
-        (this.nameInput() === this.grant.user_name ||
-          this.nameInput() === `${this.grant.user_title} ${this.grant.user_name}`) &&
-        this.datasetInput() === this.grant.dataset_id
+        this.emailInput()?.trim() === this.grant.user_email &&
+        this.datasetInput()?.trim() === this.grant.dataset_id
       ),
   );
 

@@ -21,7 +21,7 @@
   <button
     mat-raised-button
     cdkFocusInitial
-    [disabled]="userInput() !== user.email"
+    [disabled]="disabled()"
     (click)="onConfirm()"
     class="button-error"
     data-umami-event="Confirm User Deletion Dialog Confirm Clicked"
