@@ -61,15 +61,15 @@
         </mat-card-header>
         <mat-card-content class="min-w-2xl md:min-w-xl">
           <p>
-            <strong class="inline-block w-44">Email:</strong>
-            <a appExtLink [href]="'mailto:' + ag.user_email" tabindex="-1"
-              >{{ ag.user_email }}</a
-            >
-          </p>
-          <p>
             <strong class="inline-block w-44">Name:</strong>
             <a [routerLink]="'/user-manager/' + ag.user_id"
               >{{ ag.user_title }} {{ ag.user_name }}</a
+            >
+          </p>
+          <p>
+            <strong class="inline-block w-44">Email:</strong>
+            <a appExtLink [href]="'mailto:' + ag.user_email" tabindex="-1"
+              >{{ ag.user_email }}</a
             >
           </p>
         </mat-card-content>

@@ -56,9 +56,25 @@ describe('AccessGrantRevocationDialogComponent', () => {
     expect(dialogRef.close).toHaveBeenCalledWith(false);
   });
 
-  it('should return true when confirmed after confirming the user email', async () => {
-    const input = screen.getByRole('textbox');
-    await userEvent.type(input, 'grant-ghga-8c4b9d5a1f0a');
+  it('should return true when confirmed after confirming the user and dataset', async () => {
+    const nameInput = screen.getByPlaceholderText('Confirm name of user');
+    await userEvent.type(nameInput, 'John Doe');
+    const datasetInput = screen.getByPlaceholderText('Confirm dataset accession');
+    await userEvent.type(datasetInput, 'GHGAD12345678901234');
+    jest.spyOn(dialogRef, 'close');
+    expect(dialogRef.close).not.toHaveBeenCalled();
+    const button = screen.getByRole('button', { name: 'Confirm revocation' });
+    expect(button).toBeVisible();
+    expect(button).toHaveTextContent('Confirm revocation');
+    button.click();
+    expect(dialogRef.close).toHaveBeenCalledWith(true);
+  });
+
+  it("should return true when confirmed even when using the user's academic title", async () => {
+    const nameInput = screen.getByPlaceholderText('Confirm name of user');
+    await userEvent.type(nameInput, 'Dr. John Doe');
+    const datasetInput = screen.getByPlaceholderText('Confirm dataset accession');
+    await userEvent.type(datasetInput, 'GHGAD12345678901234');
     jest.spyOn(dialogRef, 'close');
     expect(dialogRef.close).not.toHaveBeenCalled();
     const button = screen.getByRole('button', { name: 'Confirm revocation' });

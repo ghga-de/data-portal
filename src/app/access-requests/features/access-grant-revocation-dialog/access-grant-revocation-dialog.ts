@@ -4,7 +4,7 @@
  * @license Apache-2.0
  */
 
-import { Component, inject, model } from '@angular/core';
+import { Component, computed, inject, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import {
@@ -41,7 +41,17 @@ export class AccessGrantRevocationDialogComponent {
     grant: AccessGrant;
   }>(MAT_DIALOG_DATA);
 
-  userInput = model<string | undefined>();
+  nameInput = model<string | undefined>();
+  datasetInput = model<string | undefined>();
+
+  disabled = computed(
+    () =>
+      !(
+        (this.nameInput() === this.grant.user_name ||
+          this.nameInput() === `${this.grant.user_title} ${this.grant.user_name}`) &&
+        this.datasetInput() === this.grant.dataset_id
+      ),
+  );
 
   /**
    * Grant to delete

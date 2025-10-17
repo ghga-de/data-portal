@@ -14,7 +14,7 @@
   <button
     mat-button
     (click)="onCancel()"
-    data-umami-event="Confirm Dialog Cancel Clicked"
+    data-umami-event="Confirm User Deletion Dialog Cancel Clicked"
   >
     Cancel
   </button>
@@ -24,7 +24,7 @@
     [disabled]="userInput() !== user.email"
     (click)="onConfirm()"
     class="button-error"
-    data-umami-event="Confirm Dialog Confirm Clicked"
+    data-umami-event="Confirm User Deletion Dialog Confirm Clicked"
   >
     Confirm deletion
   </button>
