@@ -8,6 +8,7 @@
           mat-icon-button
           (click)="goBack()"
           data-umami-event="Dataset Details Back Clicked"
+          matTooltip="Go back to previous page"
         >
           <mat-icon fontIcon="keyboard_return"></mat-icon>
         </button>
@@ -24,7 +25,7 @@
         <p class="text-base">EGA ID | {{ datasetDetails().ega_accession }}</p>
         }
         <div class="mt-4 mb-2 flex flex-wrap items-baseline text-sm">
-          Study Type |&nbsp; @if (study().types.length) {
+          Study Type |&nbsp;@if (study().types.length) {
           <mat-chip-set>
             @for (type of study().types; track $index) {
             <mat-chip class="small-chip me-1">{{ type | underscoreToSpace }}</mat-chip>
@@ -35,7 +36,7 @@
           }
         </div>
         <div class="mb-2 flex flex-wrap items-baseline text-sm">
-          Dataset Type |&nbsp; @if (datasetDetails().types.length > 0) {
+          Dataset Type |&nbsp;@if (datasetDetails().types.length > 0) {
           <mat-chip-set>
             @for (type of datasetDetails().types; track $index) {
             <mat-chip class="small-chip me-1">{{ type }}</mat-chip>
@@ -85,12 +86,12 @@
             ><mat-icon fontIcon="download"></mat-icon>Download Metadata</a
           >
           }
-          <h4 class="flex items-center sm:inline-flex">
+          <h2 class="flex items-center text-2xl sm:inline-flex">
             <span
               class="bg-primary/15 text-primary inline-flex items-center rounded p-1 text-4xl"
               ><mat-icon inline fontIcon="book_2"></mat-icon></span
             >&nbsp;Study
-          </h4>
+          </h2>
           <p class="text-base"><strong>ID:</strong> {{ study().accession }}</p>
           @if (study().ega_accession) {
           <p class="text-base"><strong>EGA ID:</strong> {{ study().ega_accession }}</p>
@@ -131,12 +132,12 @@
               >View Publication</a
             >
             }
-            <h4 class="flex items-center sm:inline-flex">
+            <h2 class="flex items-center text-2xl sm:inline-flex">
               <span
                 class="bg-primary/15 text-primary inline-flex items-center rounded p-1 text-4xl"
                 ><mat-icon inline fontIcon="article"></mat-icon></span
               >&nbsp;{{ pub.title ?? 'Unknown publication title' }}
-            </h4>
+            </h2>
             <p class="text-base">
               <strong>Author(s):</strong> {{ pub.author ?? 'Unknown authors' }}
             </p>
@@ -157,12 +158,12 @@
             }
           </div>
           } } @else {
-          <h4 class="inline-flex items-center">
+          <h2 class="inline-flex items-center text-2xl">
             <span
               class="bg-primary/15 text-primary inline-flex items-center rounded p-1 text-4xl"
               ><mat-icon inline fontIcon="article"></mat-icon></span
             >&nbsp;Publications
-          </h4>
+          </h2>
           <p>No publications available.</p>
           }
         </div>
@@ -186,12 +187,14 @@
             >Data Access Info Form</a
           >
           }
-          <h4 class="lg:max-w-auto flex items-center sm:inline-flex md:max-w-[26rem]">
+          <h2
+            class="lg:max-w-auto flex items-center text-2xl sm:inline-flex md:max-w-[26rem]"
+          >
             <span
               class="bg-primary/15 text-primary inline-flex items-center rounded p-1 text-4xl"
               ><mat-icon inline fontIcon="data_loss_prevention"></mat-icon></span
             >&nbsp;<span>Policy and Data Access Committee</span>
-          </h4>
+          </h2>
           <p class="text-base">
             <strong>Data Access Committee:</strong> {{ dac().alias }}
           </p>
