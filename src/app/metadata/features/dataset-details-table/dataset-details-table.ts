@@ -52,6 +52,7 @@ export class DatasetDetailsTableComponent implements AfterViewInit {
   data = input.required<any[]>();
   dataSource = input.required<MatTableDataSource<any, MatPaginator>>();
   columns = input.required<DatasetDetailsTableColumn[]>();
+  caption = input.required<string>();
   sortingDataAccessor = input.required<(arg0: any, key: string) => string | number>();
 
   numItems = computed(() => this.data().length);

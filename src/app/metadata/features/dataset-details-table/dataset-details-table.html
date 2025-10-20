@@ -1,5 +1,5 @@
 <mat-expansion-panel>
-  <mat-expansion-panel-header> {{ header() }}</mat-expansion-panel-header
+  <mat-expansion-panel-header>{{ header() }}</mat-expansion-panel-header
   ><ng-template matExpansionPanelContent
     ><div class="overflow-auto">
       <table
@@ -8,6 +8,9 @@
         [dataSource]="dataSource()"
         matSort
       >
+        <caption class="cdk-visually-hidden">
+          {{ caption() }}
+        </caption>
         @for (col of columns(); track col){
         <ng-container [matColumnDef]="col.columnDef">
           <th mat-header-cell *matHeaderCellDef mat-sort-header [class]="col.class">
@@ -19,13 +22,13 @@
             undefined : item[col.variableName]; @if (colDef === 'phenotype' &&
             itemValue.constructor.name === "Array") { @for (x of itemValue; track x; let
             last = $last) { {{x}}{{last ? '' : ', '}} } } @else if (colDef === 'size') {
-            {{ itemValue ? (itemValue | parseBytes) : 'N/A' }} } @else if (colDef ===
-            'origin') { {{ itemValue | underscoreToSpace }} } @else if (colDef ===
-            'location') { {{ itemValue ? storageLabels()[itemValue] || itemValue : 'N/A'
-            }} } @else if (colDef === 'hash') { @if (itemValue) {<span
+            {{itemValue ? (itemValue | parseBytes) : 'N/A'}} } @else if (colDef ===
+            'origin') { {{itemValue | underscoreToSpace}} } @else if (colDef ===
+            'location') { {{itemValue ? storageLabels()[itemValue] || itemValue :
+            'N/A'}} } @else if (colDef === 'hash') { @if (itemValue) {<span
               class="inline-block max-w-[10ex] overflow-hidden font-mono text-ellipsis whitespace-nowrap"
-              title="{{ itemValue }}"
-              >{{ itemValue }}</span
+              title="{{itemValue}}"
+              >{{itemValue}}</span
             >
             <button
               mat-icon-button
