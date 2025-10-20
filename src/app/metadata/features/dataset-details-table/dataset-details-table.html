@@ -1,0 +1,62 @@
+<mat-expansion-panel>
+  <mat-expansion-panel-header> {{ header() }}</mat-expansion-panel-header
+  ><ng-template matExpansionPanelContent
+    ><div class="overflow-auto">
+      <table
+        mat-table
+        class="bold-table-headers w-full min-w-[1280px]"
+        [dataSource]="dataSource()"
+        matSort
+      >
+        @for (col of columns(); track col){
+        <ng-container [matColumnDef]="col.columnDef">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header [class]="col.class">
+            {{col.header}}
+          </th>
+          <td mat-cell *matCellDef="let item">
+            @let colDef = col.columnDef; @let itemValue = col.childVariable ?
+            item[col.variableName] ? item[col.variableName][col.childVariable] :
+            undefined : item[col.variableName]; @if (colDef === 'phenotype' &&
+            itemValue.constructor.name === "Array") { @for (x of itemValue; track x; let
+            last = $last) { {{x}}{{last ? '' : ', '}} } } @else if (colDef === 'size') {
+            {{ itemValue ? (itemValue | parseBytes) : 'N/A' }} } @else if (colDef ===
+            'origin') { {{ itemValue | underscoreToSpace }} } @else if (colDef ===
+            'location') { {{ itemValue ? storageLabels()[itemValue] || itemValue : 'N/A'
+            }} } @else if (colDef === 'hash') { @if (itemValue) {<span
+              class="inline-block max-w-[10ex] overflow-hidden font-mono text-ellipsis whitespace-nowrap"
+              title="{{ itemValue }}"
+              >{{ itemValue }}</span
+            >
+            <button
+              mat-icon-button
+              matTooltip="Copy full hash to clipboard"
+              [cdkCopyToClipboard]="itemValue"
+              (click)="notifyCopied()"
+              data-umami-event="Dataset Details File Hash Copied"
+            >
+              <mat-icon
+                class="text-[20px]/[24px]"
+                fontIcon="content_copy"
+              ></mat-icon></button
+            >} @else {N/A}} @else { {{itemValue}} }
+          </td>
+        </ng-container>
+        }
+
+        <tr mat-header-row *matHeaderRowDef="displayCols()"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayCols()"></tr>
+      </table>
+
+      @if (numItems() > 10) {
+      <mat-paginator
+        [pageSize]="defaultTablePageSize"
+        [pageSizeOptions]="tablePageSizeOptions"
+        showFirstLastButtons
+        aria-label="Select page"
+        class="sticky left-0"
+      >
+      </mat-paginator>
+      }
+    </div></ng-template
+  ></mat-expansion-panel
+>
