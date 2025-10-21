@@ -10,8 +10,7 @@ export interface DatasetDetailsTableColumn {
   columnDef: string;
   header: string;
   class?: string;
-  variableName: string;
-  childVariable?: string;
+  accessor: string;
   hidden?: boolean;
 }
 
@@ -20,36 +19,34 @@ export const experimentTableColumns: DatasetDetailsTableColumn[] = [
     columnDef: 'accession',
     header: 'Experiment ID',
     class: 'w-40',
-    variableName: 'accession',
+    accessor: 'accession',
   },
   {
     columnDef: 'ega_accession',
     header: 'EGA ID',
     class: 'w-40',
-    variableName: 'ega_accession',
+    accessor: 'ega_accession',
   },
   {
     columnDef: 'title',
     header: 'Title',
-    variableName: 'title',
+    accessor: 'title',
   },
   {
     columnDef: 'description',
     header: 'Description',
     class: 'w-2/5 min-w-xl',
-    variableName: 'description',
+    accessor: 'description',
   },
   {
     columnDef: 'method',
     header: 'Method',
-    variableName: 'experiment_method',
-    childVariable: 'name',
+    accessor: 'experiment_method.name',
   },
   {
     columnDef: 'platform',
     header: 'Platform',
-    variableName: 'experiment_method',
-    childVariable: 'instrument_model',
+    accessor: 'experiment_method.instrument_model',
   },
 ];
 export const sampleTableColumns: DatasetDetailsTableColumn[] = [
@@ -57,46 +54,45 @@ export const sampleTableColumns: DatasetDetailsTableColumn[] = [
     columnDef: 'accession',
     header: 'Sample ID',
     class: 'w-40',
-    variableName: 'accession',
+    accessor: 'accession',
   },
   {
     columnDef: 'ega_accession',
     header: 'EGA ID',
     class: 'w-40',
-    variableName: 'ega_accession',
+    accessor: 'ega_accession',
   },
   {
     columnDef: 'description',
     header: 'Description',
     class: 'w-2/5 min-w-xl',
-    variableName: 'description',
+    accessor: 'description',
   },
   {
     columnDef: 'status',
     header: 'Status',
-    variableName: 'case_control_status',
+    accessor: 'case_control_status',
   },
   {
     columnDef: 'sex',
     header: 'Sex',
-    variableName: 'individual',
-    childVariable: 'sex',
+    accessor: 'individual.sex',
   },
   {
     columnDef: 'phenotype',
     header: 'Phenotype',
-    variableName: 'individual',
-    childVariable: 'phenotypic_features_terms',
+    accessor: 'individual.phenotypic_features_terms',
   },
   {
     columnDef: 'biospecimen_type',
     header: 'Biospecimen type',
-    variableName: 'biospecimen_type',
+    class: 'min-w-44',
+    accessor: 'biospecimen_type',
   },
   {
     columnDef: 'tissue',
     header: 'Tissue',
-    variableName: 'biospecimen_tissue_term',
+    accessor: 'biospecimen_tissue_term',
   },
 ];
 export const fileTableColumns: DatasetDetailsTableColumn[] = [
@@ -104,47 +100,44 @@ export const fileTableColumns: DatasetDetailsTableColumn[] = [
     columnDef: 'accession',
     header: 'File ID',
     class: 'w-40',
-    variableName: 'accession',
+    accessor: 'accession',
   },
   {
     columnDef: 'ega_accession',
     header: 'EGA ID',
     class: 'w-40',
-    variableName: 'ega_accession',
+    accessor: 'ega_accession',
   },
   {
     columnDef: 'name',
     header: 'File name',
     class: 'min-w-48',
-    variableName: 'name',
+    accessor: 'name',
   },
   {
     columnDef: 'type',
     header: 'File type',
-    variableName: 'format',
+    accessor: 'format',
   },
   {
     columnDef: 'origin',
     header: 'File origin',
-    variableName: 'file_category',
+    accessor: 'file_category',
   },
   {
     columnDef: 'size',
     header: 'File size',
-    variableName: 'file_information',
-    childVariable: 'size',
+    accessor: 'file_information.size',
   },
   {
     columnDef: 'location',
     header: 'Storage location',
-    variableName: 'file_information',
-    childVariable: 'storage_alias',
+    accessor: 'file_information.storage_alias',
   },
   {
     columnDef: 'hash',
     header: 'File hash',
-    variableName: 'file_information',
-    childVariable: 'sha256_hash',
+    accessor: 'file_information.sha256_hash',
   },
 ];
 

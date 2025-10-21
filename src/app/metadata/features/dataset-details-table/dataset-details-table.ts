@@ -10,6 +10,7 @@ import {
   Component,
   computed,
   effect,
+  forwardRef,
   inject,
   input,
   QueryList,
@@ -23,9 +24,8 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { DatasetDetailsTableColumn } from '@app/metadata/models/dataset-details-table';
+import { DetailsDataRendererPipe } from '@app/metadata/pipes/details-data-renderer-pipe';
 import { WellKnownValueService } from '@app/metadata/services/well-known-value';
-import { ParseBytes } from '@app/shared/pipes/parse-bytes-pipe';
-import { UnderscoreToSpace } from '@app/shared/pipes/underscore-to-space-pipe';
 import { NotificationService } from '@app/shared/services/notification';
 
 /**
@@ -35,14 +35,14 @@ import { NotificationService } from '@app/shared/services/notification';
   selector: 'app-dataset-details-table',
   imports: [
     ClipboardModule,
+    DetailsDataRendererPipe,
     MatButtonModule,
     MatExpansionModule,
     MatIconModule,
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
-    ParseBytes,
-    UnderscoreToSpace,
+    forwardRef(() => DatasetDetailsTableHashCellComponent),
   ],
   templateUrl: './dataset-details-table.html',
   styleUrl: './dataset-details-table.scss',
@@ -60,7 +60,6 @@ export class DatasetDetailsTableComponent implements AfterViewInit {
     this.columns().flatMap((x) => (x.hidden ? '' : x.columnDef)),
   );
 
-  #notify = inject(NotificationService);
   #wkvs = inject(WellKnownValueService);
   #storageLabels = this.#wkvs.storageLabels;
   storageLabels = this.#storageLabels.value;
@@ -89,6 +88,38 @@ export class DatasetDetailsTableComponent implements AfterViewInit {
       if (this.paginator) this.dataSource().paginator = this.paginator;
     });
   }
+}
+
+/**
+ * Component for rendering the cell for the file hash
+ */
+@Component({
+  selector: 'app-dataset-details-table-hash-cell',
+  imports: [MatButtonModule, MatIconModule, ClipboardModule],
+  template: `
+    @if (hash()) {
+      <span
+        class="inline-block max-w-[10ex] overflow-hidden font-mono text-ellipsis whitespace-nowrap"
+        title="{{ hash() }}"
+        >{{ hash() }}</span
+      >
+      <button
+        mat-icon-button
+        cdkCopyToClipboard="{{ hash() }}"
+        (cdkCopyToClipboardCopied)="notifyCopied()"
+        aria-label="Copy full hash to clipboard"
+      >
+        <mat-icon>content_copy</mat-icon>
+      </button>
+    } @else {
+      N/A
+    }
+  `,
+})
+export class DatasetDetailsTableHashCellComponent {
+  hash = input.required<string>();
+
+  #notify = inject(NotificationService);
 
   /**
    * Function to notify user that full hash was copied to clipboard

@@ -16,33 +16,18 @@
           <th mat-header-cell *matHeaderCellDef mat-sort-header [class]="col.class">
             {{col.header}}
           </th>
+          @if (col.columnDef === 'hash') {
           <td mat-cell *matCellDef="let item">
-            @let colDef = col.columnDef; @let itemValue = col.childVariable ?
-            item[col.variableName] ? item[col.variableName][col.childVariable] :
-            undefined : item[col.variableName]; @if (colDef === 'phenotype' &&
-            itemValue.constructor.name === "Array") { @for (x of itemValue; track x; let
-            last = $last) { {{x}}{{last ? '' : ', '}} } } @else if (colDef === 'size') {
-            {{itemValue ? (itemValue | parseBytes) : 'N/A'}} } @else if (colDef ===
-            'origin') { {{itemValue | underscoreToSpace}} } @else if (colDef ===
-            'location') { {{itemValue ? storageLabels()[itemValue] || itemValue :
-            'N/A'}} } @else if (colDef === 'hash') { @if (itemValue) {<span
-              class="inline-block max-w-[10ex] overflow-hidden font-mono text-ellipsis whitespace-nowrap"
-              title="{{itemValue}}"
-              >{{itemValue}}</span
-            >
-            <button
-              mat-icon-button
-              matTooltip="Copy full hash to clipboard"
-              [cdkCopyToClipboard]="itemValue"
-              (click)="notifyCopied()"
-              data-umami-event="Dataset Details File Hash Copied"
-            >
-              <mat-icon
-                class="text-[20px]/[24px]"
-                fontIcon="content_copy"
-              ></mat-icon></button
-            >} @else {N/A}} @else { {{itemValue}} }
+            <app-dataset-details-table-hash-cell
+              [hash]="item.file_information?.sha256_hash"
+            ></app-dataset-details-table-hash-cell>
           </td>
+          } @else {
+          <td mat-cell *matCellDef="let item">
+            {{col.columnDef | detailsDataRenderer: item : col.accessor : col.columnDef
+            === 'location' ? storageLabels() : undefined}}
+          </td>
+          }
         </ng-container>
         }
 
