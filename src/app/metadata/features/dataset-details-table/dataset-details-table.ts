@@ -4,22 +4,18 @@
  * @license Apache-2.0
  */
 
-import { ClipboardModule } from '@angular/cdk/clipboard';
 import {
   AfterViewInit,
   Component,
   computed,
   effect,
-  forwardRef,
   inject,
   input,
   QueryList,
   ViewChild,
   ViewChildren,
 } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { MatIconModule } from '@angular/material/icon';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -29,7 +25,7 @@ import {
 } from '@app/metadata/models/dataset-details-table';
 import { DetailsDataRendererPipe } from '@app/metadata/pipes/details-data-renderer-pipe';
 import { WellKnownValueService } from '@app/metadata/services/well-known-value';
-import { NotificationService } from '@app/shared/services/notification';
+import { WithCopyButton } from '@app/shared/features/with-copy-button/with-copy-button';
 
 /**
  * Component for the dataset details table
@@ -42,43 +38,40 @@ import { NotificationService } from '@app/shared/services/notification';
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
-    forwardRef(() => DatasetDetailsTableHashCellComponent),
+    WithCopyButton,
   ],
   templateUrl: './dataset-details-table.html',
   styleUrl: './dataset-details-table.scss',
 })
 export class DatasetDetailsTableComponent implements AfterViewInit {
-  tableName = input.required<string>();
-  data = input.required<any[]>();
-  header = input.required<string>();
+  protected tableName = input.required<string>();
+  protected data = input.required<any[]>();
+  protected header = input.required<string>();
 
-  numItems = computed(() => this.data().length);
-  parsedByted = computed(() =>
-    this.tableName() === 'files'
-      ? this.data().reduce((acc, file) => acc + (file.size ?? 0), 0)
-      : 0,
-  );
+  protected numItems = computed(() => this.data().length);
 
-  columns = computed(() =>
+  protected columns = computed(() =>
     this.tableName ? (datasetDetailsTableColumns[this.tableName()] ?? []) : [],
   );
-  sortingDataAccessor = computed(() =>
+  protected sortingDataAccessor = computed(() =>
     this.tableName ? dataSortingDataAccessor[this.tableName()] : undefined,
   );
 
-  caption = computed(() => `Dataset ${this.header().split(' ')[0]}`);
-  dataSource = new MatTableDataSource<any>([]);
+  protected caption = computed(() => `Dataset ${this.header().split(' ')[0]}`);
+  protected dataSource = new MatTableDataSource<any>([]);
 
-  displayCols = computed(() =>
-    this.columns().flatMap((x) => (x.hidden ? '' : x.columnDef)),
+  protected displayCols = computed(() =>
+    this.columns()
+      .filter((x) => !x.hidden)
+      .flatMap((x) => x.columnDef),
   );
 
   #wkvs = inject(WellKnownValueService);
   #storageLabels = this.#wkvs.storageLabels;
   storageLabels = this.#storageLabels.value;
 
-  defaultTablePageSize = 10;
-  tablePageSizeOptions = [10, 25, 50, 100];
+  protected defaultTablePageSize = 10;
+  protected tablePageSizeOptions = [10, 25, 50, 100];
 
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChildren(MatSort) matSorts!: QueryList<MatSort>;
@@ -102,44 +95,5 @@ export class DatasetDetailsTableComponent implements AfterViewInit {
     this.matPaginators.changes.subscribe(() => {
       if (this.paginator) this.dataSource.paginator = this.paginator;
     });
-  }
-}
-
-/**
- * Component for rendering the cell for the file hash
- */
-@Component({
-  selector: 'app-dataset-details-table-hash-cell',
-  imports: [MatButtonModule, MatIconModule, ClipboardModule],
-  template: `
-    @if (hash()) {
-      <span
-        class="inline-block max-w-[10ex] overflow-hidden font-mono text-ellipsis whitespace-nowrap"
-        title="{{ hash() }}"
-        >{{ hash() }}</span
-      >
-      <button
-        mat-icon-button
-        cdkCopyToClipboard="{{ hash() }}"
-        (cdkCopyToClipboardCopied)="notifyCopied()"
-        aria-label="Copy full hash to clipboard"
-      >
-        <mat-icon>content_copy</mat-icon>
-      </button>
-    } @else {
-      N/A
-    }
-  `,
-})
-export class DatasetDetailsTableHashCellComponent {
-  hash = input.required<string>();
-
-  #notify = inject(NotificationService);
-
-  /**
-   * Function to notify user that full hash was copied to clipboard
-   */
-  notifyCopied() {
-    this.#notify.showInfo('Complete file hash copied to clipboard', 1000);
   }
 }

@@ -32,24 +32,32 @@ export class DetailsDataRendererPipe implements PipeTransform {
     storageLabels?: wellKnownValues,
   ): string {
     let value = item;
-    accessor.split('.').forEach((key) => {
-      value = value ? value[key] : undefined;
-      console.log(value);
-    });
-    if (!value) {
+    value = accessor
+      .split('.')
+      .reduce(
+        (acc, key) =>
+          typeof acc === 'object' ? (acc as Record<string, any>)[key] : undefined,
+        value,
+      );
+    if (value === null || value === undefined) {
       return 'N/A';
-    } else if (columnDef === 'phenotype' && Array.isArray(value)) {
-      return `${value.join(', ')}`;
-    } else if (columnDef === 'size') {
-      return `${ParseBytes.prototype.transform(value)}`;
-    } else if (columnDef === 'origin') {
-      return `${UnderscoreToSpace.prototype.transform(value)}`;
-    } else if (columnDef === 'location') {
-      return `${storageLabels && storageLabels[value] ? storageLabels[value] : value}`;
-    } else if (columnDef === 'sex') {
-      return `${Capitalise.prototype.transform((value as string).toLowerCase())}`;
-    } else {
-      return `${value}`;
+    }
+    switch (columnDef) {
+      case 'phenotype':
+        if (Array.isArray(value)) {
+          return `${value.join(', ')}`;
+        }
+        return value;
+      case 'size':
+        return `${ParseBytes.prototype.transform(value)}`;
+      case 'origin':
+        return `${Capitalise.prototype.transform(UnderscoreToSpace.prototype.transform(value))}`;
+      case 'location':
+        return `${storageLabels && storageLabels[value] ? storageLabels[value] : value}`;
+      case 'sex':
+        return `${Capitalise.prototype.transform((value as string).toLowerCase())}`;
+      default:
+        return `${value}`;
     }
   }
 }

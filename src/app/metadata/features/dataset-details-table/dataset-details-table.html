@@ -18,9 +18,10 @@
           </th>
           @if (col.columnDef === 'hash') {
           <td mat-cell *matCellDef="let item">
-            <app-dataset-details-table-hash-cell
-              [hash]="item.file_information?.sha256_hash"
-            ></app-dataset-details-table-hash-cell>
+            <app-with-copy-button
+              [value]="item.file_information?.sha256_hash"
+              notifyMessage="The full hash has been copied to the clipboard"
+            ></app-with-copy-button>
           </td>
           } @else {
           <td mat-cell *matCellDef="let item">

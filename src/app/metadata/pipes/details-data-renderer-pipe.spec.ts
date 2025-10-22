@@ -24,6 +24,11 @@ describe('DetailsDataRendererPipe', () => {
     );
   });
 
+  it('returns the value for an empty value string', () => {
+    const pipe = new DetailsDataRendererPipe();
+    expect(pipe.transform('test', { accessor: '' }, 'accessor')).toBe('');
+  });
+
   it('returns the value for a defined value', () => {
     const pipe = new DetailsDataRendererPipe();
     expect(pipe.transform('test', { accessor: 'test value' }, 'accessor')).toBe(
@@ -56,10 +61,10 @@ describe('DetailsDataRendererPipe', () => {
     );
   });
 
-  it("returns the value of a file's origin with spaces instead of underscores", () => {
+  it("returns the value of a file's origin with spaces instead of underscores and with the first letter capitalised", () => {
     const pipe = new DetailsDataRendererPipe();
     expect(pipe.transform('origin', { accessor: 'test_value' }, 'accessor')).toBe(
-      'test value',
+      'Test value',
     );
   });
 
