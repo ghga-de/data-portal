@@ -23,7 +23,7 @@
       >
     </div>
 
-    @defer (on viewport) {
+    @defer (on idle) {
     <div class="hidden lg:block xl:basis-1/2">
       <mat-nav-list class="my-8 text-center" aria-label="Header Navigation">
         <app-site-header-nav-buttons />
@@ -33,8 +33,6 @@
     <div class="my-4 hidden text-right lg:block xl:basis-1/4">
       <app-account-button></app-account-button>
     </div>
-    } @placeholder {
-    <span class="sr-only">Loading header</span>
     }
 
     <div class="lg:hidden">
@@ -60,8 +58,6 @@
             @defer (on idle) {
             <app-site-header-nav-buttons class="mb-4 grid grid-cols-1 gap-y-2 px-4" />
             <app-account-button />
-            } @placeholder {
-            <span class="sr-only">Loading menu</span>
             }
           </mat-nav-list>
           ></mat-sidenav
