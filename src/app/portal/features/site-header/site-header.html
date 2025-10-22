@@ -23,23 +23,19 @@
       >
     </div>
 
+    @defer (on viewport) {
     <div class="hidden lg:block xl:basis-1/2">
       <mat-nav-list class="my-8 text-center" aria-label="Header Navigation">
-        @defer (on idle) {
         <app-site-header-nav-buttons />
-        } @placeholder {
-        <span class="sr-only">Loading navigation</span>
-        }
       </mat-nav-list>
     </div>
 
     <div class="my-4 hidden text-right lg:block xl:basis-1/4">
-      @defer (on idle) {
       <app-account-button></app-account-button>
-      } @placeholder {
-      <span class="sr-only">Loading account menu</span>
-      }
     </div>
+    } @placeholder {
+    <span class="sr-only">Loading header</span>
+    }
 
     <div class="lg:hidden">
       <mat-sidenav-container class="relative z-2 flex-[1_0_auto]">
