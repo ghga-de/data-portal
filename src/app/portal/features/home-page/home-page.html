@@ -38,7 +38,11 @@
     >
   </div>
 </section>
+@defer (on viewport) {
 <app-global-stats />
+} @placeholder {
+<span class="sr-only">Loading statistics</span>
+}
 <section>
   <h2>About GHGA</h2>
   <h3>The German Human Genome‑Phenome Archive</h3>
