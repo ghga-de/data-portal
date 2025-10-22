@@ -25,12 +25,20 @@
 
     <div class="hidden lg:block xl:basis-1/2">
       <mat-nav-list class="my-8 text-center" aria-label="Header Navigation">
+        @defer (on idle) {
         <app-site-header-nav-buttons />
+        } @placeholder {
+        <span class="sr-only">Loading navigation</span>
+        }
       </mat-nav-list>
     </div>
 
     <div class="my-4 hidden text-right lg:block xl:basis-1/4">
+      @defer (on idle) {
       <app-account-button></app-account-button>
+      } @placeholder {
+      <span class="sr-only">Loading account menu</span>
+      }
     </div>
 
     <div class="lg:hidden">
@@ -53,9 +61,15 @@
             </button>
           </div>
           <mat-nav-list>
-            <app-site-header-nav-buttons
-              class="mb-4 grid grid-cols-1 gap-y-2 px-4" /><app-account-button /></mat-nav-list
-        ></mat-sidenav>
+            @defer (on idle) {
+            <app-site-header-nav-buttons class="mb-4 grid grid-cols-1 gap-y-2 px-4" />
+            <app-account-button />
+            } @placeholder {
+            <span class="sr-only">Loading menu</span>
+            }
+          </mat-nav-list>
+          ></mat-sidenav
+        >
       </mat-sidenav-container>
     </div>
 
