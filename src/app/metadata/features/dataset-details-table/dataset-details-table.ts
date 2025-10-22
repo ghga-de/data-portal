@@ -44,9 +44,9 @@ import { WithCopyButton } from '@app/shared/features/with-copy-button/with-copy-
   styleUrl: './dataset-details-table.scss',
 })
 export class DatasetDetailsTableComponent implements AfterViewInit {
-  protected tableName = input.required<string>();
-  protected data = input.required<any[]>();
-  protected header = input.required<string>();
+  tableName = input.required<string>();
+  data = input.required<any[]>();
+  header = input.required<string>();
 
   protected numItems = computed(() => this.data().length);
 
@@ -68,7 +68,7 @@ export class DatasetDetailsTableComponent implements AfterViewInit {
 
   #wkvs = inject(WellKnownValueService);
   #storageLabels = this.#wkvs.storageLabels;
-  storageLabels = this.#storageLabels.value;
+  protected storageLabels = this.#storageLabels.value;
 
   protected defaultTablePageSize = 10;
   protected tablePageSizeOptions = [10, 25, 50, 100];
