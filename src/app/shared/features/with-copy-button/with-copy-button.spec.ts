@@ -1,15 +1,11 @@
 /**
- * Tests for the with copy button component
+ * Tests for the "with copy button" component
  * @copyright The GHGA Authors
  * @license Apache-2.0
  */
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { WithCopyButton } from './with-copy-button';
-
-/**
- * Mock the config service as needed by the with copy button component
- */
 
 describe('WithCopyButton', () => {
   let component: WithCopyButton;

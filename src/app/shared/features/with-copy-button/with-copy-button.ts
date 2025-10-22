@@ -25,7 +25,7 @@ export class WithCopyButton {
   #notify = inject(NotificationService);
 
   /**
-   * Function to notify user that full hash was copied to clipboard
+   * Notify user after full text was copied to clipboard
    */
   notifyCopied() {
     this.#notify.showInfo(this.notifyMessage(), 1000);
