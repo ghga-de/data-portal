@@ -213,30 +213,21 @@
 
   <div class="grid grid-cols-1 gap-2 overflow-x-auto *:min-w-128">
     <app-dataset-details-table
-      [header]="experimentHeader()"
+      tableName="experiments"
       [data]="experiments()"
-      [dataSource]="experimentsDataSource"
-      [columns]="experimentColumns"
-      [sortingDataAccessor]="experimentsSortingDataAccessor"
-      caption="Dataset Experiments"
+      [header]="experimentsHeader()"
     ></app-dataset-details-table>
 
     <app-dataset-details-table
-      [header]="sampleHeader()"
+      tableName="samples"
       [data]="samples()"
-      [dataSource]="samplesDataSource"
-      [columns]="sampleColumns"
-      [sortingDataAccessor]="samplesSortingDataAccessor"
-      caption="Dataset Samples"
+      [header]="samplesHeader()"
     ></app-dataset-details-table>
 
     <app-dataset-details-table
-      [header]="fileHeader()"
+      tableName="files"
       [data]="files()"
-      [dataSource]="filesDataSource"
-      [columns]="fileColumns"
-      [sortingDataAccessor]="filesSortingDataAccessor"
-      caption="Dataset Files"
+      [header]="filesHeader()"
     ></app-dataset-details-table>
   </div>
   }

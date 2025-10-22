@@ -21,21 +21,13 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Title } from '@angular/platform-browser';
 // eslint-disable-next-line boundaries/element-types
 import { DynamicAccessRequestButtonComponent } from '@app/access-requests/features/dynamic-access-request-button/dynamic-access-request-button';
 import { Experiment, File, Sample } from '@app/metadata/models/dataset-details';
-import {
-  experimentsSortingDataAccessor,
-  experimentTableColumns,
-  filesSortingDataAccessor,
-  fileTableColumns,
-  samplesSortingDataAccessor,
-  sampleTableColumns,
-} from '@app/metadata/models/dataset-details-table';
 import { ValidateDOI } from '@app/metadata/pipes/validate-doi-pipe';
 import { DatasetInformationService } from '@app/metadata/services/dataset-information';
 import { MetadataService } from '@app/metadata/services/metadata';
@@ -150,30 +142,18 @@ export class DatasetDetailsComponent implements OnInit {
     this.files().reduce((acc, file) => acc + (file.file_information?.size ?? 0), 0),
   );
 
-  experimentHeader = computed(
+  experimentsHeader = computed(
     () =>
       `Experiments Summary (${this.numExperiments()} experiment${this.numExperiments() === 1 ? '' : 's'})`,
   );
-  experimentColumns = experimentTableColumns;
-  experimentsSortingDataAccessor = experimentsSortingDataAccessor;
-
-  sampleHeader = computed(
+  samplesHeader = computed(
     () =>
       `Samples Summary (${this.numSamples()} sample${this.numSamples() === 1 ? '' : 's'})`,
   );
-  sampleColumns = sampleTableColumns;
-  samplesSortingDataAccessor = samplesSortingDataAccessor;
-
-  fileHeader = computed(
+  filesHeader = computed(
     () =>
       `Files Summary (${this.numFiles()} file${this.numFiles() === 1 ? '' : 's'}, ${ParseBytes.prototype.transform(this.numBytes())} in total)`,
   );
-  fileColumns = fileTableColumns;
-  filesSortingDataAccessor = filesSortingDataAccessor;
-
-  experimentsDataSource = new MatTableDataSource<Experiment>([]);
-  samplesDataSource = new MatTableDataSource<Sample>([]);
-  filesDataSource = new MatTableDataSource<File>([]);
 
   #datasetDetailsErrorEffect = effect(() => {
     if (this.#datasetDetails.error()) {

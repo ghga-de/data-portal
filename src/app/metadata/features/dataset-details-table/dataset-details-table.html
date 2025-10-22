@@ -5,7 +5,7 @@
       <table
         mat-table
         class="bold-table-headers w-full min-w-[1280px]"
-        [dataSource]="dataSource()"
+        [dataSource]="dataSource"
         matSort
       >
         <caption class="cdk-visually-hidden">
@@ -24,8 +24,8 @@
           </td>
           } @else {
           <td mat-cell *matCellDef="let item">
-            {{col.columnDef | detailsDataRenderer: item : col.accessor : col.columnDef
-            === 'location' ? storageLabels() : undefined}}
+            {{col.columnDef | detailsDataRenderer: item : col.accessor :
+            storageLabels()}}
           </td>
           }
         </ng-container>

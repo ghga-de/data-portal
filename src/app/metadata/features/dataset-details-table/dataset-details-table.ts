@@ -23,7 +23,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { DatasetDetailsTableColumn } from '@app/metadata/models/dataset-details-table';
+import {
+  datasetDetailsTableColumns,
+  dataSortingDataAccessor,
+} from '@app/metadata/models/dataset-details-table';
 import { DetailsDataRendererPipe } from '@app/metadata/pipes/details-data-renderer-pipe';
 import { WellKnownValueService } from '@app/metadata/services/well-known-value';
 import { NotificationService } from '@app/shared/services/notification';
@@ -34,11 +37,8 @@ import { NotificationService } from '@app/shared/services/notification';
 @Component({
   selector: 'app-dataset-details-table',
   imports: [
-    ClipboardModule,
     DetailsDataRendererPipe,
-    MatButtonModule,
     MatExpansionModule,
-    MatIconModule,
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
@@ -48,14 +48,27 @@ import { NotificationService } from '@app/shared/services/notification';
   styleUrl: './dataset-details-table.scss',
 })
 export class DatasetDetailsTableComponent implements AfterViewInit {
-  header = input.required<string>();
+  tableName = input.required<string>();
   data = input.required<any[]>();
-  dataSource = input.required<MatTableDataSource<any, MatPaginator>>();
-  columns = input.required<DatasetDetailsTableColumn[]>();
-  caption = input.required<string>();
-  sortingDataAccessor = input.required<(arg0: any, key: string) => string | number>();
+  header = input.required<string>();
 
   numItems = computed(() => this.data().length);
+  parsedByted = computed(() =>
+    this.tableName() === 'files'
+      ? this.data().reduce((acc, file) => acc + (file.size ?? 0), 0)
+      : 0,
+  );
+
+  columns = computed(() =>
+    this.tableName ? (datasetDetailsTableColumns[this.tableName()] ?? []) : [],
+  );
+  sortingDataAccessor = computed(() =>
+    this.tableName ? dataSortingDataAccessor[this.tableName()] : undefined,
+  );
+
+  caption = computed(() => `Dataset ${this.header().split(' ')[0]}`);
+  dataSource = new MatTableDataSource<any>([]);
+
   displayCols = computed(() =>
     this.columns().flatMap((x) => (x.hidden ? '' : x.columnDef)),
   );
@@ -72,20 +85,22 @@ export class DatasetDetailsTableComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChildren(MatPaginator) matPaginators!: QueryList<MatPaginator>;
 
-  #updateDataSourceEffect = effect(() => (this.dataSource().data = this.data()));
+  #updateDataSourceEffect = effect(() => (this.dataSource.data = this.data()));
 
   /**
    * After the view has been initialised
    * assign the sorting of the tables to the data sources
    */
   ngAfterViewInit() {
-    this.dataSource().sortingDataAccessor = this.sortingDataAccessor();
+    if (this.sortingDataAccessor()) {
+      this.dataSource.sortingDataAccessor = this.sortingDataAccessor()!;
+    }
 
     this.matSorts.changes.subscribe(() => {
-      if (this.data()) this.dataSource().sort = this.sort;
+      if (this.data()) this.dataSource.sort = this.sort;
     });
     this.matPaginators.changes.subscribe(() => {
-      if (this.paginator) this.dataSource().paginator = this.paginator;
+      if (this.paginator) this.dataSource.paginator = this.paginator;
     });
   }
 }
