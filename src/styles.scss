@@ -316,6 +316,17 @@ $colour-suffixes: (
 }
 
 @each $suffix in $colour-suffixes {
+  .menu-item-#{$suffix} {
+    @include mat.menu-overrides(
+      (
+        item-icon-color: var(--mat-sys-#{$suffix}),
+        item-label-text-color: var(--mat-sys-#{$suffix}),
+      )
+    );
+  }
+}
+
+@each $suffix in $colour-suffixes {
   .button-#{$suffix} {
     @include mat.button-overrides(
       (
@@ -380,6 +391,11 @@ a.active-sub-page {
   mat-icon {
     color: var(--mat-sys-on-tertiary-fixed);
   }
+  @include mat.menu-overrides(
+    (
+      item-icon-color: var(--mat-sys-on-tertiary-fixed),
+    )
+  );
 }
 
 nav a:hover,
@@ -395,6 +411,14 @@ nav a:focus,
 mat-toolbar a:not(.active-page):focus,
 mat-toolbar button:not(.active-page):focus {
   background-color: color-mix(in srgb, var(--mat-sys-primary) 100%, #fff 12%);
+}
+
+mat-toolbar button.account-page-active:hover,
+mat-toolbar button.account-page-active:active {
+  background-color: color-mix(in srgb, var(--mat-sys-quaternary) 100%, #fff 8%);
+}
+mat-toolbar button.account-page-active:focus {
+  background-color: color-mix(in srgb, var(--mat-sys-quaternary) 100%, #fff 12%);
 }
 
 mat-chip.chip-tertiary,
