@@ -99,9 +99,9 @@ export class UserIvaListComponent implements OnInit {
       verification (${address}). <strong>Please allow some time for processing your
       request.</strong> When the verification code has been transmitted,
       you will also be notified via e-mail.<p
-      class="text-error py-4 text-base font-bold">Note: it can take up to 2-3 days for
-      a verification code to be sent, even for the verification of SMS contact
-      addresses.</p>`,
+      class="text-error py-4 text-base font-bold">Note: Verification codes via SMS are
+      currently sent out manually by our data stewards, therefore it may take up to 2-3
+      working days until you will receive your code.</p>`,
       callback: (confirmed) => {
         if (confirmed) this.#requestVerification(iva);
       },
@@ -180,9 +180,6 @@ export class UserIvaListComponent implements OnInit {
           this.#notify.showWarning(
             `A verification code has not yet been sent. Please try again later.`,
           );
-          this.#notify.showError(`
-            Note that it can take up to 2-3 days for a verification code to be sent,
-            even for the verification of SMS contact addresses.`);
         } else if (state === IvaState.CodeTransmitted) {
           this.#notify.showSuccess('A verification code has been sent to you.');
           this.enterVerificationCode(iva);
