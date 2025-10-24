@@ -75,11 +75,13 @@
       <mat-error>{{ emailErrorMessage() }}</mat-error>
       }
     </mat-form-field>
-    <p class="text-danger pt-4 pb-4 text-sm">
-      Note that most data access committees (DACs) require that access requests come
-      from accounts with institutional emails, not a private email. Please take this
-      into consideration when choosing which email to use for your request.
-    </p>
+    <div class="py-3">
+      <aside class="text-danger bg-warning/15 rounded-xl p-3 text-sm">
+        Note that most data access committees (DACs) require that access requests be
+        associated with institutional email addresses rather than private ones. Please
+        keep this in mind when selecting the email address to use for your request.
+      </aside>
+    </div>
   </mat-dialog-content>
   <mat-dialog-actions class="gap-y-2">
     <button
