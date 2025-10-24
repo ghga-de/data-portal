@@ -178,7 +178,7 @@ export class UserIvaListComponent implements OnInit {
         const state = iva.state;
         if (state === IvaState.CodeRequested || state === IvaState.CodeCreated) {
           this.#notify.showWarning(
-            `A verification code has not yet been sent. Please try again later.`,
+            'A verification code has not yet been sent. Please try again later.',
           );
         } else if (state === IvaState.CodeTransmitted) {
           this.#notify.showSuccess('A verification code has been sent to you.');
