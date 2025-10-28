@@ -1,5 +1,5 @@
 /**
- * Test the global stats component
+ * Test the study details component
  * @copyright The GHGA Authors
  * @license Apache-2.0
  */
