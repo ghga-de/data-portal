@@ -14,7 +14,7 @@ import { ConfigService } from '@app/shared/services/config';
 import { StudyDetailsComponent } from './study-details';
 
 /**
- * Mock the metadata service as needed for the global stats
+ * Mock the metadata service as needed for the study details
  */
 class MockMetadataService {
   study = {
