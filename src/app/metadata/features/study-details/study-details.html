@@ -64,6 +64,12 @@
           [dataSource]="source"
           class="mat-elevation-z8 larger-mat-table-text"
         >
+          <caption class="cdk-visually-hidden">
+            Datasets belonging to study
+            {{
+              study.accession
+            }}
+          </caption>
           <ng-container matColumnDef="accession">
             <th mat-header-cell *matHeaderCellDef class="min-w-64">
               Dataset Accession
@@ -73,7 +79,7 @@
             </td>
           </ng-container>
           <ng-container matColumnDef="title">
-            <th mat-header-cell *matHeaderCellDef class="min-w-32">Title</th>
+            <th mat-header-cell *matHeaderCellDef class="min-w-md">Title</th>
             <td mat-cell *matCellDef="let ds">{{ ds.content.title }}</td>
           </ng-container>
           <ng-container matColumnDef="ega">
