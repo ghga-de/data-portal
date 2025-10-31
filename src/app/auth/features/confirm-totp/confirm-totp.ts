@@ -4,7 +4,7 @@
  * @license Apache-2.0
  */
 
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import {
   FormControl,
   FormsModule,
@@ -35,33 +35,39 @@ import { NotificationService } from '@app/shared/services/notification';
 export class ConfirmTotpComponent {
   #notify = inject(NotificationService);
   #authService = inject(AuthService);
-  #submitted = false;
+  protected submitted = signal(false);
 
-  codeControl = new FormControl<string>('', [
+  protected codeControl = new FormControl<string>('', [
     Validators.required,
     Validators.pattern(/^\d{6}$/),
   ]);
 
-  verificationError = false;
+  protected verificationError = signal(false);
 
-  allowNavigation = false; // used by canDeactivate guard
+  protected allowNavigation = false; // used by canDeactivate guard
 
   /**
    * Input handler for the TOTP code
+   * @param event The input event object
    */
-  onInput(): void {
-    this.verificationError = false;
+  onInput(event: Event): void {
+    event.preventDefault();
+    const target = event.target as HTMLInputElement;
+    target.value = target.value.replace(/\D/g, '').slice(0, 6);
+    this.codeControl.setValue(target.value);
+    if (this.codeControl.value?.length !== 6 || !this.codeControl.valid) return;
+    this.onSubmit();
   }
 
   /**
    * Submit authentication code
    */
   async onSubmit(): Promise<void> {
-    if (this.#submitted) return;
-    this.verificationError = false;
+    if (this.submitted()) return;
     const code = this.codeControl.value;
     if (!code) return;
-    this.#submitted = true;
+    if (this.codeControl.value?.length !== 6 || !this.codeControl.valid) return;
+    this.submitted.set(true);
     const verified = await this.#authService.verifyTotpCode(code);
     if (verified) {
       this.#notify.showSuccess('Successfully authenticated.');
@@ -69,9 +75,10 @@ export class ConfirmTotpComponent {
       this.#authService.redirectAfterLogin();
     } else {
       this.#notify.showError('Failed to authenticate.');
-      this.codeControl.reset();
-      this.verificationError = true;
-      this.#submitted = false;
+      this.verificationError.set(true);
+      await new Promise((r) => setTimeout(r, 2500)).finally(() => {
+        this.submitted.set(false);
+      });
     }
   }
 
