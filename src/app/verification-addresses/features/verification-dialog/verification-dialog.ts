@@ -68,7 +68,7 @@ export class VerificationDialogComponent {
     const target = event.target as HTMLInputElement;
     target.value = target.value
       .toUpperCase()
-      .replace(/[^A-Z0-9]{6}/g, '')
+      .replace(/[^A-Z0-9]/g, '')
       .slice(0, 6);
     this.codeControl.setValue(target.value);
     if (this.codeControl.value?.length !== 6 || !this.codeControl.valid) return;
