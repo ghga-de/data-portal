@@ -4,7 +4,7 @@
  * @license Apache-2.0
  */
 
-import { Component, computed, inject, model } from '@angular/core';
+import { Component, inject, model, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import {
@@ -17,6 +17,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { RouterModule } from '@angular/router';
 import { AccessGrant } from '@app/access-requests/models/access-requests';
+import { AccessRequestService } from '@app/access-requests/services/access-request';
+import { NotificationService } from '@app/shared/services/notification';
 
 /**
  * This component contains the logic to re-check the id before revoking an access grant
@@ -32,25 +34,24 @@ import { AccessGrant } from '@app/access-requests/models/access-requests';
     MatDialogModule,
     MatInputModule,
   ],
+  providers: [AccessRequestService, NotificationService],
   templateUrl: './access-grant-revocation-dialog.html',
-  styleUrl: './access-grant-revocation-dialog.scss',
 })
 export class AccessGrantRevocationDialogComponent {
   #dialogRef = inject(MatDialogRef<AccessGrantRevocationDialogComponent, boolean>);
-  data = inject<{
+  protected data = inject<{
     grant: AccessGrant;
   }>(MAT_DIALOG_DATA);
 
-  emailInput = model<string | undefined>();
-  datasetInput = model<string | undefined>();
+  #ars = inject(AccessRequestService);
+  #notificationService = inject(NotificationService);
 
-  disabled = computed(
-    () =>
-      !(
-        this.emailInput()?.trim() === this.grant.user_email &&
-        this.datasetInput()?.trim() === this.grant.dataset_id
-      ),
-  );
+  protected emailInput = model<string | undefined>();
+  protected datasetInput = model<string | undefined>();
+
+  protected disabled = signal(true);
+
+  protected revocationError = signal(false);
 
   /**
    * Grant to delete
@@ -61,10 +62,28 @@ export class AccessGrantRevocationDialogComponent {
   }
 
   /**
+   * Handle input change event
+   * @param event The event object
+   * @param type The type of input that was changed (for the user email or dataset ID)
+   */
+  onInput(event: Event, type: 'email' | 'dataset'): void {
+    const input = event.target as HTMLInputElement;
+    if (type === 'email') {
+      this.emailInput.set(input.value.trim());
+    } else {
+      this.datasetInput.set(input.value.trim());
+    }
+    this.disabled.set(
+      this.emailInput()?.trim() !== this.grant.user_email ||
+        this.datasetInput()?.trim() !== this.grant.dataset_id,
+    );
+  }
+
+  /**
    * Confirm the dialog
    */
   onConfirm(): void {
-    this.#dialogRef.close(true);
+    this.#revoke();
   }
 
   /**
@@ -72,5 +91,30 @@ export class AccessGrantRevocationDialogComponent {
    */
   onCancel() {
     this.#dialogRef.close(false);
+  }
+
+  /**
+   * Revoke the grant.
+   */
+  #revoke(): void {
+    const id = this.data.grant.id;
+    if (!id) return;
+    this.#ars.revokeAccessGrant(id).subscribe({
+      next: () => {
+        this.#notificationService.showSuccess(`Access grant was successfully revoked.`);
+        this.revocationError.set(false);
+        this.#dialogRef.close(true);
+      },
+      error: (err) => {
+        console.debug(err);
+        this.#notificationService.showError(
+          'Access grant could not be revoked. Please try again later',
+        );
+        this.revocationError.set(true);
+        new Promise((resolve) => setTimeout(resolve, 0)).finally(() => {
+          this.disabled.set(false);
+        });
+      },
+    });
   }
 }
