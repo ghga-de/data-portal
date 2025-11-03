@@ -10,11 +10,6 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { IvaService } from '@app/verification-addresses/services/iva';
 import { VerificationDialogComponent } from './verification-dialog';
 
-/**
- * Mock the IVA service as needed by the user verification dialog component
- */
-class MockIvaService {}
-
 describe('VerificationDialogComponent', () => {
   let component: VerificationDialogComponent;
   let fixture: ComponentFixture<VerificationDialogComponent>;
@@ -24,7 +19,7 @@ describe('VerificationDialogComponent', () => {
       imports: [VerificationDialogComponent],
       providers: [
         { provide: MAT_DIALOG_DATA, useValue: { address: 'SMS: 123/456' } },
-        { provide: IvaService, useClass: MockIvaService },
+        { provide: IvaService, useValue: {} },
         { provide: MatDialogRef, useValue: {} },
       ],
     }).compileComponents();
