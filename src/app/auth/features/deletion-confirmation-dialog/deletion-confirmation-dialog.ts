@@ -48,7 +48,7 @@ export class DeletionConfirmationDialogComponent {
   protected userInput = model<string | undefined>();
 
   protected disabled = computed(
-    () => this.userInput()?.trim() !== this.user.email && !this.#isProcessing(),
+    () => this.userInput()?.trim() !== this.user.email || this.#isProcessing(),
   );
   #isProcessing = signal(false);
 

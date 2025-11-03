@@ -51,9 +51,9 @@ export class AccessGrantRevocationDialogComponent {
 
   protected disabled = computed(
     () =>
-      (this.emailInput()?.trim() !== this.grant.user_email ||
-        this.datasetInput()?.trim() !== this.grant.dataset_id) &&
-      !this.#isProcessing(),
+      this.emailInput()?.trim() !== this.grant.user_email ||
+      this.datasetInput()?.trim() !== this.grant.dataset_id ||
+      this.#isProcessing(),
   );
   #isProcessing = signal(false);
 
