@@ -5,6 +5,7 @@
  */
 
 import { Component, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import {
   FormControl,
   FormsModule,
@@ -50,28 +51,37 @@ export class VerificationDialogComponent {
   protected data = inject<{ id: string; address: string }>(MAT_DIALOG_DATA);
   protected address = computed(() => this.data.address);
 
-  protected submitted = signal(false);
+  protected disabled = computed(
+    () => this.#validInput() !== 'VALID' || this.#isProcessing(),
+  );
+
+  #isProcessing = signal(false);
 
   protected codeControl = new FormControl<string>('', [
     Validators.required,
     Validators.pattern(/^[A-Z0-9]{6}$/),
   ]);
+  #validInput = toSignal(this.codeControl.statusChanges, {
+    initialValue: this.codeControl.status,
+  });
 
   protected verificationError = signal(false);
 
   /**
-   * On input, modify the code to uppercase
+   * Input handler for the IVA verification code
    * @param event The input event object
    */
   onInput(event: Event): void {
     event.preventDefault();
     const target = event.target as HTMLInputElement;
+    const startingLength = this.codeControl.value?.length || 0;
     target.value = target.value
       .toUpperCase()
       .replace(/[^A-Z0-9]/g, '')
       .slice(0, 6);
     this.codeControl.setValue(target.value);
-    if (this.codeControl.value?.length !== 6 || !this.codeControl.valid) return;
+    if (startingLength > 6) return;
+    if (!this.codeControl.valid) return;
     this.onSubmit();
   }
 
@@ -123,19 +133,17 @@ export class VerificationDialogComponent {
    * Complete the verification and pass the code
    */
   async onSubmit(): Promise<void> {
-    if (this.submitted()) return;
+    if (this.#isProcessing()) return;
     const code = this.codeControl.value;
-    if (!code) return;
-    if (this.codeControl.value?.length !== 6 || !this.codeControl.valid) return;
-    this.submitted.set(true);
+    if (!code || !this.codeControl.valid) return;
+    this.#isProcessing.set(true);
     const verified = await this.submitVerificationCode(this.data.id, code);
-    console.log(verified);
     if (verified) {
       this.#dialogRef.close(true);
     } else {
       this.verificationError.set(true);
       await new Promise((r) => setTimeout(r, 2500)).finally(() => {
-        this.submitted.set(false);
+        this.#isProcessing.set(false);
       });
     }
   }
