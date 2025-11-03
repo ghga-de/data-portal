@@ -4,7 +4,7 @@
  * @license Apache-2.0
  */
 
-import { Component, inject, model, signal } from '@angular/core';
+import { Component, computed, inject, model, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import {
@@ -49,7 +49,13 @@ export class AccessGrantRevocationDialogComponent {
   protected emailInput = model<string | undefined>();
   protected datasetInput = model<string | undefined>();
 
-  protected disabled = signal(true);
+  protected disabled = computed(
+    () =>
+      (this.emailInput()?.trim() !== this.grant.user_email ||
+        this.datasetInput()?.trim() !== this.grant.dataset_id) &&
+      !this.#isProcessing(),
+  );
+  #isProcessing = signal(false);
 
   protected revocationError = signal(false);
 
@@ -73,17 +79,6 @@ export class AccessGrantRevocationDialogComponent {
     } else {
       this.datasetInput.set(input.value.trim());
     }
-    this.disabled.set(
-      this.emailInput()?.trim() !== this.grant.user_email ||
-        this.datasetInput()?.trim() !== this.grant.dataset_id,
-    );
-  }
-
-  /**
-   * Confirm the dialog
-   */
-  onConfirm(): void {
-    this.#revoke();
   }
 
   /**
@@ -96,9 +91,10 @@ export class AccessGrantRevocationDialogComponent {
   /**
    * Revoke the grant.
    */
-  #revoke(): void {
+  async onConfirm(): Promise<void> {
     const id = this.data.grant.id;
     if (!id) return;
+    this.#isProcessing.set(true);
     this.#ars.revokeAccessGrant(id).subscribe({
       next: () => {
         this.#notificationService.showSuccess(`Access grant was successfully revoked.`);
@@ -112,7 +108,7 @@ export class AccessGrantRevocationDialogComponent {
         );
         this.revocationError.set(true);
         new Promise((resolve) => setTimeout(resolve, 0)).finally(() => {
-          this.disabled.set(false);
+          this.#isProcessing.set(false);
         });
       },
     });

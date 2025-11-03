@@ -4,7 +4,7 @@
  * @license Apache-2.0
  */
 
-import { Component, inject, model, signal } from '@angular/core';
+import { Component, computed, inject, model, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import {
@@ -47,7 +47,10 @@ export class DeletionConfirmationDialogComponent {
 
   protected userInput = model<string | undefined>();
 
-  protected disabled = signal(true);
+  protected disabled = computed(
+    () => this.userInput()?.trim() !== this.user.email && !this.#isProcessing(),
+  );
+  #isProcessing = signal(false);
 
   protected deletionError = signal(false);
 
@@ -66,28 +69,20 @@ export class DeletionConfirmationDialogComponent {
   onInput(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.userInput.set(input.value.trim());
-    this.disabled.set(this.userInput() !== this.user.email);
   }
 
   /**
-   * Cancel the dialog
+   * Called when the cancel button is clicked. Closes the dialog.
    */
   onCancel(): void {
     this.#dialogRef.close(false);
   }
 
   /**
-   * Confirm the dialog
+   * Delete the user
    */
-  onConfirm(): void {
-    this.#delete();
-  }
-
-  /**
-   * Delete the user.
-   */
-  async #delete(): Promise<void> {
-    this.disabled.set(true);
+  async onConfirm(): Promise<void> {
+    this.#isProcessing.set(true);
     const id = this.data.user.id;
     if (!id) return;
     this.#userService.deleteUser(id).subscribe({
@@ -102,9 +97,8 @@ export class DeletionConfirmationDialogComponent {
           'User account could not be deleted. Please try again later',
         );
         this.deletionError.set(true);
-        new Promise((resolve) => setTimeout(resolve, 2500)).finally(() => {
-          this.disabled.set(false);
-        });
+        new Promise((resolve) => setTimeout(resolve, 2500)).finally(() => {});
+        this.#isProcessing.set(false);
       },
     });
   }
