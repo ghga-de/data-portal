@@ -79,7 +79,7 @@ export class DeletionConfirmationDialogComponent {
   }
 
   /**
-   * Delete the user
+   * Called when the "confirm" button is clicked. Deletes the user.
    */
   async onConfirm(): Promise<void> {
     this.#isProcessing.set(true);
