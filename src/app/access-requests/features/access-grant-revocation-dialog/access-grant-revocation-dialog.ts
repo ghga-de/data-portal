@@ -89,9 +89,9 @@ export class AccessGrantRevocationDialogComponent {
   }
 
   /**
-   * Revoke the grant.
+   * Called when the "confirm" button is clicked. Revokes the grant.
    */
-  async onConfirm(): Promise<void> {
+  onConfirm(): void {
     const id = this.data.grant.id;
     if (!id) return;
     this.#isProcessing.set(true);
@@ -107,9 +107,7 @@ export class AccessGrantRevocationDialogComponent {
           'Access grant could not be revoked. Please try again later',
         );
         this.revocationError.set(true);
-        new Promise((resolve) => setTimeout(resolve, 0)).finally(() => {
-          this.#isProcessing.set(false);
-        });
+        setTimeout(() => this.#isProcessing.set(false), 2500);
       },
     });
   }

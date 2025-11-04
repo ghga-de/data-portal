@@ -81,7 +81,7 @@ export class DeletionConfirmationDialogComponent {
   /**
    * Called when the "confirm" button is clicked. Deletes the user.
    */
-  async onConfirm(): Promise<void> {
+  onConfirm(): void {
     this.#isProcessing.set(true);
     const id = this.data.user.id;
     if (!id) return;
@@ -97,8 +97,7 @@ export class DeletionConfirmationDialogComponent {
           'User account could not be deleted. Please try again later',
         );
         this.deletionError.set(true);
-        new Promise((resolve) => setTimeout(resolve, 2500)).finally(() => {});
-        this.#isProcessing.set(false);
+        setTimeout(() => this.#isProcessing.set(false), 2500);
       },
     });
   }
