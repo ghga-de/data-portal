@@ -41,6 +41,8 @@ export class ConfirmTotpComponent {
     () => this.#validInput() !== 'VALID' || this.#isProcessing(),
   );
 
+  #previousSubmission: string | undefined = undefined;
+
   #isProcessing = signal(false);
 
   protected codeControl = new FormControl<string>('', [
@@ -62,11 +64,10 @@ export class ConfirmTotpComponent {
   onInput(event: Event): void {
     event.preventDefault();
     const target = event.target as HTMLInputElement;
-    const startingLength = this.codeControl.value?.length || 0;
     target.value = target.value.replace(/\D/g, '').slice(0, 6);
     this.codeControl.setValue(target.value);
-    if (startingLength > 6) return;
     if (!this.codeControl.valid) return;
+    if (this.codeControl.value === this.#previousSubmission) return;
     this.onSubmit();
   }
 
@@ -78,6 +79,7 @@ export class ConfirmTotpComponent {
     const code = this.codeControl.value;
     if (!code || !this.codeControl.valid) return;
     this.#isProcessing.set(true);
+    this.#previousSubmission = code;
     const verified = await this.#authService.verifyTotpCode(code);
     if (verified) {
       this.#notify.showSuccess('Successfully authenticated.');

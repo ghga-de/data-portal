@@ -55,6 +55,8 @@ export class VerificationDialogComponent {
     () => this.#validInput() !== 'VALID' || this.#isProcessing(),
   );
 
+  #previousSubmission: string | undefined = undefined;
+
   #isProcessing = signal(false);
 
   protected codeControl = new FormControl<string>('', [
@@ -74,14 +76,13 @@ export class VerificationDialogComponent {
   onInput(event: Event): void {
     event.preventDefault();
     const target = event.target as HTMLInputElement;
-    const startingLength = this.codeControl.value?.length || 0;
     target.value = target.value
       .toUpperCase()
       .replace(/[^A-Z0-9]/g, '')
       .slice(0, 6);
     this.codeControl.setValue(target.value);
-    if (startingLength > 6) return;
     if (!this.codeControl.valid) return;
+    if (this.codeControl.value === this.#previousSubmission) return;
     this.onSubmit();
   }
 
@@ -137,6 +138,7 @@ export class VerificationDialogComponent {
     const code = this.codeControl.value;
     if (!code || !this.codeControl.valid) return;
     this.#isProcessing.set(true);
+    this.#previousSubmission = code;
     const verified = await this.submitVerificationCode(this.data.id, code);
     if (verified) {
       this.#dialogRef.close(true);

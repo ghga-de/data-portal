@@ -20,11 +20,6 @@
       >{{ verificationError() ? 'Verification failed. Please try again.' : ''
       }}</mat-error
     >
-    <div>
-      @if ( codeControl.invalid && codeControl.dirty) {
-      <mat-error>Please enter a valid verification code.</mat-error>
-      }
-    </div>
   </form>
 </div>
 <div mat-dialog-actions cdkTrapFocus>
