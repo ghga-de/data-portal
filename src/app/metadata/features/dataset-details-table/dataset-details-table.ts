@@ -19,6 +19,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatTooltip } from '@angular/material/tooltip';
 import {
   datasetDetailsTableColumns,
   dataSortingDataAccessor,
@@ -26,6 +27,7 @@ import {
 import { DetailsDataRendererPipe } from '@app/metadata/pipes/details-data-renderer-pipe';
 import { WellKnownValueService } from '@app/metadata/services/well-known-value';
 import { WithCopyButton } from '@app/shared/features/with-copy-button/with-copy-button';
+import { ParseBytes } from '@app/shared/pipes/parse-bytes-pipe';
 
 /**
  * Component for the dataset details table
@@ -39,14 +41,26 @@ import { WithCopyButton } from '@app/shared/features/with-copy-button/with-copy-
     MatPaginatorModule,
     MatSortModule,
     WithCopyButton,
+    MatTooltip,
   ],
   templateUrl: './dataset-details-table.html',
   styleUrl: './dataset-details-table.scss',
 })
 export class DatasetDetailsTableComponent implements AfterViewInit {
-  tableName = input.required<string>();
+  tableName = input.required<'experiments' | 'samples' | 'files'>();
   data = input.required<any[]>();
-  header = input.required<string>();
+
+  protected header = computed(() => {
+    let header = `List of ${this.tableName()} (${this.numItems()} total`;
+    if (this.tableName() === 'files') {
+      const totalBytes = this.data().reduce(
+        (acc, file) => acc + (file.file_information?.size ?? 0),
+        0,
+      );
+      header = `${header}, ${ParseBytes.prototype.transform(totalBytes)}`;
+    }
+    return `${header})`;
+  });
 
   protected numItems = computed(() => this.data().length);
 
