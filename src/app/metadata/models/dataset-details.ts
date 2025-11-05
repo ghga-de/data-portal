@@ -29,6 +29,8 @@ interface DataAccessPolicy {
   name: string;
   policy_text: string;
   policy_url: string;
+  data_use_permission_term: string;
+  data_use_modifier_terms: string[];
   data_access_committee: {
     alias: string;
     email: string;
@@ -104,6 +106,8 @@ export const emptyDatasetDetails: DatasetDetails = {
     name: '',
     policy_text: '',
     policy_url: '',
+    data_use_permission_term: '',
+    data_use_modifier_terms: [],
     data_access_committee: {
       alias: '',
       email: '',

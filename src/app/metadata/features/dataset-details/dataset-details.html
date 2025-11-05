@@ -229,6 +229,28 @@
               </p>
               <p class="text-base"><strong>e-Mail:</strong> {{ dac().email }}</p>
               <p class="text-base">
+                <strong>Data User Permission Term:</strong>
+                {{
+                  dap().data_use_permission_term
+                    | underscoreToSpace
+                    | CapitalisePipe: true : true
+                }}
+              </p>
+              <p class="flex items-center gap-2 text-base">
+                <strong>Data User Modifier Terms:</strong>
+                @if (dap().data_use_modifier_terms.length > 0) {
+                  <mat-chip-set class="inline-block">
+                    @for (term of dap().data_use_modifier_terms; track term) {
+                      <mat-chip class="small-chip me-1">{{
+                        term | underscoreToSpace | CapitalisePipe: true : true
+                      }}</mat-chip>
+                    }
+                  </mat-chip-set>
+                } @else {
+                  N/A
+                }
+              </p>
+              <p class="text-base">
                 <strong>Data Access Policy:</strong> {{ dap().name }}
               </p>
               <app-paragraphs
