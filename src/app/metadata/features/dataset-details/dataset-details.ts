@@ -32,8 +32,8 @@ import { ValidateDOI } from '@app/metadata/pipes/validate-doi-pipe';
 import { DatasetInformationService } from '@app/metadata/services/dataset-information';
 import { MetadataService } from '@app/metadata/services/metadata';
 import { WellKnownValueService } from '@app/metadata/services/well-known-value';
-import { Capitalise } from '@app/shared/pipes/capitalise-pipe';
 import { ParseBytes } from '@app/shared/pipes/parse-bytes-pipe';
+import { ReplaceStringPipe } from '@app/shared/pipes/replace-string-pipe';
 import { UnderscoreToSpace } from '@app/shared/pipes/underscore-to-space-pipe';
 import { ConfigService } from '@app/shared/services/config';
 import { NavigationTrackingService } from '@app/shared/services/navigation';
@@ -72,7 +72,7 @@ const COLUMNS = {
     ParagraphsComponent,
     ExternalLinkDirective,
     DatasetDetailsTableComponent,
-    Capitalise,
+    ReplaceStringPipe,
   ],
   providers: [MetadataService],
   templateUrl: './dataset-details.html',

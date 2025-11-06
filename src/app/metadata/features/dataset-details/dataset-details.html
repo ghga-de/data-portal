@@ -224,32 +224,50 @@
                   ><mat-icon inline fontIcon="data_loss_prevention"></mat-icon></span
                 ><span>Policy and Data Access Committee</span>
               </h2>
-              <p class="text-base">
-                <strong>Data Access Committee:</strong> {{ dac().alias }}
-              </p>
-              <p class="text-base"><strong>e-Mail:</strong> {{ dac().email }}</p>
-              <p class="text-base">
-                <strong>Data Use Permission:</strong>
-                {{
-                  dap().data_use_permission_term
-                    | underscoreToSpace
-                    | CapitalisePipe: true : true
-                }}
-              </p>
-              <p class="flex items-center gap-2 text-base">
-                <strong>Data Use Modifiers:</strong>
-                @if (dap().data_use_modifier_terms.length > 0) {
-                  <mat-chip-set class="inline-block">
-                    @for (term of dap().data_use_modifier_terms; track term) {
-                      <mat-chip class="small-chip me-1">{{
-                        term | underscoreToSpace | CapitalisePipe: true : true
-                      }}</mat-chip>
+              <div
+                class="*:text-base lg:grid lg:grid-cols-2 lg:gap-x-2 2xl:grid-cols-3"
+              >
+                <p><strong>Data Access Committee:</strong> {{ dac().alias }}</p>
+                <p><strong>e-Mail:</strong> {{ dac().email }}</p>
+              </div>
+              <div
+                class="*:-mt-1.5 *:text-base lg:grid lg:grid-cols-2 lg:gap-x-2 2xl:grid-cols-3"
+              >
+                <p>
+                  <strong>Data Use Permission:</strong>&nbsp;<a
+                    appExtLink
+                    [href]="
+                      `http://purl.obolibrary.org/obo/${(dap().data_use_permission_id | replaceStringPipe: ':' : '_')}`
+                    "
+                    class="lowercase"
+                    >{{ dap().data_use_permission_term | underscoreToSpace }}</a
+                  >
+                </p>
+                <p>
+                  <strong>Data Use Modifiers:</strong>
+                  @if (dap().data_use_modifier_terms.length > 0) {
+                    @for (
+                      term of dap().data_use_modifier_terms;
+                      track term;
+                      let idx = $index;
+                      let first = $first;
+                      let last = $last
+                    ) {
+                      {{ first ? ' ' : '' }}
+                      <a
+                        appExtLink
+                        [href]="
+                          `http://purl.obolibrary.org/obo/${(dap().data_use_modifier_ids[idx] | replaceStringPipe: ':' : '_')}`
+                        "
+                        class="lowercase"
+                        >{{ term | underscoreToSpace }}</a
+                      >{{ last ? '' : ', ' }}
                     }
-                  </mat-chip-set>
-                } @else {
-                  N/A
-                }
-              </p>
+                  } @else {
+                    N/A
+                  }
+                </p>
+              </div>
               <p class="text-base">
                 <strong>Data Access Policy:</strong> {{ dap().name }}
               </p>

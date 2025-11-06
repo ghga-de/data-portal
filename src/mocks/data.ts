@@ -404,7 +404,9 @@ export const datasetDetails: DatasetDetailsRaw = {
       Cum sociis natoque penatibus et magnis. Quam lacus suspendisse faucibus interdum. Lorem dolor sed viverra ipsum. Non pulvinar neque laoreet suspendisse interdum consectetur. Sit amet consectetur adipiscing elit ut aliquam. Mi ipsum faucibus vitae aliquet nec. Eget egestas purus viverra accumsan in nisl nisi scelerisque eu. Vel orci porta non pulvinar neque laoreet suspendisse interdum consectetur. Justo nec ultrices dui sapien eget mi proin sed. Lacus viverra vitae congue eu consequat. Purus viverra accumsan in nisl nisi scelerisque eu ultrices vitae. Pretium aenean pharetra magna ac placerat vestibulum lectus mauris. Consequat interdum varius sit amet mattis vulputate. Venenatis cras sed felis eget velit. Cursus metus aliquam eleifend mi in nulla posuere sollicitudin aliquam. Tristique senectus et netus et malesuada fames ac. Massa enim nec dui nunc mattis enim ut tellus elementum.`,
     policy_url: 'https://test.com',
     data_use_permission_term: 'TEST_TERM',
+    data_use_permission_id: 'DUO:0000001',
     data_use_modifier_terms: ['MODIFIER_ONE', 'MODIFIER_TWO'],
+    data_use_modifier_ids: ['DUO:0000002', 'DUO:0000003'],
   },
   study: {
     accession: 'GHGAS12345678901234',
