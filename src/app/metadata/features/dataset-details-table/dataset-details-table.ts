@@ -12,6 +12,7 @@ import {
   inject,
   input,
   QueryList,
+  signal,
   ViewChild,
   ViewChildren,
 } from '@angular/core';
@@ -61,6 +62,26 @@ export class DatasetDetailsTableComponent implements AfterViewInit {
     }
     return `${header})`;
   });
+
+  protected isHovered = signal(false);
+
+  protected tooltipDisabled = signal(false);
+
+  /**
+   * When a user hovers over the expansion panel, increment the hover count to hide the tooltip
+   */
+  onHover(): void {
+    let countHovered = sessionStorage.getItem('CountDSDetailsTableHovered');
+    const numHovered: number = countHovered ? parseInt(countHovered) : 0;
+    sessionStorage.setItem('CountDSDetailsTableHovered', `${numHovered + 1}`);
+    setTimeout(() => {
+      if (numHovered > 2) {
+        this.tooltipDisabled.set(true);
+      } else {
+        this.tooltipDisabled.set(false);
+      }
+    }, 2000);
+  }
 
   protected numItems = computed(() => this.data().length);
 
