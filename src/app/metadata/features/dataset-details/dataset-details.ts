@@ -33,7 +33,6 @@ import { DatasetInformationService } from '@app/metadata/services/dataset-inform
 import { MetadataService } from '@app/metadata/services/metadata';
 import { WellKnownValueService } from '@app/metadata/services/well-known-value';
 import { ParseBytes } from '@app/shared/pipes/parse-bytes-pipe';
-import { ReplaceStringPipe } from '@app/shared/pipes/replace-string-pipe';
 import { UnderscoreToSpace } from '@app/shared/pipes/underscore-to-space-pipe';
 import { ConfigService } from '@app/shared/services/config';
 import { NavigationTrackingService } from '@app/shared/services/navigation';
@@ -72,7 +71,6 @@ const COLUMNS = {
     ParagraphsComponent,
     ExternalLinkDirective,
     DatasetDetailsTableComponent,
-    ReplaceStringPipe,
   ],
   providers: [MetadataService],
   templateUrl: './dataset-details.html',
