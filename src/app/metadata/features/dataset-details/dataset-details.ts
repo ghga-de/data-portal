@@ -114,7 +114,7 @@ export class DatasetDetailsComponent implements OnInit {
 
   dap = computed(() => {
     const dap = this.datasetDetails().data_access_policy;
-    const data_use_permission_url = `${this.baseDuoUrl}${dap.data_use_permission_id.replace(/:/g, '_')}`;
+    const data_use_permission_url = `${this.baseDuoUrl}${dap.data_use_permission_id.replace(':', '_')}`;
     const data_use_modifier_urls = dap.data_use_modifier_ids.map(
       (x) => `${this.baseDuoUrl}${x.replace(/:/g, '_')}`,
     );
