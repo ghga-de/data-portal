@@ -236,11 +236,8 @@
                 <p>
                   <strong>Data Use Permission:</strong>&nbsp;<a
                     appExtLink
-                    [href]="
-                      `http://purl.obolibrary.org/obo/${(dap().data_use_permission_id | replaceStringPipe: ':' : '_')}`
-                    "
-                    class="lowercase"
-                    >{{ dap().data_use_permission_term | underscoreToSpace }}</a
+                    [href]="dap().data_use_permission_url"
+                    >{{ dap().data_use_permission_term }}</a
                   >
                 </p>
                 <p>
@@ -254,13 +251,9 @@
                       let last = $last
                     ) {
                       {{ first ? ' ' : '' }}
-                      <a
-                        appExtLink
-                        [href]="
-                          `http://purl.obolibrary.org/obo/${(dap().data_use_modifier_ids[idx] | replaceStringPipe: ':' : '_')}`
-                        "
-                        class="lowercase"
-                        >{{ term | underscoreToSpace }}</a
+                      <a appExtLink [href]="dap().data_use_modifier_urls[idx]">{{
+                        term
+                      }}</a
                       >{{ last ? '' : ', ' }}
                     }
                   } @else {
