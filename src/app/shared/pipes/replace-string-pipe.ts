@@ -1,5 +1,5 @@
 /**
- * This pipe takes a string and replaces all underscores by spaces to make it look nicer in the ui.
+ * This pipe takes a string and replaces all instances of a given substring with another.
  * @copyright The GHGA Authors
  * @license Apache-2.0
  */
@@ -7,7 +7,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 /**
- * This pipe can be used to display a string that contains underscores looking a bit more readable.
+ * This pipe can be used to replace a substring with another in a given string
  */
 @Pipe({
   name: 'replaceStringPipe',
@@ -15,8 +15,10 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class ReplaceStringPipe implements PipeTransform {
   /**
    * The transform method executes the business logic of the Pipe
-   * @param input A string that possibly contains underscores
-   * @returns The string with all underscores replaced by spaces
+   * @param input A string to perform the replacement on
+   * @param stringToReplace The substring to be replaced
+   * @param replacementString The substring to use as replacement
+   * @returns The string with the replaced substrings
    */
   transform(input: string, stringToReplace: string, replacementString: string): string {
     if (input) {

@@ -14,20 +14,27 @@ describe('ReplaceStringPipe', () => {
 
   it('should return an empty string if there was no input', () => {
     const pipe = new ReplaceStringPipe();
-    const result = pipe.transform(undefined);
+    const result = pipe.transform('', '', '');
     expect(result).toBe('');
   });
 
-  it('should return a string without underscores', () => {
+  it('should return a string with the given substring replaced by the replacement substring', () => {
     const pipe = new ReplaceStringPipe();
-    const result = pipe.transform('Some_Test_String that we have');
-    expect(result).toBe('Some Test String that we have');
+    const result = pipe.transform('Some_Test_String that we have', ' ', '_');
+    expect(result).toBe('Some_Test_String_that_we_have');
   });
 
-  it('should return the original if there are no underscores', () => {
+  it('should return the original if there are no instances of the substring to replace', () => {
     const input = 'Lorem Ipsum is your friend!';
     const pipe = new ReplaceStringPipe();
-    const result = pipe.transform(input);
+    const result = pipe.transform(input, 'zzz', '');
+    expect(result).toBe(input);
+  });
+
+  it('should return the original if the two substrings are identical', () => {
+    const input = 'Lorem Ipsum is your friend!';
+    const pipe = new ReplaceStringPipe();
+    const result = pipe.transform(input, 'Lorem', 'Lorem');
     expect(result).toBe(input);
   });
 });
