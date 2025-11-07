@@ -405,7 +405,10 @@ export const datasetDetails: DatasetDetailsRaw = {
     policy_url: 'https://test.com',
     data_use_permission_term: 'GENERAL_RESEARCH_USE',
     data_use_permission_id: 'DUO:0000042',
-    data_use_modifier_terms: ['PUBLICATION_REQUIRED', 'INSTITUTION_SPECIFIC_RESTRICTION'],
+    data_use_modifier_terms: [
+      'PUBLICATION_REQUIRED',
+      'INSTITUTION_SPECIFIC_RESTRICTION',
+    ],
     data_use_modifier_ids: ['DUO:0000019', 'DUO:0000028'],
   },
   study: {
