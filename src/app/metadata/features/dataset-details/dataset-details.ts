@@ -122,7 +122,7 @@ export class DatasetDetailsComponent implements OnInit {
       .toLowerCase()
       .replaceAll('_', ' ');
     const data_use_modifier_terms = dap.data_use_modifier_terms.map((x) =>
-      x.toLowerCase().replace(/_/g, ' '),
+      x.toLowerCase().replace('_', ' '),
     );
     return {
       ...dap,
