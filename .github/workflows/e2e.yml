@@ -5,12 +5,9 @@ on:
 
 jobs:
   test:
-    name: Run Playwright (${{ matrix.browser }})
+    name: Run Playwright E2E Tests
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    strategy:
-      matrix:
-        browser: [chromium, firefox, webkit]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -27,31 +24,23 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ matrix.browser }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          key: playwright-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
-            playwright-${{ runner.os }}-${{ matrix.browser }}-
+            playwright-${{ runner.os }}-
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Install Playwright Browsers
-        run: pnpm exec playwright install --with-deps ${{ matrix.browser }}
+        run: pnpm exec playwright install --with-deps
       - name: Build application
         run: pnpm run build
       - name: Run Playwright tests
-        run: pnpm run e2e --project=${{ matrix.browser }}
+        run: pnpm run e2e
         env:
           CI: true
-          PLAYWRIGHT_HTML_REPORT: playwright-report
-          PLAYWRIGHT_JUNIT_OUTPUT_NAME: results.xml
           FORCE_COLOR: 1
-          PLAYWRIGHT_WORKERS: 1
-          PLAYWRIGHT_TIMEOUT: 30000
-          PLAYWRIGHT_EXPECT_TIMEOUT: 10000
-          PLAYWRIGHT_CHROMIUM_USE_HEADLESS_NEW: 1
-          PLAYWRIGHT_DISABLE_COLORS: 0
-          PLAYWRIGHT_REPORTER: html,junit
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
-          name: playwright-report-${{ matrix.browser }}
+          name: playwright-report
           path: playwright-report/
           retention-days: 14
