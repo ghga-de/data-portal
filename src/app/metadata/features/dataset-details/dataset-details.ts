@@ -120,7 +120,7 @@ export class DatasetDetailsComponent implements OnInit {
     );
     const data_use_permission_term = dap.data_use_permission_term
       .toLowerCase()
-      .replace(/_/g, ' ');
+      .replaceAll('_', ' ');
     const data_use_modifier_terms = dap.data_use_modifier_terms.map((x) =>
       x.toLowerCase().replace(/_/g, ' '),
     );
