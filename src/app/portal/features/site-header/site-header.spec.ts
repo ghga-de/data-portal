@@ -11,6 +11,7 @@ import { screen } from '@testing-library/angular';
 
 import { fakeActivatedRoute } from '@app/../mocks/route';
 import { AccountButtonComponent } from '../account-button/account-button';
+import { HighContrastButton } from '../high-contrast-button/high-contrast-button';
 import { SiteHeaderNavButtonsComponent } from '../site-header-nav-buttons/site-header-nav-buttons';
 import { SiteHeaderComponent } from './site-header';
 
@@ -29,7 +30,11 @@ describe('SiteHeaderComponent', () => {
     })
       .overrideComponent(SiteHeaderComponent, {
         remove: {
-          imports: [AccountButtonComponent, SiteHeaderNavButtonsComponent],
+          imports: [
+            AccountButtonComponent,
+            SiteHeaderNavButtonsComponent,
+            HighContrastButton,
+          ],
         },
       })
       .compileComponents();

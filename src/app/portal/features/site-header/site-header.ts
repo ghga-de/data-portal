@@ -13,6 +13,7 @@ import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { NavigationStart, Router, RouterLink } from '@angular/router';
 import { AccountButtonComponent } from '../account-button/account-button';
+import { HighContrastButton } from '../high-contrast-button/high-contrast-button';
 import { SiteHeaderNavButtonsComponent } from '../site-header-nav-buttons/site-header-nav-buttons';
 
 /**
@@ -31,6 +32,7 @@ import { SiteHeaderNavButtonsComponent } from '../site-header-nav-buttons/site-h
     MatSidenavModule,
     SiteHeaderNavButtonsComponent,
     MatRippleModule,
+    HighContrastButton,
   ],
   styleUrl: './site-header.scss',
 })
