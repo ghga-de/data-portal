@@ -93,7 +93,6 @@ export class AccessRequestDialogComponent {
 
     this.updateUntilRangeForFromValue(new Date(this.todayMidnight));
     this.updateFromRangeForUntilValue(d);
-    console.log('D=', d);
   }
 
   /**
