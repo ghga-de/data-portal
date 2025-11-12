@@ -1,0 +1,10 @@
+@use '@angular/material' as mat;
+
+button.mat-mdc-fab-base {
+  @include mat.fab-overrides(
+    (
+      small-foreground-color: black,
+      small-container-color: white,
+    )
+  );
+}

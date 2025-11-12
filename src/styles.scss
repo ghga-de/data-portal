@@ -55,54 +55,55 @@
       protected-label-text-color: var(--mat-sys-on-tertiary),
     )
   );
-  @media (prefers-contrast: more) {
-    @include ghga-colors.high-contrast-overrides('light');
-  }
-  // Overrides for default contrast theme
-  @media not (prefers-contrast: more) {
-    --mat-sys-primary: #00393f;
-    --mat-sys-secondary: #005a5a;
-    --mat-sys-tertiary: #e84614;
-    --mat-sys-quaternary: #007e8c;
-    --mat-sys-quinary: #cfe7cd;
-    --mat-sys-success: #16a34a;
-    --mat-sys-info: #4f46e5;
-    --mat-sys-warning: #d97706;
-    --mat-sys-danger: #ea580c;
+}
 
-    // These overrides come from the high contrast light theme
-    --mat-sys-on-quaternary: #ffffff;
-    --mat-sys-quaternary-container: #00515b;
-    --mat-sys-on-quaternary-container: #ffffff;
-    --mat-sys-quaternary-fixed: #00515b;
-    --mat-sys-quaternary-fixed-dim: #003940;
-    --mat-sys-on-quaternary-fixed: #ffffff;
-    --mat-sys-on-quaternary-fixed-variant: #ffffff;
+:root:has(body.prefers-contrast-more) {
+  @include ghga-colors.high-contrast-overrides('light');
+}
+// Overrides for default contrast theme
+:root:has(body.prefers-contrast-less) {
+  --mat-sys-primary: #00393f;
+  --mat-sys-secondary: #005a5a;
+  --mat-sys-tertiary: #e84614;
+  --mat-sys-quaternary: #007e8c;
+  --mat-sys-quinary: #cfe7cd;
+  --mat-sys-success: #16a34a;
+  --mat-sys-info: #4f46e5;
+  --mat-sys-warning: #d97706;
+  --mat-sys-danger: #ea580c;
 
-    --mat-sys-on-quinary: #000000;
-    --mat-sys-quinary-container: #b1c9b0;
-    --mat-sys-on-quinary-container: #000f03;
-    --mat-sys-quinary-fixed: #d1e9cf;
-    --mat-sys-quinary-fixed-dim: #b5cdb4;
-    --mat-sys-on-quinary-fixed: #000000;
-    --mat-sys-on-quinary-fixed-variant: #031506;
+  // These overrides come from the high contrast light theme
+  --mat-sys-on-quaternary: #ffffff;
+  --mat-sys-quaternary-container: #00515b;
+  --mat-sys-on-quaternary-container: #ffffff;
+  --mat-sys-quaternary-fixed: #00515b;
+  --mat-sys-quaternary-fixed-dim: #003940;
+  --mat-sys-on-quaternary-fixed: #ffffff;
+  --mat-sys-on-quaternary-fixed-variant: #ffffff;
 
-    --mat-sys-on-info: #ffffff;
-    --mat-sys-info-container: #3627ce;
-    --mat-sys-on-info-container: #ffffff;
+  --mat-sys-on-quinary: #000000;
+  --mat-sys-quinary-container: #b1c9b0;
+  --mat-sys-on-quinary-container: #000f03;
+  --mat-sys-quinary-fixed: #d1e9cf;
+  --mat-sys-quinary-fixed-dim: #b5cdb4;
+  --mat-sys-on-quinary-fixed: #000000;
+  --mat-sys-on-quinary-fixed-variant: #031506;
 
-    --mat-sys-on-success: #ffffff;
-    --mat-sys-success-container: #005522;
-    --mat-sys-on-success-container: #ffffff;
+  --mat-sys-on-info: #ffffff;
+  --mat-sys-info-container: #3627ce;
+  --mat-sys-on-info-container: #ffffff;
 
-    --mat-sys-on-warning: #ffffff;
-    --mat-sys-warning-container: #713b00;
-    --mat-sys-on-warning-container: #ffffff;
+  --mat-sys-on-success: #ffffff;
+  --mat-sys-success-container: #005522;
+  --mat-sys-on-success-container: #ffffff;
 
-    --mat-sys-on-danger: #ffffff;
-    --mat-sys-danger-container: #832c00;
-    --mat-sys-on-danger-container: #ffffff;
-  }
+  --mat-sys-on-warning: #ffffff;
+  --mat-sys-warning-container: #713b00;
+  --mat-sys-on-warning-container: #ffffff;
+
+  --mat-sys-on-danger: #ffffff;
+  --mat-sys-danger-container: #832c00;
+  --mat-sys-on-danger-container: #ffffff;
 }
 
 // Scoping default styles so that tailwind classes can override them
@@ -340,6 +341,14 @@ $colour-suffixes: (
         state-layer-color: var(--mat-sys-#{$suffix}),
       )
     );
+    @include mat.fab-overrides(
+      (
+        container-color: var(--mat-sys-#{$suffix}),
+        foreground-color: var(--mat-sys-on-#{$suffix}),
+        small-container-color: var(--mat-sys-#{$suffix}),
+        small-foreground-color: var(--mat-sys-on-#{$suffix}),
+      )
+    );
   }
   .button-on-#{$suffix} {
     @include mat.button-overrides(
@@ -356,6 +365,14 @@ $colour-suffixes: (
       (
         icon-color: var(--mat-sys-on-#{$suffix}),
         state-layer-color: var(--mat-sys-on-#{$suffix}),
+      )
+    );
+    @include mat.fab-overrides(
+      (
+        container-color: var(--mat-sys-on-#{$suffix}),
+        foreground-color: var(--mat-sys-#{$suffix}),
+        small-container-color: var(--mat-sys-on-#{$suffix}),
+        small-foreground-color: var(--mat-sys-#{$suffix}),
       )
     );
   }
@@ -395,8 +412,8 @@ a.active-sub-page {
 }
 
 nav a,
-mat-toolbar a:not(.active-page),
-mat-toolbar button:not(.active-page) {
+mat-toolbar a:not(.active-page):not(.mdc-fab),
+mat-toolbar button:not(.active-page):not(.mdc-fab) {
   &:hover,
   &:active {
     background-color: color-mix(in srgb, var(--mat-sys-primary) 100%, #fff 8%);
@@ -406,7 +423,7 @@ mat-toolbar button:not(.active-page) {
   }
 }
 
-mat-toolbar button.account-page-active {
+mat-toolbar button.account-page-active:not(.mdc-fab) {
   &:hover,
   &:active {
     background-color: color-mix(in srgb, var(--mat-sys-quaternary) 100%, #fff 8%);

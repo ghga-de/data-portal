@@ -31,6 +31,7 @@
       </div>
 
       <div class="my-4 hidden text-right lg:block xl:basis-1/4">
+        <app-high-contrast-button class="me-2"></app-high-contrast-button>
         <app-account-button></app-account-button>
       </div>
     }
@@ -45,7 +46,8 @@
           position="end"
           class="border-quaternary max-w-[400px] border-l-1 text-center"
         >
-          <div class="h-21 content-center pe-4 text-end">
+          <div class="flex h-21 content-center justify-between pe-4 pt-6">
+            <app-high-contrast-button class="mx-4"></app-high-contrast-button>
             <button
               mat-icon-button
               aria-label="Open navigation Menu"

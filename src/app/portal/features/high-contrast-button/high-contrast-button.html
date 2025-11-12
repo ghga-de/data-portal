@@ -1,0 +1,12 @@
+<button
+  matMiniFab
+  class="button-on-primary"
+  (click)="toggleContrast()"
+  [matTooltip]="
+    prefersContrastMore()
+      ? 'Deactivate high contrast mode'
+      : 'Activate high contrast mode'
+  "
+>
+  <mat-icon fontIcon="contrast_square"></mat-icon>
+</button>
