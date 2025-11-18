@@ -14,10 +14,10 @@ import { FRIENDLY_DATE_FORMAT } from '@app/shared/utils/date-formats';
 import { StencilComponent } from '../../../shared/ui/stencil/stencil/stencil';
 
 /**
- * This component shows a list of access requests that have been granted.
+ * This component shows a list of access grants that have been granted.
  */
 @Component({
-  selector: 'app-granted-access-requests-list',
+  selector: 'app-granted-access-grants-list',
   imports: [
     RouterLink,
     StencilComponent,
@@ -26,15 +26,15 @@ import { StencilComponent } from '../../../shared/ui/stencil/stencil/stencil';
     MatButtonModule,
     RouterModule,
   ],
-  templateUrl: './granted-access-requests-list.html',
+  templateUrl: './granted-access-grants-list.html',
 })
-export class GrantedAccessRequestsListComponent {
+export class GrantedAccessGrantsListComponent {
   readonly friendlyDateFormat = FRIENDLY_DATE_FORMAT;
   #ars = inject(AccessRequestService);
 
-  grantedRequests = computed(() =>
-    this.#ars.grantedUserAccessRequests().filter((r) => !r.isExpired),
+  protected grantedGrants = computed(() =>
+    this.#ars.grantedUserAccessGrants().filter((r) => !r.isExpired),
   );
-  isLoading = this.#ars.userAccessRequests.isLoading;
-  hasError = this.#ars.userAccessRequests.error;
+  protected isLoading = this.#ars.userAccessRequests.isLoading;
+  protected hasError = this.#ars.userAccessRequests.error;
 }

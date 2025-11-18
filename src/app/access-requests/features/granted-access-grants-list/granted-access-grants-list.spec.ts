@@ -1,5 +1,5 @@
 /**
- * This module contains the tests for the GrantedAccessRequestsListComponent.
+ * This module contains the tests for the GrantedAccessGrantsListComponent.
  * @copyright The GHGA Authors
  * @license Apache-2.0
  */
@@ -7,17 +7,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { fakeActivatedRoute } from '@app/../mocks/route';
-import { MockAccessRequestService } from '@app/access-requests/services/access-request.mock-service';
 import { AccessRequestService } from '@app/access-requests/services/access-request';
-import { GrantedAccessRequestsListComponent } from './granted-access-requests-list';
+import { MockAccessRequestService } from '@app/access-requests/services/access-request.mock-service';
+import { GrantedAccessGrantsListComponent } from './granted-access-grants-list';
 
-describe('GrantedAccessRequestsListComponent', () => {
-  let component: GrantedAccessRequestsListComponent;
-  let fixture: ComponentFixture<GrantedAccessRequestsListComponent>;
+describe('GrantedAccessGrantsListComponent', () => {
+  let component: GrantedAccessGrantsListComponent;
+  let fixture: ComponentFixture<GrantedAccessGrantsListComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GrantedAccessRequestsListComponent],
+      imports: [GrantedAccessGrantsListComponent],
       providers: [
         { provide: AccessRequestService, useClass: MockAccessRequestService },
         {
@@ -27,7 +27,7 @@ describe('GrantedAccessRequestsListComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(GrantedAccessRequestsListComponent);
+    fixture = TestBed.createComponent(GrantedAccessGrantsListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

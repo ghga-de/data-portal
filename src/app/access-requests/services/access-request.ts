@@ -18,6 +18,7 @@ import {
   AccessRequestDetailData,
   AccessRequestFilter,
   AccessRequestStatus,
+  GrantedAccessGrant,
   GrantedAccessRequest,
 } from '../models/access-requests';
 
@@ -34,16 +35,17 @@ export class AccessRequestService {
 
   #arsBaseUrl = this.#config.arsUrl;
   #authBaseUrl = this.#config.authUrl;
-  #arsEndpointUrl = `${this.#arsBaseUrl}/access-requests`;
-  #arsManagementUrl = `${this.#arsBaseUrl}/access-grants`;
-  #grantRevocationUrl = this.#arsManagementUrl;
+  #arsRequestsUrl = `${this.#arsBaseUrl}/access-requests`;
+  #arsGrantUrl = `${this.#arsBaseUrl}/access-grants`;
+  #grantRevocationUrl = this.#arsGrantUrl;
 
   #userAccessRequestsUrl = (userId: string) =>
-    `${this.#arsEndpointUrl}?user_id=${userId}`;
+    `${this.#arsRequestsUrl}?user_id=${userId}`;
+  #userAccessGrantsUrl = (userId: string) => `${this.#arsGrantUrl}?user_id=${userId}`;
 
   performAccessRequest = (data: AccessRequestDetailData) => {
     this.#http
-      .post<void>(this.#arsEndpointUrl, {
+      .post<void>(this.#arsRequestsUrl, {
         user_id: data.userId,
         dataset_id: data.datasetID,
         email: data.email,
@@ -167,7 +169,7 @@ export class AccessRequestService {
    * but in principle we can also do some filtering on the sever.
    */
   allAccessRequests = httpResource<AccessRequest[]>(
-    () => (this.#loadAllAccessRequests() ? this.#arsEndpointUrl : undefined),
+    () => (this.#loadAllAccessRequests() ? this.#arsRequestsUrl : undefined),
     {
       defaultValue: [],
     },
@@ -259,7 +261,7 @@ export class AccessRequestService {
     () => {
       const id = this.#loadSingle();
       if (!id) return undefined;
-      return `${this.#arsEndpointUrl}/${id}`;
+      return `${this.#arsRequestsUrl}/${id}`;
     },
     {
       defaultValue: undefined,
@@ -318,7 +320,7 @@ export class AccessRequestService {
    */
   updateRequest(id: string, changes: Partial<AccessRequest>): Observable<null> {
     return this.#http
-      .patch<null>(`${this.#arsEndpointUrl}/${id}`, changes)
+      .patch<null>(`${this.#arsRequestsUrl}/${id}`, changes)
       .pipe(tap(() => this.#updateAccessRequestLocally(id, changes)));
   }
 
@@ -356,7 +358,7 @@ export class AccessRequestService {
   }
 
   allAccessGrantsResource = httpResource<AccessGrant[]>(
-    () => (this.#loadAllAccessGrants() ? this.#arsManagementUrl : undefined),
+    () => (this.#loadAllAccessGrants() ? this.#arsGrantUrl : undefined),
     {
       defaultValue: [],
     },
@@ -422,6 +424,41 @@ export class AccessRequestService {
     }
     return grants;
   });
+
+  /**
+   * Resource for loading the currently logged-in user's access grants
+   */
+  userAccessGrants = httpResource<AccessGrant[]>(
+    () => {
+      const userId = this.#userId();
+      return userId ? this.#userAccessGrantsUrl(userId) : undefined;
+    },
+    {
+      parse: (raw) =>
+        (raw as AccessGrant[]).filter(
+          ({ status }) => status === 'active' || status == 'waiting',
+        ),
+      defaultValue: [],
+    },
+  );
+
+  /**
+   * The list of granted access grants of the current user
+   */
+  grantedUserAccessGrants = computed(() =>
+    this.userAccessGrants
+      .value()
+      .filter((x) => x.status === 'active')
+      .map((grant: AccessGrant) => {
+        const expiryDate = new Date(grant.valid_until);
+        let grantedAccessGrant: GrantedAccessGrant = {
+          grant,
+          isExpired: expiryDate < new Date(),
+          daysRemaining: this.daysUntil(expiryDate),
+        };
+        return grantedAccessGrant;
+      }),
+  );
 
   /**
    * Remove the grant locally.

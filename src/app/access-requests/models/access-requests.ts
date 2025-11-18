@@ -100,3 +100,9 @@ export interface AccessGrantFilter {
   user: string | undefined;
   dataset_id: string | undefined;
 }
+
+export interface GrantedAccessGrant {
+  grant: AccessGrant;
+  isExpired: boolean;
+  daysRemaining: number;
+}
