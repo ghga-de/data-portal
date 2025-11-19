@@ -4,14 +4,13 @@
   @if (isLoading()) {
     <app-stencil></app-stencil>
   } @else {
-    @let grants = grantedGrants();
+    @let grants = activeGrants();
     @if (grants.length === 0) {
       <p class="text-base">You do not yet have access to any datasets.</p>
     } @else {
       <p class="text-base">You have the following granted access requests:</p>
       <ul>
-        @for (grantedGrant of grants; track grantedGrant.grant.dataset_id) {
-          @let grant = grantedGrant.grant;
+        @for (grant of grants; track grant.dataset_id) {
           <li>
             For the dataset
             <a
@@ -22,7 +21,7 @@
             >
             from {{ grant.valid_from | date: friendlyDateFormat }} to
             {{ grant.valid_until | date: friendlyDateFormat }} &ndash;
-            <span class="font-bold">{{ grantedGrant.daysRemaining }}</span> days left.
+            <span class="font-bold">{{ grant.daysRemaining }}</span> days left.
           </li>
         }
       </ul>

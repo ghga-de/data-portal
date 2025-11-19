@@ -26,15 +26,13 @@ import { StencilComponent } from '../../../shared/ui/stencil/stencil/stencil';
     MatButtonModule,
     RouterModule,
   ],
-  templateUrl: './granted-access-grants-list.html',
+  templateUrl: './active-access-grants-list.html',
 })
-export class GrantedAccessGrantsListComponent {
+export class ActiveAccessGrantsListComponent {
   readonly friendlyDateFormat = FRIENDLY_DATE_FORMAT;
   #ars = inject(AccessRequestService);
 
-  protected grantedGrants = computed(() =>
-    this.#ars.grantedUserAccessGrants().filter((r) => !r.isExpired),
-  );
+  protected activeGrants = computed(() => this.#ars.activeUserAccessGrants());
   protected isLoading = this.#ars.userAccessRequests.isLoading;
   protected hasError = this.#ars.userAccessRequests.error;
 }

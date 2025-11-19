@@ -93,16 +93,11 @@ export interface AccessGrant {
   dac_email: string;
   iva_id: string | null;
   status?: AccessGrantStatus;
+  daysRemaining?: number;
 }
 
 export interface AccessGrantFilter {
   status: AccessGrantStatus | undefined;
   user: string | undefined;
   dataset_id: string | undefined;
-}
-
-export interface GrantedAccessGrant {
-  grant: AccessGrant;
-  isExpired: boolean;
-  daysRemaining: number;
 }

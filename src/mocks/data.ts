@@ -865,6 +865,9 @@ export const getAccessRequests = (user_id?: string, dataset_id?: string) =>
       (!user_id || x.user_id === user_id),
   );
 
+export const getAccessGrants = (user_id?: string) =>
+  accessGrants.filter((x) => !user_id || x.user_id === user_id);
+
 /**
  * DINS API
  */

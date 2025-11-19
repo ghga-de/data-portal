@@ -9,15 +9,15 @@ import { ActivatedRoute } from '@angular/router';
 import { fakeActivatedRoute } from '@app/../mocks/route';
 import { AccessRequestService } from '@app/access-requests/services/access-request';
 import { MockAccessRequestService } from '@app/access-requests/services/access-request.mock-service';
-import { GrantedAccessGrantsListComponent } from './granted-access-grants-list';
+import { ActiveAccessGrantsListComponent } from './active-access-grants-list';
 
-describe('GrantedAccessGrantsListComponent', () => {
-  let component: GrantedAccessGrantsListComponent;
-  let fixture: ComponentFixture<GrantedAccessGrantsListComponent>;
+describe('ActiveAccessGrantsListComponent', () => {
+  let component: ActiveAccessGrantsListComponent;
+  let fixture: ComponentFixture<ActiveAccessGrantsListComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GrantedAccessGrantsListComponent],
+      imports: [ActiveAccessGrantsListComponent],
       providers: [
         { provide: AccessRequestService, useClass: MockAccessRequestService },
         {
@@ -27,7 +27,7 @@ describe('GrantedAccessGrantsListComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(GrantedAccessGrantsListComponent);
+    fixture = TestBed.createComponent(ActiveAccessGrantsListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

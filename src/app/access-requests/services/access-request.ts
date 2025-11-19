@@ -18,7 +18,6 @@ import {
   AccessRequestDetailData,
   AccessRequestFilter,
   AccessRequestStatus,
-  GrantedAccessGrant,
   GrantedAccessRequest,
 } from '../models/access-requests';
 
@@ -37,7 +36,6 @@ export class AccessRequestService {
   #authBaseUrl = this.#config.authUrl;
   #arsRequestsUrl = `${this.#arsBaseUrl}/access-requests`;
   #arsGrantUrl = `${this.#arsBaseUrl}/access-grants`;
-  #grantRevocationUrl = this.#arsGrantUrl;
 
   #userAccessRequestsUrl = (userId: string) =>
     `${this.#arsRequestsUrl}?user_id=${userId}`;
@@ -435,9 +433,10 @@ export class AccessRequestService {
     },
     {
       parse: (raw) =>
-        (raw as AccessGrant[]).filter(
-          ({ status }) => status === 'active' || status == 'waiting',
-        ),
+        (raw as AccessGrant[]).map((g) => {
+          g.status = this.computeStatusForAccessGrant(g);
+          return g;
+        }),
       defaultValue: [],
     },
   );
@@ -445,18 +444,14 @@ export class AccessRequestService {
   /**
    * The list of granted access grants of the current user
    */
-  grantedUserAccessGrants = computed(() =>
+  activeUserAccessGrants = computed(() =>
     this.userAccessGrants
       .value()
       .filter((x) => x.status === 'active')
       .map((grant: AccessGrant) => {
         const expiryDate = new Date(grant.valid_until);
-        let grantedAccessGrant: GrantedAccessGrant = {
-          grant,
-          isExpired: expiryDate < new Date(),
-          daysRemaining: this.daysUntil(expiryDate),
-        };
-        return grantedAccessGrant;
+        grant.daysRemaining = this.daysUntil(expiryDate);
+        return grant;
       }),
   );
 
@@ -481,7 +476,7 @@ export class AccessRequestService {
    */
   revokeAccessGrant(id: string): Observable<null> {
     return this.#http
-      .delete<null>(`${this.#grantRevocationUrl}/${id}`)
+      .delete<null>(`${this.#arsGrantUrl}/${id}`)
       .pipe(tap(() => this.#removeGrantLocally(id)));
   }
 }

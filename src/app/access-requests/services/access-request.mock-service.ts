@@ -39,7 +39,7 @@ export class MockAccessRequestService {
     error: signal(undefined),
     value: signal(accessGrants.filter((ar) => ar.user_id === 'doe@test.dev')),
   };
-  grantedUserAccessGrants = signal(accessGrants.filter((ag) => ag.status === 'active'));
+  activeUserAccessGrants = signal(accessGrants.filter((ag) => ag.status === 'active'));
   loadUserAccessRequests = () => undefined;
   loadUserAccessGrants = () => undefined;
   loadAllAccessRequests = () => undefined;
