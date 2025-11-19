@@ -6,7 +6,7 @@
 
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
@@ -18,11 +18,10 @@ import { PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FacetFilterSetting } from '@app/metadata/models/facet-filter';
-import { FacetActivityPipe } from '@app/metadata/pipes/facet-activity-pipe';
 import { MetadataSearchService } from '@app/metadata/services/metadata-search';
 import { ConfigService } from '@app/shared/services/config';
 import { NotificationService } from '@app/shared/services/notification';
-import { StencilComponent } from '@app/shared/ui/stencil/stencil/stencil';
+import { MetadataBrowserFilterComponent } from '../metadata-browser-filter.html/metadata-browser-filter';
 import { SearchResultListComponent } from '../search-result-list/search-result-list';
 
 const DEFAULT_PAGE_SIZE = 10;
@@ -42,10 +41,9 @@ const DEFAULT_SKIP_VALUE = 0;
     MatButtonModule,
     MatProgressSpinnerModule,
     ReactiveFormsModule,
-    FacetActivityPipe,
     SearchResultListComponent,
-    StencilComponent,
     MatCardModule,
+    MetadataBrowserFilterComponent,
   ],
   templateUrl: './metadata-browser.html',
 })
@@ -60,27 +58,24 @@ export class MetadataBrowserComponent implements OnInit {
   #pageSize = DEFAULT_PAGE_SIZE;
   #max_facet_options = this.#config.maxFacetOptions;
 
-  facetData = signal<FacetFilterSetting>({});
-  searchFormControl = new FormControl('');
-  searchFormGroup = new FormGroup({
-    searchTerm: this.searchFormControl,
-  });
-  searchTerm = '';
-  lastSearchQuery = this.#metadataSearch.query;
-  lastSearchFilterFacets = this.#metadataSearch.facets;
+  protected facetData = signal<FacetFilterSetting>({});
+  protected searchFormValue = signal<string | null>('');
+  protected searchTerm = '';
+  protected lastSearchQuery = this.#metadataSearch.query;
+  protected lastSearchFilterFacets = this.#metadataSearch.facets;
   #searchResults = this.#metadataSearch.searchResults;
   #searchResultsError = this.#searchResults.error;
-  status = this.#searchResults.status;
-  searchResults = this.#searchResults.value;
-  facets = computed(() =>
+  protected status = this.#searchResults.status;
+  protected searchResults = this.#searchResults.value;
+  protected facets = computed(() =>
     this.searchResults().facets.filter(
       (f) => f.options.length > 0 && f.options.length <= this.#max_facet_options,
     ),
   );
-  numResults = computed(() => this.searchResults().count);
-  loading = computed(() => this.#searchResults.isLoading());
+  protected numResults = computed(() => this.searchResults().count);
+  protected loading = computed(() => this.#searchResults.isLoading());
 
-  errorMessage = computed(() => {
+  protected errorMessage = computed(() => {
     if (this.#searchResultsError()) {
       switch ((this.#searchResultsError() as HttpErrorResponse)?.status) {
         case undefined:
@@ -90,8 +85,6 @@ export class MetadataBrowserComponent implements OnInit {
       }
     } else return undefined;
   });
-
-  displayFilters = false;
 
   /**
    * On init, define the default values of the search variables
@@ -121,7 +114,7 @@ export class MetadataBrowserComponent implements OnInit {
       this.searchTerm,
       this.facetData(),
     );
-    this.searchFormControl.setValue(this.searchTerm);
+    this.searchFormValue.set(this.searchTerm);
   }
 
   /**
@@ -156,7 +149,7 @@ export class MetadataBrowserComponent implements OnInit {
    */
   submit(event: MouseEvent | SubmitEvent | Event): void {
     event.preventDefault();
-    const searchTerm = this.searchFormControl.value || '';
+    const searchTerm = this.searchFormValue() || '';
     if (searchTerm !== this.searchTerm || this.#facetDataChanged()) {
       this.searchTerm = searchTerm;
       this.#skip = DEFAULT_SKIP_VALUE;
@@ -180,13 +173,9 @@ export class MetadataBrowserComponent implements OnInit {
    * Resets the search query and triggers a reload of the results.
    */
   clearSearchQuery(): void {
-    if (
-      this.searchTerm !== '' ||
-      this.searchFormControl.value ||
-      this.#facetDataChanged()
-    ) {
+    if (this.searchTerm !== '' || this.searchFormValue() || this.#facetDataChanged()) {
       this.searchTerm = '';
-      this.searchFormControl.setValue('');
+      this.searchFormValue.set('');
       this.#skip = DEFAULT_SKIP_VALUE;
       this.#performSearch();
     }
