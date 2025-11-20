@@ -118,6 +118,24 @@ export default [
                 ],
               ],
             },
+            // overarching ui context may import metadata models and pipes
+            {
+              from: [['ui', { context: 'shared' }]],
+              allow: [
+                [
+                  'pipe',
+                  {
+                    context: ['metadata'],
+                  },
+                ],
+                [
+                  'model',
+                  {
+                    context: ['metadata'],
+                  },
+                ],
+              ],
+            },
             // access requests context may import from verification addresses context
             {
               from: [['features', { context: 'access-requests' }]],

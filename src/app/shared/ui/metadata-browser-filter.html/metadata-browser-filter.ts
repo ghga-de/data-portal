@@ -38,23 +38,23 @@ import { StencilComponent } from '@app/shared/ui/stencil/stencil/stencil';
   templateUrl: './metadata-browser-filter.html',
 })
 export class MetadataBrowserFilterComponent {
-  facets = input.required<Facet[]>();
-  facetData = input.required<FacetFilterSetting>();
-  loading = input.required<boolean>();
-  searchFormValue = input.required<string | null>();
+  readonly facets = input.required<Facet[]>();
+  readonly facetData = input.required<FacetFilterSetting>();
+  readonly loading = input.required<boolean>();
+  readonly searchFormValue = input.required<string | null>();
 
-  cleared = output<PointerEvent>();
-  submitted = output<PointerEvent | Event>();
-  facetFilterChanged = output<MatCheckboxChange>();
-  searchFormChanged = output<string | null>();
+  readonly cleared = output<PointerEvent>();
+  readonly submitted = output<PointerEvent | Event>();
+  readonly facetFilterChanged = output<MatCheckboxChange>();
+  readonly searchFormChanged = output<string | null>();
 
-  searchFormControl = new FormControl('');
+  protected searchFormControl = new FormControl('');
 
-  searchFormGroup = new FormGroup({
+  protected searchFormGroup = new FormGroup({
     searchTerm: this.searchFormControl,
   });
 
-  displayFilters = false;
+  protected displayFilters = false;
 
   #searchFormValueEffect = effect(() => {
     this.searchFormControl.setValue(this.searchFormValue());

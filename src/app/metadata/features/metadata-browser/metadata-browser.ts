@@ -21,7 +21,7 @@ import { FacetFilterSetting } from '@app/metadata/models/facet-filter';
 import { MetadataSearchService } from '@app/metadata/services/metadata-search';
 import { ConfigService } from '@app/shared/services/config';
 import { NotificationService } from '@app/shared/services/notification';
-import { MetadataBrowserFilterComponent } from '../metadata-browser-filter.html/metadata-browser-filter';
+import { MetadataBrowserFilterComponent } from '@app/shared/ui/metadata-browser-filter.html/metadata-browser-filter';
 import { SearchResultListComponent } from '../search-result-list/search-result-list';
 
 const DEFAULT_PAGE_SIZE = 10;
@@ -147,7 +147,7 @@ export class MetadataBrowserComponent implements OnInit {
    * Sets the parameters for the search and triggers it in the metadataSearch Service
    * @param event we need to stop the event from propagating
    */
-  submit(event: MouseEvent | SubmitEvent | Event): void {
+  protected submit(event: MouseEvent | SubmitEvent | Event): void {
     event.preventDefault();
     const searchTerm = this.searchFormValue() || '';
     if (searchTerm !== this.searchTerm || this.#facetDataChanged()) {
@@ -161,7 +161,7 @@ export class MetadataBrowserComponent implements OnInit {
    * Handles the click event on a facet filter that was active in the last search (as shown above the search results)
    * @param facetToRemove The facet name and option to remove.
    */
-  removeFacet(facetToRemove: string): void {
+  protected removeFacet(facetToRemove: string): void {
     const facetToRemoveSplit = facetToRemove.split('#');
     if (facetToRemoveSplit.length !== 2) return;
     this.#updateFacets(facetToRemoveSplit[0], facetToRemoveSplit[1], false);
@@ -172,7 +172,7 @@ export class MetadataBrowserComponent implements OnInit {
   /**
    * Resets the search query and triggers a reload of the results.
    */
-  clearSearchQuery(): void {
+  protected clearSearchQuery(): void {
     if (this.searchTerm !== '' || this.searchFormValue() || this.#facetDataChanged()) {
       this.searchTerm = '';
       this.searchFormValue.set('');
@@ -185,7 +185,7 @@ export class MetadataBrowserComponent implements OnInit {
    * Clears the search field input and triggers a result update
    * @param event we need to stop the event from propagating
    */
-  clear(event: MouseEvent): void {
+  protected clear(event: MouseEvent): void {
     event.preventDefault();
     this.facetData.set({});
     this.clearSearchQuery();
@@ -195,7 +195,7 @@ export class MetadataBrowserComponent implements OnInit {
    * Function to handle a change in pagination
    * @param e PageEvent instance
    */
-  paginate(e: PageEvent) {
+  protected paginate(e: PageEvent) {
     this.#pageSize = e.pageSize;
     this.#skip = e.pageSize * e.pageIndex;
     this.#performSearch();
@@ -211,7 +211,7 @@ export class MetadataBrowserComponent implements OnInit {
    * This function transforms the checkbox change event to the data required in updateFacet(...) and calls it
    * @param input the Event from the checkbox
    */
-  onFacetFilterChanged(input: MatCheckboxChange) {
+  protected onFacetFilterChanged(input: MatCheckboxChange) {
     const facetData = input.source.name?.split('#');
     if (facetData?.length != 2) {
       return;
