@@ -18,7 +18,6 @@ import {
   AccessRequestDetailData,
   AccessRequestFilter,
   AccessRequestStatus,
-  GrantedAccessRequest,
 } from '../models/access-requests';
 
 /**
@@ -82,24 +81,6 @@ export class AccessRequestService {
         ),
       defaultValue: [],
     },
-  );
-
-  /**
-   * The list of granted access requests of the current user
-   */
-  grantedUserAccessRequests = computed(() =>
-    this.userAccessRequests
-      .value()
-      .filter((ar: AccessRequest) => ar.status == 'allowed')
-      .map((request: AccessRequest) => {
-        const expiryDate = new Date(request.access_ends);
-        let grantedAccessRequest: GrantedAccessRequest = {
-          request,
-          isExpired: expiryDate < new Date(),
-          daysRemaining: this.daysUntil(expiryDate),
-        };
-        return grantedAccessRequest;
-      }),
   );
 
   /**
@@ -442,7 +423,7 @@ export class AccessRequestService {
   );
 
   /**
-   * The list of granted access grants of the current user
+   * The list of active access grants of the current user with days remaining
    */
   activeUserAccessGrants = computed(() =>
     this.userAccessGrants

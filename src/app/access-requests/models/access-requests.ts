@@ -50,12 +50,6 @@ export interface AccessRequest {
   note_to_requester: null | string;
 }
 
-export interface GrantedAccessRequest {
-  request: AccessRequest;
-  isExpired: boolean;
-  daysRemaining: number;
-}
-
 export interface AccessRequestDetailData {
   datasetID: string;
   email: string;
