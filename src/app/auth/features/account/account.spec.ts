@@ -6,10 +6,11 @@
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { provideHttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { fakeActivatedRoute } from '@app/../mocks/route';
-import { MockAccessRequestService } from '@app/access-requests/services/access-request.mock-service';
 import { AccessRequestService } from '@app/access-requests/services/access-request';
+import { MockAccessRequestService } from '@app/access-requests/services/access-request.mock-service';
 import { AuthService } from '@app/auth/services/auth';
 import { UserIvaListComponent } from '@app/verification-addresses/features/user-iva-list/user-iva-list';
 import { AccountComponent } from './account';
@@ -38,6 +39,7 @@ describe('AccountComponent', () => {
           provide: ActivatedRoute,
           useValue: fakeActivatedRoute,
         },
+        provideHttpClient(),
       ],
     })
       .overrideComponent(AccountComponent, {
