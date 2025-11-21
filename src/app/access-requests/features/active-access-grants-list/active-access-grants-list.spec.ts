@@ -4,12 +4,17 @@
  * @license Apache-2.0
  */
 
+import { provideHttpClient } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
-import { fakeActivatedRoute } from '@app/../mocks/route';
 import { AccessRequestService } from '@app/access-requests/services/access-request';
 import { MockAccessRequestService } from '@app/access-requests/services/access-request.mock-service';
+import { ConfigService } from '@app/shared/services/config';
+import { provideHttpCache } from '@ngneat/cashew';
 import { ActiveAccessGrantsListComponent } from './active-access-grants-list';
+
+const MockConfigService = {
+  auth_url: '/test/auth',
+};
 
 describe('ActiveAccessGrantsListComponent', () => {
   let component: ActiveAccessGrantsListComponent;
@@ -20,10 +25,9 @@ describe('ActiveAccessGrantsListComponent', () => {
       imports: [ActiveAccessGrantsListComponent],
       providers: [
         { provide: AccessRequestService, useClass: MockAccessRequestService },
-        {
-          provide: ActivatedRoute,
-          useValue: fakeActivatedRoute,
-        },
+        { provide: ConfigService, useValue: MockConfigService },
+        provideHttpClient(),
+        provideHttpCache(),
       ],
     }).compileComponents();
 
