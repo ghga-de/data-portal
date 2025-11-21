@@ -16,8 +16,8 @@ import {
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { ActivatedRoute } from '@angular/router';
-import { MockAccessRequestService } from '@app/access-requests/services/access-request.mock-service';
 import { AccessRequestService } from '@app/access-requests/services/access-request';
+import { MockAccessRequestService } from '@app/access-requests/services/access-request.mock-service';
 import { ConfigService } from '@app/shared/services/config';
 import { screen } from '@testing-library/angular';
 

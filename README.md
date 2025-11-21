@@ -155,7 +155,7 @@ The unit tests are not included in the linting process and can be executed separ
 - `npm run test:parallel` - use parallel processes (currently slower, probably due to inefficient transpilation)
 - `npm run test:watch` - continually watch files for changes and rerun tests related to changed files
 
-You can also use the VS Code extension for Jest to run tests interactively using the test explorer in the side bar.
+You can also use the VS Code extension for Vitest to run tests interactively using the test explorer in the side bar.
 
 Note that modernizing the unit testing tooling is on the roadmap of the Angular team for 2025. We may need to change some parts of the tooling when the official solution is provided.
 
@@ -168,7 +168,7 @@ We are using [Playwright](https://playwright.dev/) for end-to-end (e2e) testing 
 - `npm run e2e:debug` - run e2e tests in headed mode with Playwright inspector
 - `npm run e2e:report` - open HTML report for e2e tests
 
-Like for unit testing, you can also [use the VS Code extension for Playwright](https://playwright.dev/docs/getting-started-vscode) to run tests interactively using the test explorer in the side bar. VS Code is able to support different test providers (like Jest and Playwright) along with each other.
+Like for unit testing, you can also [use the VS Code extension for Playwright](https://playwright.dev/docs/getting-started-vscode) to run tests interactively using the test explorer in the side bar. VS Code is able to support different test providers (like Vitest and Playwright) along with each other.
 
 #### Issues relating to headed execution
 
@@ -210,7 +210,7 @@ To create a clean architecture, the following rules are checked when importing m
 - [Playwright](https://playwright.dev/) and the docs for it [docs for it](https://playwright.dev/docs/).
 - [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli)
 - [Pnpm](https://pnpm.io/) and [the docs for it](https://pnpm.io/motivation).
-- [Jest](https://jestjs.io/) for unit tests. [Testing Library](https://testing-library.com/) for queries with an [Angular integration](https://testing-library.com/docs/angular-testing-library/intro/) and [jest-dom](https://testing-library.com/docs/ecosystem-jest-dom/).
+- [Vitest](https://vitest.dev/) for unit tests. [Testing Library](https://testing-library.com/) for queries with an [Angular integration](https://testing-library.com/docs/angular-testing-library/intro/) and [jest-dom](https://testing-library.com/docs/ecosystem-jest-dom/).
 
 ## License
 

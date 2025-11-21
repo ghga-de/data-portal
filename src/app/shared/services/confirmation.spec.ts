@@ -46,7 +46,7 @@ describe('ConfirmationService', () => {
     });
   });
 
-  it('should call afterClosed and callback with the correct value', (done) => {
+  it('should call afterClosed and callback with the correct value', async () => {
     const callbackMock = vitest.fn();
 
     service.confirm({
@@ -57,12 +57,7 @@ describe('ConfirmationService', () => {
     expect(matDialogMock.open).toHaveBeenCalled();
     expect(matDialogMock.open().afterClosed).toHaveBeenCalled();
 
-    matDialogMock
-      .open()
-      .afterClosed()
-      .subscribe(() => {
-        expect(callbackMock).toHaveBeenCalledWith(true);
-        done();
-      });
+    await matDialogMock.open().afterClosed().toPromise();
+    expect(callbackMock).toHaveBeenCalledWith(true);
   });
 });

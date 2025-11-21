@@ -14,6 +14,7 @@ import {
 import { computed, signal } from '@angular/core';
 import { AuthService } from '@app/auth/services/auth';
 import { ConfigService } from '@app/shared/services/config';
+import { firstValueFrom } from 'rxjs/internal/firstValueFrom';
 import { DatasetWithExpiration } from '../models/dataset';
 import { WorkPackage, WorkPackageResponse } from '../models/work-package';
 import { WorkPackageService } from './work-package';
@@ -24,6 +25,7 @@ const TEST_DATASET: DatasetWithExpiration = {
   description: 'dataset-description',
   stage: 'download',
   files: [],
+  expires: '2099-12-31T23:59:59Z',
 };
 
 const TEST_WORK_PACKAGE: WorkPackage = {
@@ -36,6 +38,7 @@ const TEST_WORK_PACKAGE: WorkPackage = {
 const TEST_WORK_PACKAGE_RESPONSE: WorkPackageResponse = {
   id: 'test-work-package-id',
   token: 'test-work-package-token',
+  expires: '2099-12-31T23:59:59Z',
 };
 
 /**
@@ -107,11 +110,9 @@ describe('WorkPackageService', () => {
     expect(service.datasets.value()).toEqual([TEST_DATASET]);
   });
 
-  it('should create a work package for download', (done) => {
-    service.createWorkPackage(TEST_WORK_PACKAGE).subscribe((response) => {
-      expect(response).toEqual(TEST_WORK_PACKAGE_RESPONSE);
-      done();
-    });
+  it('should create a work package for download', async () => {
+    const wp = await firstValueFrom(service.createWorkPackage(TEST_WORK_PACKAGE));
+    expect(wp).toEqual(TEST_WORK_PACKAGE_RESPONSE);
     const req = httpMock.expectOne('http://mock.dev/wps/work-packages');
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toBe(TEST_WORK_PACKAGE);
