@@ -19,9 +19,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FacetFilterSetting } from '@app/metadata/models/facet-filter';
 import { MetadataSearchService } from '@app/metadata/services/metadata-search';
+import { MetadataBrowserFilterComponent } from '@app/metadata/ui/metadata-browser-filter.html/metadata-browser-filter';
 import { ConfigService } from '@app/shared/services/config';
 import { NotificationService } from '@app/shared/services/notification';
-import { MetadataBrowserFilterComponent } from '@app/shared/ui/metadata-browser-filter.html/metadata-browser-filter';
 import { SearchResultListComponent } from '../search-result-list/search-result-list';
 
 const DEFAULT_PAGE_SIZE = 10;
