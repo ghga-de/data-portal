@@ -2,19 +2,13 @@
 // README at: https://github.com/devcontainers/templates/tree/main/src/typescript-node
 {
   "name": "Data Portal",
-  "dockerComposeFile": [
-    "docker-compose.yml",
-    "docker-compose.local.yml"
-  ],
+  "dockerComposeFile": ["docker-compose.yml", "docker-compose.local.yml"],
   "service": "app",
   "workspaceFolder": "/workspace",
   // Features to add to the dev container. More info: https://containers.dev/features.
   // "features": {},
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  "forwardPorts": [
-    8080,
-    443
-  ],
+  "forwardPorts": [8080, 443],
   // Initialize the local.env and docker-compose.override.yml files.
   "initializeCommand": "bash .devcontainer/initialize.sh",
   // Use 'postCreateCommand' to run commands after the container is created.
@@ -35,10 +29,7 @@
         },
         "editor.formatOnSave": true,
         "editor.renderWhitespace": "all",
-        "editor.rulers": [
-          88,
-          120
-        ],
+        "editor.rulers": [88, 120],
         "editor.defaultFormatter": "vscode.typescript-language-features"
       },
       // Add the IDs of extensions you want installed when the container is created.
@@ -51,12 +42,12 @@
         "github.vscode-pull-request-github",
         "streetsidesoftware.code-spell-checker",
         "yzhang.markdown-all-in-one",
-        "visualstudioexptteam.vscodeintellicode",
         "esbenp.prettier-vscode",
         "dbaeumer.vscode-eslint",
         "angular.ng-template",
         "orta.vscode-jest",
-        "ms-playwright.playwright"
+        "ms-playwright.playwright",
+        "-visualstudioexptteam.vscodeintellicode"
       ]
     }
   },
