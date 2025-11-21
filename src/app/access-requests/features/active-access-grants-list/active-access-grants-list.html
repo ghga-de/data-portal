@@ -10,8 +10,8 @@
     } @else {
       <p class="text-base">You have the following granted access requests:</p>
       <ul>
-        @for (grant of grants; track grant.dataset_id; let idx = $index) {
-          @let iva = grantIvas().at(idx);
+        @for (grant of grantWithIvas(); track grant.id) {
+          @let iva = grant.iva;
           <li class="mb-2 flex flex-wrap items-center gap-x-2">
             <span class="w-full">
               For the dataset

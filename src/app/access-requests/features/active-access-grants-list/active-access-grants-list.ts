@@ -12,10 +12,9 @@ import { RouterLink, RouterModule } from '@angular/router';
 import { AccessRequestService } from '@app/access-requests/services/access-request';
 import { AuthService } from '@app/auth/services/auth';
 import { FRIENDLY_DATE_FORMAT } from '@app/shared/utils/date-formats';
-import { Iva } from '@app/verification-addresses/models/iva';
+import { IvaTypePipe } from '@app/verification-addresses/pipes/iva-type-pipe';
 import { IvaService } from '@app/verification-addresses/services/iva';
 import { StencilComponent } from '../../../shared/ui/stencil/stencil/stencil';
-import { IvaTypePipe } from '@app/verification-addresses/pipes/iva-type-pipe';
 
 /**
  * This component shows a list of access grants that have been granted.
@@ -49,14 +48,19 @@ export class ActiveAccessGrantsListComponent implements OnInit {
     this.#iva.userIvas.error() ? [] : this.#iva.userIvas.value(),
   );
 
-  protected grantIvas = computed<(Iva | undefined)[]>(() =>
-    this.activeGrants().map((g) => this.#userIvas().find((iva) => iva.id === g.iva_id)),
+  protected grantWithIvas = computed(() =>
+    this.activeGrants().map((g) => {
+      return { ...g, iva: this.#userIvas().find((iva) => iva.id === g.iva_id) };
+    }),
   );
 
   protected anyActiveGrantWithValidIva = computed(() =>
-    this.grantIvas().some((iva) => iva?.state === 'Verified'),
+    Object.values(this.grantWithIvas()).some((x) => x.iva?.state === 'Verified'),
   );
 
+  /**
+   * On initialisation, load the current user's ID to obtain their IVAs
+   */
   ngOnInit() {
     this.#iva.loadUserIvas(this.#userId());
   }

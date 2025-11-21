@@ -32,7 +32,6 @@ export class AccessRequestService {
   #config = inject(ConfigService);
 
   #arsBaseUrl = this.#config.arsUrl;
-  #authBaseUrl = this.#config.authUrl;
   #arsRequestsUrl = `${this.#arsBaseUrl}/access-requests`;
   #arsGrantUrl = `${this.#arsBaseUrl}/access-grants`;
 
