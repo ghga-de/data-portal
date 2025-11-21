@@ -4,7 +4,6 @@
  * @license Apache-2.0
  */
 
-import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -35,8 +34,8 @@ const PLAYGROUND_DEMO_JSON_VALUE =
     FormsModule,
     MatIconModule,
     FormatSchemapackErrorPipe,
-    StatusTextBoxComponent
-],
+    StatusTextBoxComponent,
+  ],
 })
 export class SchemapackPlaygroundComponent {
   #validationService = inject(MetadataValidationService);
