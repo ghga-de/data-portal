@@ -33,7 +33,7 @@ const MockConfigService = {
  * Mock Router for testing
  */
 class MockRouter {
-  navigate = jest.fn();
+  navigate = vitest.fn();
 }
 
 describe('AccessRequestManagerListComponent', () => {

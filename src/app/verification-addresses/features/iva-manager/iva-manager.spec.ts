@@ -18,7 +18,7 @@ import { screen } from '@testing-library/angular';
  * Mock the IVA service as needed by the IVA manager
  */
 const mockIvaService = {
-  loadAllIvas: jest.fn(),
+  loadAllIvas: vitest.fn(),
 };
 
 describe('IvaManagerComponent', () => {

@@ -45,7 +45,7 @@
         "esbenp.prettier-vscode",
         "dbaeumer.vscode-eslint",
         "angular.ng-template",
-        "orta.vscode-jest",
+        "vitest.explorer",
         "ms-playwright.playwright",
         "-visualstudioexptteam.vscodeintellicode"
       ]

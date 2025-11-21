@@ -17,7 +17,7 @@ import { AccessRequestManagerListComponent } from '../access-request-manager-lis
  * Mock the access request service as needed by the access request manager
  */
 const mockAccessRequestService = {
-  loadAllAccessRequests: jest.fn(),
+  loadAllAccessRequests: vitest.fn(),
 };
 
 describe('AccessRequestManagerComponent', () => {

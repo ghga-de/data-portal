@@ -147,7 +147,7 @@ For comfort, we are adding these shorthands: `pnpm run lint`, `pnpm run lf` (for
 
 ### Unit-tests
 
-We are using [Jest](https://jestjs.io/) for unit testing in this project. If possible, the queries and matchers from the [Testing Library](https://testing-library.com/) should be used. See the documentation for the [Angular Testing Library](https://testing-library.com/docs/angular-testing-library/intro/) and [jest-dom](https://testing-library.com/docs/ecosystem-jest-dom/).
+We are using [Vitest](https://vitest.dev/) for unit testing in this project. If possible, the queries and matchers from the [Testing Library](https://testing-library.com/) should be used. See the documentation for the [Angular Testing Library](https://testing-library.com/docs/angular-testing-library/intro/) and [jest-dom](https://testing-library.com/docs/ecosystem-jest-dom/). Note that jest-dom also supports Vitest, not just Jest.
 
 The unit tests are not included in the linting process and can be executed separately by running `npm run test`. These three variants of running the tests are provided:
 

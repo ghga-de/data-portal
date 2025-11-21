@@ -45,7 +45,7 @@ describe('IvaService', () => {
   let testBed: TestBed;
 
   const httpCache = {
-    delete: jest.fn(),
+    delete: vitest.fn(),
   };
 
   beforeEach(() => {
@@ -137,7 +137,7 @@ describe('IvaService', () => {
   });
 
   it('should reload the IVAs of the current user', async () => {
-    jest.spyOn(httpCache, 'delete');
+    vitest.spyOn(httpCache, 'delete');
     currentUserId.set('doe@test.dev');
     service.loadUserIvas();
     testBed.tick();
