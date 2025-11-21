@@ -26,12 +26,11 @@ import { StepperComponent } from '../stepper/stepper';
   selector: 'app-metadata-validator',
   templateUrl: './metadata-validator.html',
   imports: [
-    CommonModule,
     MatButtonModule,
     MatIconModule,
     StepperComponent,
-    FormatSchemapackErrorPipe,
-  ],
+    FormatSchemapackErrorPipe
+],
 })
 export class MetadataValidatorComponent {
   #validationService = inject(MetadataValidationService);

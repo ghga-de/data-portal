@@ -31,13 +31,12 @@ const PLAYGROUND_DEMO_JSON_VALUE =
   selector: 'app-schemapack-playground',
   templateUrl: './schemapack-playground.html',
   imports: [
-    CommonModule,
     MatButtonModule,
     FormsModule,
     MatIconModule,
     FormatSchemapackErrorPipe,
-    StatusTextBoxComponent,
-  ],
+    StatusTextBoxComponent
+],
 })
 export class SchemapackPlaygroundComponent {
   #validationService = inject(MetadataValidationService);
