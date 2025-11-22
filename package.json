@@ -48,9 +48,9 @@
     "tslib": "^2.8.1"
   },
   "devDependencies": {
-    "@angular-eslint/eslint-plugin": "^20.6.0",
-    "@angular-eslint/eslint-plugin-template": "^20.6.0",
-    "@angular-eslint/template-parser": "^20.6.0",
+    "@angular-eslint/eslint-plugin": "^20.7.0",
+    "@angular-eslint/eslint-plugin-template": "^20.7.0",
+    "@angular-eslint/template-parser": "^20.7.0",
     "@angular/build": "^21.0.0",
     "@angular/cli": "^21.0.0",
     "@angular/compiler-cli": "^21.0.0",
@@ -63,7 +63,7 @@
     "@testing-library/user-event": "^14.6.1",
     "@types/node": "^24.10.1",
     "@vitest/browser-playwright": "^4.0.13",
-    "angular-eslint": "^20.6.0",
+    "angular-eslint": "^20.7.0",
     "autoprefixer": "^10.4.22",
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
