@@ -13,6 +13,7 @@
     "Pydantic",
     "Pyodide",
     "schemapack",
+    "teardown",
     "TOTP"
   ],
   "cSpell.language": "en-GB",

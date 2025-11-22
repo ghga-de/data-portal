@@ -178,6 +178,8 @@ On macOs, you can use [XQuartz](https://www.xquartz.org/). On Windows with WSL 2
 
 The directory `/tmp/.X11-unix` should exist and should be mounted on the corresponding host directory, which is `/mnt/wslg/.X11-unix` for WSLg. If you run `ls /tmp/.X11-unix`, it should show `X0`. If that is not the case, you may need to add or modify volume mounts manually in the `docker-compose.local.yml` file, of which a suitable version is created for you on startup.
 
+You may also need to add `/tmp/.X11-unix` to the virtual file shares in Docker Desktop under Linux, and run `xhost +local:docker` on the host system.
+
 ## The Architecture Matrix
 
 This application is built as a modularized frontend monolith (a "modulith") using vertical slices and layers as module boundaries, which are enforced using the linter.

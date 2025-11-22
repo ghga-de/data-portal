@@ -14,7 +14,7 @@ import {
 import { computed, signal } from '@angular/core';
 import { AuthService } from '@app/auth/services/auth';
 import { ConfigService } from '@app/shared/services/config';
-import { firstValueFrom } from 'rxjs/internal/firstValueFrom';
+import { firstValueFrom } from 'rxjs';
 import { DatasetWithExpiration } from '../models/dataset';
 import { WorkPackage, WorkPackageResponse } from '../models/work-package';
 import { WorkPackageService } from './work-package';
@@ -111,11 +111,14 @@ describe('WorkPackageService', () => {
   });
 
   it('should create a work package for download', async () => {
-    const wp = await firstValueFrom(service.createWorkPackage(TEST_WORK_PACKAGE));
-    expect(wp).toEqual(TEST_WORK_PACKAGE_RESPONSE);
+    const workPackagePromise = firstValueFrom(
+      service.createWorkPackage(TEST_WORK_PACKAGE),
+    );
     const req = httpMock.expectOne('http://mock.dev/wps/work-packages');
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toBe(TEST_WORK_PACKAGE);
     req.flush(TEST_WORK_PACKAGE_RESPONSE);
+    const workPackage = await workPackagePromise;
+    expect(workPackage).toEqual(TEST_WORK_PACKAGE_RESPONSE);
   });
 });

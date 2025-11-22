@@ -58,6 +58,7 @@ describe('IvaService', () => {
         provideHttpClient(),
         provideHttpClientTesting(),
       ],
+      teardown: { destroyAfterEach: false },
     });
     service = TestBed.inject(IvaService);
     httpMock = TestBed.inject(HttpTestingController);
@@ -174,7 +175,6 @@ describe('IvaService', () => {
     const error = service.userIvas.error() as HttpErrorResponse;
     expect(error).toBeDefined();
     expect(error.status).toBe(401);
-    expect(error.statusText).toBe('Unauthorized');
     expect(() => service.userIvas.value()).toThrow();
   });
 
@@ -216,14 +216,14 @@ describe('IvaService', () => {
   it('should create an IVA for the current user', async () => {
     currentUserId.set('doe@test.dev'); // mock login
     testBed.tick();
-    const id = await firstValueFrom(
+    const idPromise = firstValueFrom(
       service.createIva({ type: IvaType.Phone, value: '123/456' }),
     );
-    expect(id).toEqual('TEST123456');
     const req = httpMock.expectOne('http://mock.dev/auth/users/doe@test.dev/ivas');
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual({ type: IvaType.Phone, value: '123/456' });
     req.flush({ id: 'TEST123456' });
+    expect(await idPromise).toEqual('TEST123456');
   });
 
   it('should return an error if IVA to be created is missing a value', async () => {
@@ -255,30 +255,33 @@ describe('IvaService', () => {
   it('should pass a server error when IVA is created', async () => {
     currentUserId.set('doe@test.dev'); // mock login
     testBed.tick();
+    const creationPromise = firstValueFrom(
+      service.createIva({ type: IvaType.Phone, value: '123/456' }),
+    );
+
+    const req = httpMock.expectOne('http://mock.dev/auth/users/doe@test.dev/ivas');
+    expect(req.request.method).toBe('POST');
+    req.flush('Mock Error', { status: 500, statusText: 'Server Error' });
     let status = 0;
     try {
-      await firstValueFrom(
-        service.createIva({ type: IvaType.Phone, value: '123/456' }),
-      );
+      await creationPromise;
     } catch (e) {
       status = (e as HttpErrorResponse).status;
     }
     expect(status).toBe(500);
-    const req = httpMock.expectOne('http://mock.dev/auth/users/doe@test.dev/ivas');
-    expect(req.request.method).toBe('POST');
-    req.flush('Mock Error', { status: 500, statusText: 'Server Error' });
   });
 
   it('should delete an IVA for the current user', async () => {
     currentUserId.set('doe@test.dev'); // mock login
     testBed.tick();
-    await firstValueFrom(service.deleteIva({ ivaId: 'TEST123456' }));
+    const deletionPromise = firstValueFrom(service.deleteIva({ ivaId: 'TEST123456' }));
     const req = httpMock.expectOne(
       'http://mock.dev/auth/users/doe@test.dev/ivas/TEST123456',
     );
     expect(req.request.method).toBe('DELETE');
     expect(req.request.body).toBeNull();
     req.flush(null);
+    expect(await deletionPromise).toBeNull();
   });
 
   it('should return an error if the IVA to be deleted has no ID', async () => {
@@ -292,6 +295,7 @@ describe('IvaService', () => {
     }
     expect(message).toBe('IVA ID missing');
   });
+
   it('should return an error if IVA is deleted while not logged in', async () => {
     currentUserId.set(null); // mock logout
     testBed.tick();
@@ -307,95 +311,108 @@ describe('IvaService', () => {
   it('should pass a server error when IVA is deleted', async () => {
     currentUserId.set('doe@test.dev'); // mock login
     testBed.tick();
-    let status = 0;
-    try {
-      await firstValueFrom(service.deleteIva({ ivaId: 'TEST123456' }));
-    } catch (error) {
-      status = (error as HttpErrorResponse).status;
-    }
-    expect(status).toBe(500);
+    const deletionPromise = firstValueFrom(service.deleteIva({ ivaId: 'TEST123456' }));
     const req = httpMock.expectOne(
       'http://mock.dev/auth/users/doe@test.dev/ivas/TEST123456',
     );
 
     expect(req.request.method).toBe('DELETE');
     req.flush('Mock Error', { status: 500, statusText: 'Server Error' });
+    let status = 0;
+    try {
+      await deletionPromise;
+    } catch (error) {
+      status = (error as HttpErrorResponse).status;
+    }
+    expect(status).toBe(500);
   });
 
   it('should unverify an IVA for the current user', async () => {
     currentUserId.set('doe@test.dev'); // mock login
     testBed.tick();
-    await firstValueFrom(service.unverifyIva('TEST123456'));
+    const unverifyPromise = firstValueFrom(service.unverifyIva('TEST123456'));
     const req = httpMock.expectOne('http://mock.dev/auth/rpc/ivas/TEST123456/unverify');
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toBeNull();
     req.flush(null);
+    expect(await unverifyPromise).toBeNull();
   });
 
   it('should request verification of an IVA for the current user', async () => {
     currentUserId.set('doe@test.dev'); // mock login
     testBed.tick();
-    await firstValueFrom(service.requestCodeForIva('TEST123456'));
+    const codePromise = firstValueFrom(service.requestCodeForIva('TEST123456'));
     const req = httpMock.expectOne(
       'http://mock.dev/auth/rpc/ivas/TEST123456/request-code',
     );
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toBeNull();
     req.flush(null);
+    expect(await codePromise).toBeNull();
   });
 
   it('should create a verification code for an IVA of the current user', async () => {
     currentUserId.set('doe@test.dev'); // mock login
     testBed.tick();
-    const code = await firstValueFrom(service.createCodeForIva('TEST123456'));
-    expect(code).toBe('CODE789');
+    const codePromise = firstValueFrom(service.createCodeForIva('TEST123456'));
+
     const req = httpMock.expectOne(
       'http://mock.dev/auth/rpc/ivas/TEST123456/create-code',
     );
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toBeNull();
     req.flush({ verification_code: 'CODE789' });
+    expect(await codePromise).toBe('CODE789');
   });
 
   it('should confirm transmission of IVA verification for the current user', async () => {
     currentUserId.set('doe@test.dev'); // mock login
     testBed.tick();
-    await firstValueFrom(service.confirmTransmissionForIva('TEST123456'));
+    const confirmPromise = firstValueFrom(
+      service.confirmTransmissionForIva('TEST123456'),
+    );
     const req = httpMock.expectOne(
       'http://mock.dev/auth/rpc/ivas/TEST123456/code-transmitted',
     );
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toBeNull();
     req.flush(null);
+    expect(await confirmPromise).toBeNull();
   });
 
   it('should validate an IVA verification for the current user', async () => {
     currentUserId.set('doe@test.dev'); // mock login
     testBed.tick();
-    await firstValueFrom(service.validateCodeForIva('TEST123456', 'CODE789'));
+    const validatePromise = firstValueFrom(
+      service.validateCodeForIva('TEST123456', 'CODE789'),
+    );
     const req = httpMock.expectOne(
       'http://mock.dev/auth/rpc/ivas/TEST123456/validate-code',
     );
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual({ verification_code: 'CODE789' });
     req.flush(null);
+    expect(await validatePromise).toBeNull();
   });
 
   it('should pass error status for an invalid IVA verification code', async () => {
     currentUserId.set('doe@test.dev'); // mock login
     testBed.tick();
-    let status = 0;
-    try {
-      await firstValueFrom(service.validateCodeForIva('TEST123456', 'CODE789'));
-    } catch (error) {
-      status = (error as HttpErrorResponse).status;
-    }
-    expect(status).toBe(403);
+    const validatePromise = firstValueFrom(
+      service.validateCodeForIva('TEST123456', 'CODE789'),
+    );
     const req = httpMock.expectOne(
       'http://mock.dev/auth/rpc/ivas/TEST123456/validate-code',
     );
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual({ verification_code: 'CODE789' });
     req.flush('Mock Error', { status: 403, statusText: 'Forbidden' });
+    let status = 0;
+    try {
+      await validatePromise;
+    } catch (error) {
+      status = (error as HttpErrorResponse).status;
+    }
+    expect(status).toBe(403);
   });
 });

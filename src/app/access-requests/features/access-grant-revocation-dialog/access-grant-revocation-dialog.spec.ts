@@ -49,7 +49,7 @@ describe('AccessGrantRevocationDialogComponent', () => {
     fixture = TestBed.createComponent(AccessGrantRevocationDialogComponent);
     component = fixture.componentInstance;
     service = fixture.debugElement.injector.get(AccessRequestService);
-    fixture.detectChanges();
+    await fixture.whenStable();
   });
 
   afterEach(() => {

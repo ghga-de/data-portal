@@ -26,12 +26,14 @@ if [ ! -f docker-compose.local.yml ]; then
     if [[ "$UNAME" =~ macos|darwin ]]; then
         echo "You seem to be using macOS."
         echo "It is recommended to install XQuartz as X11 server."
-        AUTH_DIR="~/.Xauthority"
         DISPLAY="host.docker.internal:0"
     elif [[ "$UNAME" =~ microsoft|windows|wsl ]]; then
         echo "You seem to be using WSL."
         echo "This already contains an X11 server as part of WSLg."
         X11_DIR="/mnt/wslg/.X11-unix"
+    elif [[ "$UNAME" =~ linux ]]; then
+        echo "You seem to be using Linux."
+        echo "This is expected to provide a traditional X server or XWayland."
     else
         echo "No specific host environment detected."
     fi

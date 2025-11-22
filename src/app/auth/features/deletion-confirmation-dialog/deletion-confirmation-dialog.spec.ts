@@ -35,23 +35,20 @@ describe('DeletionConfirmationDialogComponent', () => {
     await TestBed.configureTestingModule({
       imports: [DeletionConfirmationDialogComponent],
       providers: [
-        {
-          provide: MAT_DIALOG_DATA,
-          useValue: {
-            user: users[0],
-          },
-        },
+        { provide: MAT_DIALOG_DATA, useValue: { user: users[0] } },
         { provide: MatDialogRef, useValue: dialogRef },
         { provide: UserService, useValue: MockUserService },
         { provide: ConfigService, useValue: MockConfigService },
         provideHttpClient(),
       ],
+      teardown: { destroyAfterEach: false },
     }).compileComponents();
 
     fixture = TestBed.createComponent(DeletionConfirmationDialogComponent);
     component = fixture.componentInstance;
     service = fixture.debugElement.injector.get(UserService);
-    fixture.detectChanges();
+    vitest.clearAllMocks();
+    await fixture.whenStable();
   });
 
   it('should create', () => {
@@ -59,7 +56,6 @@ describe('DeletionConfirmationDialogComponent', () => {
   });
 
   it('should return false when cancelled', () => {
-    vitest.spyOn(dialogRef, 'close');
     expect(dialogRef.close).not.toHaveBeenCalled();
     const button = screen.getByRole('button', { name: 'Cancel' });
     expect(button).toBeVisible();

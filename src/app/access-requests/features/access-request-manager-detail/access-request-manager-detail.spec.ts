@@ -16,6 +16,7 @@ import {
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { ActivatedRoute } from '@angular/router';
+import { fakeActivatedRoute } from '@app/../mocks/route';
 import { AccessRequestService } from '@app/access-requests/services/access-request';
 import { MockAccessRequestService } from '@app/access-requests/services/access-request.mock-service';
 import { ConfigService } from '@app/shared/services/config';
@@ -54,7 +55,7 @@ describe('AccessRequestManagerDetailComponent', () => {
         { provide: IvaService, useClass: MockIvaService },
         { provide: AccessRequestService, useClass: MockAccessRequestService },
         { provide: ConfigService, useClass: MockConfigService },
-        { provide: ActivatedRoute, useValue: { snapshot: { paramMap: new Map() } } },
+        { provide: ActivatedRoute, useValue: fakeActivatedRoute },
         provideHttpClient(),
         provideHttpClientTesting(),
       ],
