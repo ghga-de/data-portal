@@ -336,7 +336,7 @@ export default [
         {
           type: 'tooling',
           mode: 'file',
-          pattern: ['setup-test.ts', 'playwright.config.ts'],
+          pattern: ['setup-test.ts', 'playwright.config.ts', 'vitest.config.ts'],
         },
       ],
     },
