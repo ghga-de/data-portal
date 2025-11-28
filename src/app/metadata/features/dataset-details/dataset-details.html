@@ -238,19 +238,31 @@
                 </p>
                 <p>
                   <strong>Data Use Modifiers:</strong>
-                  @if (dap().data_use_modifier_terms.length > 0) {
-                    @for (
-                      term of dap().data_use_modifier_terms;
-                      track term;
-                      let idx = $index;
-                      let first = $first;
-                      let last = $last
-                    ) {
-                      {{ first ? ' ' : '' }}
-                      <a appExtLink [href]="dap().data_use_modifier_urls[idx]">{{
-                        term
-                      }}</a
-                      >{{ last ? '' : ', ' }}
+                  @if (dap().data_use_modifier_ids && dap().data_use_modifier_terms) {
+                    @let ids = dap().data_use_modifier_ids!;
+                    @let terms = dap().data_use_modifier_terms!;
+                    @let urls = dap().data_use_modifier_urls!;
+                    @let items = ids.length > terms.length ? ids : terms;
+                    @if (ids.length > 0 && terms.length > 0) {
+                      @for (
+                        item of items;
+                        track item;
+                        let idx = $index;
+                        let first = $first;
+                        let last = $last
+                      ) {
+                        {{ first ? ' ' : '' }}
+                        @if (urls[idx]) {
+                          <a appExtLink [href]="urls[idx]">{{
+                            terms[idx] ? terms[idx] : `${ids[idx]}`
+                          }}</a>
+                        } @else {
+                          {{ terms[idx] }}
+                        }
+                        {{ last ? '' : ', ' }}
+                      }
+                    } @else {
+                      N/A
                     }
                   } @else {
                     N/A
