@@ -1,0 +1,34 @@
+<div class="mt-4 overflow-x-auto text-sm">
+  <table class="mx-auto w-auto">
+    <caption class="cdk-visually-hidden">{{ caption() }}</caption>
+    <thead>
+      <tr class="cdk-visually-hidden italic">
+        <th scope="col" class="pe-3 text-end">Count</th>
+        <th scope="col" class="text-start">{{ propertyName() }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      @if (isLoading()) {
+        @for (i of [1, 2, 3]; track i) {
+          <tr>
+            <td class="pe-3 text-end font-bold">
+              <app-stencil class="inline-flex w-10" />
+            </td>
+            <td class="text-left uppercase"
+              ><app-stencil class="inline-flex w-16"
+            /></td>
+          </tr>
+        }
+      } @else {
+        @for (item of data() ?? []; track item.value) {
+          <tr>
+            <td class="pe-3 text-right font-bold">{{ item.count | number }}</td>
+            <td class="truncate text-left uppercase">{{
+              item.value | underscoreToSpace
+            }}</td>
+          </tr>
+        }
+      }
+    </tbody>
+  </table>
+</div>
