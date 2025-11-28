@@ -65,7 +65,7 @@ describe('GlobalStatsComponent', () => {
   it('should properly show experiments', () => {
     expectCardText(
       1,
-      'Experiments: 1,400 ExperimentsCountPlatform100HiSeq test100Illumina test 6002100',
+      'Experiments: 1,400 ExperimentsCountPlatform150HiSeq test50Illumina test 6002',
     );
   });
 

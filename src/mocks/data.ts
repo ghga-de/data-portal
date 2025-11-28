@@ -411,7 +411,7 @@ export const datasetSummary: DatasetSummary = {
     stats: {
       experiment_methods: [
         {
-          value: 'Ilumina_test',
+          value: 'Illumina_test',
           count: 10,
         },
         { value: 'HiSeq_test', count: 4 },
