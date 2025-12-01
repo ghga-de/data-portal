@@ -1,4 +1,4 @@
-<div class="mt-4 overflow-x-auto text-sm">
+<div class="mt-4 text-sm">
   <table class="mx-auto w-auto">
     <caption class="cdk-visually-hidden">{{ caption() }}</caption>
     <thead>
@@ -23,9 +23,11 @@
         @for (item of data() ?? []; track item.value) {
           <tr>
             <td class="pe-3 text-right font-bold">{{ item.count | number }}</td>
-            <td class="truncate text-left uppercase">{{
-              item.value | underscoreToSpace
-            }}</td>
+            <td class="grid grid-cols-[minmax(0,1fr)]">
+              <div class="truncate uppercase">
+                {{ item.value | underscoreToSpace }}
+              </div>
+            </td>
           </tr>
         }
       }

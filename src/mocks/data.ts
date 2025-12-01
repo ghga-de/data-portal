@@ -326,7 +326,7 @@ export const metadataGlobalSummary: BaseGlobalSummary = {
             count: 50,
           },
           {
-            value: 'Illumina_test_test_6000_6000',
+            value: 'Illumina_test_test_6000_6001_6002_6003',
             count: 100,
           },
           {
