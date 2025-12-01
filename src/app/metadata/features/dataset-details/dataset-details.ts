@@ -119,22 +119,21 @@ export class DatasetDetailsComponent implements OnInit {
       .replaceAll('_', ' ');
     const modifierIds = dap.data_use_modifier_ids || [];
     const modifierTerms = dap.data_use_modifier_terms || [];
-    const data_use_modifiers = Array.from(
-      Array(Math.max(modifierIds.length, modifierTerms.length)),
-      (_, idx) => {
-        return {
-          id: modifierIds[idx],
-          url:
-            modifierIds[idx]
+    const data_use_modifiers =
+      Array.from(
+        Array(Math.max(modifierIds.length, modifierTerms.length)),
+        (_, idx) => {
+          return {
+            id: modifierIds[idx],
+            url: modifierIds[idx]
               ? `${this.baseDuoUrl}${modifierIds[idx].replace(':', '_')}`
               : undefined,
-          term:
-            modifierTerms[idx]
-              ? modifierTerms[idx].toLowerCase().replace('_', ' ')
+            term: modifierTerms[idx]
+              ? modifierTerms[idx].toLowerCase().replaceAll('_', ' ')
               : undefined,
-        };
-      },
-    ) || undefined;
+          };
+        },
+      ) || undefined;
     return {
       ...dap,
       data_use_permission_term,
