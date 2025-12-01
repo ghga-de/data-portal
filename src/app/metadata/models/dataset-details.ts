@@ -28,7 +28,7 @@ export interface DatasetDetails {
 interface DataAccessPolicy {
   name: string;
   policy_text: string;
-  policy_url: string;
+  policy_url?: string;
   data_use_permission_term: string;
   data_use_permission_id: string;
   data_use_modifier_terms?: string[];
