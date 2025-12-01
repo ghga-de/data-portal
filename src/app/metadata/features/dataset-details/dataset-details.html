@@ -62,7 +62,7 @@
           </div>
         </div>
       </div>
-      <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center" dynamicHeight>
+      <mat-tab-group [mat-stretch-tabs]="false" mat-align-tabs="center" dynamicHeight>
         <mat-tab
           ><ng-template mat-tab-label
             ><span class="text-primary flex items-center">
@@ -237,8 +237,7 @@
                   >
                 </p>
                 <p>
-                  @if (dap().data_use_modifiers.length > 0) {
-                    @let modifiers = dap().data_use_modifiers;
+                  @if (dap().data_use_modifiers; as modifiers) {
                     <strong>Data Use Modifiers:</strong>
                     @for (
                       modifier of modifiers;
