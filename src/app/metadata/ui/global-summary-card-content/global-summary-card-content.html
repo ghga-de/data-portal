@@ -23,11 +23,11 @@
         @for (item of data() ?? []; track item.value) {
           <tr>
             <td class="pe-3 text-right font-bold">{{ item.count | number }}</td>
-            <td class="grid grid-cols-[minmax(0,1fr)]">
-              <div class="truncate uppercase">
-                {{ item.value | underscoreToSpace }}
-              </div>
-            </td>
+            <td class="grid grid-cols-[minmax(0,1fr)]"
+              ><div class="truncate uppercase">{{
+                item.value | underscoreToSpace
+              }}</div></td
+            >
           </tr>
         }
       }
