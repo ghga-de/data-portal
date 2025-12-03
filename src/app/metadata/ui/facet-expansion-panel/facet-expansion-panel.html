@@ -1,0 +1,53 @@
+<mat-expansion-panel
+  (afterExpand)="panelExpanded.emit(true)"
+  (afterCollapse)="panelExpanded.emit(false)"
+  [expanded]="expanded()"
+>
+  <mat-expansion-panel-header
+    ><mat-panel-title
+      >{{ facet().name }} ({{ augmentedOptions().length }})</mat-panel-title
+    ></mat-expansion-panel-header
+  >
+  @if (facet().options.length > 6) {
+    <form (submit)="$event.preventDefault()">
+      <mat-form-field class="w-full">
+        <input
+          matInput
+          placeholder="Filter options"
+          [aria-label]="`Filter ${facet().name} options`"
+          [field]="filterForm.filterText"
+        />
+        <mat-icon matSuffix fontIcon="filter_alt"></mat-icon>
+      </mat-form-field>
+    </form>
+  }
+  <ul class="max-h-60 overflow-y-auto pb-1">
+    @for (option of augmentedOptions(); track option.value) {
+      @let name = `${facet().key}#${option.value}`;
+      <li>
+        <mat-checkbox
+          [name]="name"
+          class="w-full [&_div]:w-full [&_label]:w-full"
+          (change)="optionSelected.emit($event)"
+          [checked]="option.checked"
+          ><span class="flex w-full flex-nowrap gap-x-2"
+            ><span class="grow">{{ option.value }}</span
+            ><span class="pe-2 text-gray-500">{{ option.count }}</span></span
+          ></mat-checkbox
+        >
+      </li>
+    }
+  </ul>
+</mat-expansion-panel>
+@if (selectedOptions()!.length > 0) {
+  <mat-chip-set class="chip-set-tertiary mt-2">
+    @for (selectedOption of selectedOptions(); track selectedOption) {
+      <mat-chip (removed)="optionRemoved.emit(facet().key + '#' + selectedOption)">
+        {{ selectedOption }}
+        <button matChipRemove data-umami-event="Metadata Browser Facet Clear Clicked">
+          <mat-icon fontIcon="cancel"></mat-icon>
+        </button>
+      </mat-chip>
+    }
+  </mat-chip-set>
+}

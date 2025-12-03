@@ -79,10 +79,9 @@ describe('MetadataBrowserComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should show filters', () => {
+  it('should show total datasets', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const text = compiled.textContent;
-    expect(text).toContain('Dataset Type');
-    expect(text).toContain('Test dataset type 1');
+    expect(text).toContain('26');
   });
 });

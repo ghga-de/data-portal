@@ -8,6 +8,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { fakeActivatedRoute } from '@app/../mocks/route';
+import { ConfigService } from '@app/shared/services/config';
 import { MetadataBrowserFilterComponent } from './metadata-browser-filter';
 
 describe('MetadataBrowserFilterComponent', () => {
@@ -20,14 +21,11 @@ describe('MetadataBrowserFilterComponent', () => {
       providers: [
         RouterModule,
         { provide: ActivatedRoute, useValue: fakeActivatedRoute },
+        { provide: ConfigService, useValue: { massUrl: '' } },
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MetadataBrowserFilterComponent);
-    fixture.componentRef.setInput('facets', []);
-    fixture.componentRef.setInput('facetData', []);
-    fixture.componentRef.setInput('loading', false);
-    fixture.componentRef.setInput('searchFormValue', null);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
