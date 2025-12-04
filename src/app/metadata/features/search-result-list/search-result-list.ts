@@ -33,7 +33,7 @@ export class SearchResultListComponent {
   #metadataSearch = inject(MetadataSearchService);
   #searchResults = this.#metadataSearch.searchResults;
   hits = computed(() => this.#searchResults()?.hits ?? []);
-  loading = this.#metadataSearch.isLoading;
+  loading = computed(() => this.#metadataSearch.isLoading());
   numResults = computed(() => this.#searchResults()?.count);
 
   pageSize = this.#metadataSearch.searchResultsLimit;

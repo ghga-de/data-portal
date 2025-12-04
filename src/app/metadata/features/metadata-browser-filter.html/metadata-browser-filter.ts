@@ -56,9 +56,9 @@ export class MetadataBrowserFilterComponent implements OnInit {
     this.#searchResults.error() ? [] : this.#searchResults.value().facets,
   );
   protected facets = signal<Facet[]>([]);
-  readonly isLoading = this.#metadataSearch.isLoading;
-  pageSize = this.#metadataSearch.searchResultsLimit;
-  #skip = this.#metadataSearch.searchResultsSkip;
+  readonly isLoading = computed(() => this.#metadataSearch.isLoading);
+  pageSize = computed(() => this.#metadataSearch.searchResultsLimit());
+  #skip = computed(() => this.#metadataSearch.searchResultsSkip());
   #currentFacet: string | null | undefined;
 
   protected expandedPanels: { [facetKey: string]: boolean } = {};
@@ -66,8 +66,8 @@ export class MetadataBrowserFilterComponent implements OnInit {
   protected facetData = signal<FacetFilterSetting>({});
   protected searchFormValue = signal<string | null>('');
   protected searchTerm = '';
-  protected lastSearchQuery = this.#metadataSearch.query;
-  protected selectedFacets = this.#metadataSearch.facets;
+  protected lastSearchQuery = computed(() => this.#metadataSearch.query());
+  protected selectedFacets = computed(() => this.#metadataSearch.facets());
 
   readonly paginated = this.#metadataSearch.paginated;
 

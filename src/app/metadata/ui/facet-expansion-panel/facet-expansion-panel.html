@@ -1,6 +1,6 @@
 <mat-expansion-panel
-  (afterExpand)="panelExpanded.emit(true)"
-  (afterCollapse)="panelExpanded.emit(false)"
+  (opened)="panelExpansionChanged.emit(true)"
+  (closed)="panelExpansionChanged.emit(false)"
   [expanded]="expanded()"
 >
   <mat-expansion-panel-header
@@ -31,7 +31,7 @@
           (change)="optionSelected.emit($event)"
           [checked]="option.checked"
           ><span class="flex w-full flex-nowrap gap-x-2"
-            ><span class="grow">{{ option.value }}</span
+            ><span class="grow">{{ option.value | underscoreToSpace }}</span
             ><span class="pe-2 text-gray-500">{{ option.count }}</span></span
           ></mat-checkbox
         >
@@ -43,8 +43,12 @@
   <mat-chip-set class="chip-set-tertiary mt-2">
     @for (selectedOption of selectedOptions(); track selectedOption) {
       <mat-chip (removed)="optionRemoved.emit(facet().key + '#' + selectedOption)">
-        {{ selectedOption }}
-        <button matChipRemove data-umami-event="Metadata Browser Facet Clear Clicked">
+        {{ selectedOption | underscoreToSpace }}
+        <button
+          matChipRemove
+          data-umami-event="Metadata Browser Facet Clear Clicked"
+          [aria-label]="`Remove filter for ${(selectedOption | underscoreToSpace)}`"
+        >
           <mat-icon fontIcon="cancel"></mat-icon>
         </button>
       </mat-chip>

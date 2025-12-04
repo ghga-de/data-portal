@@ -69,7 +69,7 @@
               [expanded]="facet.expanded"
               (optionSelected)="onOptionSelected($event)"
               (optionRemoved)="removeOption($event)"
-              (panelExpanded)="onExpansionPanelChange(facet.key, $event)"
+              (panelExpansionChanged)="onExpansionPanelChange(facet.key, $event)"
             ></app-facet-expansion-panel>
           }
         </mat-accordion>

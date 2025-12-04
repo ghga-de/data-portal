@@ -13,6 +13,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Facet } from '@app/metadata/models/search-results';
+import { UnderscoreToSpace } from '@app/shared/pipes/underscore-to-space-pipe';
 
 /**
  * Component for the facet expansion panel and options
@@ -27,6 +28,7 @@ import { Facet } from '@app/metadata/models/search-results';
     MatInputModule,
     MatIconModule,
     Field,
+    UnderscoreToSpace,
   ],
   templateUrl: './facet-expansion-panel.html',
 })
@@ -37,7 +39,7 @@ export class FacetExpansionPanelComponent {
 
   readonly optionRemoved = output<string>();
   readonly optionSelected = output<MatCheckboxChange>();
-  readonly panelExpanded = output<boolean>();
+  readonly panelExpansionChanged = output<boolean>();
 
   protected filterModel = signal({ filterText: '' });
   protected filterForm = form(this.filterModel);
@@ -51,13 +53,13 @@ export class FacetExpansionPanelComponent {
         }
         return { count: 0, value: o, checked: true };
       })
-      .sort((a, b) => a.value.localeCompare(b.value))
       .concat(
         this.facet()
           .options.filter((o) => !this.selectedOptions().some((x) => x === o.value))
           .map((o) => {
             return { ...o, checked: false };
           }),
-      );
+      )
+      .sort((a, b) => a.value.localeCompare(b.value));
   });
 }
