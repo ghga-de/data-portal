@@ -12,7 +12,7 @@ import { searchResults } from '@app/../mocks/data';
 import { fakeActivatedRoute } from '@app/../mocks/route';
 import { ConfigService } from '@app/shared/services/config';
 import { MetadataSearchService } from '../../services/metadata-search';
-import { MetadataBrowserFilterComponent } from '../metadata-browser-filter.html/metadata-browser-filter';
+import { MetadataBrowserFilterComponent } from '../metadata-browser-filter/metadata-browser-filter';
 import { SearchResultListComponent } from '../search-result-list/search-result-list';
 import { MetadataBrowserComponent } from './metadata-browser';
 

@@ -18,7 +18,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MetadataSearchService } from '@app/metadata/services/metadata-search';
 import { ConfigService } from '@app/shared/services/config';
 import { NotificationService } from '@app/shared/services/notification';
-import { MetadataBrowserFilterComponent } from '../metadata-browser-filter.html/metadata-browser-filter';
+import { MetadataBrowserFilterComponent } from '../metadata-browser-filter/metadata-browser-filter';
 import { SearchResultListComponent } from '../search-result-list/search-result-list';
 
 /**
