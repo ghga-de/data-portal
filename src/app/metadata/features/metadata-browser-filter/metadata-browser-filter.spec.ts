@@ -28,9 +28,8 @@ class MockMetadataSearchService {
   isLoading = () => false;
   searchResultsLimit = () => 10;
   searchResultsSkip = () => 0;
-  paginated = {
-    subscribe: () => true,
-  };
+  paginated = () => false;
+  resetSkip = () => {};
   loadQueryParameters = () => {};
   facets = () => {};
   query = () => undefined;
@@ -71,7 +70,7 @@ describe('MetadataBrowserFilterComponent', () => {
     expect(routerSpy).toHaveBeenCalledWith(
       [],
       expect.objectContaining({
-        queryParams: { f: undefined, p: 10, q: 'test', s: undefined },
+        queryParams: { f: undefined, p: undefined, q: 'test', s: undefined },
       }),
     );
   });
