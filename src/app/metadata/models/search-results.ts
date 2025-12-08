@@ -37,5 +37,5 @@ export const emptySearchResults: SearchResults = {
   hits: [],
 };
 
-export const DEFAULT_PAGE_SIZE = 5;
+export const DEFAULT_PAGE_SIZE = 10;
 export const DEFAULT_SKIP_VALUE = 0;

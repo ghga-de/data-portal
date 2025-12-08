@@ -89,7 +89,7 @@ export class MetadataBrowserFilterComponent implements OnInit {
   );
 
   #paginatedEffect = effect(() => {
-    this.paginated.subscribe((v) => (v ? this.#performSearch() : null));
+    this.paginated() ? this.#performSearch() : null;
   });
 
   #deferredFacetUpdateEffect = effect(() => {
@@ -240,6 +240,7 @@ export class MetadataBrowserFilterComponent implements OnInit {
     const searchTerm = this.searchFormValue() || '';
     if (searchTerm !== this.searchTerm || this.#facetDataChanged()) {
       this.searchTerm = searchTerm;
+      this.#metadataSearch.resetSkip();
       this.facets.set([]);
       this.#currentFacet = undefined;
       this.#performSearch();

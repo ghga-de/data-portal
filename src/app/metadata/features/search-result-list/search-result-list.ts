@@ -12,7 +12,7 @@ import { MetadataSearchService } from '@app/metadata/services/metadata-search';
 import { SearchResultComponent } from '../search-result/search-result';
 import { SearchResultStencilComponent } from '../search-result/search-result.stencil';
 
-const PAGE_SIZE_OPTIONS = [5, 25, 50, 100];
+const PAGE_SIZE_OPTIONS = [10, 25, 50, 100];
 const NUM_STENCILS = 3;
 
 /**

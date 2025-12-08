@@ -5,14 +5,7 @@
  */
 
 import { httpResource } from '@angular/common/http';
-import {
-  EventEmitter,
-  Injectable,
-  Signal,
-  computed,
-  inject,
-  signal,
-} from '@angular/core';
+import { Injectable, Signal, computed, inject, signal } from '@angular/core';
 import { ConfigService } from '@app/shared/services/config';
 import { FacetFilterSetting } from '../models/facet-filter';
 import {
@@ -80,7 +73,7 @@ export class MetadataSearchService {
     this.searchResultsResource.error() ? undefined : this.searchResultsResource.value(),
   );
 
-  paginated = new EventEmitter();
+  paginated = signal(true);
 
   /**
    * Change the local private variables when paginating
@@ -90,14 +83,14 @@ export class MetadataSearchService {
   paginate(limit?: number, skip?: number): void {
     this.#limit.set(limit ?? this.#limit());
     this.#skip.set(skip ?? this.#skip());
-    this.paginated.next(true);
+    this.paginated.set(true);
   }
 
   /**
    * Reset the skip variable to defaults (e.g. when changing the search query)
    */
   resetSkip() {
-    this.paginated.next(false);
+    this.paginated.set(false);
     this.#skip.set(DEFAULT_SKIP_VALUE);
   }
 
