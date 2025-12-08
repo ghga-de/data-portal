@@ -73,7 +73,7 @@ export class MetadataSearchService {
     this.searchResultsResource.error() ? undefined : this.searchResultsResource.value(),
   );
 
-  paginated = signal(true);
+  paginated = signal(false);
 
   /**
    * Change the local private variables when paginating
