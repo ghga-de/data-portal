@@ -6,7 +6,12 @@
 
 import { Component, ElementRef, inject, viewChild } from '@angular/core';
 
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import {
@@ -27,7 +32,6 @@ import { IvaTypePipe } from '@app/verification-addresses/pipes/iva-type-pipe';
 @Component({
   selector: 'app-new-iva-dialog',
   imports: [
-    FormsModule,
     ReactiveFormsModule,
     MatButtonModule,
     MatFormFieldModule,
@@ -46,6 +50,11 @@ export class NewIvaDialogComponent {
     MatDialogRef<NewIvaDialogComponent, { type: IvaType; value: string }>,
   );
   #ivaTypePipe = inject(IvaTypePipe);
+
+  form = new FormGroup({
+    type: new FormControl<keyof typeof IvaType | null>(null, Validators.required),
+    value: new FormControl<string>('', Validators.required),
+  });
 
   /**
    * Value prompts for the different IVA types
@@ -80,14 +89,20 @@ export class NewIvaDialogComponent {
   valueField = viewChild('valueField', { read: ElementRef });
 
   /**
-   * The selected IVA type
+   * Selected IVA type
+   * @returns the selected IVA type
    */
-  type: keyof typeof IvaType | undefined = undefined;
+  get type(): keyof typeof IvaType | null {
+    return this.form.controls.type.value;
+  }
 
   /**
-   * The IVA value entered by the user
+   * Entered IVA value
+   * @returns the entered IVA value
    */
-  value: string = '';
+  get value(): string | null {
+    return this.form.controls.value.value;
+  }
 
   /**
    * Get the value prompt for the selected IVA type
@@ -101,13 +116,9 @@ export class NewIvaDialogComponent {
    * Focus the value field when the type was changed
    */
   onTypeChange(): void {
+    this.form.controls.value.reset();
     setTimeout(() => this.valueField()?.nativeElement.focus(), 5);
   }
-
-  /**
-   * On input, modify the code to uppercase
-   */
-  onInput(): void {}
 
   /**
    * Cancel the dialog
@@ -120,8 +131,11 @@ export class NewIvaDialogComponent {
    * Complete the verification and pass the entered IVA data
    */
   onSubmit(): void {
-    if (this.type && this.value) {
-      this.#dialogRef.close({ type: IvaType[this.type], value: this.value });
+    if (this.form.valid && this.type && this.value) {
+      this.#dialogRef.close({
+        type: IvaType[this.type],
+        value: this.value,
+      });
     }
   }
 }

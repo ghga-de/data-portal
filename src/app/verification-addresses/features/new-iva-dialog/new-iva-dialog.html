@@ -1,12 +1,11 @@
 <h1 mat-dialog-title>Add contact address</h1>
 <div mat-dialog-content cdkTrapFocus>
-  <form defaultButton="submit-code" (ngSubmit)="onSubmit()" #form="ngForm">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <p class="mb-3">Please select one of the following contact address types:</p>
     <div class="text-center">
       <mat-button-toggle-group
         aria-label="Contact address type"
-        [(ngModel)]="type"
-        name="type"
+        formControlName="type"
         (change)="onTypeChange()"
       >
         @for (type of types; track type) {
@@ -25,8 +24,7 @@
           [autocomplete]="
             type === 'Phone' ? 'mobile tel' : type === 'Fax' ? 'fax' : 'street-address'
           "
-          [(ngModel)]="value"
-          name="value"
+          formControlName="value"
           cdkFocusInitial
           maxlength="500"
           #valueField
@@ -42,7 +40,7 @@
       <button
         id="submit-code"
         mat-raised-button
-        [disabled]="!type || !value"
+        [disabled]="form.invalid"
         (click)="onSubmit()"
         data-umami-event="New IVA Submit Clicked"
       >
