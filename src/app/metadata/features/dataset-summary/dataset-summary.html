@@ -1,8 +1,7 @@
-@let ega_accession_is_set = !!hitContent().ega_accession?.trim();
 <div class="overflow-x-auto">
   <div class="pt-4 text-sm">
     <div class="mb-4 flex flex-col gap-y-2 sm:float-right sm:w-52 md:ms-6 md:mb-4">
-      @if (ega_accession_is_set) {
+      @if (isEgaAccessionSet()) {
         <a
           appExtLink
           mat-stroked-button
@@ -22,7 +21,7 @@
       >
     </div>
     <p class="*:mb-0.5"><strong>Dataset ID:</strong> {{ summary().accession }}</p>
-    @if (ega_accession_is_set) {
+    @if (isEgaAccessionSet()) {
       <p><strong>EGA ID:</strong> {{ hitContent().ega_accession }}</p>
     }
     <p class="*:mb-0.5"><strong>Full title:</strong> {{ summary().title }}</p>
