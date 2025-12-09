@@ -247,13 +247,15 @@ export const getDatasetSummary = (accession: string) => {
 // get embedded datasets with arbitrary accessions
 export const getDatasetDetails = (accession: string) => {
   let ega_accession: string | undefined = accession.replace('GHGA', 'EGA');
+
+  // the following two IDs have special ega accessions for testing
   if (accession === 'GHGAD12345678901237') {
     ega_accession = '   ';
   }
-
-  if (accession === 'GHGAD12345678901237') {
+  if (accession === 'GHGAD12345678901238') {
     ega_accession = undefined;
   }
+
   return {
     ...datasetDetails,
     accession: accession,
