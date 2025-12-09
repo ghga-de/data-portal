@@ -18,19 +18,33 @@
     @if (type) {
       <p class="mt-5">{{ valuePrompt }}</p>
       <mat-form-field class="w-full">
-        <input
-          matInput
-          [type]="type === 'Phone' || type === 'Fax' ? 'tel' : 'text'"
-          [autocomplete]="
-            type === 'Phone' ? 'mobile tel' : type === 'Fax' ? 'fax' : 'street-address'
-          "
-          formControlName="value"
-          cdkFocusInitial
-          maxlength="500"
-          #valueField
-          required
-        />
+        @if (type === 'Phone' || type === 'Fax') {
+          <ngx-mat-input-tel
+            class="w-full"
+            [preferredCountries]="['de']"
+            [enablePlaceholder]="true"
+            [enableSearch]="true"
+            name="value"
+            formControlName="value"
+            autocomplete="tel"
+            maxLength="15"
+            #valueField
+          ></ngx-mat-input-tel>
+        } @else {
+          <input
+            matInput
+            type="text"
+            autocomplete="street-address"
+            formControlName="value"
+            cdkFocusInitial
+            maxlength="500"
+            #valueField
+            required
+          />
+        }
       </mat-form-field>
+    } @else {
+      <p class="mb-5"></p>
     }
 
     <div mat-dialog-actions>

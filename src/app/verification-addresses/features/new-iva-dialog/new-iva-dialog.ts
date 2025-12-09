@@ -6,6 +6,7 @@
 
 import { Component, ElementRef, inject, viewChild } from '@angular/core';
 
+import { A11yModule } from '@angular/cdk/a11y';
 import {
   FormControl,
   FormGroup,
@@ -25,9 +26,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { IvaType } from '@app/verification-addresses/models/iva';
 import { IvaTypePipe } from '@app/verification-addresses/pipes/iva-type-pipe';
+import { NgxMatInputTelComponent } from 'ngx-mat-input-tel';
 
 /**
  * IVA creation dialog component
+ *
+ * This component uses the international telephone input for Angular Material
+ * provided by [ngxMatInputTel](https://github.com/rbalet/ngx-mat-input-tel).
+ * The full validation of the phone numbers is done on the server side.
  */
 @Component({
   selector: 'app-new-iva-dialog',
@@ -41,6 +47,8 @@ import { IvaTypePipe } from '@app/verification-addresses/pipes/iva-type-pipe';
     MatDialogContent,
     MatDialogActions,
     MatButtonToggleModule,
+    NgxMatInputTelComponent,
+    A11yModule,
   ],
   providers: [IvaTypePipe],
   templateUrl: './new-iva-dialog.html',
@@ -117,7 +125,14 @@ export class NewIvaDialogComponent {
    */
   onTypeChange(): void {
     this.form.controls.value.reset();
-    setTimeout(() => this.valueField()?.nativeElement.focus(), 5);
+    setTimeout(
+      () =>
+        this.valueField()
+          ?.nativeElement?.closest('mat-form-field')
+          ?.querySelector('input')
+          ?.focus(),
+      5,
+    );
   }
 
   /**
