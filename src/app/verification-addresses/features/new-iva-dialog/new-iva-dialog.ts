@@ -5,6 +5,7 @@
  */
 
 import { Component, ElementRef, inject, viewChild } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 import { A11yModule } from '@angular/cdk/a11y';
 import {
@@ -27,6 +28,7 @@ import { MatInputModule } from '@angular/material/input';
 import { IvaType } from '@app/verification-addresses/models/iva';
 import { IvaTypePipe } from '@app/verification-addresses/pipes/iva-type-pipe';
 import { NgxMatInputTelComponent } from 'ngx-mat-input-tel';
+import { map, startWith } from 'rxjs';
 
 /**
  * IVA creation dialog component
@@ -34,6 +36,7 @@ import { NgxMatInputTelComponent } from 'ngx-mat-input-tel';
  * This component uses the international telephone input for Angular Material
  * provided by [ngxMatInputTel](https://github.com/rbalet/ngx-mat-input-tel).
  * The full validation of the phone numbers is done on the server side.
+ * Might be refactored to use a signal form once ngxMatInputTel supports it.
  */
 @Component({
   selector: 'app-new-iva-dialog',
@@ -63,6 +66,17 @@ export class NewIvaDialogComponent {
     type: new FormControl<keyof typeof IvaType | null>(null, Validators.required),
     value: new FormControl<string>('', Validators.required),
   });
+
+  /**
+   * Signal indicating whether the form is invalid
+   * @returns true if the form is invalid, false otherwise
+   */
+  isInvalid = toSignal(
+    this.form.statusChanges.pipe(
+      startWith('INVALID'),
+      map((status) => status !== 'VALID'),
+    ),
+  );
 
   /**
    * Value prompts for the different IVA types

@@ -54,7 +54,7 @@
       <button
         id="submit-code"
         mat-raised-button
-        [disabled]="form.invalid"
+        [disabled]="isInvalid()"
         (click)="onSubmit()"
         data-umami-event="New IVA Submit Clicked"
       >
