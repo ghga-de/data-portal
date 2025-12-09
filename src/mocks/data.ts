@@ -248,7 +248,7 @@ export const getDatasetSummary = (accession: string) => {
 export const getDatasetDetails = (accession: string) => {
   let ega_accession: string | undefined = accession.replace('GHGA', 'EGA');
 
-  // the following two IDs have special ega accessions for testing
+  // the following two IDs have special ega accessions for testing. Generally we just want some value here but these two datasets are used to test the absence of ega accession
   if (accession === 'GHGAD12345678901237') {
     ega_accession = '   ';
   }
