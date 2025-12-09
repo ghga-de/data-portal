@@ -6,7 +6,7 @@
       <mat-button-toggle-group
         aria-label="Contact address type"
         formControlName="type"
-        (change)="onTypeChange()"
+        class="[&_mat-button-toggle]:w-31 sm:[&_mat-button-toggle]:w-40"
       >
         @for (type of types; track type) {
           <mat-button-toggle [value]="type.value" class="px-0 sm:px-3.5">{{
