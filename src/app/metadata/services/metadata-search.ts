@@ -80,9 +80,9 @@ export class MetadataSearchService {
    * @param limit Number of results to fetch
    * @param skip Number of results to skip to enable pagination
    */
-  paginate(limit?: number, skip?: number): void {
-    this.#limit.set(limit ?? this.#limit());
-    this.#skip.set(skip ?? this.#skip());
+  paginate(limit: number, skip: number): void {
+    this.#limit.set(limit);
+    this.#skip.set(skip);
     this.paginated.set(true);
   }
 

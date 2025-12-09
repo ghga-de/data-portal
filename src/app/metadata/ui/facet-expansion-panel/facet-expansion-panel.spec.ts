@@ -65,12 +65,12 @@ describe('FacetExpansionPanelComponent', () => {
     ]);
   });
 
-  it('should keep the sort order of the selected mat chips (sorted from earliest to latest selected)', () => {
+  it('should keep the sort order of the selected mat chips', () => {
     const generics = screen.getAllByRole('generic');
     const matChipValues = generics
       .filter((x) => x.className.includes('mat-mdc-chip-action-label'))
       .map((x) => x.textContent.trim());
-    expect(matChipValues).toStrictEqual(['Test Option 3', 'Test Option 2']);
+    expect(matChipValues).toStrictEqual(['Test Option 2', 'Test Option 3']);
   });
 
   it('should emit events correctly when de-/selecting an option', async () => {

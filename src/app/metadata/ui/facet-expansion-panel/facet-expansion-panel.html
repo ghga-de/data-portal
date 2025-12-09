@@ -4,8 +4,9 @@
   [expanded]="expanded()"
 >
   <mat-expansion-panel-header
-    ><mat-panel-title
-      >{{ facet().name }} ({{ augmentedOptions().length }})</mat-panel-title
+    ><mat-panel-title class="gap-x-1"
+      ><span class="line-clamp-2 text-ellipsis">{{ facet().name }}</span
+      ><span>({{ augmentedOptions().length }})</span></mat-panel-title
     ></mat-expansion-panel-header
   >
   @if (facet().options.length > 6) {
@@ -41,7 +42,7 @@
 </mat-expansion-panel>
 @if (selectedOptions()!.length > 0) {
   <mat-chip-set class="chip-set-tertiary mt-2">
-    @for (selectedOption of selectedOptions(); track selectedOption) {
+    @for (selectedOption of sortedSelectedOptions(); track selectedOption) {
       <mat-chip (removed)="optionRemoved.emit(facet().key + '#' + selectedOption)">
         {{ selectedOption | underscoreToSpace }}
         <button

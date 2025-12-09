@@ -45,21 +45,23 @@ export class FacetExpansionPanelComponent {
   protected filterForm = form(this.filterModel);
 
   protected augmentedOptions = computed(() => {
-    return this.selectedOptions()
-      .map((o) => {
-        const foundOption = this.facet().options.find((x) => x.value === o);
-        if (foundOption) {
-          return { ...foundOption, checked: true };
-        }
-        return { count: 0, value: o, checked: true };
-      })
-      .concat(
-        this.facet()
-          .options.filter((o) => !this.selectedOptions().some((x) => x === o.value))
-          .map((o) => {
-            return { ...o, checked: false };
-          }),
-      )
+    const options = this.facet().options;
+    const selected = this.selectedOptions();
+    const optionsSet = new Set(options.map((option) => option.value));
+    const selectedSet = new Set(selected);
+    const selectedFiltered = selected
+      .filter((option) => !optionsSet.has(option))
+      .map((option) => ({ checked: true, value: option, count: 0 }));
+    const optionsExtended = options.map((option) => ({
+      ...option,
+      checked: selectedSet.has(option.value),
+    }));
+    return optionsExtended
+      .concat(selectedFiltered)
       .sort((a, b) => a.value.localeCompare(b.value));
+  });
+
+  protected sortedSelectedOptions = computed(() => {
+    return this.selectedOptions().sort((a, b) => a.localeCompare(b));
   });
 }
