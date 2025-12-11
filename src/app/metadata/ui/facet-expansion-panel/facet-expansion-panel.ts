@@ -13,7 +13,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Facet } from '@app/metadata/models/search-results';
+import { HighlightMatchingText } from '@app/shared/pipes/highlight-matching-text-pipe';
 import { UnderscoreToSpace } from '@app/shared/pipes/underscore-to-space-pipe';
+
+const MAX_OPTIONS_BEFORE_FILTERING = 6;
 
 /**
  * Component for the facet expansion panel and options
@@ -33,6 +36,8 @@ import { UnderscoreToSpace } from '@app/shared/pipes/underscore-to-space-pipe';
   templateUrl: './facet-expansion-panel.html',
 })
 export class FacetExpansionPanelComponent {
+  readonly maxOptionsBeforeFiltering = MAX_OPTIONS_BEFORE_FILTERING;
+
   readonly facet = input.required<Facet>();
   readonly selectedOptions = input.required<string[]>();
   readonly expanded = input.required<boolean>();
@@ -56,9 +61,18 @@ export class FacetExpansionPanelComponent {
       ...option,
       checked: selectedSet.has(option.value),
     }));
-    return optionsExtended
+    const allOptions = optionsExtended
       .concat(selectedFiltered)
       .sort((a, b) => a.value.localeCompare(b.value));
+
+    const filter = this.filterModel().filterText.toLocaleLowerCase();
+
+    return allOptions
+      .filter((option) => option.value.toLocaleLowerCase().includes(filter))
+      .map((option) => ({
+        ...option,
+        withHighlights: HighlightMatchingText.prototype.transform(option.value, filter),
+      }));
   });
 
   protected sortedSelectedOptions = computed(() => {
