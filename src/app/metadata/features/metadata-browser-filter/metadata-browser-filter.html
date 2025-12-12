@@ -90,7 +90,7 @@
 >
   @if (searchModel().searchTerm) {
     <mat-option disabled="true">
-      Press Enter to search for '{{ searchModel().searchTerm }}'
+      Press Enter to filter for the keyword '{{ searchModel().searchTerm }}'
     </mat-option>
     @for (facet of filteredFacets(); track facet.key) {
       <mat-optgroup [label]="facet.name" class="larger-optgroup-label">
