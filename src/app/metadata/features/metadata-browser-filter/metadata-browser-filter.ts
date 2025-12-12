@@ -28,8 +28,8 @@ import {
 } from '@app/metadata/models/search-results';
 import { MetadataSearchService } from '@app/metadata/services/metadata-search';
 import { FacetExpansionPanelComponent } from '@app/metadata/ui/facet-expansion-panel/facet-expansion-panel';
-import { HighlightMatchingText } from '@app/shared/pipes/highlight-matching-text-pipe';
 import { StencilComponent } from '@app/shared/ui/stencil/stencil/stencil';
+import { HighlightMatchingText } from '@app/shared/utils/highlight-matching-text';
 
 /**
  * Component for the metadata browser filter
@@ -72,7 +72,7 @@ export class MetadataBrowserFilterComponent implements OnInit {
   protected expandedPanels: { [facetKey: string]: boolean } = {};
 
   protected facetData = signal<FacetFilterSetting>({});
-  protected storedSearchText = signal<string>('');
+  protected activeKeyword = signal<string>('');
   protected searchModel = signal({ searchTerm: '' });
   protected searchForm = form(this.searchModel);
 
@@ -99,10 +99,7 @@ export class MetadataBrowserFilterComponent implements OnInit {
             .map((option) => ({
               ...option,
               selected: selectedFacets.has(option.value),
-              withHighlights: HighlightMatchingText.prototype.transform(
-                option.value,
-                filter,
-              ),
+              withHighlights: HighlightMatchingText(option.value, filter),
             })),
         };
       })
@@ -207,7 +204,7 @@ export class MetadataBrowserFilterComponent implements OnInit {
       relativeTo: this.#route,
       queryParams: {
         s: this.#skip() !== DEFAULT_SKIP_VALUE ? this.#skip() : undefined,
-        q: this.storedSearchText() !== '' ? this.storedSearchText() : undefined,
+        q: this.activeKeyword() !== '' ? this.activeKeyword() : undefined,
         f:
           Object.keys(this.facetData()).length !== 0
             ? encodeURIComponent(this.#facetDataToString(this.facetData()))
@@ -224,7 +221,7 @@ export class MetadataBrowserFilterComponent implements OnInit {
   #loadSearchTermsFromRoute(): void {
     const { s, q, f, p } = this.#router.routerState.snapshot.root.queryParams;
     const pageSize = parseInt(p) || DEFAULT_PAGE_SIZE;
-    this.storedSearchText.set(q || '');
+    this.activeKeyword.set(q || '');
     if (f) {
       const paramVals = this.#facetDataFromString(decodeURIComponent(f));
       if (paramVals) {
@@ -258,8 +255,8 @@ export class MetadataBrowserFilterComponent implements OnInit {
   protected submit(event: SubmitEvent | Event): void {
     event.preventDefault();
     const searchTerm = this.searchModel().searchTerm;
-    if (searchTerm !== this.storedSearchText()) {
-      this.storedSearchText.set(searchTerm);
+    if (searchTerm !== this.activeKeyword()) {
+      this.activeKeyword.set(searchTerm);
       this.#metadataSearch.resetSkip();
       this.facets.set([]);
       this.#currentFacet = undefined;
@@ -286,7 +283,7 @@ export class MetadataBrowserFilterComponent implements OnInit {
    * Resets the search query and triggers a reload of the results.
    */
   protected clearSearchQuery(): void {
-    this.storedSearchText.set('');
+    this.activeKeyword.set('');
     this.#metadataSearch.resetSkip();
     this.facets.set([]);
     this.#currentFacet = undefined;

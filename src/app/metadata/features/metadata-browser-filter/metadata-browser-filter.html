@@ -19,7 +19,7 @@
   <mat-card appearance="outlined" class="p-3">
     <form (submit)="submit($event)">
       <mat-form-field
-        [class.mb-3]="!storedSearchText()"
+        [class.mb-3]="!activeKeyword()"
         class="w-full [&_.mat-mdc-form-field-subscript-wrapper]:h-2"
         ><input type="submit" class="cdk-visually-hidden" aria-hidden="true" />
         <input
@@ -32,10 +32,10 @@
         />
         <mat-icon matSuffix fontIcon="search"></mat-icon>
       </mat-form-field>
-      @if (storedSearchText()) {
+      @if (activeKeyword()) {
         <mat-chip-set class="chip-set-tertiary mb-3">
           <mat-chip (removed)="clearSearchQuery()">
-            Keyword: {{ storedSearchText() }}
+            Keyword: {{ activeKeyword() }}
             <button
               matChipRemove
               data-umami-event="Metadata Browser Search Query Clear Clicked"

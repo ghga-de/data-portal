@@ -13,8 +13,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Facet } from '@app/metadata/models/search-results';
-import { HighlightMatchingText } from '@app/shared/pipes/highlight-matching-text-pipe';
 import { UnderscoreToSpace } from '@app/shared/pipes/underscore-to-space-pipe';
+import { HighlightMatchingText } from '@app/shared/utils/highlight-matching-text';
 
 const MAX_OPTIONS_BEFORE_FILTERING = 6;
 
@@ -71,7 +71,7 @@ export class FacetExpansionPanelComponent {
       .filter((option) => option.value.toLocaleLowerCase().includes(filter))
       .map((option) => ({
         ...option,
-        withHighlights: HighlightMatchingText.prototype.transform(option.value, filter),
+        withHighlights: HighlightMatchingText(option.value, filter),
       }));
   });
 

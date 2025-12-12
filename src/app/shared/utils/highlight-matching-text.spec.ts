@@ -4,23 +4,16 @@
  * @license Apache-2.0
  */
 
-import { HighlightMatchingText } from './highlight-matching-text-pipe';
+import { HighlightMatchingText } from './highlight-matching-text';
 
-describe('HighlightMatchingTextPipe', () => {
-  it('can create an instance', () => {
-    const pipe = new HighlightMatchingText();
-    expect(pipe).toBeTruthy();
-  });
-
+describe('HighlightMatchingText', () => {
   it('should return the same text un-highlighted for an empty substr', () => {
-    const pipe = new HighlightMatchingText();
-    const result = pipe.transform('hello world', '');
+    const result = HighlightMatchingText('hello world', '');
     expect(result).toStrictEqual([{ text: 'hello world', highlighted: false }]);
   });
 
   it('should return the highlighted text array properly', () => {
-    const pipe = new HighlightMatchingText();
-    const result = pipe.transform('hello world', 'hello');
+    const result = HighlightMatchingText('hello world', 'hello');
     expect(result).toStrictEqual([
       { text: 'hello', highlighted: true },
       { text: ' world', highlighted: false },
@@ -28,8 +21,7 @@ describe('HighlightMatchingTextPipe', () => {
   });
 
   it('should return the highlighted text array properly with multiple matches', () => {
-    const pipe = new HighlightMatchingText();
-    const result = pipe.transform('hello world', 'o');
+    const result = HighlightMatchingText('hello world', 'o');
     expect(result).toStrictEqual([
       { text: 'hell', highlighted: false },
       { text: 'o', highlighted: true },
@@ -40,14 +32,12 @@ describe('HighlightMatchingTextPipe', () => {
   });
 
   it('should handle empty input strings correctly', () => {
-    const pipe = new HighlightMatchingText();
-    const result = pipe.transform('', '');
+    const result = HighlightMatchingText('', '');
     expect(result).toStrictEqual([]);
   });
 
   it('should handle empty input strings correctly even with non-empty substr', () => {
-    const pipe = new HighlightMatchingText();
-    const result = pipe.transform('', 'test');
+    const result = HighlightMatchingText('', 'test');
     expect(result).toStrictEqual([]);
   });
 });
