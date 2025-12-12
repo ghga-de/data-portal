@@ -464,11 +464,22 @@ table[mat-table].bold-table-headers {
   font-family: var(--font-mono);
 }
 
-// Add an icon after all external links
-a[appExtLink]:not(.mdc-button)::after,
+// Add an icon after all external links in the text
+a[appExtLink]:not(.mdc-button) {
+  // inlined "open in new" material icon, this works much better than using :after, except that we need to hardcode the color
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' height='24' width='24' viewBox='0 0 24 24'><path d='M0 0h24v24H0V0z' fill='none'/><path d='M19 19H5V5h7V3H3v18h18v-9h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z' fill='%23e84614'/></svg>");
+  background-position: center right;
+  background-repeat: no-repeat;
+  background-size: 0.875em;
+  padding-right: 1em;
+  text-decoration: underline;
+}
+
+// Add an icon before all external links in buttons
 a[appExtLink].mdc-button::before {
   content: 'open_in_new';
   font-family: 'material-symbols-outlined';
+  font-size: 1.125rem;
   font-weight: 400;
   font-style: normal;
   line-height: 1;
@@ -482,29 +493,9 @@ a[appExtLink].mdc-button::before {
   overflow-wrap: normal;
 }
 
-a[appExtLink]:not(.mdc-button)::after {
-  font-size: 24px;
-}
-a[appExtLink].mdc-button::before {
-  font-size: 1.125rem;
-}
-
 a[appExtLink].mat-mdc-outlined-button::before {
   margin-right: var(--mat-button-outlined-icon-spacing, 8px);
   margin-left: var(--mat-button-outlined-icon-offset, -8px);
-}
-
-a[appExtLink]:not(.mdc-button).inline-ext-link::after {
-  font-size: inherit;
-  height: inherit;
-  width: inherit;
-  line-height: inherit;
-  vertical-align: middle;
-}
-
-p a[appExtLink]:not(.mdc-button)::after {
-  scale: 0.6;
-  margin: 0 -5px -7px -3px;
 }
 
 mat-nav-list a[appExtLink].mdc-button::before,
