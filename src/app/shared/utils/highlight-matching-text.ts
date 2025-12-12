@@ -12,7 +12,7 @@
  * @param substr The substring to search
  * @returns An array of objects containing a substring and whether this substring should be highlighted
  */
-export function HighlightMatchingText(
+export function highlightMatchingText(
   str: string,
   substr: string,
 ): { text: string; highlighted: boolean }[] {

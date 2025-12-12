@@ -4,16 +4,16 @@
  * @license Apache-2.0
  */
 
-import { HighlightMatchingText } from './highlight-matching-text';
+import { highlightMatchingText } from './highlight-matching-text';
 
 describe('HighlightMatchingText', () => {
   it('should return the same text un-highlighted for an empty substr', () => {
-    const result = HighlightMatchingText('hello world', '');
+    const result = highlightMatchingText('hello world', '');
     expect(result).toStrictEqual([{ text: 'hello world', highlighted: false }]);
   });
 
   it('should return the highlighted text array properly', () => {
-    const result = HighlightMatchingText('hello world', 'hello');
+    const result = highlightMatchingText('hello world', 'hello');
     expect(result).toStrictEqual([
       { text: 'hello', highlighted: true },
       { text: ' world', highlighted: false },
@@ -21,7 +21,7 @@ describe('HighlightMatchingText', () => {
   });
 
   it('should return the highlighted text array properly with multiple matches', () => {
-    const result = HighlightMatchingText('hello world', 'o');
+    const result = highlightMatchingText('hello world', 'o');
     expect(result).toStrictEqual([
       { text: 'hell', highlighted: false },
       { text: 'o', highlighted: true },
@@ -32,12 +32,12 @@ describe('HighlightMatchingText', () => {
   });
 
   it('should handle empty input strings correctly', () => {
-    const result = HighlightMatchingText('', '');
+    const result = highlightMatchingText('', '');
     expect(result).toStrictEqual([]);
   });
 
   it('should handle empty input strings correctly even with non-empty substr', () => {
-    const result = HighlightMatchingText('', 'test');
+    const result = highlightMatchingText('', 'test');
     expect(result).toStrictEqual([]);
   });
 });

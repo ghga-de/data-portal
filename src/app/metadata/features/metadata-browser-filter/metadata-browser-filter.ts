@@ -29,7 +29,7 @@ import {
 import { MetadataSearchService } from '@app/metadata/services/metadata-search';
 import { FacetExpansionPanelComponent } from '@app/metadata/ui/facet-expansion-panel/facet-expansion-panel';
 import { StencilComponent } from '@app/shared/ui/stencil/stencil/stencil';
-import { HighlightMatchingText } from '@app/shared/utils/highlight-matching-text';
+import { highlightMatchingText } from '@app/shared/utils/highlight-matching-text';
 
 /**
  * Component for the metadata browser filter
@@ -99,7 +99,7 @@ export class MetadataBrowserFilterComponent implements OnInit {
             .map((option) => ({
               ...option,
               selected: selectedFacets.has(option.value),
-              withHighlights: HighlightMatchingText(option.value, filter),
+              withHighlights: highlightMatchingText(option.value, filter),
             })),
         };
       })
