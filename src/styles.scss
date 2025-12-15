@@ -464,26 +464,18 @@ table[mat-table].bold-table-headers {
   font-family: var(--font-mono);
 }
 
-// Add an icon after all external links in the text
-a[appExtLink]:not(.mdc-button):not(.text-center) {
-  // inlined "open in new" material icon, this works much better than using :after, except that we need to hardcode the color
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' height='24' width='24' viewBox='0 0 24 24'><path d='M0 0h24v24H0V0z' fill='none'/><path d='M19 19H5V5h7V3H3v18h18v-9h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z' fill='%23e84614'/></svg>");
-  background-position: center right;
-  background-repeat: no-repeat;
-  background-size: 0.875em;
-  padding-right: 1em;
-  text-decoration: underline;
-}
-
-// Add an icon before all external links in buttons
+// Add an icon after external links
+a[appExtLink]:not(.mdc-button)::after,
 a[appExtLink].mdc-button::before {
   content: 'open_in_new';
   font-family: 'material-symbols-outlined';
-  font-size: 1.125rem;
   font-weight: 400;
   font-style: normal;
+  font-size: 0.875em;
+  margin-left: 0.125em;
+  vertical-align: -1pt;
   line-height: 1;
-  display: inline-block;
+  display: inline;
   text-transform: none;
   letter-spacing: normal;
   white-space: nowrap;
@@ -491,17 +483,22 @@ a[appExtLink].mdc-button::before {
   user-select: none;
   overflow: hidden;
   overflow-wrap: normal;
+  text-decoration: none;
 }
 
+// Adjustments for icon buttons
 a[appExtLink].mat-mdc-outlined-button::before {
+  font-size: 1em;
   margin-right: var(--mat-button-outlined-icon-spacing, 8px);
   margin-left: var(--mat-button-outlined-icon-offset, -8px);
 }
-
-mat-nav-list a[appExtLink].mdc-button::before,
-mat-nav-list app-admin-menu button.mdc-button > .mat-icon {
-  scale: 0.8;
-  margin: 0;
+// Remove underline from the link itself to avoid underlining the icon
+main a[appExtLink] {
+  text-decoration: none;
+}
+// Add underline to the span wrapping only the link text
+a[appExtLink]:not(.mdc-button) span {
+  text-decoration: underline;
 }
 
 mat-sidenav-container > div.mat-drawer-backdrop.mat-drawer-shown {
