@@ -129,7 +129,7 @@ describe('DatasetDetailsTableComponent', () => {
     expect(getRenderedRowEls().length).toBe(3);
   });
 
-  it('should show a clear button when filter has value and clear on click (UI)', async () => {
+  it('should show a clear button when filter has value and clear on click', async () => {
     await setInputs();
     await openExpansionPanel();
 
@@ -157,5 +157,62 @@ describe('DatasetDetailsTableComponent', () => {
     expect(input.value).toBe('');
     expect(getRenderedRowEls().length).toBe(3);
     expect(getClearButton()).toBeNull();
+  });
+
+  it('should show empty state and hide filter when input data is empty', async () => {
+    fixture.componentRef.setInput('tableName', 'samples');
+    fixture.componentRef.setInput('data', []);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    // open panel to render lazy content
+    await openExpansionPanel();
+
+    const filterInput = fixture.nativeElement.querySelector(
+      'mat-form-field input',
+    ) as HTMLInputElement | null;
+    expect(filterInput).toBeNull();
+
+    const noDataRow =
+      fixture.nativeElement.querySelector('tr.mat-mdc-no-data-row') ||
+      fixture.nativeElement.querySelector('tr.mat-no-data-row');
+
+    expect(noDataRow).toBeTruthy();
+    expect((noDataRow as HTMLElement).textContent).toContain('No data available.');
+  });
+
+  it('should keep filter visible and show empty state when filtering yields no results', async () => {
+    await setInputs();
+    await openExpansionPanel();
+
+    // Type something that yields no matches
+    await typeIntoFilter('does-not-match-anything');
+
+    // Filter input must still be present and keep the value (so user can clear it)
+    const input = getFilterInput();
+    expect(input.value).toBe('does-not-match-anything');
+
+    // Clear button should be visible
+    const clearBtn = fixture.nativeElement.querySelector(
+      'button[aria-label="Clear filter"]',
+    ) as HTMLButtonElement | null;
+    expect(clearBtn).toBeTruthy();
+
+    // Empty-state row should be visible with "no results" messaging
+    const noDataRow =
+      fixture.nativeElement.querySelector('tr.mat-mdc-no-data-row') ||
+      fixture.nativeElement.querySelector('tr.mat-no-data-row');
+
+    expect(noDataRow).toBeTruthy();
+    expect((noDataRow as HTMLElement).textContent).toContain('No results match');
+    expect((noDataRow as HTMLElement).textContent).toContain('does-not-match-anything');
+
+    // Clicking clear restores all rows
+    clearBtn!.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(getFilterInput().value).toBe('');
+    expect(getRenderedRowEls().length).toBe(3);
   });
 });
