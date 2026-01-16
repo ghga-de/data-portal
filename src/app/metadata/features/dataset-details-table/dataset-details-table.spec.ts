@@ -9,7 +9,6 @@ import { By } from '@angular/platform-browser';
 import { WellKnownValueService } from '@app/metadata/services/well-known-value';
 import { ConfigService } from '@app/shared/services/config';
 import { datasetDetails } from 'src/mocks/data';
-import { MockWellKnownValueService } from '../dataset-details/dataset-details.spec';
 import { DatasetDetailsTableComponent } from './dataset-details-table';
 
 /**
@@ -17,6 +16,17 @@ import { DatasetDetailsTableComponent } from './dataset-details-table';
  */
 class MockConfigService {
   wkvs_url = 'http://mock.dev/wkvs';
+}
+
+/**
+ * Mock a basic version of the well-known value service
+ */
+class MockWellKnownValueService {
+  storageLabels = {
+    value: () => ({ storage_labels: { TUE01: 'Tübingen', TUE02: 'Tübingen' } }),
+    isLoading: () => false,
+    error: () => undefined,
+  };
 }
 
 describe('DatasetDetailsTableComponent', () => {
