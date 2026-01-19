@@ -123,7 +123,7 @@ describe('DatasetDetailsTableComponent', () => {
   });
 
   it('should reset UI filtering when filter is cleared', async () => {
-    await setInputs();
+   setInputs();
     await openExpansionPanel();
 
     await typeIntoFilter('01235');
