@@ -41,8 +41,10 @@ describe('DatasetDetailsTableComponent', () => {
 
   const openExpansionPanel = async () => {
     // Click the expansion panel header so lazy content (matExpansionPanelContent) is rendered
-    const headerDe = fixture.debugElement.query(By.css('mat-expansion-panel-header'));
-    headerDe.nativeElement.click();
+    const header = screen.getByRole('button', {
+      name: /List of samples \(\d+ total\)/,
+    });
+    header.click();
     fixture.detectChanges();
     await fixture.whenStable();
   };
