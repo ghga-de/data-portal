@@ -134,7 +134,7 @@ describe('DatasetDetailsTableComponent', () => {
   });
 
   it('should show a clear button when filter has value and clear on click', async () => {
-    await setInputs();
+   setInputs();
     await openExpansionPanel();
 
     const getClearButton = (): HTMLButtonElement | null =>
