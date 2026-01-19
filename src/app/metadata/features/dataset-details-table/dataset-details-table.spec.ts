@@ -177,12 +177,11 @@ describe('DatasetDetailsTableComponent', () => {
     ) as HTMLInputElement | null;
     expect(filterInput).toBeNull();
 
-    const noDataRow =
-      fixture.nativeElement.querySelector('tr.mat-mdc-no-data-row') ||
-      fixture.nativeElement.querySelector('tr.mat-no-data-row');
-
-    expect(noDataRow).toBeTruthy();
-    expect((noDataRow as HTMLElement).textContent).toContain('No data available.');
+    const noDataRows = (screen.getAllByRole('row') as HTMLTableRowElement[]).filter(
+      (row) => row.className.includes('no-data'),
+    );
+    expect(noDataRows.length).toBe(1);
+    expect(noDataRows[0]).toHaveTextContent('No data available.');
   });
 
   it('should keep filter visible and show empty state when filtering yields no results', async () => {
