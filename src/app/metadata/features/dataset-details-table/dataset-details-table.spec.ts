@@ -203,13 +203,13 @@ describe('DatasetDetailsTableComponent', () => {
     expect(clearBtn).toBeTruthy();
 
     // Empty-state row should be visible with "no results" messaging
-    const noDataRow =
-      fixture.nativeElement.querySelector('tr.mat-mdc-no-data-row') ||
-      fixture.nativeElement.querySelector('tr.mat-no-data-row');
-
-    expect(noDataRow).toBeTruthy();
-    expect((noDataRow as HTMLElement).textContent).toContain('No results match');
-    expect((noDataRow as HTMLElement).textContent).toContain('does-not-match-anything');
+    const noDataRows = (screen.getAllByRole('row') as HTMLTableRowElement[]).filter(
+      (row) => row.className.includes('no-data'),
+    );
+    expect(noDataRows.length).toBe(1);
+    expect(noDataRows[0]).toHaveTextContent(
+      'No results match “does-not-match-anything”',
+    );
 
     // Clicking clear restores all rows
     clearBtn!.click();
