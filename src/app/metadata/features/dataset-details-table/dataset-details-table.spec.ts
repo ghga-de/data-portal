@@ -95,7 +95,7 @@ describe('DatasetDetailsTableComponent', () => {
   });
 
   it('should render all rows initially, then filter rows in the UI by substring', async () => {
-    await setInputs();
+   setInputs();
     await openExpansionPanel();
 
     // initially: 3 rows rendered
