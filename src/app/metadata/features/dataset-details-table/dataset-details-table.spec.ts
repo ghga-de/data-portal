@@ -50,12 +50,7 @@ describe('DatasetDetailsTableComponent', () => {
   };
 
   const getFilterInput = (): HTMLInputElement => {
-    // input has "matInput" directive, but in DOM it's still a normal <input>
-    const el = fixture.nativeElement.querySelector(
-      'mat-form-field input',
-    ) as HTMLInputElement | null;
-    expect(el).not.toBeNull();
-    return el as HTMLInputElement;
+    return screen.getByRole('textbox') as HTMLInputElement;
   };
 
   const getRenderedRowEls = (): HTMLElement[] => {
