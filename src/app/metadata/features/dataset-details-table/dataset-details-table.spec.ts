@@ -54,12 +54,9 @@ describe('DatasetDetailsTableComponent', () => {
   };
 
   const getRenderedRowEls = (): HTMLElement[] => {
-    // Material row class names differ between versions; be permissive.
-    const root: HTMLElement = fixture.nativeElement;
-    const rows = Array.from(
-      root.querySelectorAll('tr.mat-row, tr.mat-mdc-row, tr[mat-row]'),
-    ) as HTMLElement[];
-    return rows;
+    return (screen.getAllByRole('row') as HTMLTableRowElement[]).filter(
+      (row) => !row.className.includes('header'),
+    );
   };
 
   const typeIntoFilter = async (value: string) => {
