@@ -85,7 +85,7 @@ describe('DatasetDetailsTableComponent', () => {
   });
 
   it('should render the correct header text in the UI for samples', async () => {
-    await setInputs();
+   setInputs();
 
     const headerEl = fixture.nativeElement.querySelector(
       'mat-expansion-panel-header',
