@@ -11,7 +11,11 @@
   ><ng-template matExpansionPanelContent
     ><div class="overflow-auto">
       @if (data().length > 0 || filterValue()) {
-        <mat-form-field appearance="outline" class="mt-2">
+        <mat-form-field
+          appearance="outline"
+          subscriptSizing="dynamic"
+          class="my-2 -mr-[5%] origin-left scale-90"
+        >
           <input
             matInput
             (keyup)="applyFilter($event)"
