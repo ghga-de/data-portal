@@ -5,9 +5,9 @@
  */
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
 import { WellKnownValueService } from '@app/metadata/services/well-known-value';
 import { ConfigService } from '@app/shared/services/config';
+import { screen } from '@testing-library/angular';
 import { datasetDetails } from 'src/mocks/data';
 import { DatasetDetailsTableComponent } from './dataset-details-table';
 
@@ -85,7 +85,7 @@ describe('DatasetDetailsTableComponent', () => {
   });
 
   it('should render the correct header text in the UI for samples', async () => {
-   setInputs();
+    setInputs();
 
     const headerEl = fixture.nativeElement.querySelector(
       'mat-expansion-panel-header',
@@ -95,7 +95,7 @@ describe('DatasetDetailsTableComponent', () => {
   });
 
   it('should render all rows initially, then filter rows in the UI by substring', async () => {
-   setInputs();
+    setInputs();
     await openExpansionPanel();
 
     // initially: 3 rows rendered
@@ -112,7 +112,7 @@ describe('DatasetDetailsTableComponent', () => {
   });
 
   it('should trim + lowercase the filter value (verified via UI filtering)', async () => {
-   setInputs();
+    setInputs();
     await openExpansionPanel();
 
     await typeIntoFilter('   TeSt TiSsUe 2   ');
@@ -123,7 +123,7 @@ describe('DatasetDetailsTableComponent', () => {
   });
 
   it('should reset UI filtering when filter is cleared', async () => {
-   setInputs();
+    setInputs();
     await openExpansionPanel();
 
     await typeIntoFilter('01235');
@@ -134,7 +134,7 @@ describe('DatasetDetailsTableComponent', () => {
   });
 
   it('should show a clear button when filter has value and clear on click', async () => {
-   setInputs();
+    setInputs();
     await openExpansionPanel();
 
     const getClearButton = (): HTMLButtonElement | null =>
@@ -185,7 +185,7 @@ describe('DatasetDetailsTableComponent', () => {
   });
 
   it('should keep filter visible and show empty state when filtering yields no results', async () => {
-   setInputs();
+    setInputs();
     await openExpansionPanel();
 
     // Type something that yields no matches
