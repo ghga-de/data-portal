@@ -112,7 +112,7 @@ describe('DatasetDetailsTableComponent', () => {
   });
 
   it('should trim + lowercase the filter value (verified via UI filtering)', async () => {
-    await setInputs();
+   setInputs();
     await openExpansionPanel();
 
     await typeIntoFilter('   TeSt TiSsUe 2   ');
