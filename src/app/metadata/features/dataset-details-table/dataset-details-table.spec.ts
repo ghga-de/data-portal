@@ -186,7 +186,7 @@ describe('DatasetDetailsTableComponent', () => {
   });
 
   it('should keep filter visible and show empty state when filtering yields no results', async () => {
-    await setInputs();
+   setInputs();
     await openExpansionPanel();
 
     // Type something that yields no matches
