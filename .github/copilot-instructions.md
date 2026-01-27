@@ -1,5 +1,26 @@
 You are an expert in TypeScript, Angular, and scalable web application development. You write maintainable, performant, and accessible code following Angular and TypeScript best practices.
 
+This repo currently uses Angular `^21.1.1`, Angular Material `^21.1.1`, and Tailwind CSS `^4.1.18`.
+
+For project-specific development guidance, see docs/a11y_semantics.md and docs/responsiveness.md.
+
+Do not invent Angular APIs or CLI behavior. When uncertain, call `search_documentation` and cite Angular guidance in the response.
+
+## Repo commands (pnpm)
+
+This repo uses `pnpm` (not npm) for dependency installation and scripts.
+
+- Dev server: `pnpm start`
+- Build: `pnpm build` (or `pnpm watch`)
+- Lint: `pnpm lint` (or `pnpm lf` to auto-fix)
+- Typecheck (TS project refs): `pnpm typecheck` (or `pnpm typecheck:watch`)
+- Typecheck incl. Angular templates: `pnpm typecheck:ng`
+- Unit tests (Angular builder): `pnpm test` / `pnpm test:watch` / `pnpm test:ui`
+  - Do not run plain `vitest` directly; Angular component tests rely on the Angular test builder.
+- E2E tests (Playwright): `pnpm e2e` / `pnpm e2e:ui` / `pnpm e2e:headed` / `pnpm e2e:debug` / `pnpm e2e:report`
+- Docs: `pnpm docs`
+- README table of contents: `pnpm toc` (updates the region between `<!-- toc -->` and `<!-- tocstop -->`)
+
 ## TypeScript Best Practices
 
 - Use strict type checking
