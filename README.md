@@ -152,9 +152,9 @@ The unit tests are not included in the linting process and can be executed separ
 
 - `pnpm test` - run unit tests once
 - `pnpm test:watch` - watch mode
-- `pnpm test:ui` - interactive Vitest UI (runs through the Angular test builder; binds to `0.0.0.0` for devcontainers)
+- `pnpm test:ui` - interactive tests in the browser
 
-Note: the VS Code Vitest extension runs plain `vitest` directly, which does not work for Angular component tests in this repository (external `templateUrl`/`styleUrl` and Angular TestBed setup are handled by the Angular test builder). Use `pnpm test` / `pnpm test:ui` instead.
+Note: the VS Code Vitest extension runs plain `vitest` directly, which does not work for Angular component tests in this repository (external `templateUrl`/`styleUrl` and Angular TestBed setup are handled by the Angular test builder). Use `pnpm test` / `pnpm test:ui` instead. See also [this issue](https://github.com/angular/angular-cli/issues/31734).
 
 Note that modernizing the unit testing tooling is on the roadmap of the Angular team for 2025. We may need to change some parts of the tooling when the official solution is provided.
 
