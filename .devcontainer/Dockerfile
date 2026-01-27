@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/devcontainers/typescript-node:4.0.3-trixie
+FROM mcr.microsoft.com/devcontainers/typescript-node:4.0.4-trixie
 
 RUN apt update && apt install -y dnsutils
 
