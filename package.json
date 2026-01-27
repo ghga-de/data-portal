@@ -10,6 +10,7 @@
     "lf": "ng lint --fix",
     "test": "ng test --watch=false",
     "test:watch": "ng test",
+    "test:ui": "ng test --ui --runner-config vitest.ui.config.ts",
     "e2e": "PLAYWRIGHT_HTML_HOST=0.0.0.0 playwright test",
     "e2e:debug": "PLAYWRIGHT_HTML_HOST=0.0.0.0 playwright test --project chromium --debug",
     "e2e:headed": "PLAYWRIGHT_HTML_HOST=0.0.0.0 playwright test --project chromium --headed",
@@ -23,7 +24,7 @@
     "compodoc:serve": "compodoc -s",
     "toc": "markdown-toc-gen update README.md"
   },
-  "packageManager": "pnpm@10.26.0",
+  "packageManager": "pnpm@10.28.2",
   "type": "module",
   "private": true,
   "dependencies": {
@@ -64,6 +65,7 @@
     "@testing-library/user-event": "^14.6.1",
     "@types/node": "^25.0.10",
     "@vitest/browser-playwright": "^4.0.18",
+    "@vitest/ui": "4.0.18",
     "angular-eslint": "^21.1.0",
     "autoprefixer": "^10.4.23",
     "eslint": "^9.39.2",

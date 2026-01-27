@@ -148,13 +148,13 @@ For comfort, we are adding these shorthands: `pnpm run lint`, `pnpm run lf` (for
 
 We are using [Vitest](https://vitest.dev/) for unit testing in this project. If possible, the queries and matchers from the [Testing Library](https://testing-library.com/) should be used. See the documentation for the [Angular Testing Library](https://testing-library.com/docs/angular-testing-library/intro/) and [jest-dom](https://testing-library.com/docs/ecosystem-jest-dom/). Note that jest-dom also supports Vitest, not just Jest.
 
-The unit tests are not included in the linting process and can be executed separately by running `npm run test`. These three variants of running the tests are provided:
+The unit tests are not included in the linting process and can be executed separately. The following variants of running the tests are provided:
 
-- `npm run test:coverage` - also collect and report test coverage information
-- `npm run test:parallel` - use parallel processes (currently slower, probably due to inefficient transpilation)
-- `npm run test:watch` - continually watch files for changes and rerun tests related to changed files
+- `pnpm test` - run unit tests once
+- `pnpm test:watch` - watch mode
+- `pnpm test:ui` - interactive Vitest UI (runs through the Angular test builder; binds to `0.0.0.0` for devcontainers)
 
-You can also use the VS Code extension for Vitest to run tests interactively using the test explorer in the side bar.
+Note: the VS Code Vitest extension runs plain `vitest` directly, which does not work for Angular component tests in this repository (external `templateUrl`/`styleUrl` and Angular TestBed setup are handled by the Angular test builder). Use `pnpm test` / `pnpm test:ui` instead.
 
 Note that modernizing the unit testing tooling is on the roadmap of the Angular team for 2025. We may need to change some parts of the tooling when the official solution is provided.
 
