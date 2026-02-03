@@ -16,7 +16,10 @@ This repo uses `pnpm` (not npm) for dependency installation and scripts.
 - Typecheck (TS project refs): `pnpm typecheck` (or `pnpm typecheck:watch`)
 - Typecheck incl. Angular templates: `pnpm typecheck:ng`
 - Unit tests (Angular builder): `pnpm test` / `pnpm test:watch` / `pnpm test:ui`
+  - Test framework: Vitest (with Angular TestBed integration via the Angular test builder)
   - Do not run plain `vitest` directly; Angular component tests rely on the Angular test builder.
+  - Use `pnpm ng test` or the pnpm scripts above. `ng test` uses the Angular builder with Vitest.
+  - Test syntax: Use `vitest.fn()` for mocks, not `jasmine.createSpy()`.
 - E2E tests (Playwright): `pnpm e2e` / `pnpm e2e:ui` / `pnpm e2e:headed` / `pnpm e2e:debug` / `pnpm e2e:report`
 - Docs: `pnpm docs`
 - README table of contents: `pnpm toc` (updates the region between `<!-- toc -->` and `<!-- tocstop -->`)
