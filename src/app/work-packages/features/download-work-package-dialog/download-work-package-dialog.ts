@@ -123,10 +123,12 @@ export class DownloadWorkPackageDialogComponent {
     if (!dataset || !this.downloadForm().valid()) return;
 
     const filesInput = this.model().files.trim();
+    // split file IDs by comma or whitespace, and filter out empty entries
     const fileIds = filesInput.split(/[,\s]+/).filter((id) => id);
 
     const workPackage: WorkPackage = {
       dataset_id: dataset.id,
+      // if no files have been specified, null indicate to download all
       file_ids: fileIds.length ? fileIds : null,
       type: dataset.stage,
       user_public_crypt4gh_key: this.pubkeyField().trimmedKey,
