@@ -95,7 +95,7 @@
           <mat-card-content>
             <button
               mat-fab
-              class="float-right ml-4"
+              class="float-right mt-6 ml-4"
               (click)="copyToken()"
               title="Copy token to clipboard"
               data-umami-event="Download Token Creation Copy Token Clicked"
@@ -106,8 +106,8 @@
               >Please use the following token to download the selected dataset:</p
             >
             <pre
-              class="mb-3 overflow-auto"
-            ><span class="text-sm break-normal text-green-900">{{ token() }}</span></pre>
+              class="mb-3 whitespace-pre-wrap"
+            ><span class="text-sm break-all text-green-900">{{ token() }}</span></pre>
             <p class="mt-4"
               ><strong
                 >Make sure to copy the token now as you will not be able to see this
