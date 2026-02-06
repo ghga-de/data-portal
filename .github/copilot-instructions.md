@@ -30,6 +30,15 @@ This repo uses `pnpm` (not npm) for dependency installation and scripts.
 - Prefer type inference when the type is obvious
 - Avoid the `any` type; use `unknown` when type is uncertain
 
+## Documentation
+
+- All functions, methods, and classes require JSDoc comments (enforced via eslint-plugin-jsdoc)
+- JSDoc must include `@param` for all parameters and `@returns` for non-void return types
+- JSDoc must include a description line for the function/method/class
+- Keep JSDoc comments concise and meaningful - avoid redundancy with code that is self-explanatory
+- Empty constructors are exempt from JSDoc requirements
+- Arrow function expressions do not require JSDoc by linting rules, but should still include JSDoc when the function is not self-explanatory and needs deeper explanation
+
 ## Angular Best Practices
 
 - Always use standalone components over NgModules
