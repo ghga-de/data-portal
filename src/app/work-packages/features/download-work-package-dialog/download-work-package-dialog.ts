@@ -134,9 +134,8 @@ export class DownloadWorkPackageDialogComponent {
       user_public_crypt4gh_key: this.pubkeyField().trimmedKey,
     };
 
-    this.token.set('');
+    this.resetToken();
     this.tokenIsLoading.set(true);
-    this.tokenError.set('');
 
     this.#wpService.createWorkPackage(workPackage).subscribe({
       next: ({ id, token, expires }) => {
@@ -148,7 +147,9 @@ export class DownloadWorkPackageDialogComponent {
     });
   }
 
-  /** Clear current token to allow creating a new one */
+  /**
+   * Clear current token to allow creating a new one
+   */
   resetToken(): void {
     this.token.set('');
     this.tokenIsLoading.set(false);
