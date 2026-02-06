@@ -6,6 +6,7 @@
     [(ngModel)]="value"
     [formControl]="formControl"
     [errorStateMatcher]="errorStateMatcher"
+    maxlength="150"
   />
   @if (value() && invalid()) {
     <mat-error class="-mt-2 mb-3">
