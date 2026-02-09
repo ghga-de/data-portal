@@ -1,3 +1,5 @@
+# Multi-stage Dockerfile for building a production image for the data portal
+
 # BASE: a base image with updated packages
 FROM node:lts-alpine AS base
 RUN apk upgrade --no-cache --available
