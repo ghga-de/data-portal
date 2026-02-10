@@ -61,9 +61,7 @@ export class ConfirmTotpComponent {
     target.value = sanitized;
     this.totpForm.code().value.set(sanitized);
     // Reset error state when user starts typing
-    if (this.verificationError()) {
-      this.verificationError.set(false);
-    }
+    this.verificationError.set(false);
     // Auto-submit only once
     if (!this.#previousSubmission()) {
       this.onSubmit();
