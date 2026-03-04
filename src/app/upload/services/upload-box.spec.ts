@@ -49,6 +49,7 @@ const TEST_BOX_RETRIEVAL_RESULTS: BoxRetrievalResults = {
  */
 class MockConfigService {
   uosUrl = 'http://mock.dev/uos';
+  wkvsUrl = 'http://mock.dev/.well-known';
 }
 
 describe('UploadBoxService', () => {
@@ -90,6 +91,14 @@ describe('UploadBoxService', () => {
     expect(req.request.method).toBe('GET');
     req.flush(TEST_BOX_RETRIEVAL_RESULTS);
 
+    const labelsReq = httpMock.expectOne(
+      'http://mock.dev/.well-known/values/storage_labels',
+    );
+    expect(labelsReq.request.method).toBe('GET');
+    labelsReq.flush({
+      storage_labels: { TUE01: 'Tübingen 1', HD02: 'Heidelberg 2' },
+    });
+
     await Promise.resolve();
 
     expect(service.boxRetrievalResults.isLoading()).toBe(false);
@@ -105,6 +114,14 @@ describe('UploadBoxService', () => {
     const req = httpMock.expectOne('http://mock.dev/uos/boxes');
     expect(req.request.method).toBe('GET');
     req.flush(TEST_BOX_RETRIEVAL_RESULTS);
+
+    const labelsReq = httpMock.expectOne(
+      'http://mock.dev/.well-known/values/storage_labels',
+    );
+    expect(labelsReq.request.method).toBe('GET');
+    labelsReq.flush({
+      storage_labels: { TUE01: 'Tübingen 1', HD02: 'Heidelberg 2' },
+    });
 
     await Promise.resolve();
 
@@ -134,5 +151,25 @@ describe('UploadBoxService', () => {
     expect(service.filteredUploadBoxes()).toEqual([
       TEST_BOX_RETRIEVAL_RESULTS.boxes[1],
     ]);
+  });
+
+  it('should resolve storage aliases to storage location labels', async () => {
+    service.loadAllUploadBoxes();
+    testBed.tick();
+
+    const req = httpMock.expectOne('http://mock.dev/uos/boxes');
+    req.flush(TEST_BOX_RETRIEVAL_RESULTS);
+
+    const labelsReq = httpMock.expectOne(
+      'http://mock.dev/.well-known/values/storage_labels',
+    );
+    labelsReq.flush({
+      storage_labels: { TUE01: 'Tübingen 1', HD02: 'Heidelberg 2' },
+    });
+
+    await Promise.resolve();
+
+    expect(service.getStorageLocationLabel('TUE01')).toBe('Tübingen 1');
+    expect(service.getStorageLocationLabel('UNKNOWN')).toBe('UNKNOWN');
   });
 });

@@ -24,7 +24,14 @@ class MockUploadBoxService {
     location: undefined,
   });
   uploadBoxLocations = () => [];
+  uploadBoxLocationOptions = () => [];
   filteredUploadBoxes = () => [];
+  storageLabels = {
+    value: () => ({}),
+    isLoading: () => false,
+    error: () => undefined,
+  };
+  getStorageLocationLabel = (storageAlias: string) => storageAlias;
   loadAllUploadBoxes = vitest.fn();
   setUploadBoxesFilter = vitest.fn();
 }

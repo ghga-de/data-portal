@@ -20,7 +20,10 @@ const mockUploadBoxService = {
     state: undefined,
     location: undefined,
   }),
-  uploadBoxLocations: () => ['HD02', 'TUE01'],
+  uploadBoxLocationOptions: () => [
+    { value: 'HD02', label: 'Heidelberg 2' },
+    { value: 'TUE01', label: 'Tübingen 1' },
+  ],
   setUploadBoxesFilter: vitest.fn(),
 };
 
@@ -90,7 +93,7 @@ describe('UploadBoxManagerFilterComponent', () => {
     await userEvent.click(combobox);
     await fixture.whenStable();
 
-    const option = screen.getByRole('option', { name: 'HD02' });
+    const option = screen.getByRole('option', { name: 'Heidelberg 2' });
     await userEvent.click(option);
     await fixture.whenStable();
 

@@ -57,7 +57,7 @@ export class UploadBoxManagerListComponent implements AfterViewInit {
       case 'size':
         return uploadBox.size;
       case 'location':
-        return uploadBox.storage_alias;
+        return this.getStorageLocationLabel(uploadBox.storage_alias);
       default:
         const value = uploadBox[key as keyof ResearchDataUploadBox];
         if (typeof value === 'string' || typeof value === 'number') {
@@ -104,5 +104,14 @@ export class UploadBoxManagerListComponent implements AfterViewInit {
    */
   getUploadBoxStateClass(state: ResearchDataUploadBox['state']): string {
     return UploadBoxStateClass[state];
+  }
+
+  /**
+   * Get the human-readable storage location for a storage alias.
+   * @param storageAlias - storage alias from the upload box
+   * @returns storage location label or alias fallback
+   */
+  getStorageLocationLabel(storageAlias: string): string {
+    return this.#uploadBoxService.getStorageLocationLabel(storageAlias);
   }
 }

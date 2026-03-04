@@ -73,7 +73,7 @@ export class UploadBoxManagerFilterComponent {
   stateOptions = Object.values(UploadBoxState);
 
   /**
-   * All available upload-box locations.
+   * All available upload-box locations including display labels.
    */
-  locationOptions = this.#uploadBoxService.uploadBoxLocations;
+  locationOptions = this.#uploadBoxService.uploadBoxLocationOptions;
 }

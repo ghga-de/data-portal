@@ -20,6 +20,10 @@ class MockUploadBoxService {
     error: () => undefined,
   };
   filteredUploadBoxes = () => this.boxRetrievalResults.value().boxes;
+  getStorageLocationLabel = (storageAlias: string) =>
+    ({ TUE01: 'Tübingen 1', HD02: 'Heidelberg 2', TUE03: 'Tübingen 3' })[
+      storageAlias
+    ] ?? storageAlias;
 }
 
 describe('UploadBoxManagerListComponent', () => {
@@ -45,5 +49,12 @@ describe('UploadBoxManagerListComponent', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const text = compiled.textContent;
     expect(text).toContain('Upload Box of John');
+  });
+
+  it('should show storage location labels instead of aliases', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    const text = compiled.textContent;
+    expect(text).toContain('Tübingen 1');
+    expect(text).toContain('Heidelberg 2');
   });
 });

@@ -21,6 +21,8 @@ export class UploadBoxService {
   #config = inject(ConfigService);
   #uosUrl = this.#config.uosUrl;
   #boxesUrl = `${this.#uosUrl}/boxes`;
+  #wkvsUrl = this.#config.wkvsUrl;
+  #storageLabelsUrl = `${this.#wkvsUrl}/values/storage_labels`;
 
   #loadAllUploadBoxes = signal<boolean>(false);
   #uploadBoxesFilter = signal<UploadBoxFilter | undefined>(undefined);
@@ -37,6 +39,18 @@ export class UploadBoxService {
     () => (this.#loadAllUploadBoxes() ? this.#boxesUrl : undefined),
     {
       defaultValue: this.#emptyBoxResults,
+    },
+  );
+
+  /**
+   * Resource for loading human-readable storage labels.
+   */
+  storageLabels = httpResource<Record<string, string>>(
+    () => (this.#loadAllUploadBoxes() ? this.#storageLabelsUrl : undefined),
+    {
+      parse: (raw) =>
+        (raw as { storage_labels?: Record<string, string> }).storage_labels ?? {},
+      defaultValue: {},
     },
   );
 
@@ -93,6 +107,28 @@ export class UploadBoxService {
     );
     return Array.from(uniqueLocations).sort((left, right) => left.localeCompare(right));
   });
+
+  /**
+   * All available upload-box locations including display labels.
+   */
+  uploadBoxLocationOptions = computed(() => {
+    const labels = this.storageLabels.value();
+    return this.uploadBoxLocations()
+      .map((locationAlias) => ({
+        value: locationAlias,
+        label: labels[locationAlias] ?? locationAlias,
+      }))
+      .sort((left, right) => left.label.localeCompare(right.label));
+  });
+
+  /**
+   * Resolve a storage alias into a human-readable storage location.
+   * @param storageAlias - alias from a box item
+   * @returns human-readable label or the alias itself if unknown
+   */
+  getStorageLocationLabel(storageAlias: string): string {
+    return this.storageLabels.value()[storageAlias] ?? storageAlias;
+  }
 
   /**
    * Fetch all upload boxes from the UOS backend.
