@@ -27,6 +27,7 @@ This is the primary, tool-agnostic AI entrypoint for any coding agent working in
 - State: Signals
 - Unit testing: Vitest
 - E2E testing: Playwright
+- API mocking in development: Mock Service Worker (MSW)
 - Lint/format: ESLint/Prettier
 
 ## Repo layout
@@ -34,6 +35,7 @@ This is the primary, tool-agnostic AI entrypoint for any coding agent working in
 - `README`: project description
 - `docs`: developer documentation
 - `src/app`: the Angular application code
+- `src/mocks`: MSW handlers with static API/auth responses
 - `tests`: end-to-end tests
 
 ## Repo commands (pnpm)
