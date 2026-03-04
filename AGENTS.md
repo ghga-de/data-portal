@@ -57,6 +57,16 @@ This repo uses `pnpm` (not npm) for dependency installation and scripts.
 - Docs: `pnpm docs`
 - README table of contents: `pnpm toc` (updates the region between `<!-- toc -->` and `<!-- tocstop -->`)
 
+## MCP tools
+
+- MCP servers `angular-cli` and `context7` are available in this workspace.
+- Prefer `angular-cli` for Angular-specific tasks: project/workspace discovery, Angular best practices, Angular documentation and examples, and Angular-focused migrations.
+- Consult `angular-cli` before making assumptions about Angular APIs, templates, or CLI behavior.
+- For `find_examples`, prefer `workspacePath` first for version-aligned results; if it returns no matches, rerun without `workspacePath` as a generic fallback.
+- Use `context7` for non-Angular libraries and tooling (for example Tailwind, Playwright, Vitest, RxJS, and other ecosystem packages).
+- Consult `context7` when external API behavior or recommended usage is uncertain, especially for version-sensitive questions.
+- If external guidance conflicts with repository conventions, prioritize `AGENTS.md`, `README.md`, relevant files in `docs/`, and existing code patterns in this repository.
+
 ## Execution policy
 
 - For code changes, run the smallest relevant validation first (targeted tests/lint/typecheck where possible), then run `pnpm test` as the default unit-test check.
