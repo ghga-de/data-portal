@@ -18,6 +18,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Capitalise } from '@app/shared/pipes/capitalise-pipe';
 import { ParseBytes } from '@app/shared/pipes/parse-bytes-pipe';
+import { providePaginatorIntl } from '@app/shared/services/paginator-intl';
 import { ResearchDataUploadBox, UploadBoxStateClass } from '@app/upload/models/box';
 import { UploadBoxService } from '@app/upload/services/upload-box';
 
@@ -29,6 +30,7 @@ import { UploadBoxService } from '@app/upload/services/upload-box';
 @Component({
   selector: 'app-upload-box-manager-list',
   imports: [MatTableModule, MatSortModule, MatPaginatorModule, ParseBytes, Capitalise],
+  providers: [providePaginatorIntl('Upload boxes per page')],
   templateUrl: './upload-box-manager-list.html',
 })
 export class UploadBoxManagerListComponent implements AfterViewInit {
