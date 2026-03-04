@@ -13,6 +13,13 @@ export enum UploadBoxState {
   archived = 'archived',
 }
 
+/** State-specific classes for upload boxes. */
+export const UploadBoxStateClass: Record<UploadBoxState, string> = {
+  open: 'text-warning',
+  locked: 'text-error',
+  archived: 'text-success',
+};
+
 /** A research data upload box */
 export interface ResearchDataUploadBox {
   id: string;
@@ -31,4 +38,11 @@ export interface ResearchDataUploadBox {
 export interface BoxRetrievalResults {
   count: number;
   boxes: ResearchDataUploadBox[];
+}
+
+/** Filters for upload box management. */
+export interface UploadBoxFilter {
+  title: string | undefined;
+  state: UploadBoxState | undefined;
+  location: string | undefined;
 }

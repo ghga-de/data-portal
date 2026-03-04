@@ -97,4 +97,42 @@ describe('UploadBoxService', () => {
     expect(service.boxRetrievalResults.value()).toEqual(TEST_BOX_RETRIEVAL_RESULTS);
     expect(service.uploadBoxes()).toEqual(TEST_BOX_RETRIEVAL_RESULTS.boxes);
   });
+
+  it('should filter upload boxes by title, state, and location', async () => {
+    service.loadAllUploadBoxes();
+    testBed.tick();
+
+    const req = httpMock.expectOne('http://mock.dev/uos/boxes');
+    expect(req.request.method).toBe('GET');
+    req.flush(TEST_BOX_RETRIEVAL_RESULTS);
+
+    await Promise.resolve();
+
+    service.setUploadBoxesFilter({
+      title: 'alpha',
+      state: undefined,
+      location: undefined,
+    });
+    expect(service.filteredUploadBoxes()).toEqual([
+      TEST_BOX_RETRIEVAL_RESULTS.boxes[0],
+    ]);
+
+    service.setUploadBoxesFilter({
+      title: undefined,
+      state: UploadBoxState.locked,
+      location: undefined,
+    });
+    expect(service.filteredUploadBoxes()).toEqual([
+      TEST_BOX_RETRIEVAL_RESULTS.boxes[1],
+    ]);
+
+    service.setUploadBoxesFilter({
+      title: undefined,
+      state: undefined,
+      location: 'HD02',
+    });
+    expect(service.filteredUploadBoxes()).toEqual([
+      TEST_BOX_RETRIEVAL_RESULTS.boxes[1],
+    ]);
+  });
 });
