@@ -18,6 +18,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Capitalise } from '@app/shared/pipes/capitalise-pipe';
 import { ParseBytes } from '@app/shared/pipes/parse-bytes-pipe';
+import { NotificationService } from '@app/shared/services/notification';
 import { providePaginatorIntl } from '@app/shared/services/paginator-intl';
 import { ResearchDataUploadBox, UploadBoxStateClass } from '@app/upload/models/box';
 import { UploadBoxService } from '@app/upload/services/upload-box';
@@ -35,6 +36,7 @@ import { UploadBoxService } from '@app/upload/services/upload-box';
 })
 export class UploadBoxManagerListComponent implements AfterViewInit {
   #uploadBoxService = inject(UploadBoxService);
+  #notify = inject(NotificationService);
 
   #uploadBoxResource = this.#uploadBoxService.boxRetrievalResults;
   uploadBoxes = this.#uploadBoxService.filteredUploadBoxes;
@@ -47,6 +49,12 @@ export class UploadBoxManagerListComponent implements AfterViewInit {
   tablePageSizeOptions = [10, 25, 50, 100, 250, 500];
 
   #updateDataSourceEffect = effect(() => (this.dataSource.data = this.uploadBoxes()));
+
+  #uploadBoxErrorEffect = effect(() => {
+    if (this.uploadBoxesError()) {
+      this.#notify.showError('Error retrieving upload boxes.');
+    }
+  });
 
   #uploadBoxSortingAccessor = (uploadBox: ResearchDataUploadBox, key: string) => {
     switch (key) {

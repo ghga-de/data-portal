@@ -1,5 +1,7 @@
 @if (uploadBoxesError()) {
-  <p class="text-base">There was an error retrieving upload boxes.</p>
+  <p class="text-error"
+    >There was an error retrieving upload boxes. Please try again later.</p
+  >
 } @else if (uploadBoxesAreLoading()) {
   <p class="text-base">Loading upload boxes...</p>
 } @else {

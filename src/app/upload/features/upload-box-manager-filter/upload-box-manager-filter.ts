@@ -7,6 +7,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   effect,
   inject,
   model,
@@ -46,6 +47,7 @@ export class UploadBoxManagerFilterComponent {
   #uploadBoxService = inject(UploadBoxService);
 
   #filter = this.#uploadBoxService.uploadBoxesFilter;
+  showFilter = computed(() => this.#uploadBoxService.uploadBoxes().length > 0);
 
   displayFilters = false;
 

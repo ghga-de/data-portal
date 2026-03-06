@@ -57,7 +57,10 @@ export class UploadBoxService {
   /**
    * Signal for all currently loaded upload boxes.
    */
-  uploadBoxes = computed(() => this.boxRetrievalResults.value().boxes);
+  uploadBoxes = computed(() => {
+    if (this.boxRetrievalResults.error()) return [];
+    return this.boxRetrievalResults.value().boxes;
+  });
 
   /**
    * Current filter for upload box management.
@@ -112,7 +115,7 @@ export class UploadBoxService {
    * All available upload-box locations including display labels.
    */
   uploadBoxLocationOptions = computed(() => {
-    const labels = this.storageLabels.value();
+    const labels = this.storageLabels.error() ? {} : this.storageLabels.value();
     return this.uploadBoxLocations()
       .map((locationAlias) => ({
         value: locationAlias,
@@ -127,6 +130,7 @@ export class UploadBoxService {
    * @returns human-readable label or the alias itself if unknown
    */
   getStorageLocationLabel(storageAlias: string): string {
+    if (this.storageLabels.error()) return storageAlias;
     return this.storageLabels.value()[storageAlias] ?? storageAlias;
   }
 

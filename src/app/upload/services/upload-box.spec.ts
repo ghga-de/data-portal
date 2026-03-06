@@ -4,7 +4,7 @@
  * @license Apache-2.0
  */
 
-import { provideHttpClient } from '@angular/common/http';
+import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
 import {
   HttpTestingController,
   provideHttpClientTesting,
@@ -171,5 +171,30 @@ describe('UploadBoxService', () => {
 
     expect(service.getStorageLocationLabel('TUE01')).toBe('Tübingen 1');
     expect(service.getStorageLocationLabel('UNKNOWN')).toBe('UNKNOWN');
+  });
+
+  it('should expose empty upload box signals when upload box retrieval fails', async () => {
+    service.loadAllUploadBoxes();
+    testBed.tick();
+
+    const req = httpMock.expectOne('http://mock.dev/uos/boxes');
+    expect(req.request.method).toBe('GET');
+    req.flush(
+      { detail: 'upload box retrieval failed' },
+      { status: 409, statusText: 'Conflict' },
+    );
+
+    const labelsReq = httpMock.expectOne(
+      'http://mock.dev/.well-known/values/storage_labels',
+    );
+    expect(labelsReq.request.method).toBe('GET');
+    labelsReq.flush({ storage_labels: { TUE01: 'Tübingen 1' } });
+
+    await Promise.resolve();
+
+    expect(service.boxRetrievalResults.isLoading()).toBe(false);
+    expect(service.boxRetrievalResults.error()).toBeInstanceOf(HttpErrorResponse);
+    expect(service.uploadBoxes()).toEqual([]);
+    expect(service.filteredUploadBoxes()).toEqual([]);
   });
 });
