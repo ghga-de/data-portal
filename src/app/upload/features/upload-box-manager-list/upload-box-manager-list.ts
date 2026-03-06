@@ -41,12 +41,12 @@ export class UploadBoxManagerListComponent implements AfterViewInit {
   uploadBoxesAreLoading = this.#uploadBoxResource.isLoading;
   uploadBoxesError = this.#uploadBoxResource.error;
 
-  source = new MatTableDataSource<ResearchDataUploadBox>([]);
+  dataSource = new MatTableDataSource<ResearchDataUploadBox>([]);
 
   defaultTablePageSize = 10;
   tablePageSizeOptions = [10, 25, 50, 100, 250, 500];
 
-  #updateSourceEffect = effect(() => (this.source.data = this.uploadBoxes()));
+  #updateDataSourceEffect = effect(() => (this.dataSource.data = this.uploadBoxes()));
 
   #uploadBoxSortingAccessor = (uploadBox: ResearchDataUploadBox, key: string) => {
     switch (key) {
@@ -78,21 +78,21 @@ export class UploadBoxManagerListComponent implements AfterViewInit {
    * Assign sorting.
    */
   #addSorting() {
-    if (this.sort) this.source.sort = this.sort;
+    if (this.sort) this.dataSource.sort = this.sort;
   }
 
   /**
    * Assign pagination.
    */
   #addPagination() {
-    if (this.paginator) this.source.paginator = this.paginator;
+    if (this.paginator) this.dataSource.paginator = this.paginator;
   }
 
   /**
    * Assign sorting and pagination once the view has initialized.
    */
   ngAfterViewInit() {
-    this.source.sortingDataAccessor = this.#uploadBoxSortingAccessor;
+    this.dataSource.sortingDataAccessor = this.#uploadBoxSortingAccessor;
     this.#addSorting();
     this.#addPagination();
     this.matSorts.changes.subscribe(() => this.#addSorting());
