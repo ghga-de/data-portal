@@ -178,6 +178,14 @@ export const routes: Routes = [
         title: 'Upload Box Details',
         data: { transition: 'detail' },
       },
+      {
+        path: ':boxId/grant/:grantId',
+        loadComponent: () =>
+          import('./upload/features/upload-grant-manager-details/upload-grant-manager-details').then(
+            (m) => m.UploadGrantManagerDetailsComponent,
+          ),
+        title: 'Upload Grant Details',
+      },
     ],
   },
   // routes used in the authentication flows

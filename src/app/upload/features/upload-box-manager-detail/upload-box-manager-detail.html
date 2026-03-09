@@ -121,6 +121,7 @@
                 <td mat-cell *matCellDef="let grant">
                   <button
                     mat-icon-button
+                    [routerLink]="['/upload-box-manager', id(), 'grant', grant.id]"
                     aria-label="View grant details"
                     class="text-primary"
                   >

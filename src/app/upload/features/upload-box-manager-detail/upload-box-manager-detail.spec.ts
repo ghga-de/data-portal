@@ -102,7 +102,10 @@ class MockUploadBoxService {
  * Minimal mock of UserService for detail component tests.
  */
 class MockUserService {
-  /** Returns a stub user resource that never loads. */
+  /**
+   * Returns a stub user resource that never loads.
+   * @returns a stub user resource
+   */
   createUserResource() {
     return {
       load: vitest.fn(),

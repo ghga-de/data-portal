@@ -21,6 +21,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { RouterLink } from '@angular/router';
+
 import { DisplayUser, UserService } from '@app/auth/services/user';
 import { Capitalise } from '@app/shared/pipes/capitalise-pipe';
 import { DatePipe } from '@app/shared/pipes/date-pipe';

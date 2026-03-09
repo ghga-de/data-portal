@@ -1096,7 +1096,7 @@ export const uploadGrants: UploadGrant[] = [
   {
     id: 'grant-uos-001',
     user_id: 'doe@test.dev',
-    iva_id: null,
+    iva_id: '783d9682-d5e5-4ce7-9157-9eeb53a1e9ba',
     box_id: '0a36607a-b53f-49ed-bf3e-a5f2dbc68001',
     created: '2026-01-01T00:00:00Z',
     valid_from: '2026-01-01',
