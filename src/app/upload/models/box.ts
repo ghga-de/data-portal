@@ -50,9 +50,15 @@ export interface BoxRetrievalResults {
   boxes: ResearchDataUploadBox[];
 }
 
+/** A virtual filter value that excludes boxes in a specific state (e.g. 'not_archived') */
+export type UploadBoxVirtualFilter = `not_${UploadBoxState}`;
+
+/** All possible state filter values: real states and virtual negations */
+export type UploadBoxStateFilter = UploadBoxState | UploadBoxVirtualFilter;
+
 /** Filters for upload box management */
 export interface UploadBoxFilter {
   title: string | undefined;
-  state: UploadBoxState | undefined;
+  state: UploadBoxStateFilter | undefined;
   location: string | undefined;
 }

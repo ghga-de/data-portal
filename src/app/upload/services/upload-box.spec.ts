@@ -16,11 +16,12 @@ import {
   ResearchDataUploadBoxBase,
   ResearchDataUploadBoxUpdate,
   UploadBoxState,
+  UploadBoxVirtualFilter,
 } from '../models/box';
 import { UploadBoxService } from './upload-box';
 
 const TEST_BOX_RETRIEVAL_RESULTS: BoxRetrievalResults = {
-  count: 2,
+  count: 3,
   boxes: [
     {
       id: '0a36607a-b53f-49ed-bf3e-a5f2dbc68001',
@@ -45,6 +46,18 @@ const TEST_BOX_RETRIEVAL_RESULTS: BoxRetrievalResults = {
       file_count: 12,
       size: 987654321,
       storage_alias: 'HD02',
+    },
+    {
+      id: '0a36607a-b53f-49ed-bf3e-a5f2dbc68003',
+      version: 2,
+      state: UploadBoxState.archived,
+      title: 'Upload Box Gamma',
+      description: 'Third upload box, archived',
+      last_changed: '2025-03-01T12:00:00Z',
+      changed_by: 'doe@test.dev',
+      file_count: 0,
+      size: 0,
+      storage_alias: 'TUE01',
     },
   ],
 };
@@ -154,6 +167,17 @@ describe('UploadBoxService', () => {
       location: 'HD02',
     });
     expect(service.filteredUploadBoxes()).toEqual([
+      TEST_BOX_RETRIEVAL_RESULTS.boxes[1],
+    ]);
+
+    const notArchived: UploadBoxVirtualFilter = 'not_archived';
+    service.setUploadBoxesFilter({
+      title: undefined,
+      state: notArchived,
+      location: undefined,
+    });
+    expect(service.filteredUploadBoxes()).toEqual([
+      TEST_BOX_RETRIEVAL_RESULTS.boxes[0],
       TEST_BOX_RETRIEVAL_RESULTS.boxes[1],
     ]);
   });

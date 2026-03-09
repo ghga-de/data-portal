@@ -108,7 +108,13 @@ export class UploadBoxService {
     }
 
     if (filter.state) {
-      boxes = boxes.filter((box) => box.state === filter.state);
+      const stateFilter = filter.state;
+      if (stateFilter.startsWith('not_')) {
+        const excluded = stateFilter.slice(4);
+        boxes = boxes.filter((box) => box.state !== excluded);
+      } else {
+        boxes = boxes.filter((box) => box.state === stateFilter);
+      }
     }
 
     const location = filter.location?.trim().toLowerCase();
