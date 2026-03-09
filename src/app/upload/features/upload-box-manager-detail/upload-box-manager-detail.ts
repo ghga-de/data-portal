@@ -32,6 +32,7 @@ import {
   FRIENDLY_DATE_FORMAT,
 } from '@app/shared/utils/date-formats';
 import { ResearchDataUploadBox, UploadBoxStateClass } from '@app/upload/models/box';
+import { UploadGrant } from '@app/upload/models/grant';
 import { UploadBoxService } from '@app/upload/services/upload-box';
 
 /**
@@ -135,6 +136,27 @@ export class UploadBoxManagerDetailComponent implements OnInit {
   /** Placeholder columns for the upload grants table. */
   readonly grantColumns = ['grantee', 'status', 'validity', 'details'];
 
+  /** The upload grants for this box. */
+  grants = computed<UploadGrant[]>(() => this.#uploadBoxService.boxGrants.value());
+
+  /**
+   * Check if an upload grant is currently active.
+   * @param grant - the upload grant to check
+   * @returns true if the grant is within its valid period
+   */
+  isGrantActive(grant: UploadGrant): boolean {
+    const today = new Date().toISOString().slice(0, 10);
+    return grant.valid_from <= today && today <= grant.valid_until;
+  }
+
+  /**
+   * Initiate adding a new upload grant for this box.
+   */
+  addGrant(): void {
+    const boxId = this.id();
+    if (boxId) this.#uploadBoxService.addUploadGrant(boxId);
+  }
+
   /** Notify error effect for single-box fetch failures. */
   #errorEffect = computed(() => {
     if (this.error() === 'other') {
@@ -153,6 +175,7 @@ export class UploadBoxManagerDetailComponent implements OnInit {
     const id = this.id();
     this.#uploadBoxService.loadStorageLabels();
     if (id) {
+      this.#uploadBoxService.loadBoxGrants(id);
       // Has the single box already been fetched individually?
       const single = this.#singleBox.error() ? undefined : this.#singleBox.value();
       if (single && single.id === id) {

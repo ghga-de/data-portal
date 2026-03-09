@@ -15,7 +15,7 @@ import {
   ResearchDataUploadBoxUpdate,
   UploadBoxFilter,
 } from '../models/box';
-import { GrantWithBoxInfo } from '../models/grant';
+import { GrantWithBoxInfo, UploadGrant } from '../models/grant';
 
 /**
  * Service for managing upload boxes.
@@ -34,6 +34,7 @@ export class UploadBoxService {
   #loadStorageLabels = signal<boolean>(false);
   #uploadBoxesFilter = signal<UploadBoxFilter | undefined>(undefined);
   #loadSingleBox = signal<string>('');
+  #loadGrantsForBox = signal<string>('');
 
   #emptyBoxResults: BoxRetrievalResults = {
     count: 0,
@@ -63,6 +64,18 @@ export class UploadBoxService {
         (raw as { storage_labels?: Record<string, string> }).storage_labels ?? {},
       defaultValue: {},
     },
+  );
+
+  /**
+   * Resource for loading upload grants for a specific box.
+   */
+  boxGrants = httpResource<UploadGrant[]>(
+    () => {
+      const boxId = this.#loadGrantsForBox();
+      if (!boxId) return undefined;
+      return `${this.#accessGrantsUrl}?box_id=${encodeURIComponent(boxId)}`;
+    },
+    { defaultValue: [] },
   );
 
   /**
@@ -176,6 +189,14 @@ export class UploadBoxService {
    */
   loadUploadBox(id: string): void {
     this.#loadSingleBox.set(id);
+  }
+
+  /**
+   * Trigger loading of upload grants for a specific box.
+   * @param boxId - the ID of the upload box
+   */
+  loadBoxGrants(boxId: string): void {
+    this.#loadGrantsForBox.set(boxId);
   }
 
   /**

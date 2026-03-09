@@ -22,6 +22,7 @@ import {
   storageLabels,
   studyData,
   uploadBoxes,
+  uploadGrants,
   users,
   workPackageResponse,
 } from './data';
@@ -213,6 +214,9 @@ export const responses: { [endpoint: string]: ResponseValue } = {
 
   // Single upload box
   'GET /api/uos/box/*': uploadBoxes.boxes[0],
+
+  // Upload grants for a specific box
+  'GET /api/uos/access-grants?*': uploadGrants,
 
   /**
    * WKVS API

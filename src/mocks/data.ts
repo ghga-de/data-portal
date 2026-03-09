@@ -15,6 +15,7 @@ import { SearchResults } from '@app/metadata/models/search-results';
 import { Study } from '@app/metadata/models/study';
 import { BaseStorageLabels } from '@app/metadata/models/well-known-values';
 import { BoxRetrievalResults, UploadBoxState } from '@app/upload/models/box';
+import { UploadGrant } from '@app/upload/models/grant';
 import { DatasetWithExpiration } from '@app/work-packages/models/dataset';
 import { WorkPackageResponse } from '@app/work-packages/models/work-package';
 
@@ -1087,6 +1088,36 @@ export const uploadBoxes: BoxRetrievalResults = {
     },
   ],
 };
+
+/**
+ * UOS upload grants
+ */
+export const uploadGrants: UploadGrant[] = [
+  {
+    id: 'grant-uos-001',
+    user_id: 'doe@test.dev',
+    iva_id: null,
+    box_id: '0a36607a-b53f-49ed-bf3e-a5f2dbc68001',
+    created: '2026-01-01T00:00:00Z',
+    valid_from: '2026-01-01',
+    valid_until: '2026-12-31',
+    user_name: 'John Doe',
+    user_email: 'doe@home.org',
+    user_title: 'Dr.',
+  },
+  {
+    id: 'grant-uos-002',
+    user_id: 'roe@test.dev',
+    iva_id: null,
+    box_id: '0a36607a-b53f-49ed-bf3e-a5f2dbc68001',
+    created: '2025-06-01T00:00:00Z',
+    valid_from: '2025-01-01',
+    valid_until: '2025-12-31',
+    user_name: 'Jane Roe',
+    user_email: 'roe@home.org',
+    user_title: 'Prof.',
+  },
+];
 
 /**
  * WPS API

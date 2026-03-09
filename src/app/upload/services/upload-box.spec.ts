@@ -18,7 +18,7 @@ import {
   UploadBoxState,
   UploadBoxVirtualFilter,
 } from '../models/box';
-import { GrantWithBoxInfo } from '../models/grant';
+import { GrantWithBoxInfo, UploadGrant } from '../models/grant';
 import { UploadBoxService } from './upload-box';
 
 const TEST_BOX_RETRIEVAL_RESULTS: BoxRetrievalResults = {
@@ -339,6 +339,44 @@ describe('UploadBoxService', () => {
 
     expect(caughtError).toBeInstanceOf(HttpErrorResponse);
     expect(caughtError?.status).toBe(409);
+  });
+
+  describe('loadBoxGrants', () => {
+    const BOX_ID = '0a36607a-b53f-49ed-bf3e-a5f2dbc68001';
+    const GRANT: UploadGrant = {
+      id: 'grant-box-001',
+      user_id: 'user-abc',
+      iva_id: null,
+      box_id: BOX_ID,
+      created: '2025-03-01T08:00:00Z',
+      valid_from: '2025-03-01',
+      valid_until: '2025-12-31',
+      user_name: 'Alice Example',
+      user_email: 'alice@test.dev',
+      user_title: 'Dr.',
+    };
+
+    it('should request access-grants filtered by box_id', async () => {
+      service.loadBoxGrants(BOX_ID);
+      testBed.tick();
+
+      const req = httpMock.expectOne(
+        `http://mock.dev/uos/access-grants?box_id=${encodeURIComponent(BOX_ID)}`,
+      );
+      expect(req.request.method).toBe('GET');
+      expect(req.request.url).toContain(`box_id=${encodeURIComponent(BOX_ID)}`);
+      req.flush([GRANT]);
+
+      await Promise.resolve();
+
+      expect(service.boxGrants.value()).toEqual([GRANT]);
+    });
+
+    it('should not request grants when no box id has been set', () => {
+      testBed.tick();
+      httpMock.expectNone('http://mock.dev/uos/access-grants');
+      expect(service.boxGrants.value()).toEqual([]);
+    });
   });
 
   describe('getAccessGrants', () => {

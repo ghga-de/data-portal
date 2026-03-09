@@ -7,12 +7,13 @@
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
-import { uploadBoxes } from '@app/../mocks/data';
+import { uploadBoxes, uploadGrants } from '@app/../mocks/data';
 import { fakeActivatedRoute } from '@app/../mocks/route';
 import { UserService } from '@app/auth/services/user';
 import { NavigationTrackingService } from '@app/shared/services/navigation';
 import { NotificationService } from '@app/shared/services/notification';
 import { ResearchDataUploadBox } from '@app/upload/models/box';
+import { UploadGrant } from '@app/upload/models/grant';
 import { UploadBoxService } from '@app/upload/services/upload-box';
 import { screen } from '@testing-library/angular';
 import { UploadBoxManagerDetailComponent } from './upload-box-manager-detail';
@@ -27,6 +28,7 @@ class MockUploadBoxService {
   #singleBoxError = signal<Error | undefined>(undefined);
   #singleBoxValue = signal<ResearchDataUploadBox | undefined>(undefined);
   #singleBoxLoading = signal<boolean>(false);
+  #boxGrantsList = signal<UploadGrant[]>([]);
 
   uploadBox = {
     value: this.#singleBoxValue.asReadonly(),
@@ -36,6 +38,12 @@ class MockUploadBoxService {
 
   uploadBoxes = this.#uploadBoxes.asReadonly();
 
+  boxGrants = {
+    value: this.#boxGrantsList.asReadonly(),
+    isLoading: () => false,
+    error: () => undefined,
+  };
+
   storageLabels = {
     value: () => ({ TUE01: 'Tübingen 1' }) as Record<string, string>,
     error: () => undefined,
@@ -43,6 +51,8 @@ class MockUploadBoxService {
 
   loadUploadBox = vitest.fn();
   loadStorageLabels = vitest.fn();
+  loadBoxGrants = vitest.fn();
+  addUploadGrant = vitest.fn();
 
   getStorageLocationLabel = (alias: string) =>
     this.storageLabels.value()[alias] ?? alias;
@@ -77,6 +87,14 @@ class MockUploadBoxService {
    */
   setSingleBoxLoading(loading: boolean): void {
     this.#singleBoxLoading.set(loading);
+  }
+
+  /**
+   * Set upload grants for the box grants resource.
+   * @param grants - the grants to expose
+   */
+  setBoxGrants(grants: UploadGrant[]): void {
+    this.#boxGrantsList.set(grants);
   }
 }
 
@@ -147,6 +165,20 @@ describe('UploadBoxManagerDetailComponent', () => {
 
     it('should not call loadUploadBox when box is found in list', () => {
       expect(uploadBoxService.loadUploadBox).not.toHaveBeenCalled();
+    });
+
+    it('should call loadBoxGrants with the box id', () => {
+      expect(uploadBoxService.loadBoxGrants).toHaveBeenCalledWith(TEST_BOX.id);
+    });
+
+    it('should display upload grants when available', async () => {
+      uploadBoxService.setBoxGrants(uploadGrants);
+      await fixture.whenStable();
+      expect(screen.getByText('John Doe (doe@home.org)')).toBeVisible();
+    });
+
+    it('should show "No upload grants found" when grants list is empty', () => {
+      expect(screen.getByText(/no upload grants found/i)).toBeVisible();
     });
   });
 
