@@ -20,7 +20,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 import { DisplayUser, UserService } from '@app/auth/services/user';
 import { Capitalise } from '@app/shared/pipes/capitalise-pipe';
@@ -61,12 +61,16 @@ export class UploadBoxManagerDetailComponent implements OnInit {
   #userService = inject(UserService);
   #location = inject(NavigationTrackingService);
   #notificationService = inject(NotificationService);
+  #isBackNavigation = inject(Router).getCurrentNavigation()?.trigger === 'popstate';
 
   /** Route parameter bound automatically via withComponentInputBinding. */
   id = input.required<string>();
 
-  /** Whether to apply the view transition animation. */
+  /** Whether to apply the forward view transition animation (slide from right). */
   showTransition = false;
+
+  /** Whether to apply the back view transition animation (slide from left). */
+  showBackTransition = false;
 
   #singleBox = this.#uploadBoxService.uploadBox;
   #allBoxes = this.#uploadBoxService.uploadBoxes;
@@ -170,8 +174,13 @@ export class UploadBoxManagerDetailComponent implements OnInit {
    * Uses the list cache if available, otherwise fetches the single box.
    */
   ngOnInit(): void {
-    this.showTransition = true;
-    setTimeout(() => (this.showTransition = false), 300);
+    if (this.#isBackNavigation) {
+      this.showBackTransition = true;
+      setTimeout(() => (this.showBackTransition = false), 300);
+    } else {
+      this.showTransition = true;
+      setTimeout(() => (this.showTransition = false), 300);
+    }
 
     const id = this.id();
     this.#uploadBoxService.loadStorageLabels();
