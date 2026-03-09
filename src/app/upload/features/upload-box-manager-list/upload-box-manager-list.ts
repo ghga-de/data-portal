@@ -4,6 +4,7 @@
  * @license Apache-2.0
  */
 
+import { DatePipe } from '@angular/common';
 import {
   AfterViewInit,
   Component,
@@ -23,8 +24,19 @@ import { Capitalise } from '@app/shared/pipes/capitalise-pipe';
 import { ParseBytes } from '@app/shared/pipes/parse-bytes-pipe';
 import { NotificationService } from '@app/shared/services/notification';
 import { providePaginatorIntl } from '@app/shared/services/paginator-intl';
-import { ResearchDataUploadBox, UploadBoxStateClass } from '@app/upload/models/box';
+import {
+  ResearchDataUploadBox,
+  UploadBoxState,
+  UploadBoxStateClass,
+} from '@app/upload/models/box';
 import { UploadBoxService } from '@app/upload/services/upload-box';
+
+/** Sort order for upload box states: locked first, then open, then archived */
+const STATE_SORT_ORDER: Record<UploadBoxState, number> = {
+  [UploadBoxState.locked]: 0,
+  [UploadBoxState.open]: 1,
+  [UploadBoxState.archived]: 2,
+};
 
 /**
  * Upload Box Manager List component.
@@ -41,6 +53,7 @@ import { UploadBoxService } from '@app/upload/services/upload-box';
     MatIcon,
     ParseBytes,
     Capitalise,
+    DatePipe,
   ],
   providers: [providePaginatorIntl('Upload boxes per page')],
   templateUrl: './upload-box-manager-list.html',
@@ -68,18 +81,23 @@ export class UploadBoxManagerListComponent implements AfterViewInit {
     }
   });
 
-  #uploadBoxSortingAccessor = (uploadBox: ResearchDataUploadBox, key: string) => {
+  #uploadBoxSortingAccessor = (
+    uploadBox: ResearchDataUploadBox,
+    key: string,
+  ): string | number => {
     switch (key) {
       case 'title':
         return uploadBox.title;
       case 'state':
-        return uploadBox.state;
+        return STATE_SORT_ORDER[uploadBox.state];
       case 'files':
         return uploadBox.file_count;
       case 'size':
         return uploadBox.size;
       case 'location':
         return this.getStorageLocationLabel(uploadBox.storage_alias);
+      case 'last_change':
+        return uploadBox.last_changed;
       default:
         const value = uploadBox[key as keyof ResearchDataUploadBox];
         if (typeof value === 'string' || typeof value === 'number') {
@@ -113,6 +131,28 @@ export class UploadBoxManagerListComponent implements AfterViewInit {
    */
   ngAfterViewInit() {
     this.dataSource.sortingDataAccessor = this.#uploadBoxSortingAccessor;
+    this.dataSource.sortData = (data, sort) => {
+      const { active, direction } = sort;
+      return [...data].sort((a, b) => {
+        if (!direction) {
+          // Default / no-sort: state order (locked→open→archived), then last_changed descending
+          const stateCompare = STATE_SORT_ORDER[a.state] - STATE_SORT_ORDER[b.state];
+          if (stateCompare !== 0) return stateCompare;
+          return b.last_changed.localeCompare(a.last_changed);
+        }
+        const valA = this.dataSource.sortingDataAccessor(a, active);
+        const valB = this.dataSource.sortingDataAccessor(b, active);
+        let compare = 0;
+        if (valA > valB) compare = 1;
+        else if (valA < valB) compare = -1;
+        if (direction === 'desc') compare = -compare;
+        // Secondary sort within same state: last_changed descending
+        if (compare === 0 && active === 'state') {
+          return b.last_changed.localeCompare(a.last_changed);
+        }
+        return compare;
+      });
+    };
     this.#addSorting();
     this.#addPagination();
     this.matSorts.changes.subscribe(() => this.#addSorting());
