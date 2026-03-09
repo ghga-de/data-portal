@@ -13,9 +13,9 @@ export enum UploadBoxState {
 
 /** State-specific classes for upload boxes */
 export const UploadBoxStateClass: Record<UploadBoxState, string> = {
-  open: 'text-warning',
-  locked: 'text-error',
-  archived: 'text-success',
+  open: 'text-success',
+  locked: 'text-warning',
+  archived: 'text-gray-600',
 };
 
 /** Base data required to create a research data upload box */
