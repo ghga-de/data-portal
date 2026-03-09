@@ -18,6 +18,7 @@ import {
   UploadBoxState,
   UploadBoxVirtualFilter,
 } from '../models/box';
+import { GrantWithBoxInfo } from '../models/grant';
 import { UploadBoxService } from './upload-box';
 
 const TEST_BOX_RETRIEVAL_RESULTS: BoxRetrievalResults = {
@@ -338,5 +339,125 @@ describe('UploadBoxService', () => {
 
     expect(caughtError).toBeInstanceOf(HttpErrorResponse);
     expect(caughtError?.status).toBe(409);
+  });
+
+  describe('getAccessGrants', () => {
+    const TEST_GRANTS: GrantWithBoxInfo[] = [
+      {
+        id: 'grant-001',
+        user_id: 'user-abc',
+        iva_id: null,
+        box_id: '0a36607a-b53f-49ed-bf3e-a5f2dbc68001',
+        created: '2025-03-01T08:00:00Z',
+        valid_from: '2025-03-01T00:00:00Z',
+        valid_until: '2025-06-01T00:00:00Z',
+        user_name: 'Alice Example',
+        user_email: 'alice@test.dev',
+        user_title: 'Dr.',
+        box_title: 'Upload Box Alpha',
+        box_description: 'First upload box for stewardship tests',
+      },
+      {
+        id: 'grant-002',
+        user_id: 'user-xyz',
+        iva_id: 'iva-001',
+        box_id: '0a36607a-b53f-49ed-bf3e-a5f2dbc68002',
+        created: '2025-04-01T08:00:00Z',
+        valid_from: '2025-04-01T00:00:00Z',
+        valid_until: '2025-04-30T00:00:00Z',
+        user_name: 'Bob Example',
+        user_email: 'bob@test.dev',
+        user_title: null,
+        box_title: 'Upload Box Beta',
+        box_description: 'Second upload box for stewardship tests',
+      },
+    ];
+
+    it('should fetch access grants without filters', () => {
+      let result: GrantWithBoxInfo[] | undefined;
+      service.getAccessGrants().subscribe((grants) => (result = grants));
+
+      const req = httpMock.expectOne('http://mock.dev/uos/access-grants');
+      expect(req.request.method).toBe('GET');
+      expect(req.request.params.keys()).toHaveLength(0);
+      req.flush(TEST_GRANTS);
+
+      expect(result).toEqual(TEST_GRANTS);
+    });
+
+    it('should pass userid query param when userId is provided', () => {
+      service.getAccessGrants({ userId: 'user-abc' }).subscribe();
+
+      const req = httpMock.expectOne(
+        'http://mock.dev/uos/access-grants?userid=user-abc',
+      );
+      expect(req.request.params.get('userid')).toBe('user-abc');
+      expect(req.request.params.has('box_id')).toBe(false);
+      expect(req.request.params.has('valid')).toBe(false);
+      req.flush([]);
+    });
+
+    it('should pass box_id query param when boxId is provided', () => {
+      const boxId = '0a36607a-b53f-49ed-bf3e-a5f2dbc68001';
+      service.getAccessGrants({ boxId }).subscribe();
+
+      const req = httpMock.expectOne(
+        `http://mock.dev/uos/access-grants?box_id=${boxId}`,
+      );
+      expect(req.request.params.get('box_id')).toBe(boxId);
+      expect(req.request.params.has('userid')).toBe(false);
+      expect(req.request.params.has('valid')).toBe(false);
+      req.flush([]);
+    });
+
+    it('should pass valid=true when valid is true', () => {
+      service.getAccessGrants({ valid: true }).subscribe();
+
+      const req = httpMock.expectOne('http://mock.dev/uos/access-grants?valid=true');
+      expect(req.request.params.get('valid')).toBe('true');
+      req.flush([]);
+    });
+
+    it('should pass valid=false when valid is false', () => {
+      service.getAccessGrants({ valid: false }).subscribe();
+
+      const req = httpMock.expectOne('http://mock.dev/uos/access-grants?valid=false');
+      expect(req.request.params.get('valid')).toBe('false');
+      req.flush([]);
+    });
+
+    it('should omit valid query param when valid is null', () => {
+      service.getAccessGrants({ valid: null }).subscribe();
+
+      const req = httpMock.expectOne('http://mock.dev/uos/access-grants');
+      expect(req.request.params.has('valid')).toBe(false);
+      req.flush([]);
+    });
+
+    it('should pass all filter params when all are provided', () => {
+      const boxId = '0a36607a-b53f-49ed-bf3e-a5f2dbc68001';
+      service.getAccessGrants({ userId: 'user-abc', boxId, valid: true }).subscribe();
+
+      const req = httpMock.expectOne(
+        (r) =>
+          r.url === 'http://mock.dev/uos/access-grants' &&
+          r.params.get('userid') === 'user-abc' &&
+          r.params.get('box_id') === boxId &&
+          r.params.get('valid') === 'true',
+      );
+      expect(req.request.method).toBe('GET');
+      req.flush(TEST_GRANTS);
+    });
+
+    it('should propagate an error when fetching access grants fails', () => {
+      let caughtError: HttpErrorResponse | undefined;
+      service.getAccessGrants().subscribe({ error: (err) => (caughtError = err) });
+
+      const req = httpMock.expectOne('http://mock.dev/uos/access-grants');
+      req.flush({ detail: 'forbidden' }, { status: 403, statusText: 'Forbidden' });
+
+      expect(caughtError).toBeInstanceOf(HttpErrorResponse);
+      expect(caughtError?.status).toBe(403);
+    });
   });
 });

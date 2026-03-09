@@ -4,7 +4,7 @@
  * @license Apache-2.0
  */
 
-import { HttpClient, httpResource } from '@angular/common/http';
+import { HttpClient, HttpParams, httpResource } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { ConfigService } from '@app/shared/services/config';
 import { map, Observable } from 'rxjs';
@@ -15,6 +15,7 @@ import {
   ResearchDataUploadBoxUpdate,
   UploadBoxFilter,
 } from '../models/box';
+import { GrantWithBoxInfo } from '../models/grant';
 
 /**
  * Service for managing upload boxes.
@@ -25,6 +26,7 @@ export class UploadBoxService {
   #http = inject(HttpClient);
   #uosUrl = this.#config.uosUrl;
   #boxesUrl = `${this.#uosUrl}/boxes`;
+  #accessGrantsUrl = `${this.#uosUrl}/access-grants`;
   #wkvsUrl = this.#config.wkvsUrl;
   #storageLabelsUrl = `${this.#wkvsUrl}/values/storage_labels`;
 
@@ -216,12 +218,26 @@ export class UploadBoxService {
   }
 
   /**
-   * Load all upload grants belonging to an upload box.
-   * TODO: Implement once the backend API for upload grants is available.
-   * @param _boxId - the ID of the upload box
+   * Fetch access grants from the UOS backend.
+   * @param params - optional filter parameters
+   * @param params.userId - filter by user ID (maps to the `userid` query param)
+   * @param params.boxId - filter by box ID (maps to the `box_id` query param)
+   * @param params.valid - true = valid only, false = invalid only, null/omitted = both
+   * @returns An observable that emits an array of GrantWithBoxInfo objects
    */
-  loadUploadGrants(_boxId: string): void {
-    // TODO: fetch upload grants for the given box from the backend
+  getAccessGrants(params?: {
+    userId?: string;
+    boxId?: string;
+    valid?: boolean | null;
+  }): Observable<GrantWithBoxInfo[]> {
+    let httpParams = new HttpParams();
+    if (params?.userId) httpParams = httpParams.set('userid', params.userId);
+    if (params?.boxId) httpParams = httpParams.set('box_id', params.boxId);
+    if (params?.valid != null)
+      httpParams = httpParams.set('valid', String(params.valid));
+    return this.#http.get<GrantWithBoxInfo[]>(this.#accessGrantsUrl, {
+      params: httpParams,
+    });
   }
 
   /**
