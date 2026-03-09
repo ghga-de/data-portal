@@ -11,7 +11,12 @@ import {
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { ConfigService } from '@app/shared/services/config';
-import { BoxRetrievalResults, UploadBoxState } from '../models/box';
+import {
+  BoxRetrievalResults,
+  ResearchDataUploadBoxBase,
+  ResearchDataUploadBoxUpdate,
+  UploadBoxState,
+} from '../models/box';
 import { UploadBoxService } from './upload-box';
 
 const TEST_BOX_RETRIEVAL_RESULTS: BoxRetrievalResults = {
@@ -196,5 +201,118 @@ describe('UploadBoxService', () => {
     expect(service.boxRetrievalResults.error()).toBeInstanceOf(HttpErrorResponse);
     expect(service.uploadBoxes()).toEqual([]);
     expect(service.filteredUploadBoxes()).toEqual([]);
+  });
+
+  it('should fetch a single upload box', async () => {
+    const singleBox = TEST_BOX_RETRIEVAL_RESULTS.boxes[0];
+
+    expect(service.uploadBox.isLoading()).toBe(false);
+    expect(service.uploadBox.value()).toBeUndefined();
+
+    service.loadUploadBox(singleBox.id);
+    testBed.tick();
+
+    expect(service.uploadBox.isLoading()).toBe(true);
+
+    const req = httpMock.expectOne(`http://mock.dev/uos/box/${singleBox.id}`);
+    expect(req.request.method).toBe('GET');
+    req.flush(singleBox);
+
+    await Promise.resolve();
+
+    expect(service.uploadBox.isLoading()).toBe(false);
+    expect(service.uploadBox.error()).toBeUndefined();
+    expect(service.uploadBox.value()).toEqual(singleBox);
+  });
+
+  it('should expose an error when fetching a single upload box fails', async () => {
+    const id = TEST_BOX_RETRIEVAL_RESULTS.boxes[0].id;
+
+    service.loadUploadBox(id);
+    testBed.tick();
+
+    const req = httpMock.expectOne(`http://mock.dev/uos/box/${id}`);
+    req.flush({ detail: 'not found' }, { status: 404, statusText: 'Not Found' });
+
+    await Promise.resolve();
+
+    expect(service.uploadBox.isLoading()).toBe(false);
+    expect(service.uploadBox.error()).toBeInstanceOf(HttpErrorResponse);
+  });
+
+  it('should create an upload box and return its id', async () => {
+    const newBoxData: ResearchDataUploadBoxBase = {
+      title: 'New Test Box',
+      description: 'A box created in a test',
+      storage_alias: 'TUE01',
+    };
+    const createdId = '0a36607a-b53f-49ed-bf3e-a5f2dbc68099';
+
+    let emittedId: string | undefined;
+    service.createUploadBox(newBoxData).subscribe((id) => (emittedId = id));
+
+    const req = httpMock.expectOne('http://mock.dev/uos/boxes');
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(newBoxData);
+    req.flush({ id: createdId }, { status: 201, statusText: 'Created' });
+
+    expect(emittedId).toBe(createdId);
+  });
+
+  it('should propagate an error when creating an upload box fails', async () => {
+    const newBoxData: ResearchDataUploadBoxBase = {
+      title: 'Bad Box',
+      description: 'A box that will fail',
+      storage_alias: 'INVALID',
+    };
+
+    let caughtError: HttpErrorResponse | undefined;
+    service
+      .createUploadBox(newBoxData)
+      .subscribe({ error: (err) => (caughtError = err) });
+
+    const req = httpMock.expectOne('http://mock.dev/uos/boxes');
+    expect(req.request.method).toBe('POST');
+    req.flush(
+      { detail: 'invalid storage alias' },
+      { status: 422, statusText: 'Unprocessable Entity' },
+    );
+
+    expect(caughtError).toBeInstanceOf(HttpErrorResponse);
+    expect(caughtError?.status).toBe(422);
+  });
+
+  it('should update an upload box', () => {
+    const id = TEST_BOX_RETRIEVAL_RESULTS.boxes[0].id;
+    const changes: ResearchDataUploadBoxUpdate = { version: 1, title: 'Updated Title' };
+
+    let completed = false;
+    service
+      .updateUploadBox(id, changes)
+      .subscribe({ complete: () => (completed = true) });
+
+    const req = httpMock.expectOne(`http://mock.dev/uos/boxes/${id}`);
+    expect(req.request.method).toBe('PATCH');
+    expect(req.request.body).toEqual(changes);
+    req.flush(null, { status: 204, statusText: 'No Content' });
+
+    expect(completed).toBe(true);
+  });
+
+  it('should propagate an error when updating an upload box fails', () => {
+    const id = TEST_BOX_RETRIEVAL_RESULTS.boxes[0].id;
+    const changes: ResearchDataUploadBoxUpdate = { version: 1, title: 'Bad Update' };
+
+    let caughtError: HttpErrorResponse | undefined;
+    service
+      .updateUploadBox(id, changes)
+      .subscribe({ error: (err) => (caughtError = err) });
+
+    const req = httpMock.expectOne(`http://mock.dev/uos/boxes/${id}`);
+    expect(req.request.method).toBe('PATCH');
+    req.flush({ detail: 'version conflict' }, { status: 409, statusText: 'Conflict' });
+
+    expect(caughtError).toBeInstanceOf(HttpErrorResponse);
+    expect(caughtError?.status).toBe(409);
   });
 });

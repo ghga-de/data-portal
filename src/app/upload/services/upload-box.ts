@@ -4,21 +4,25 @@
  * @license Apache-2.0
  */
 
-import { httpResource } from '@angular/common/http';
+import { HttpClient, httpResource } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { ConfigService } from '@app/shared/services/config';
+import { map, Observable } from 'rxjs';
 import {
   BoxRetrievalResults,
   ResearchDataUploadBox,
+  ResearchDataUploadBoxBase,
+  ResearchDataUploadBoxUpdate,
   UploadBoxFilter,
 } from '../models/box';
 
 /**
- * Service for loading and managing upload boxes.
+ * Service for managing upload boxes.
  */
 @Injectable({ providedIn: 'root' })
 export class UploadBoxService {
   #config = inject(ConfigService);
+  #http = inject(HttpClient);
   #uosUrl = this.#config.uosUrl;
   #boxesUrl = `${this.#uosUrl}/boxes`;
   #wkvsUrl = this.#config.wkvsUrl;
@@ -26,6 +30,7 @@ export class UploadBoxService {
 
   #loadAllUploadBoxes = signal<boolean>(false);
   #uploadBoxesFilter = signal<UploadBoxFilter | undefined>(undefined);
+  #loadSingleBox = signal<string>('');
 
   #emptyBoxResults: BoxRetrievalResults = {
     count: 0,
@@ -55,6 +60,21 @@ export class UploadBoxService {
   );
 
   /**
+   * Resource for loading a single upload box.
+   */
+  uploadBox = httpResource<ResearchDataUploadBox>(
+    () => {
+      const id = this.#loadSingleBox();
+      if (!id) return undefined;
+      return `${this.#uosUrl}/box/${id}`;
+    },
+    {
+      defaultValue: undefined,
+      parse: (raw) => raw as ResearchDataUploadBox,
+    },
+  );
+
+  /**
    * Signal for all currently loaded upload boxes.
    */
   uploadBoxes = computed(() => {
@@ -63,7 +83,7 @@ export class UploadBoxService {
   });
 
   /**
-   * Current filter for upload box management.
+   * The currently active filter applied to `filteredUploadBoxes`.
    */
   uploadBoxesFilter = computed(
     () =>
@@ -125,27 +145,56 @@ export class UploadBoxService {
   });
 
   /**
-   * Resolve a storage alias into a human-readable storage location.
-   * @param storageAlias - alias from a box item
-   * @returns human-readable label or the alias itself if unknown
-   */
-  getStorageLocationLabel(storageAlias: string): string {
-    if (this.storageLabels.error()) return storageAlias;
-    return this.storageLabels.value()[storageAlias] ?? storageAlias;
-  }
-
-  /**
-   * Fetch all upload boxes from the UOS backend.
+   * Trigger loading of all upload boxes from the UOS backend.
    */
   loadAllUploadBoxes(): void {
     this.#loadAllUploadBoxes.set(true);
   }
 
   /**
-   * Set a filter for upload box management.
+   * Trigger loading of a single upload box by ID.
+   * @param id - the ID of the upload box to load
+   */
+  loadUploadBox(id: string): void {
+    this.#loadSingleBox.set(id);
+  }
+
+  /**
+   * Create a new upload box.
+   * @param data - the base data for the new upload box
+   * @returns An observable that emits the ID of the created box
+   */
+  createUploadBox(data: ResearchDataUploadBoxBase): Observable<string> {
+    return this.#http
+      .post<{ id: string }>(this.#boxesUrl, data)
+      .pipe(map((response) => response.id));
+  }
+
+  /**
+   * Update an existing upload box.
+   * @param id - the ID of the upload box to update
+   * @param changes - the fields to update
+   * @returns An observable that completes when the update is successful
+   */
+  updateUploadBox(id: string, changes: ResearchDataUploadBoxUpdate): Observable<void> {
+    return this.#http.patch<void>(`${this.#boxesUrl}/${id}`, changes);
+  }
+
+  /**
+   * Set the active filter for the upload box list.
    * @param filter - the filter to apply
    */
   setUploadBoxesFilter(filter: UploadBoxFilter): void {
     this.#uploadBoxesFilter.set(filter);
+  }
+
+  /**
+   * Resolve a storage alias to a human-readable storage location label.
+   * @param storageAlias - the alias from a box item
+   * @returns the human-readable label, or the alias itself if unknown
+   */
+  getStorageLocationLabel(storageAlias: string): string {
+    if (this.storageLabels.error()) return storageAlias;
+    return this.storageLabels.value()[storageAlias] ?? storageAlias;
   }
 }

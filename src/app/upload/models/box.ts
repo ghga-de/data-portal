@@ -20,18 +20,30 @@ export const UploadBoxStateClass: Record<UploadBoxState, string> = {
   archived: 'text-success',
 };
 
-/** A research data upload box */
-export interface ResearchDataUploadBox {
+/** Base data required to create a research data upload box */
+export interface ResearchDataUploadBoxBase {
+  title: string;
+  description: string;
+  storage_alias: string;
+}
+
+/** All data describing a research data upload box */
+export interface ResearchDataUploadBox extends ResearchDataUploadBoxBase {
   id: string;
   version: number;
   state: UploadBoxState;
-  title: string;
-  description: string;
   last_changed: string; // ISO date string
   changed_by: string;
   file_count: number;
   size: number; // in bytes
-  storage_alias: string;
+}
+
+/** Data to update a research data upload box */
+export interface ResearchDataUploadBoxUpdate {
+  version: number;
+  state?: UploadBoxState;
+  title?: string;
+  description?: string;
 }
 
 /** Response when retrieving research data upload boxes */
