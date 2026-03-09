@@ -29,6 +29,7 @@ export class UploadBoxService {
   #storageLabelsUrl = `${this.#wkvsUrl}/values/storage_labels`;
 
   #loadAllUploadBoxes = signal<boolean>(false);
+  #loadStorageLabels = signal<boolean>(false);
   #uploadBoxesFilter = signal<UploadBoxFilter | undefined>(undefined);
   #loadSingleBox = signal<string>('');
 
@@ -51,7 +52,10 @@ export class UploadBoxService {
    * Resource for loading human-readable storage labels.
    */
   storageLabels = httpResource<Record<string, string>>(
-    () => (this.#loadAllUploadBoxes() ? this.#storageLabelsUrl : undefined),
+    () =>
+      this.#loadAllUploadBoxes() || this.#loadStorageLabels()
+        ? this.#storageLabelsUrl
+        : undefined,
     {
       parse: (raw) =>
         (raw as { storage_labels?: Record<string, string> }).storage_labels ?? {},
@@ -149,6 +153,13 @@ export class UploadBoxService {
       }))
       .sort((left, right) => left.label.localeCompare(right.label));
   });
+
+  /**
+   * Trigger loading of storage location labels from the WKVS backend.
+   */
+  loadStorageLabels(): void {
+    this.#loadStorageLabels.set(true);
+  }
 
   /**
    * Trigger loading of all upload boxes from the UOS backend.

@@ -109,6 +109,7 @@ export class UploadBoxManagerDetailComponent implements OnInit {
     setTimeout(() => (this.showTransition = false), 300);
 
     const id = this.id();
+    this.#uploadBoxService.loadStorageLabels();
     if (id) {
       // Has the single box already been fetched individually?
       const single = this.#singleBox.error() ? undefined : this.#singleBox.value();

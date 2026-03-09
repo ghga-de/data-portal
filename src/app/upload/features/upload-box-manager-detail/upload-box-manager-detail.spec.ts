@@ -41,6 +41,7 @@ class MockUploadBoxService {
   };
 
   loadUploadBox = vitest.fn();
+  loadStorageLabels = vitest.fn();
 
   getStorageLocationLabel = (alias: string) =>
     this.storageLabels.value()[alias] ?? alias;
