@@ -17,6 +17,7 @@ import {
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
@@ -31,6 +32,7 @@ import {
 } from '@app/shared/utils/date-formats';
 import { ResearchDataUploadBox, UploadBoxStateClass } from '@app/upload/models/box';
 import { UploadBoxService } from '@app/upload/services/upload-box';
+import { UploadGrantRevocationDialogComponent } from '../upload-grant-revocation-dialog/upload-grant-revocation-dialog';
 
 /**
  * Upload Grant Manager Details component.
@@ -61,6 +63,7 @@ export class UploadGrantManagerDetailsComponent implements OnInit {
   #location = inject(NavigationTrackingService);
   #uploadBoxService = inject(UploadBoxService);
   #ivaService = inject(IvaService);
+  #dialog = inject(MatDialog);
 
   /** Route parameter: the upload box ID. */
   boxId = input.required<string>();
@@ -189,9 +192,13 @@ export class UploadGrantManagerDetailsComponent implements OnInit {
   }
 
   /**
-   * Revoke the upload grant (not yet implemented).
+   * Open the confirmation dialog and revoke the upload grant if confirmed.
    */
   revokeGrant(): void {
-    alert('not yet implemented');
+    const grant = this.grant();
+    if (!grant) return;
+    this.#dialog.open(UploadGrantRevocationDialogComponent, {
+      data: { grant },
+    });
   }
 }
