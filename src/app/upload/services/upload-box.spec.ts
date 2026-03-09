@@ -449,15 +449,29 @@ describe('UploadBoxService', () => {
       req.flush(TEST_GRANTS);
     });
 
-    it('should propagate an error when fetching access grants fails', () => {
+    it('should propagate a 401 error when not authenticated', () => {
       let caughtError: HttpErrorResponse | undefined;
       service.getAccessGrants().subscribe({ error: (err) => (caughtError = err) });
 
       const req = httpMock.expectOne('http://mock.dev/uos/access-grants');
-      req.flush({ detail: 'forbidden' }, { status: 403, statusText: 'Forbidden' });
+      req.flush(
+        { detail: 'unauthorized' },
+        { status: 401, statusText: 'Unauthorized' },
+      );
 
       expect(caughtError).toBeInstanceOf(HttpErrorResponse);
-      expect(caughtError?.status).toBe(403);
+      expect(caughtError?.status).toBe(401);
+    });
+
+    it('should propagate a 404 error when the endpoint is not found', () => {
+      let caughtError: HttpErrorResponse | undefined;
+      service.getAccessGrants().subscribe({ error: (err) => (caughtError = err) });
+
+      const req = httpMock.expectOne('http://mock.dev/uos/access-grants');
+      req.flush({ detail: 'not found' }, { status: 404, statusText: 'Not Found' });
+
+      expect(caughtError).toBeInstanceOf(HttpErrorResponse);
+      expect(caughtError?.status).toBe(404);
     });
   });
 });
