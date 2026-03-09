@@ -158,6 +158,7 @@ export const routes: Routes = [
   },
   {
     path: 'upload-box-manager',
+    providers: [UserService],
     canActivate: [() => inject(AuthService).guardDataSteward()],
     children: [
       {

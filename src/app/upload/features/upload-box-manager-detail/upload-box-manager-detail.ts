@@ -4,12 +4,13 @@
  * @license Apache-2.0
  */
 
-import { DatePipe } from '@angular/common';
+import { DatePipe as CommonDatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   inject,
   input,
   OnInit,
@@ -19,10 +20,17 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
+import { RouterLink } from '@angular/router';
+import { DisplayUser, UserService } from '@app/auth/services/user';
 import { Capitalise } from '@app/shared/pipes/capitalise-pipe';
+import { DatePipe } from '@app/shared/pipes/date-pipe';
 import { ParseBytes } from '@app/shared/pipes/parse-bytes-pipe';
 import { NavigationTrackingService } from '@app/shared/services/navigation';
 import { NotificationService } from '@app/shared/services/notification';
+import {
+  DEFAULT_TIME_ZONE,
+  FRIENDLY_DATE_FORMAT,
+} from '@app/shared/utils/date-formats';
 import { ResearchDataUploadBox, UploadBoxStateClass } from '@app/upload/models/box';
 import { UploadBoxService } from '@app/upload/services/upload-box';
 
@@ -38,14 +46,17 @@ import { UploadBoxService } from '@app/upload/services/upload-box';
     MatCardModule,
     MatIcon,
     MatTableModule,
+    RouterLink,
     Capitalise,
     ParseBytes,
   ],
+  providers: [CommonDatePipe],
   templateUrl: './upload-box-manager-detail.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UploadBoxManagerDetailComponent implements OnInit {
   #uploadBoxService = inject(UploadBoxService);
+  #userService = inject(UserService);
   #location = inject(NavigationTrackingService);
   #notificationService = inject(NotificationService);
 
@@ -86,6 +97,37 @@ export class UploadBoxManagerDetailComponent implements OnInit {
       this.uploadBox()?.storage_alias ?? '',
     ),
   );
+
+  /** The user who last changed this box, undefined while loading, null on error. */
+  changedBy = signal<DisplayUser | null | undefined>(undefined);
+
+  #changedByUserResource = this.#userService.createUserResource();
+
+  #loadChangedByEffect = effect(() => {
+    const changedById = this.uploadBox()?.changed_by;
+    if (!changedById) {
+      this.changedBy.set(undefined);
+      return;
+    }
+    const changedByResource = this.#changedByUserResource.resource;
+    if (changedByResource.isLoading()) return;
+    if (changedByResource.error()) {
+      this.changedBy.set(null);
+      return;
+    }
+    const changedByUser = changedByResource.value();
+    if (changedByUser && changedByUser.id === changedById) {
+      this.changedBy.set(changedByUser);
+      return;
+    }
+    this.#changedByUserResource.load(changedById);
+  });
+
+  /** Human-readable date format for last change. */
+  readonly friendlyDateFormat = FRIENDLY_DATE_FORMAT;
+
+  /** Timezone for date display. */
+  readonly timeZone = DEFAULT_TIME_ZONE;
 
   /** Map from UploadBoxState to CSS class. */
   readonly stateClass = UploadBoxStateClass;

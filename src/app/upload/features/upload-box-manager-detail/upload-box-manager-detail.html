@@ -50,9 +50,18 @@
             <p>
               <strong class="inline-block w-40">Last change:</strong>
               <span
-                >{{ box.last_changed | date: 'yyyy-MM-dd' }} by
-                {{ box.changed_by }}</span
-              >
+                >{{ box.last_changed | date: friendlyDateFormat : timeZone }}
+                @if (changedBy()) {
+                  by
+                  <a
+                    [routerLink]="'/user-manager/' + box.changed_by"
+                    class="text-primary"
+                    >{{ changedBy()!.displayName }}</a
+                  >
+                } @else if (changedBy() === null) {
+                  by {{ box.changed_by }}
+                }
+              </span>
             </p>
             <p>
               <strong class="inline-block w-40">Files / Size:</strong>

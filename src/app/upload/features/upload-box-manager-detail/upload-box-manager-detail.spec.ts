@@ -9,6 +9,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { uploadBoxes } from '@app/../mocks/data';
 import { fakeActivatedRoute } from '@app/../mocks/route';
+import { UserService } from '@app/auth/services/user';
 import { NavigationTrackingService } from '@app/shared/services/navigation';
 import { NotificationService } from '@app/shared/services/notification';
 import { ResearchDataUploadBox } from '@app/upload/models/box';
@@ -79,6 +80,24 @@ class MockUploadBoxService {
   }
 }
 
+/**
+ * Minimal mock of UserService for detail component tests.
+ */
+class MockUserService {
+  /** Returns a stub user resource that never loads. */
+  createUserResource() {
+    return {
+      load: vitest.fn(),
+      clear: vitest.fn(),
+      resource: {
+        isLoading: () => false,
+        error: () => undefined,
+        value: () => undefined,
+      },
+    };
+  }
+}
+
 const mockNavigationService = { back: vitest.fn() };
 const mockNotificationService = { showError: vitest.fn(), showSuccess: vitest.fn() };
 
@@ -92,6 +111,7 @@ describe('UploadBoxManagerDetailComponent', () => {
       imports: [UploadBoxManagerDetailComponent],
       providers: [
         { provide: UploadBoxService, useClass: MockUploadBoxService },
+        { provide: UserService, useClass: MockUserService },
         { provide: NavigationTrackingService, useValue: mockNavigationService },
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: ActivatedRoute, useValue: fakeActivatedRoute },
