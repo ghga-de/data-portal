@@ -197,4 +197,31 @@ export class UploadBoxService {
     if (this.storageLabels.error()) return storageAlias;
     return this.storageLabels.value()[storageAlias] ?? storageAlias;
   }
+
+  /**
+   * Load all upload grants belonging to an upload box.
+   * TODO: Implement once the backend API for upload grants is available.
+   * @param _boxId - the ID of the upload box
+   */
+  loadUploadGrants(_boxId: string): void {
+    // TODO: fetch upload grants for the given box from the backend
+  }
+
+  /**
+   * Add a new upload grant to an upload box.
+   * TODO: Implement once the backend API for upload grants is available.
+   * @param _boxId - the ID of the upload box
+   */
+  addUploadGrant(_boxId: string): void {
+    // TODO: POST a new upload grant for the given box to the backend
+  }
+
+  /**
+   * List all files belonging to an upload box.
+   * TODO: Implement once the backend API for box files is available.
+   * @param _boxId - the ID of the upload box
+   */
+  listBoxFiles(_boxId: string): void {
+    // TODO: fetch files for the given box from the backend
+  }
 }

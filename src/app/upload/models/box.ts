@@ -4,16 +4,14 @@
  * @license Apache-2.0
  */
 
-/**
- * All possible research upload box states
- */
+/** All possible research upload box states */
 export enum UploadBoxState {
   open = 'open',
   locked = 'locked',
   archived = 'archived',
 }
 
-/** State-specific classes for upload boxes. */
+/** State-specific classes for upload boxes */
 export const UploadBoxStateClass: Record<UploadBoxState, string> = {
   open: 'text-warning',
   locked: 'text-error',
@@ -52,7 +50,7 @@ export interface BoxRetrievalResults {
   boxes: ResearchDataUploadBox[];
 }
 
-/** Filters for upload box management. */
+/** Filters for upload box management */
 export interface UploadBoxFilter {
   title: string | undefined;
   state: UploadBoxState | undefined;

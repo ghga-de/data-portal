@@ -13,9 +13,12 @@ import {
   ViewChild,
   ViewChildren,
 } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { Router } from '@angular/router';
 import { Capitalise } from '@app/shared/pipes/capitalise-pipe';
 import { ParseBytes } from '@app/shared/pipes/parse-bytes-pipe';
 import { NotificationService } from '@app/shared/services/notification';
@@ -30,13 +33,22 @@ import { UploadBoxService } from '@app/upload/services/upload-box';
  */
 @Component({
   selector: 'app-upload-box-manager-list',
-  imports: [MatTableModule, MatSortModule, MatPaginatorModule, ParseBytes, Capitalise],
+  imports: [
+    MatTableModule,
+    MatSortModule,
+    MatPaginatorModule,
+    MatButtonModule,
+    MatIcon,
+    ParseBytes,
+    Capitalise,
+  ],
   providers: [providePaginatorIntl('Upload boxes per page')],
   templateUrl: './upload-box-manager-list.html',
 })
 export class UploadBoxManagerListComponent implements AfterViewInit {
   #uploadBoxService = inject(UploadBoxService);
   #notify = inject(NotificationService);
+  #router = inject(Router);
 
   #uploadBoxResource = this.#uploadBoxService.boxRetrievalResults;
   uploadBoxes = this.#uploadBoxService.filteredUploadBoxes;
@@ -123,5 +135,15 @@ export class UploadBoxManagerListComponent implements AfterViewInit {
    */
   getStorageLocationLabel(storageAlias: string): string {
     return this.#uploadBoxService.getStorageLocationLabel(storageAlias);
+  }
+
+  /**
+   * Navigate to the detail view for a given upload box.
+   * @param event - the originating mouse event
+   * @param box - the upload box to view
+   */
+  viewDetails(event: MouseEvent, box: ResearchDataUploadBox): void {
+    if ((event.target as HTMLElement | null)?.closest('a')) return;
+    this.#router.navigate(['/upload-box-manager', box.id]);
   }
 }

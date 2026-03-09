@@ -211,6 +211,9 @@ export const responses: { [endpoint: string]: ResponseValue } = {
   // All upload boxes
   'GET /api/uos/boxes': uploadBoxes,
 
+  // Single upload box
+  'GET /api/uos/box/*': uploadBoxes.boxes[0],
+
   /**
    * WKVS API
    */
