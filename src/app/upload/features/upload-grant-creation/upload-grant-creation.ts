@@ -288,11 +288,11 @@ export class UploadGrantCreationComponent implements OnInit {
       valid_until: toIsoDate(until),
     };
     this.#uploadBoxService.createUploadGrant(payload).subscribe({
-      next: ({ id, created }) => {
+      next: ({ id }) => {
         const grant: UploadGrant = {
           ...payload,
           id,
-          created,
+          created: new Date().toISOString(),
           user_name: user.displayName,
           user_email: user.email,
           user_title: user.title ?? null,

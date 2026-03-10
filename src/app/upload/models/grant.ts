@@ -22,11 +22,9 @@ export interface UploadGrantBase {
 }
 
 /** Response body returned by the backend when creating an upload grant */
-export interface UploadGrantCreated {
+export interface GrantId {
   /** Server-assigned grant ID */
   id: string;
-  /** ISO timestamp of creation */
-  created: string;
 }
 
 /** An upload access grant */

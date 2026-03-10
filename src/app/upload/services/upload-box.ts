@@ -16,10 +16,10 @@ import {
   UploadBoxFilter,
 } from '../models/box';
 import {
+  GrantId,
   GrantWithBoxInfo,
   UploadGrant,
   UploadGrantBase,
-  UploadGrantCreated,
 } from '../models/grant';
 
 /**
@@ -281,8 +281,8 @@ export class UploadBoxService {
    * @param data - the base data for the new upload grant
    * @returns An observable that emits the server-assigned id and created timestamp
    */
-  createUploadGrant(data: UploadGrantBase): Observable<UploadGrantCreated> {
-    return this.#http.post<UploadGrantCreated>(this.#accessGrantsUrl, data);
+  createUploadGrant(data: UploadGrantBase): Observable<GrantId> {
+    return this.#http.post<GrantId>(this.#accessGrantsUrl, data);
   }
 
   /**

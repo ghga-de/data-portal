@@ -69,7 +69,7 @@ export const responses: { [endpoint: string]: ResponseValue } = {
   'DELETE /api/auth/users/*': 204,
 
   // New IVA
-  'POST /api/auth/users/*/ivas': { id: 'ABC123' },
+  'POST /api/auth/users/*/ivas': { id: crypto.randomUUID() },
 
   // Delete IVA
   'DELETE /api/auth/users/*/ivas/*': 204,
@@ -225,8 +225,7 @@ export const responses: { [endpoint: string]: ResponseValue } = {
 
   // Create a new upload grant
   'POST /api/uos/access-grants': {
-    id: 'grant-uos-new',
-    created: new Date().toISOString(),
+    id: crypto.randomUUID(),
   },
 
   // Revoke an upload grant
