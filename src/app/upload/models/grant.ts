@@ -4,6 +4,9 @@
  * @license Apache-2.0
  */
 
+/** Default number of days a new upload grant is valid */
+export const VALID_GRANT_DAYS = 180;
+
 /** Base data to create an upload grant */
 export interface UploadGrantBase {
   /** Internal user ID */
@@ -16,6 +19,14 @@ export interface UploadGrantBase {
   valid_from: string;
   /** End date of validity */
   valid_until: string;
+}
+
+/** Response body returned by the backend when creating an upload grant */
+export interface UploadGrantCreated {
+  /** Server-assigned grant ID */
+  id: string;
+  /** ISO timestamp of creation */
+  created: string;
 }
 
 /** An upload access grant */

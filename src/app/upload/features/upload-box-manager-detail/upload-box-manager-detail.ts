@@ -61,7 +61,8 @@ export class UploadBoxManagerDetailComponent implements OnInit {
   #userService = inject(UserService);
   #location = inject(NavigationTrackingService);
   #notificationService = inject(NotificationService);
-  #isBackNavigation = inject(Router).getCurrentNavigation()?.trigger === 'popstate';
+  #router = inject(Router);
+  #isBackNavigation = this.#router.getCurrentNavigation()?.trigger === 'popstate';
 
   /** Route parameter bound automatically via withComponentInputBinding. */
   id = input.required<string>();
@@ -157,9 +158,12 @@ export class UploadBoxManagerDetailComponent implements OnInit {
   /**
    * Initiate adding a new upload grant for this box.
    */
+  /**
+   * Navigate to the new upload grant creation page.
+   */
   addGrant(): void {
     const boxId = this.id();
-    if (boxId) this.#uploadBoxService.addUploadGrant(boxId);
+    if (boxId) this.#router.navigate(['/upload-box-manager', boxId, 'grant', 'new']);
   }
 
   /** Notify error effect for single-box fetch failures. */

@@ -179,6 +179,14 @@ export const routes: Routes = [
         data: { transition: 'detail' },
       },
       {
+        path: ':boxId/grant/new',
+        loadComponent: () =>
+          import('./upload/features/upload-grant-creation/upload-grant-creation').then(
+            (m) => m.UploadGrantCreationComponent,
+          ),
+        title: 'New Upload Grant',
+      },
+      {
         path: ':boxId/grant/:grantId',
         loadComponent: () =>
           import('./upload/features/upload-grant-manager-details/upload-grant-manager-details').then(

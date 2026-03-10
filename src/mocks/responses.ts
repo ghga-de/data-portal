@@ -59,6 +59,11 @@ export const responses: { [endpoint: string]: ResponseValue } = {
   'GET /api/auth/users/doe@test.dev/ivas': allIvasOfDoe,
   'GET /api/auth/users/roe@test.dev/ivas': allIvasOfRoe,
   'GET /api/auth/users/mar@test.dev/ivas': allIvasOfMar,
+  'GET /api/auth/users/jekyll@test.dev/ivas': [],
+  'GET /api/auth/users/hyde@test.dev/ivas': [],
+  'GET /api/auth/users/fred.flintstone@test.dev/ivas': [],
+  'GET /api/auth/users/wilma.flintstone@test.dev/ivas': [],
+  'GET /api/auth/users/barney.rubble@test.dev/ivas': [],
 
   // Delete access grant
   'DELETE /api/auth/users/*': 204,
@@ -217,6 +222,12 @@ export const responses: { [endpoint: string]: ResponseValue } = {
 
   // Upload grants for a specific box
   'GET /api/uos/access-grants?*': uploadGrants,
+
+  // Create a new upload grant
+  'POST /api/uos/access-grants': {
+    id: 'grant-uos-new',
+    created: new Date().toISOString(),
+  },
 
   // Revoke an upload grant
   'DELETE /api/uos/access-grants/*': 204,

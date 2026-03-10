@@ -15,7 +15,12 @@ import {
   ResearchDataUploadBoxUpdate,
   UploadBoxFilter,
 } from '../models/box';
-import { GrantWithBoxInfo, UploadGrant } from '../models/grant';
+import {
+  GrantWithBoxInfo,
+  UploadGrant,
+  UploadGrantBase,
+  UploadGrantCreated,
+} from '../models/grant';
 
 /**
  * Service for managing upload boxes.
@@ -262,12 +267,22 @@ export class UploadBoxService {
   }
 
   /**
-   * Add a new upload grant to an upload box.
-   * TODO: Implement once the backend API for upload grants is available.
-   * @param _boxId - the ID of the upload box
+   * Add a new upload grant locally to avoid re-fetching from backend.
+   * @param grant - the fully constructed grant to add
    */
-  addUploadGrant(_boxId: string): void {
-    // TODO: POST a new upload grant for the given box to the backend
+  addGrantLocally(grant: UploadGrant): void {
+    if (!this.boxGrants.error()) {
+      this.boxGrants.value.set([...this.boxGrants.value(), grant]);
+    }
+  }
+
+  /**
+   * Create a new upload grant.
+   * @param data - the base data for the new upload grant
+   * @returns An observable that emits the server-assigned id and created timestamp
+   */
+  createUploadGrant(data: UploadGrantBase): Observable<UploadGrantCreated> {
+    return this.#http.post<UploadGrantCreated>(this.#accessGrantsUrl, data);
   }
 
   /**
