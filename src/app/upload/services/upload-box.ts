@@ -315,13 +315,4 @@ export class UploadBoxService {
   revokeUploadGrant(id: string): Observable<void> {
     return this.#http.delete<void>(`${this.#accessGrantsUrl}/${id}`);
   }
-
-  /**
-   * List all files belonging to an upload box.
-   * TODO: Implement once the backend API for box files is available.
-   * @param _boxId - the ID of the upload box
-   */
-  listBoxFiles(_boxId: string): void {
-    // TODO: fetch files for the given box from the backend
-  }
 }
