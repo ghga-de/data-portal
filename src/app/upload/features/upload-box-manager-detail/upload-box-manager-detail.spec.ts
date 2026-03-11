@@ -29,6 +29,7 @@ class MockUploadBoxService {
   #singleBoxValue = signal<ResearchDataUploadBox | undefined>(undefined);
   #singleBoxLoading = signal<boolean>(false);
   #boxGrantsList = signal<UploadGrant[]>([]);
+  #fileUploadsList = signal<never[]>([]);
 
   uploadBox = {
     value: this.#singleBoxValue.asReadonly(),
@@ -44,6 +45,12 @@ class MockUploadBoxService {
     error: () => undefined,
   };
 
+  boxFileUploads = {
+    value: this.#fileUploadsList.asReadonly(),
+    isLoading: () => false,
+    error: () => undefined,
+  };
+
   storageLabels = {
     value: () => ({ TUE01: 'Tübingen 1' }) as Record<string, string>,
     error: () => undefined,
@@ -52,6 +59,7 @@ class MockUploadBoxService {
   loadUploadBox = vitest.fn();
   loadStorageLabels = vitest.fn();
   loadBoxGrants = vitest.fn();
+  loadFileUploadsForBox = vitest.fn();
   addUploadGrant = vitest.fn();
 
   getStorageLocationLabel = (alias: string) =>

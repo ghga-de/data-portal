@@ -512,4 +512,132 @@ describe('UploadBoxService', () => {
       expect(caughtError?.status).toBe(404);
     });
   });
+
+  describe('createUploadGrant', () => {
+    const GRANT_PAYLOAD = {
+      user_id: 'user-abc',
+      iva_id: null,
+      box_id: '0a36607a-b53f-49ed-bf3e-a5f2dbc68001',
+      valid_from: '2026-01-01',
+      valid_until: '2026-12-31',
+    };
+
+    it('should POST to access-grants and return the new grant id', () => {
+      const newId = 'grant-new-001';
+      let result: { id: string } | undefined;
+      service.createUploadGrant(GRANT_PAYLOAD).subscribe((r) => (result = r));
+
+      const req = httpMock.expectOne('http://mock.dev/uos/access-grants');
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual(GRANT_PAYLOAD);
+      req.flush({ id: newId }, { status: 201, statusText: 'Created' });
+
+      expect(result).toEqual({ id: newId });
+    });
+
+    it('should propagate an error when creating a grant fails', () => {
+      let caughtError: HttpErrorResponse | undefined;
+      service
+        .createUploadGrant(GRANT_PAYLOAD)
+        .subscribe({ error: (err) => (caughtError = err) });
+
+      const req = httpMock.expectOne('http://mock.dev/uos/access-grants');
+      req.flush({ detail: 'conflict' }, { status: 409, statusText: 'Conflict' });
+
+      expect(caughtError).toBeInstanceOf(HttpErrorResponse);
+      expect(caughtError?.status).toBe(409);
+    });
+  });
+
+  describe('revokeUploadGrant', () => {
+    const GRANT_ID = 'grant-to-revoke-001';
+
+    it('should DELETE the access-grant by id', () => {
+      let completed = false;
+      service
+        .revokeUploadGrant(GRANT_ID)
+        .subscribe({ complete: () => (completed = true) });
+
+      const req = httpMock.expectOne(`http://mock.dev/uos/access-grants/${GRANT_ID}`);
+      expect(req.request.method).toBe('DELETE');
+      req.flush(null, { status: 204, statusText: 'No Content' });
+
+      expect(completed).toBe(true);
+    });
+
+    it('should propagate an error when revoking a grant fails', () => {
+      let caughtError: HttpErrorResponse | undefined;
+      service
+        .revokeUploadGrant(GRANT_ID)
+        .subscribe({ error: (err) => (caughtError = err) });
+
+      const req = httpMock.expectOne(`http://mock.dev/uos/access-grants/${GRANT_ID}`);
+      req.flush({ detail: 'not found' }, { status: 404, statusText: 'Not Found' });
+
+      expect(caughtError).toBeInstanceOf(HttpErrorResponse);
+      expect(caughtError?.status).toBe(404);
+    });
+  });
+
+  describe('addGrantLocally', () => {
+    const BOX_ID = '0a36607a-b53f-49ed-bf3e-a5f2dbc68001';
+    const GRANT: UploadGrant = {
+      id: 'grant-local-001',
+      user_id: 'user-abc',
+      iva_id: null,
+      box_id: BOX_ID,
+      created: '2026-01-01T00:00:00Z',
+      valid_from: '2026-01-01',
+      valid_until: '2026-12-31',
+      user_name: 'Alice Example',
+      user_email: 'alice@test.dev',
+      user_title: null,
+    };
+
+    it('should append the grant to the in-memory list after loading', async () => {
+      service.loadBoxGrants(BOX_ID);
+      testBed.tick();
+
+      const req = httpMock.expectOne(
+        `http://mock.dev/uos/access-grants?box_id=${encodeURIComponent(BOX_ID)}`,
+      );
+      req.flush([]);
+      await Promise.resolve();
+
+      expect(service.boxGrants.value()).toHaveLength(0);
+      service.addGrantLocally(GRANT);
+      expect(service.boxGrants.value()).toEqual([GRANT]);
+    });
+
+    it('should not throw when boxGrants has not been loaded yet', () => {
+      // No loadBoxGrants call, so boxGrants.error() would be undefined
+      // and value() returns the defaultValue []
+      expect(() => service.addGrantLocally(GRANT)).not.toThrow();
+    });
+  });
+
+  describe('loadFileUploadsForBox', () => {
+    const BOX_ID = '0a36607a-b53f-49ed-bf3e-a5f2dbc68001';
+
+    it('should request file uploads filtered by box id', async () => {
+      service.loadFileUploadsForBox(BOX_ID);
+      testBed.tick();
+
+      const req = httpMock.expectOne(
+        `http://mock.dev/uos/boxes/${encodeURIComponent(BOX_ID)}/uploads`,
+      );
+      expect(req.request.method).toBe('GET');
+      req.flush([]);
+
+      await Promise.resolve();
+
+      expect(service.boxFileUploads.value()).toEqual([]);
+    });
+
+    it('should not request file uploads when no box id has been set', () => {
+      testBed.tick();
+      // httpMock.verify() in afterEach ensures no unexpected requests were made
+      expect(service.boxFileUploads.value()).toEqual([]);
+    });
+  });
 });

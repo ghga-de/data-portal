@@ -200,9 +200,6 @@ export class UploadBoxManagerDetailComponent implements OnInit {
   }
 
   /**
-   * Initiate adding a new upload grant for this box.
-   */
-  /**
    * Navigate to the new upload grant creation page.
    */
   addGrant(): void {
@@ -211,7 +208,7 @@ export class UploadBoxManagerDetailComponent implements OnInit {
   }
 
   /** Notify error effect for single-box fetch failures. */
-  #errorEffect = computed(() => {
+  #errorEffect = effect(() => {
     if (this.error() === 'other') {
       this.#notificationService.showError('Error retrieving upload box details.');
     }
