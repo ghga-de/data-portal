@@ -1120,6 +1120,54 @@ export const uploadGrants: UploadGrant[] = [
 ];
 
 /**
+ * UOS file uploads
+ */
+export const uploadBoxFileUploads = [
+  {
+    id: 'f1a36607a-b53f-49ed-bf3e-a5f2dbc68001',
+    box_id: '0a36607a-b53f-49ed-bf3e-a5f2dbc68002',
+    alias: 'alias_of_the_first_file.fastq',
+    state: 'interrogated',
+    state_updated: '2026-01-15T22:12:00Z',
+    storage_alias: 'HD02',
+    bucket_id: 'inbox-hd02',
+    decrypted_sha256: 'a'.repeat(64),
+    decrypted_size: 251305566208, // 234 GB in bytes
+    encrypted_size: 251305600000,
+    part_size: 16777216,
+    accession: null,
+  },
+  {
+    id: 'f2a36607a-b53f-49ed-bf3e-a5f2dbc68002',
+    box_id: '0a36607a-b53f-49ed-bf3e-a5f2dbc68002',
+    alias: 'alias_of_the_2nd_file.fastq',
+    state: 'failed',
+    state_updated: '2026-01-15T22:34:00Z',
+    storage_alias: 'HD02',
+    bucket_id: 'inbox-hd02',
+    decrypted_sha256: null,
+    decrypted_size: 0,
+    encrypted_size: null,
+    part_size: 16777216,
+    accession: null,
+  },
+  {
+    id: 'f3a36607a-b53f-49ed-bf3e-a5f2dbc68003',
+    box_id: '0a36607a-b53f-49ed-bf3e-a5f2dbc68002',
+    alias: 'alias_of_another_file.bam',
+    state: 'interrogated',
+    state_updated: '2026-01-15T22:34:00Z',
+    storage_alias: 'HD02',
+    bucket_id: 'inbox-hd02',
+    decrypted_sha256: 'b'.repeat(64),
+    decrypted_size: 31138512896, // 29 GB in bytes
+    encrypted_size: 31138550000,
+    part_size: 16777216,
+    accession: null,
+  },
+] as const;
+
+/**
  * WPS API
  */
 

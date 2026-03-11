@@ -15,6 +15,7 @@ import {
   ResearchDataUploadBoxUpdate,
   UploadBoxFilter,
 } from '../models/box';
+import { FileUploadWithAccession } from '../models/file-upload';
 import {
   GrantId,
   GrantWithBoxInfo,
@@ -40,6 +41,7 @@ export class UploadBoxService {
   #uploadBoxesFilter = signal<UploadBoxFilter | undefined>(undefined);
   #loadSingleBox = signal<string>('');
   #loadGrantsForBox = signal<string>('');
+  #loadFileUploadsForBox = signal<string>('');
 
   #emptyBoxResults: BoxRetrievalResults = {
     count: 0,
@@ -79,6 +81,18 @@ export class UploadBoxService {
       const boxId = this.#loadGrantsForBox();
       if (!boxId) return undefined;
       return `${this.#accessGrantsUrl}?box_id=${encodeURIComponent(boxId)}`;
+    },
+    { defaultValue: [] },
+  );
+
+  /**
+   * Resource for loading file uploads for a specific box.
+   */
+  boxFileUploads = httpResource<FileUploadWithAccession[]>(
+    () => {
+      const boxId = this.#loadFileUploadsForBox();
+      if (!boxId) return undefined;
+      return `${this.#boxesUrl}/${encodeURIComponent(boxId)}/uploads`;
     },
     { defaultValue: [] },
   );
@@ -202,6 +216,14 @@ export class UploadBoxService {
    */
   loadBoxGrants(boxId: string): void {
     this.#loadGrantsForBox.set(boxId);
+  }
+
+  /**
+   * Trigger loading of file uploads for a specific box.
+   * @param boxId - the ID of the upload box
+   */
+  loadFileUploadsForBox(boxId: string): void {
+    this.#loadFileUploadsForBox.set(boxId);
   }
 
   /**

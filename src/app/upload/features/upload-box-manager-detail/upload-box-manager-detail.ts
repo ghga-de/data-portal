@@ -33,6 +33,10 @@ import {
   FRIENDLY_DATE_FORMAT,
 } from '@app/shared/utils/date-formats';
 import { ResearchDataUploadBox, UploadBoxStateClass } from '@app/upload/models/box';
+import {
+  FileUploadState,
+  FileUploadWithAccession,
+} from '@app/upload/models/file-upload';
 import { UploadGrant } from '@app/upload/models/grant';
 import { UploadBoxService } from '@app/upload/services/upload-box';
 
@@ -130,6 +134,13 @@ export class UploadBoxManagerDetailComponent implements OnInit {
     this.#changedByUserResource.load(changedById);
   });
 
+  #loadFileUploadsEffect = effect(() => {
+    const box = this.uploadBox();
+    if (box && box.file_count > 0 && !this.#cachedBox()) {
+      this.#uploadBoxService.loadFileUploadsForBox(box.id);
+    }
+  });
+
   /** Human-readable date format for last change. */
   readonly friendlyDateFormat = FRIENDLY_DATE_FORMAT;
 
@@ -142,8 +153,19 @@ export class UploadBoxManagerDetailComponent implements OnInit {
   /** Placeholder columns for the upload grants table. */
   readonly grantColumns = ['grantee', 'status', 'validity', 'details'];
 
+  /** Columns for the file uploads table. */
+  readonly fileColumns = ['alias', 'status', 'size', 'uploaded'];
+
   /** The upload grants for this box. */
   grants = computed<UploadGrant[]>(() => this.#uploadBoxService.boxGrants.value());
+
+  /** The file uploads for this box. */
+  fileUploads = computed<FileUploadWithAccession[]>(() =>
+    this.#uploadBoxService.boxFileUploads.value(),
+  );
+
+  /** Whether to show the "Map files to metadata and archive" button. */
+  showMapFilesButton = computed<boolean>(() => this.uploadBox()?.state === 'locked');
 
   /**
    * Check if an upload grant is currently active.
@@ -153,6 +175,28 @@ export class UploadBoxManagerDetailComponent implements OnInit {
   isGrantActive(grant: UploadGrant): boolean {
     const today = new Date().toISOString().slice(0, 10);
     return grant.valid_from <= today && today <= grant.valid_until;
+  }
+
+  /**
+   * Get the CSS class for a file upload status.
+   * @param state - the file upload state
+   * @returns the CSS class for the state
+   */
+  getFileStatusClass(state: FileUploadState): string {
+    switch (state) {
+      case 'interrogated':
+        return 'text-success';
+      case 'archived':
+        return 'text-gray-600';
+      case 'failed':
+      case 'cancelled':
+        return 'text-error';
+      case 'init':
+      case 'inbox':
+      case 'awaiting_archival':
+      default:
+        return 'text-warning';
+    }
   }
 
   /**
@@ -194,11 +238,19 @@ export class UploadBoxManagerDetailComponent implements OnInit {
       const single = this.#singleBox.error() ? undefined : this.#singleBox.value();
       if (single && single.id === id) {
         this.#cachedBox.set(single);
+        // Load file uploads if the box has files
+        if (single.file_count > 0) {
+          this.#uploadBoxService.loadFileUploadsForBox(id);
+        }
       } else {
         // Has it been loaded as part of the full list?
         const fromList = this.#allBoxes().find((b) => b.id === id);
         if (fromList) {
           this.#cachedBox.set(fromList);
+          // Load file uploads if the box has files
+          if (fromList.file_count > 0) {
+            this.#uploadBoxService.loadFileUploadsForBox(id);
+          }
         } else {
           // Neither — fetch it individually
           this.#uploadBoxService.loadUploadBox(id);

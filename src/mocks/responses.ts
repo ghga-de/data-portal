@@ -22,6 +22,7 @@ import {
   storageLabels,
   studyData,
   uploadBoxes,
+  uploadBoxFileUploads,
   uploadGrants,
   users,
   workPackageResponse,
@@ -222,6 +223,9 @@ export const responses: { [endpoint: string]: ResponseValue } = {
 
   // Upload grants for a specific box
   'GET /api/uos/access-grants?*': uploadGrants,
+
+  // File uploads for a specific box
+  'GET /api/uos/boxes/*/uploads': uploadBoxFileUploads,
 
   // Create a new upload grant
   'POST /api/uos/access-grants': {

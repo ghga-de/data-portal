@@ -83,8 +83,51 @@
               <span>{{ storageLocationLabel() }}</span>
             </p>
             <p><strong>Files:</strong></p>
-            <p class="text-warning mt-2">This upload box is still empty.</p>
-            <!-- TODO: list box files once listBoxFiles() is implemented -->
+            @if (box.file_count > 0) {
+              <div class="overflow-auto">
+                <table mat-table [dataSource]="fileUploads()" class="w-full">
+                  <ng-container matColumnDef="alias">
+                    <th mat-header-cell *matHeaderCellDef>Alias</th>
+                    <td mat-cell *matCellDef="let file">{{ file.alias }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="status">
+                    <th mat-header-cell *matHeaderCellDef>Status</th>
+                    <td mat-cell *matCellDef="let file">
+                      <span [class]="getFileStatusClass(file.state)">{{
+                        file.state
+                      }}</span>
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="size">
+                    <th mat-header-cell *matHeaderCellDef>Size</th>
+                    <td mat-cell *matCellDef="let file">{{
+                      file.decrypted_size | parseBytes
+                    }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="uploaded">
+                    <th mat-header-cell *matHeaderCellDef>Uploaded</th>
+                    <td mat-cell *matCellDef="let file">{{
+                      file.state_updated | date: friendlyDateFormat : timeZone
+                    }}</td>
+                  </ng-container>
+
+                  <tr mat-header-row *matHeaderRowDef="fileColumns"></tr>
+                  <tr mat-row *matRowDef="let row; columns: fileColumns"></tr>
+
+                  <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell p-4 text-base" colspan="4">Loading files...</td>
+                  </tr>
+                </table>
+              </div>
+              @if (showMapFilesButton()) {
+                <button mat-raised-button color="primary" class="mt-4" disabled>
+                  <mat-icon fontIcon="check"></mat-icon>
+                  Map files to metadata and archive
+                </button>
+              }
+            } @else {
+              <p class="text-warning mt-2">This upload box is still empty.</p>
+            }
           </mat-card-content>
         </mat-card>
       </div>
