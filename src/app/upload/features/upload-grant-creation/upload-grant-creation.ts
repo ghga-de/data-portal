@@ -27,7 +27,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { DisplayUser, UserService } from '@app/auth/services/user';
 import { IvaStatePipe } from '@app/ivas/pipes/iva-state-pipe';
 import { IvaTypePipe } from '@app/ivas/pipes/iva-type-pipe';
@@ -84,7 +84,6 @@ export class UploadGrantCreationComponent implements OnInit {
   #userService = inject(UserService);
   #ivaService = inject(IvaService);
   #notification = inject(NotificationService);
-  #router = inject(Router);
   #location = inject(NavigationTrackingService);
 
   /** Route parameter: the ID of the upload box to grant access to. */
@@ -299,7 +298,7 @@ export class UploadGrantCreationComponent implements OnInit {
         };
         this.#uploadBoxService.addGrantLocally(grant);
         this.#notification.showSuccess('Upload grant created successfully.');
-        this.#router.navigate(['/upload-box-manager', this.boxId()]);
+        this.#location.back(['/upload-box-manager', this.boxId()]);
       },
       error: () => {
         this.#notification.showError(
