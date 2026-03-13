@@ -28,7 +28,9 @@ import { UploadBoxService } from '@app/upload/services/upload-box';
 export class UploadGrantRevocationDialogComponent {
   #dialogRef = inject(MatDialogRef<UploadGrantRevocationDialogComponent, boolean>);
 
-  protected data = inject<{ grant: UploadGrant }>(MAT_DIALOG_DATA);
+  protected data = inject<{ grant: UploadGrant; boxTitle?: string; boxState?: string }>(
+    MAT_DIALOG_DATA,
+  );
 
   #uploadBoxService = inject(UploadBoxService);
   #notificationService = inject(NotificationService);

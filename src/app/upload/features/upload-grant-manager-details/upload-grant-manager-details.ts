@@ -198,7 +198,7 @@ export class UploadGrantManagerDetailsComponent implements OnInit {
     const grant = this.grant();
     if (!grant) return;
     this.#dialog.open(UploadGrantRevocationDialogComponent, {
-      data: { grant },
+      data: { grant, boxTitle: this.box()?.title, boxState: this.box()?.state },
     });
   }
 }
