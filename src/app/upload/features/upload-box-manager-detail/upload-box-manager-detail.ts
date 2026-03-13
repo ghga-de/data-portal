@@ -112,7 +112,7 @@ export class UploadBoxManagerDetailComponent implements OnInit {
   /** The user who last changed this box, undefined while loading, null on error. */
   changedBy = signal<DisplayUser | null | undefined>(undefined);
 
-  #changedByUserResource = this.#userService.createUserResource();
+  #changedByFetcher = this.#userService.createUserFetcher();
 
   #loadChangedByEffect = effect(() => {
     const changedById = this.uploadBox()?.changed_by;
@@ -120,7 +120,7 @@ export class UploadBoxManagerDetailComponent implements OnInit {
       this.changedBy.set(undefined);
       return;
     }
-    const changedByResource = this.#changedByUserResource.resource;
+    const changedByResource = this.#changedByFetcher.resource;
     if (changedByResource.isLoading()) return;
     if (changedByResource.error()) {
       this.changedBy.set(null);
@@ -131,7 +131,7 @@ export class UploadBoxManagerDetailComponent implements OnInit {
       this.changedBy.set(changedByUser);
       return;
     }
-    this.#changedByUserResource.load(changedById);
+    this.#changedByFetcher.load(changedById);
   });
 
   #loadFileUploadsEffect = effect(() => {

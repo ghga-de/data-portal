@@ -114,10 +114,9 @@ class MockUserService {
    * Returns a stub user resource that never loads.
    * @returns a stub user resource
    */
-  createUserResource() {
+  createUserFetcher() {
     return {
       load: vitest.fn(),
-      clear: vitest.fn(),
       resource: {
         isLoading: () => false,
         error: () => undefined,
