@@ -21,8 +21,10 @@ import {
   searchResults,
   storageLabels,
   studyData,
+  uploadBox1FileUploads,
+  uploadBox2FileUploads,
+  uploadBox3FileUploads,
   uploadBoxes,
-  uploadBoxFileUploads,
   uploadGrants,
   users,
   workPackageResponse,
@@ -219,13 +221,22 @@ export const responses: { [endpoint: string]: ResponseValue } = {
   'GET /api/uos/boxes': uploadBoxes,
 
   // Single upload box
-  'GET /api/uos/box/*': uploadBoxes.boxes[0],
+  'GET /api/uos/box/0a36607a-b53f-49ed-bf3e-a5f2dbc68001': uploadBoxes.boxes[0],
+  'GET /api/uos/box/0a36607a-b53f-49ed-bf3e-a5f2dbc68002': uploadBoxes.boxes[1],
+  'GET /api/uos/box/0a36607a-b53f-49ed-bf3e-a5f2dbc68003': uploadBoxes.boxes[2],
+  'GET /api/uos/box/*': 404,
 
   // Upload grants for a specific box
   'GET /api/uos/access-grants?*': uploadGrants,
 
   // File uploads for a specific box
-  'GET /api/uos/boxes/*/uploads': uploadBoxFileUploads,
+  'GET /api/uos/boxes/0a36607a-b53f-49ed-bf3e-a5f2dbc68001/uploads':
+    uploadBox1FileUploads,
+  'GET /api/uos/boxes/0a36607a-b53f-49ed-bf3e-a5f2dbc68002/uploads':
+    uploadBox2FileUploads,
+  'GET /api/uos/boxes/0a36607a-b53f-49ed-bf3e-a5f2dbc68003/uploads':
+    uploadBox3FileUploads,
+  'GET /api/uos/boxes/*/uploads': [],
 
   // Create a new upload grant
   'POST /api/uos/access-grants': {

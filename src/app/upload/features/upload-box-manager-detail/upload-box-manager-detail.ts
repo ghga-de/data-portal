@@ -15,11 +15,13 @@ import {
   input,
   OnInit,
   signal,
+  viewChild,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
-import { MatTableModule } from '@angular/material/table';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Router, RouterLink } from '@angular/router';
 
 import { DisplayUser, UserService } from '@app/auth/services/user';
@@ -51,6 +53,7 @@ import { UploadBoxService } from '@app/upload/services/upload-box';
     MatButtonModule,
     MatCardModule,
     MatIcon,
+    MatPaginatorModule,
     MatTableModule,
     RouterLink,
     Capitalise,
@@ -159,10 +162,21 @@ export class UploadBoxManagerDetailComponent implements OnInit {
   /** The upload grants for this box. */
   grants = computed<UploadGrant[]>(() => this.#uploadBoxService.boxGrants.value());
 
-  /** The file uploads for this box. */
-  fileUploads = computed<FileUploadWithAccession[]>(() =>
-    this.#uploadBoxService.boxFileUploads.value(),
-  );
+  /** MatTableDataSource for paginated file uploads. */
+  fileUploadsDataSource = new MatTableDataSource<FileUploadWithAccession>();
+
+  private readonly fileUploadsPaginator = viewChild(MatPaginator);
+
+  #syncFileUploadsEffect = effect(() => {
+    this.fileUploadsDataSource.data = this.#uploadBoxService.boxFileUploads.value();
+  });
+
+  #assignPaginatorEffect = effect(() => {
+    const paginator = this.fileUploadsPaginator();
+    if (paginator) {
+      this.fileUploadsDataSource.paginator = paginator;
+    }
+  });
 
   /** Whether to show the "Map files to metadata and archive" button. */
   showMapFilesButton = computed<boolean>(() => this.uploadBox()?.state === 'locked');

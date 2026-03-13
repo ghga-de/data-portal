@@ -15,6 +15,7 @@ import { SearchResults } from '@app/metadata/models/search-results';
 import { Study } from '@app/metadata/models/study';
 import { BaseStorageLabels } from '@app/metadata/models/well-known-values';
 import { BoxRetrievalResults, UploadBoxState } from '@app/upload/models/box';
+import { FileUploadWithAccession } from '@app/upload/models/file-upload';
 import { UploadGrant } from '@app/upload/models/grant';
 import { DatasetWithExpiration } from '@app/work-packages/models/dataset';
 import { WorkPackageResponse } from '@app/work-packages/models/work-package';
@@ -1070,8 +1071,8 @@ export const uploadBoxes: BoxRetrievalResults = {
       description: 'Upload box pending data steward review before archival handover',
       last_changed: '2025-02-02T10:00:00Z',
       changed_by: 'roe@test.dev',
-      file_count: 12,
-      size: 987654321,
+      file_count: 15,
+      size: 120259084288, // ~112 GB total
       storage_alias: 'HD02',
     },
     {
@@ -1120,29 +1121,231 @@ export const uploadGrants: UploadGrant[] = [
 ];
 
 /**
- * UOS file uploads
+ * UOS file uploads for box 1 (open, 3 files)
  */
-export const uploadBoxFileUploads = [
+export const uploadBox1FileUploads: FileUploadWithAccession[] = [
+  {
+    id: 'f1b36607a-b53f-49ed-bf3e-a5f2dbc68001',
+    box_id: '0a36607a-b53f-49ed-bf3e-a5f2dbc68001',
+    alias: 'sample_rna_001_R1.fastq.gz',
+    state: 'interrogated',
+    state_updated: '2026-01-10T08:00:00Z',
+    storage_alias: 'TUE01',
+    bucket_id: 'inbox-tue01',
+    decrypted_sha256: 'a'.repeat(64),
+    decrypted_size: 5368709120, // 5 GB
+    encrypted_size: 5368750000,
+    part_size: 16777216,
+    accession: null,
+  },
+  {
+    id: 'f2b36607a-b53f-49ed-bf3e-a5f2dbc68001',
+    box_id: '0a36607a-b53f-49ed-bf3e-a5f2dbc68001',
+    alias: 'sample_rna_001_R2.fastq.gz',
+    state: 'interrogated',
+    state_updated: '2026-01-10T08:05:00Z',
+    storage_alias: 'TUE01',
+    bucket_id: 'inbox-tue01',
+    decrypted_sha256: 'b'.repeat(64),
+    decrypted_size: 5100273664, // ~4.75 GB
+    encrypted_size: 5100310000,
+    part_size: 16777216,
+    accession: null,
+  },
+  {
+    id: 'f3b36607a-b53f-49ed-bf3e-a5f2dbc68001',
+    box_id: '0a36607a-b53f-49ed-bf3e-a5f2dbc68001',
+    alias: 'metadata_manifest.csv',
+    state: 'inbox',
+    state_updated: '2026-01-10T09:00:00Z',
+    storage_alias: 'TUE01',
+    bucket_id: 'inbox-tue01',
+    decrypted_sha256: null,
+    decrypted_size: 0,
+    encrypted_size: null,
+    part_size: 16777216,
+    accession: null,
+  },
+];
+
+/**
+ * UOS file uploads for box 2 (locked, 15 files)
+ */
+export const uploadBox2FileUploads: FileUploadWithAccession[] = [
   {
     id: 'f1a36607a-b53f-49ed-bf3e-a5f2dbc68001',
     box_id: '0a36607a-b53f-49ed-bf3e-a5f2dbc68002',
-    alias: 'alias_of_the_first_file.fastq',
+    alias: 'sample_001_R1.fastq',
     state: 'interrogated',
-    state_updated: '2026-01-15T22:12:00Z',
+    state_updated: '2026-01-14T10:12:00Z',
     storage_alias: 'HD02',
     bucket_id: 'inbox-hd02',
     decrypted_sha256: 'a'.repeat(64),
-    decrypted_size: 251305566208, // 234 GB in bytes
-    encrypted_size: 251305600000,
+    decrypted_size: 12884901888, // 12 GB
+    encrypted_size: 12884950000,
     part_size: 16777216,
     accession: null,
   },
   {
     id: 'f2a36607a-b53f-49ed-bf3e-a5f2dbc68002',
     box_id: '0a36607a-b53f-49ed-bf3e-a5f2dbc68002',
-    alias: 'alias_of_the_2nd_file.fastq',
+    alias: 'sample_001_R2.fastq',
+    state: 'interrogated',
+    state_updated: '2026-01-14T10:45:00Z',
+    storage_alias: 'HD02',
+    bucket_id: 'inbox-hd02',
+    decrypted_sha256: 'b'.repeat(64),
+    decrypted_size: 12991488000, // ~12.1 GB
+    encrypted_size: 12991530000,
+    part_size: 16777216,
+    accession: null,
+  },
+  {
+    id: 'f3a36607a-b53f-49ed-bf3e-a5f2dbc68003',
+    box_id: '0a36607a-b53f-49ed-bf3e-a5f2dbc68002',
+    alias: 'sample_002_R1.fastq.gz',
+    state: 'interrogated',
+    state_updated: '2026-01-14T11:20:00Z',
+    storage_alias: 'HD02',
+    bucket_id: 'inbox-hd02',
+    decrypted_sha256: 'c'.repeat(64),
+    decrypted_size: 4831838208, // ~4.5 GB
+    encrypted_size: 4831880000,
+    part_size: 16777216,
+    accession: null,
+  },
+  {
+    id: 'f4a36607a-b53f-49ed-bf3e-a5f2dbc68004',
+    box_id: '0a36607a-b53f-49ed-bf3e-a5f2dbc68002',
+    alias: 'sample_002_R2.fastq.gz',
+    state: 'interrogated',
+    state_updated: '2026-01-14T11:55:00Z',
+    storage_alias: 'HD02',
+    bucket_id: 'inbox-hd02',
+    decrypted_sha256: 'd'.repeat(64),
+    decrypted_size: 4724464640, // ~4.4 GB
+    encrypted_size: 4724500000,
+    part_size: 16777216,
+    accession: null,
+  },
+  {
+    id: 'f5a36607a-b53f-49ed-bf3e-a5f2dbc68005',
+    box_id: '0a36607a-b53f-49ed-bf3e-a5f2dbc68002',
+    alias: 'reference_genome.fasta',
+    state: 'interrogated',
+    state_updated: '2026-01-15T08:30:00Z',
+    storage_alias: 'HD02',
+    bucket_id: 'inbox-hd02',
+    decrypted_sha256: 'e'.repeat(64),
+    decrypted_size: 3221225472, // 3 GB
+    encrypted_size: 3221260000,
+    part_size: 16777216,
+    accession: null,
+  },
+  {
+    id: 'f6a36607a-b53f-49ed-bf3e-a5f2dbc68006',
+    box_id: '0a36607a-b53f-49ed-bf3e-a5f2dbc68002',
+    alias: 'aligned_reads_001.bam',
+    state: 'interrogated',
+    state_updated: '2026-01-15T09:10:00Z',
+    storage_alias: 'HD02',
+    bucket_id: 'inbox-hd02',
+    decrypted_sha256: 'f'.repeat(64),
+    decrypted_size: 31138512896, // 29 GB
+    encrypted_size: 31138550000,
+    part_size: 16777216,
+    accession: null,
+  },
+  {
+    id: 'f7a36607a-b53f-49ed-bf3e-a5f2dbc68007',
+    box_id: '0a36607a-b53f-49ed-bf3e-a5f2dbc68002',
+    alias: 'aligned_reads_002.cram',
+    state: 'interrogated',
+    state_updated: '2026-01-15T09:55:00Z',
+    storage_alias: 'HD02',
+    bucket_id: 'inbox-hd02',
+    decrypted_sha256: '1'.repeat(64),
+    decrypted_size: 8053063680, // 7.5 GB
+    encrypted_size: 8053100000,
+    part_size: 16777216,
+    accession: null,
+  },
+  {
+    id: 'f8a36607a-b53f-49ed-bf3e-a5f2dbc68008',
+    box_id: '0a36607a-b53f-49ed-bf3e-a5f2dbc68002',
+    alias: 'variants_cohort.vcf',
+    state: 'interrogated',
+    state_updated: '2026-01-15T14:00:00Z',
+    storage_alias: 'HD02',
+    bucket_id: 'inbox-hd02',
+    decrypted_sha256: '2'.repeat(64),
+    decrypted_size: 524288000, // 500 MB
+    encrypted_size: 524310000,
+    part_size: 16777216,
+    accession: null,
+  },
+  {
+    id: 'f9a36607a-b53f-49ed-bf3e-a5f2dbc68009',
+    box_id: '0a36607a-b53f-49ed-bf3e-a5f2dbc68002',
+    alias: 'chip_peaks_001.bed',
+    state: 'interrogated',
+    state_updated: '2026-01-15T14:30:00Z',
+    storage_alias: 'HD02',
+    bucket_id: 'inbox-hd02',
+    decrypted_sha256: '3'.repeat(64),
+    decrypted_size: 10485760, // 10 MB
+    encrypted_size: 10486000,
+    part_size: 16777216,
+    accession: null,
+  },
+  {
+    id: 'fa036607a-b53f-49ed-bf3e-a5f2dbc68010',
+    box_id: '0a36607a-b53f-49ed-bf3e-a5f2dbc68002',
+    alias: 'methylation_sample_001.meth',
+    state: 'interrogated',
+    state_updated: '2026-01-16T08:00:00Z',
+    storage_alias: 'HD02',
+    bucket_id: 'inbox-hd02',
+    decrypted_sha256: '4'.repeat(64),
+    decrypted_size: 2147483648, // 2 GB
+    encrypted_size: 2147520000,
+    part_size: 16777216,
+    accession: null,
+  },
+  {
+    id: 'fb036607a-b53f-49ed-bf3e-a5f2dbc68011',
+    box_id: '0a36607a-b53f-49ed-bf3e-a5f2dbc68002',
+    alias: 'ms_proteomics_run1.raw',
+    state: 'interrogated',
+    state_updated: '2026-01-16T09:15:00Z',
+    storage_alias: 'HD02',
+    bucket_id: 'inbox-hd02',
+    decrypted_sha256: '5'.repeat(64),
+    decrypted_size: 1610612736, // 1.5 GB
+    encrypted_size: 1610650000,
+    part_size: 16777216,
+    accession: null,
+  },
+  {
+    id: 'fc036607a-b53f-49ed-bf3e-a5f2dbc68012',
+    box_id: '0a36607a-b53f-49ed-bf3e-a5f2dbc68002',
+    alias: 'study_data_manifest.pdf',
+    state: 'interrogated',
+    state_updated: '2026-01-16T10:00:00Z',
+    storage_alias: 'HD02',
+    bucket_id: 'inbox-hd02',
+    decrypted_sha256: '6'.repeat(64),
+    decrypted_size: 2097152, // 2 MB
+    encrypted_size: 2097200,
+    part_size: 16777216,
+    accession: null,
+  },
+  {
+    id: 'fd036607a-b53f-49ed-bf3e-a5f2dbc68013',
+    box_id: '0a36607a-b53f-49ed-bf3e-a5f2dbc68002',
+    alias: 'sample_003_R1.fastq.gz',
     state: 'failed',
-    state_updated: '2026-01-15T22:34:00Z',
+    state_updated: '2026-01-16T11:00:00Z',
     storage_alias: 'HD02',
     bucket_id: 'inbox-hd02',
     decrypted_sha256: null,
@@ -1152,20 +1355,55 @@ export const uploadBoxFileUploads = [
     accession: null,
   },
   {
-    id: 'f3a36607a-b53f-49ed-bf3e-a5f2dbc68003',
+    id: 'fe036607a-b53f-49ed-bf3e-a5f2dbc68014',
     box_id: '0a36607a-b53f-49ed-bf3e-a5f2dbc68002',
-    alias: 'alias_of_another_file.bam',
-    state: 'interrogated',
-    state_updated: '2026-01-15T22:34:00Z',
+    alias: 'aligned_reads_003.bam',
+    state: 'awaiting_archival',
+    state_updated: '2026-01-17T07:45:00Z',
     storage_alias: 'HD02',
     bucket_id: 'inbox-hd02',
-    decrypted_sha256: 'b'.repeat(64),
-    decrypted_size: 31138512896, // 29 GB in bytes
-    encrypted_size: 31138550000,
+    decrypted_sha256: '7'.repeat(64),
+    decrypted_size: 42949672960, // 40 GB
+    encrypted_size: 42949720000,
     part_size: 16777216,
     accession: null,
   },
-] as const;
+  {
+    id: 'ff036607a-b53f-49ed-bf3e-a5f2dbc68015',
+    box_id: '0a36607a-b53f-49ed-bf3e-a5f2dbc68002',
+    alias: 'chip_peaks_002.bed',
+    state: 'interrogated',
+    state_updated: '2026-01-17T08:30:00Z',
+    storage_alias: 'HD02',
+    bucket_id: 'inbox-hd02',
+    decrypted_sha256: '8'.repeat(64),
+    decrypted_size: 15728640, // 15 MB
+    encrypted_size: 15729000,
+    part_size: 16777216,
+    accession: null,
+  },
+];
+
+/**
+ * UOS file uploads for box 3 (archived, 28 files)
+ */
+export const uploadBox3FileUploads: FileUploadWithAccession[] = Array.from(
+  { length: 28 },
+  (_, i) => ({
+    id: `f${String(i + 1).padStart(2, '0')}036607a-b53f-49ed-bf3e-a5f2dbc68003`,
+    box_id: '0a36607a-b53f-49ed-bf3e-a5f2dbc68003',
+    alias: `archived_sample_${String(i + 1).padStart(3, '0')}.fastq.gz`,
+    state: 'archived' as FileUploadWithAccession['state'],
+    state_updated: '2025-06-01T10:00:00Z',
+    storage_alias: 'TUE03',
+    bucket_id: 'inbox-tue03',
+    decrypted_sha256: (i % 10).toString().repeat(64),
+    decrypted_size: (i + 1) * 536870912, // 0.5–14 GB per file
+    encrypted_size: (i + 1) * 536870912 + 48000,
+    part_size: 16777216,
+    accession: `GHGAF1234567890${String(2200 + i).padStart(4, '0')}`,
+  }),
+);
 
 /**
  * WPS API
