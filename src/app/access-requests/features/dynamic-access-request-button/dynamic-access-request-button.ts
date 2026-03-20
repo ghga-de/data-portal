@@ -44,19 +44,25 @@ export class DynamicAccessRequestButtonComponent {
       .pendingUserAccessRequests()
       .some((ar: AccessRequest) => ar.dataset_id == this.datasetID()),
   );
-  #activeGrant = computed<AccessGrant | undefined>(() =>
-    this.#accessRequestService
-      .activeUserAccessGrants()
-      .find((activeAccessGrant: AccessGrant) => {
-        const hasSameId = activeAccessGrant.dataset_id == this.datasetID();
-        const isValid = activeAccessGrant.daysRemaining ?? -1 > 0;
-        return hasSameId && isValid;
-      }),
+  #activeGrant = computed<AccessGrant | undefined>(
+    () =>
+      this.#accessRequestService
+        .activeUserAccessGrants()
+        .filter((grant: AccessGrant) => {
+          const hasSameId = grant.dataset_id == this.datasetID();
+          const isValid = (grant.daysRemaining ?? -1) > 0;
+          return hasSameId && isValid;
+        })
+        .sort(
+          (a, b) =>
+            (b.daysRemaining ?? 0) - (a.daysRemaining ?? 0) || a.id.localeCompare(b.id),
+        )[0],
   );
   #grantWithIva = computed<AccessGrantWithIva | undefined>(() => {
     const grant = this.#activeGrant();
     if (!grant) return undefined;
-    const ivas = this.#iva.userIvas.error() ? [] : this.#iva.userIvas.value();
+    const ivas =
+      !grant.iva_id || this.#iva.userIvas.error() ? [] : this.#iva.userIvas.value();
     const iva = ivas.find((i) => i.id === grant.iva_id);
     return { ...grant, iva };
   });
