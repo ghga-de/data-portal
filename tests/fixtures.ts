@@ -8,7 +8,6 @@ import { test as baseTest, expect, Page } from '@playwright/test';
 
 type CustomFixtures = {
   loggedInPage: Page;
-  uploadBoxManagerPage: Page;
 };
 
 export const test = baseTest.extend<CustomFixtures>({
@@ -30,21 +29,6 @@ export const test = baseTest.extend<CustomFixtures>({
     use(page);
     const account = page.getByRole('button', { name: 'Account' });
     await expect(account).toBeVisible();
-  },
-  /**
-   * Navigate to the Upload Box Manager page.
-   * Requires the user to be logged in.
-   * @param opts the fixture options
-   * @param opts.loggedInPage the logged-in page fixture
-   * @param use the use function of Playwright
-   */
-  uploadBoxManagerPage: async ({ loggedInPage }, use) => {
-    const page = loggedInPage;
-    const adminMenu = page.getByRole('navigation').getByLabel('Administration');
-    await adminMenu.click();
-    const managerItem = page.getByRole('menuitem', { name: 'Upload Box Manager' });
-    await managerItem.click();
-    await use(page);
   },
 });
 
