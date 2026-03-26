@@ -4,8 +4,8 @@
  * @license Apache-2.0
  */
 
-import { Page } from '@playwright/test';
 import { test as baseTest, expect } from './fixtures';
+import { expectTitle } from './utils/expect-title';
 
 // Local fixture for login and navigate to Upload Box Manager page
 const test = baseTest.extend({
@@ -18,15 +18,6 @@ const test = baseTest.extend({
     await use(page);
   },
 });
-
-/**
- * A helper to check the page title
- *  @param page the page to check
- *  @param titlePrefix the title prefix to expect (the full title is expected to be `${titlePrefix} | GHGA Data Portal`)
- */
-async function expectTitle(page: Page, titlePrefix: string) {
-  await expect(page).toHaveTitle(`${titlePrefix} | GHGA Data Portal`);
-}
 
 // Unauthenticated test with baseTest
 baseTest('does not show Upload Box manager when not logged in', async ({ page }) => {
@@ -43,7 +34,7 @@ baseTest('does not show Upload Box manager when not logged in', async ({ page })
 
 // Authenticated tests using local feature
 test('can use Upload Box manager when logged in', async ({ page }) => {
-  expectTitle(page, 'Upload Box Manager');
+  await expectTitle(page, 'Upload Box Manager');
   await expect(page).toHaveURL('/upload-box-manager');
 
   const main = page.locator('main');
@@ -77,7 +68,7 @@ test('can navigate to Upload Box details', async ({ page }) => {
   await expect(detailsButton).toBeVisible();
   await detailsButton.click();
   await expect(page).toHaveURL(/\/upload-box-manager\/.+/);
-  expectTitle(page, 'Upload Box Details');
+  await expectTitle(page, 'Upload Box Details');
 
   const uploadBoxInfo = page.getByRole('heading', {
     level: 2,
@@ -113,13 +104,13 @@ test('can navigate to Add Grant page', async ({ page }) => {
     .first();
   await detailsButton.click();
   await expect(page).toHaveURL(/\/upload-box-manager\/.+/);
-  expectTitle(page, 'Upload Box Details');
+  await expectTitle(page, 'Upload Box Details');
 
   const addGrantButton = page.getByRole('button', { name: 'Add new upload grant' });
   await expect(addGrantButton).toBeVisible();
   await addGrantButton.click();
   await expect(page).toHaveURL(/\/upload-box-manager\/.+\/grant\/new/);
-  expectTitle(page, 'New Upload Grant');
+  await expectTitle(page, 'New Upload Grant');
 
   const backButton = page.getByRole('button', {
     name: 'Go back to upload box details',
