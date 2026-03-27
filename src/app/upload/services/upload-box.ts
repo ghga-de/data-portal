@@ -292,7 +292,7 @@ export class UploadBoxService {
    * Add a new upload grant locally to avoid re-fetching from backend.
    * @param grant - the fully constructed grant to add
    */
-  addGrantLocally(grant: UploadGrant): void {
+  #addGrantLocally(grant: UploadGrant): void {
     if (!this.boxGrants.error()) {
       this.boxGrants.value.set([...this.boxGrants.value(), grant]);
     }
@@ -301,10 +301,36 @@ export class UploadBoxService {
   /**
    * Create a new upload grant.
    * @param data - the base data for the new upload grant
-   * @returns An observable that emits the server-assigned id and created timestamp
+   * @param user - optional user data for updating the local in-memory grant list
+   * @param user.name - full name of the user without title
+   * @param user.email - email address of the user
+   * @param user.title - academic title of the user
+   * @returns An observable that emits the server-assigned grant id
    */
-  createUploadGrant(data: UploadGrantBase): Observable<GrantId> {
-    return this.#http.post<GrantId>(this.#accessGrantsUrl, data);
+  createUploadGrant(
+    data: UploadGrantBase,
+    user?: {
+      name: string;
+      email: string;
+      title: string | null;
+    },
+  ): Observable<GrantId> {
+    return this.#http.post<GrantId>(this.#accessGrantsUrl, data).pipe(
+      map((grantId) => {
+        if (user) {
+          this.#addGrantLocally({
+            ...data,
+            id: grantId.id,
+            created: new Date().toISOString(),
+            user_name: user.name,
+            user_email: user.email,
+            user_title: user.title,
+          });
+        }
+
+        return grantId;
+      }),
+    );
   }
 
   /**
