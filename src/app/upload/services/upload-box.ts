@@ -299,6 +299,18 @@ export class UploadBoxService {
   }
 
   /**
+   * Remove an upload grant locally to avoid re-fetching from backend.
+   * @param id - the id of the grant to remove
+   */
+  #revokeGrantLocally(id: string): void {
+    if (this.boxGrants.error() || typeof this.boxGrants.value.set !== 'function') {
+      return;
+    }
+
+    this.boxGrants.value.set(this.boxGrants.value().filter((grant) => grant.id !== id));
+  }
+
+  /**
    * Create a new upload grant.
    * @param data - the base data for the new upload grant
    * @param user - optional user data for updating the local in-memory grant list
@@ -339,6 +351,15 @@ export class UploadBoxService {
    * @returns An observable that completes when the grant is revoked
    */
   revokeUploadGrant(id: string): Observable<void> {
-    return this.#http.delete<void>(`${this.#accessGrantsUrl}/${id}`);
+    return this.#http.delete<void>(`${this.#accessGrantsUrl}/${id}`).pipe(
+      map((response) => {
+        try {
+          this.#revokeGrantLocally(id);
+        } catch {
+          // ignore any errors from local state update
+        }
+        return response;
+      }),
+    );
   }
 }

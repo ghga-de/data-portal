@@ -606,6 +606,34 @@ describe('UploadBoxService', () => {
 
   describe('revokeUploadGrant', () => {
     const GRANT_ID = 'grant-to-revoke-001';
+    const OTHER_GRANT_ID = 'grant-to-keep-001';
+    const BOX_ID = '0a36607a-b53f-49ed-bf3e-a5f2dbc68001';
+    const EXISTING_GRANTS: UploadGrant[] = [
+      {
+        id: GRANT_ID,
+        user_id: 'user-abc',
+        iva_id: null,
+        box_id: BOX_ID,
+        created: '2026-01-01T00:00:00Z',
+        valid_from: '2026-01-01',
+        valid_until: '2026-12-31',
+        user_name: 'Alice Example',
+        user_email: 'alice@test.dev',
+        user_title: null,
+      },
+      {
+        id: OTHER_GRANT_ID,
+        user_id: 'user-def',
+        iva_id: null,
+        box_id: BOX_ID,
+        created: '2026-01-02T00:00:00Z',
+        valid_from: '2026-01-02',
+        valid_until: '2026-12-31',
+        user_name: 'Bob Example',
+        user_email: 'bob@test.dev',
+        user_title: 'Dr.',
+      },
+    ];
 
     it('should DELETE the access-grant by id', () => {
       let completed = false;
@@ -618,6 +646,36 @@ describe('UploadBoxService', () => {
       req.flush(null, { status: 204, statusText: 'No Content' });
 
       expect(completed).toBe(true);
+    });
+
+    it('should remove the grant from the in-memory list after loading', async () => {
+      service.loadBoxGrants(BOX_ID);
+      testBed.tick();
+
+      const grantsReq = httpMock.expectOne(
+        `http://mock.dev/uos/access-grants?box_id=${encodeURIComponent(BOX_ID)}`,
+      );
+      grantsReq.flush(EXISTING_GRANTS);
+      await Promise.resolve();
+
+      expect(service.boxGrants.value()).toEqual(EXISTING_GRANTS);
+
+      service.revokeUploadGrant(GRANT_ID).subscribe();
+
+      const req = httpMock.expectOne(`http://mock.dev/uos/access-grants/${GRANT_ID}`);
+      expect(req.request.method).toBe('DELETE');
+      req.flush(null, { status: 204, statusText: 'No Content' });
+
+      expect(service.boxGrants.value()).toEqual([EXISTING_GRANTS[1]]);
+    });
+
+    it('should not throw when grants have not been loaded yet', () => {
+      expect(() => {
+        service.revokeUploadGrant(GRANT_ID).subscribe();
+      }).not.toThrow();
+
+      const req = httpMock.expectOne(`http://mock.dev/uos/access-grants/${GRANT_ID}`);
+      req.flush(null, { status: 204, statusText: 'No Content' });
     });
 
     it('should propagate an error when revoking a grant fails', () => {
