@@ -14,11 +14,11 @@ export const test = baseTest.extend<CustomFixtures>({
   /**
    * Create a new page where the user is already logged in.
    * @param opts the options
-   * @param opts.browser the browser to use
+   * @param opts.context the browser context to use
    * @param use the use function of Playwright
    */
-  loggedInPage: async ({ browser }, use) => {
-    const page = await browser.newPage();
+  loggedInPage: async ({ context }, use) => {
+    const page = await context.newPage();
     await page.goto('/');
     const logIn = page.getByRole('button', { name: 'Log in' });
     await expect(logIn).toBeVisible();
@@ -26,7 +26,7 @@ export const test = baseTest.extend<CustomFixtures>({
     const lsLogin = page.getByRole('menuitem', { name: 'LS Login' });
     await expect(lsLogin).toBeVisible();
     await lsLogin.click();
-    use(page);
+    await use(page);
     const account = page.getByRole('button', { name: 'Account' });
     await expect(account).toBeVisible();
   },
