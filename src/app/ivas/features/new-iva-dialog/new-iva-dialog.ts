@@ -15,6 +15,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { FormField, form, maxLength, required } from '@angular/forms/signals';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import {
@@ -41,6 +42,7 @@ import { NgxMatInputTelComponent } from 'ngx-mat-input-tel';
   selector: 'app-new-iva-dialog',
   imports: [
     FormsModule,
+    FormField,
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
@@ -62,14 +64,18 @@ export class NewIvaDialogComponent {
   );
   #ivaTypePipe = inject(IvaTypePipe);
 
-  type = signal<keyof typeof IvaType | null>(null);
-  value = signal<string>('');
+  protected model = signal<{ type: keyof typeof IvaType | null; value: string }>({
+    type: null,
+    value: '',
+  });
 
-  /**
-   * Signal indicating whether the form is invalid
-   * @returns true if the form is invalid, false otherwise
-   */
-  isInvalid = computed(() => !this.type() || !this.value()?.trim());
+  protected ivaForm = form(this.model, (p) => {
+    required(p.type);
+    required(p.value);
+    maxLength(p.value, 500);
+  });
+
+  protected submitDisabled = computed(() => !this.ivaForm().valid());
 
   /**
    * Value prompts for the different IVA types
@@ -108,7 +114,8 @@ export class NewIvaDialogComponent {
    * @returns the text to be shown as prompt for the value input
    */
   get valuePrompt(): string {
-    return this.type() ? this.valuePrompts[this.type()!] : '';
+    const type = this.model().type;
+    return type ? this.valuePrompts[type] : '';
   }
 
   /**
@@ -116,8 +123,7 @@ export class NewIvaDialogComponent {
    * @param newType the newly selected IVA type
    */
   onTypeChange(newType: keyof typeof IvaType): void {
-    this.type.set(newType);
-    this.value.set('');
+    this.model.update((m) => ({ ...m, type: newType, value: '' }));
     setTimeout(
       () =>
         this.valueField()
@@ -126,6 +132,14 @@ export class NewIvaDialogComponent {
           ?.focus(),
       5,
     );
+  }
+
+  /**
+   * Update the value in the model when the input changes
+   * @param value the new value entered by the user
+   */
+  onValueChange(value: string): void {
+    this.model.update((m) => ({ ...m, value }));
   }
 
   /**
@@ -139,10 +153,10 @@ export class NewIvaDialogComponent {
    * Complete the verification and pass the entered IVA data
    */
   onSubmit(): void {
-    const type = this.type();
-    const value = this.value()?.trim();
-    if (type && value) {
-      this.#dialogRef.close({ type: IvaType[type], value });
+    const { type, value } = this.model();
+    const trimmedValue = value?.trim();
+    if (type && trimmedValue) {
+      this.#dialogRef.close({ type: IvaType[type], value: trimmedValue });
     }
   }
 }
