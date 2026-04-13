@@ -46,11 +46,9 @@ export const test = baseTest.extend<AdminFixtures>({
     const managerItem = page.getByRole('menuitem', { name: adminMenuItemName });
     await expect(managerItem).toBeVisible();
     await managerItem.click();
-    await page.waitForURL((url) => {
-      return (
-        url.pathname === adminMenuItemUrl || url.pathname === `${adminMenuItemUrl}/`
-      );
-    });
+    await page.waitForURL(
+      (url) => url.pathname.replace(/\/?$/, '') === adminMenuItemUrl,
+    );
     await use(page);
   },
   /**

@@ -6,11 +6,11 @@
 
 import { test as baseTest, expect, Page } from '@playwright/test';
 
-type CustomFixtures = {
+type SharedFixtures = {
   loggedInPage: Page;
 };
 
-export const test = baseTest.extend<CustomFixtures>({
+export const test = baseTest.extend<SharedFixtures>({
   /**
    * Create a new page where the user is already logged in.
    * @param opts the options
