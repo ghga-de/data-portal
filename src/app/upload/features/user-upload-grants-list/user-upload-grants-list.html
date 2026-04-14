@@ -52,33 +52,6 @@
                 </button>
               </div>
             </div>
-            @if (!grant.iva_id) {
-              <p class="mt-1 flex items-start gap-2 text-sm">
-                <mat-icon
-                  fontIcon="warning"
-                  class="text-warning mt-0.5 shrink-0 text-base leading-none"
-                ></mat-icon>
-                <span class="text-warning"
-                  >No verification address is linked to this upload grant. Please set up
-                  and verify an IVA on this page to upload the data.</span
-                >
-              </p>
-            } @else if (!grant.iva || grant.iva.state !== ivaState.Verified) {
-              <p class="mt-1 flex items-start gap-2 text-sm">
-                <mat-icon
-                  fontIcon="warning"
-                  class="text-warning mt-0.5 shrink-0 text-base leading-none"
-                ></mat-icon>
-                <span class="text-warning">
-                  The verification address associated with this upload grant is not yet
-                  verified. Please verify it to upload the data
-                  @if (grant.iva) {
-                    : {{ (grant.iva.type | IvaTypePipe).name }}: {{ grant.iva.value }}
-                  }
-                  .</span
-                >
-              </p>
-            }
           </div>
         }
       </div>

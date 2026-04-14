@@ -6,9 +6,6 @@
 
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { AuthService } from '@app/auth/services/auth';
-import { IvaState, IvaType } from '@app/ivas/models/iva';
-import { IvaService } from '@app/ivas/services/iva';
 import { ConfirmationService } from '@app/shared/services/confirmation';
 import { NotificationService } from '@app/shared/services/notification';
 import { UploadBoxState } from '@app/upload/models/box';
@@ -20,7 +17,7 @@ import { UserUploadGrantsListComponent } from './user-upload-grants-list';
 
 // --- Test fixtures ---
 
-const openGrantVerifiedIva: GrantWithBoxInfo = {
+const openGrant: GrantWithBoxInfo = {
   id: 'grant-1',
   user_id: 'doe@test.dev',
   iva_id: 'iva-verified-001',
@@ -35,38 +32,6 @@ const openGrantVerifiedIva: GrantWithBoxInfo = {
   box_description: 'A test upload box',
   box_state: UploadBoxState.open,
   box_version: 1,
-};
-
-const openGrantNullIva: GrantWithBoxInfo = {
-  ...openGrantVerifiedIva,
-  id: 'grant-2',
-  iva_id: null,
-  box_id: 'box-002',
-  box_title: 'Test Upload Box 2',
-};
-
-const openGrantUnverifiedIva: GrantWithBoxInfo = {
-  ...openGrantVerifiedIva,
-  id: 'grant-3',
-  iva_id: 'iva-unverified-001',
-  box_id: 'box-003',
-  box_title: 'Test Upload Box 3',
-};
-
-const verifiedIva = {
-  id: 'iva-verified-001',
-  type: IvaType.Phone,
-  value: '0123/456789',
-  changed: '2026-01-01T00:00:00Z',
-  state: IvaState.Verified,
-};
-
-const unverifiedIva = {
-  id: 'iva-unverified-001',
-  type: IvaType.Phone,
-  value: '0987/654321',
-  changed: '2026-01-01T00:00:00Z',
-  state: IvaState.Unverified,
 };
 
 // --- Mocks ---
@@ -113,31 +78,6 @@ class MockUploadBoxService {
   }
 }
 
-/**
- * Mock of IvaService for user upload grants list tests.
- */
-class MockIvaService {
-  userIvas = {
-    value: signal([verifiedIva, unverifiedIva]),
-    error: signal<Error | undefined>(undefined),
-    isLoading: signal(false),
-  };
-
-  loadUserIvas = vitest.fn();
-}
-
-/**
- * Mock of AuthService for user upload grants list tests.
- */
-class MockAuthService {
-  user = () => ({
-    id: 'doe@test.dev',
-    name: 'John Doe',
-    email: 'doe@home.org',
-    title: 'Dr.',
-  });
-}
-
 const mockConfirmationService = { confirm: vitest.fn() };
 const mockNotificationService = {
   showInfo: vitest.fn(),
@@ -162,8 +102,6 @@ describe('UserUploadGrantsListComponent', () => {
       imports: [UserUploadGrantsListComponent],
       providers: [
         { provide: UploadBoxService, useClass: MockUploadBoxService },
-        { provide: IvaService, useClass: MockIvaService },
-        { provide: AuthService, useClass: MockAuthService },
         { provide: ConfirmationService, useValue: mockConfirmationService },
         { provide: NotificationService, useValue: mockNotificationService },
       ],
@@ -179,11 +117,6 @@ describe('UserUploadGrantsListComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should trigger IVA loading on init', () => {
-    const ivaService = TestBed.inject(IvaService) as unknown as MockIvaService;
-    expect(ivaService.loadUserIvas).toHaveBeenCalled();
   });
 
   it('should show a loading indicator while grants are loading', async () => {
@@ -205,51 +138,26 @@ describe('UserUploadGrantsListComponent', () => {
   });
 
   it('should render the box title for an open grant', async () => {
-    uploadBoxService.setGrants([openGrantVerifiedIva]);
+    uploadBoxService.setGrants([openGrant]);
     fixture.detectChanges();
     expect(screen.getByText('Test Upload Box')).toBeVisible();
   });
 
   it('should not render grants whose box state is not open', async () => {
     const lockedGrant: GrantWithBoxInfo = {
-      ...openGrantVerifiedIva,
+      ...openGrant,
       id: 'grant-locked',
       box_state: UploadBoxState.locked,
       box_title: 'Locked Box',
     };
-    uploadBoxService.setGrants([openGrantVerifiedIva, lockedGrant]);
+    uploadBoxService.setGrants([openGrant, lockedGrant]);
     fixture.detectChanges();
     expect(screen.getByText('Test Upload Box')).toBeVisible();
     expect(screen.queryByText('Locked Box')).not.toBeInTheDocument();
   });
 
-  it('should not show a warning when the IVA is verified', async () => {
-    uploadBoxService.setGrants([openGrantVerifiedIva]);
-    fixture.detectChanges();
-    expect(screen.queryByText(/not yet verified/i)).not.toBeInTheDocument();
-    expect(screen.queryByText(/no verification address/i)).not.toBeInTheDocument();
-  });
-
-  it('should show a warning when iva_id is null', async () => {
-    uploadBoxService.setGrants([openGrantNullIva]);
-    fixture.detectChanges();
-    expect(screen.getByText(/no verification address is linked/i)).toBeVisible();
-  });
-
-  it('should show a warning when the IVA exists but is not verified', async () => {
-    uploadBoxService.setGrants([openGrantUnverifiedIva]);
-    fixture.detectChanges();
-    expect(screen.getByText(/not yet verified/i)).toBeVisible();
-  });
-
-  it('should include the IVA value in the unverified warning', async () => {
-    uploadBoxService.setGrants([openGrantUnverifiedIva]);
-    fixture.detectChanges();
-    expect(screen.getByText(/0987\/654321/)).toBeVisible();
-  });
-
   it('should show an info notification when Create token is clicked', async () => {
-    uploadBoxService.setGrants([openGrantVerifiedIva]);
+    uploadBoxService.setGrants([openGrant]);
     fixture.detectChanges();
     const btn = screen.getByRole('button', { name: /create an upload token/i });
     btn.click();
@@ -260,7 +168,7 @@ describe('UserUploadGrantsListComponent', () => {
 
   it('should open a confirmation dialog when Submit is clicked', async () => {
     mockConfirmationService.confirm.mockImplementation(() => undefined);
-    uploadBoxService.setGrants([openGrantVerifiedIva]);
+    uploadBoxService.setGrants([openGrant]);
     fixture.detectChanges();
     screen.getByRole('button', { name: /submit this upload box/i }).click();
     expect(mockConfirmationService.confirm).toHaveBeenCalled();
@@ -272,7 +180,7 @@ describe('UserUploadGrantsListComponent', () => {
         callback(true),
       );
       uploadBoxService.updateUploadBox.mockReturnValue(of(undefined));
-      uploadBoxService.setGrants([openGrantVerifiedIva]);
+      uploadBoxService.setGrants([openGrant]);
       fixture.detectChanges();
       screen.getByRole('button', { name: /submit this upload box/i }).click();
       await fixture.whenStable();
@@ -304,7 +212,7 @@ describe('UserUploadGrantsListComponent', () => {
       uploadBoxService.updateUploadBox.mockReturnValue(
         throwError(() => new Error('Server error')),
       );
-      uploadBoxService.setGrants([openGrantVerifiedIva]);
+      uploadBoxService.setGrants([openGrant]);
       fixture.detectChanges();
       screen.getByRole('button', { name: /submit this upload box/i }).click();
       await fixture.whenStable();
@@ -326,7 +234,7 @@ describe('UserUploadGrantsListComponent', () => {
       mockConfirmationService.confirm.mockImplementation(({ callback }) =>
         callback(false),
       );
-      uploadBoxService.setGrants([openGrantVerifiedIva]);
+      uploadBoxService.setGrants([openGrant]);
       fixture.detectChanges();
       screen.getByRole('button', { name: /submit this upload box/i }).click();
       await fixture.whenStable();
