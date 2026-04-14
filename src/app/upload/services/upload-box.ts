@@ -33,6 +33,7 @@ export class UploadBoxService {
   #auth = inject(AuthService);
   #config = inject(ConfigService);
   #http = inject(HttpClient);
+  #userId = computed<string | undefined>(() => this.#auth.user()?.id || undefined);
   #uosUrl = this.#config.uosUrl;
   #boxesUrl = `${this.#uosUrl}/boxes`;
   #accessGrantsUrl = `${this.#uosUrl}/access-grants`;
@@ -84,6 +85,18 @@ export class UploadBoxService {
       const boxId = this.#loadGrantsForBox();
       if (!boxId) return undefined;
       return `${this.#accessGrantsUrl}?box_id=${encodeURIComponent(boxId)}`;
+    },
+    { defaultValue: [] },
+  );
+
+  /**
+   * Resource for loading the current user's valid upload grants with box info.
+   */
+  userGrants = httpResource<GrantWithBoxInfo[]>(
+    () => {
+      const userId = this.#userId();
+      if (!userId) return undefined;
+      return `${this.#accessGrantsUrl}?userid=${encodeURIComponent(userId)}&valid=true`;
     },
     { defaultValue: [] },
   );

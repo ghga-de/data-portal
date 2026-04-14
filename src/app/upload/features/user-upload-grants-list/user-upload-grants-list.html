@@ -1,0 +1,87 @@
+@if (hasError()) {
+  <p class="text-base"
+    >There was an error retrieving your research data upload boxes.</p
+  >
+} @else {
+  @if (isLoading()) {
+    <app-stencil></app-stencil>
+  } @else {
+    @let grants = openGrants();
+    @if (grants.length === 0) {
+      <p class="text-base"
+        >You do not currently have any open research data upload boxes.</p
+      >
+    } @else {
+      <p class="text-base"
+        >The following open research data upload boxes are assigned to you:</p
+      >
+      <div
+        class="border-outline-dark mb-4 grid grid-cols-1 border-t [&_button>mat-icon]:-translate-y-0.75"
+      >
+        @for (grant of grants; track grant.id) {
+          <div class="border-outline-dark border-b py-2">
+            <div class="grid grid-cols-12 items-center gap-2 text-black">
+              <div
+                class="col-span-12 flex min-h-10 items-center md:col-span-6 lg:col-span-7"
+              >
+                {{ grant.box_title }}
+              </div>
+              <div
+                class="col-span-12 flex items-center justify-start gap-2 md:col-span-6 md:justify-end lg:col-span-5"
+              >
+                <button
+                  mat-stroked-button
+                  (click)="createToken()"
+                  aria-label="Create an upload token for this upload box"
+                  data-umami-event="User Upload Grants List Create Token Clicked"
+                  class="w-full sm:w-auto"
+                >
+                  <mat-icon fontIcon="upload"></mat-icon>
+                  Create token
+                </button>
+                <button
+                  mat-stroked-button
+                  (click)="submitBox(grant)"
+                  [disabled]="submittingBoxId() === grant.box_id"
+                  aria-label="Submit this upload box as complete"
+                  data-umami-event="User Upload Grants List Submit Clicked"
+                  class="w-full sm:w-auto"
+                >
+                  <mat-icon fontIcon="check"></mat-icon>
+                  Submit
+                </button>
+              </div>
+            </div>
+            @if (!grant.iva_id) {
+              <p class="mt-1 flex items-start gap-2 text-sm">
+                <mat-icon
+                  fontIcon="warning"
+                  class="text-warning mt-0.5 shrink-0 text-base leading-none"
+                ></mat-icon>
+                <span class="text-warning"
+                  >No verification address is linked to this upload grant. Please set up
+                  and verify an IVA on this page to upload the data.</span
+                >
+              </p>
+            } @else if (!grant.iva || grant.iva.state !== ivaState.Verified) {
+              <p class="mt-1 flex items-start gap-2 text-sm">
+                <mat-icon
+                  fontIcon="warning"
+                  class="text-warning mt-0.5 shrink-0 text-base leading-none"
+                ></mat-icon>
+                <span class="text-warning">
+                  The verification address associated with this upload grant is not yet
+                  verified. Please verify it to upload the data
+                  @if (grant.iva) {
+                    : {{ (grant.iva.type | IvaTypePipe).name }}: {{ grant.iva.value }}
+                  }
+                  .</span
+                >
+              </p>
+            }
+          </div>
+        }
+      </div>
+    }
+  }
+}
