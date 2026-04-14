@@ -1,6 +1,14 @@
 FROM mcr.microsoft.com/devcontainers/typescript-node:4.0.6-trixie
 
-RUN apt update && apt install -y dnsutils
+RUN apt-get update && apt-get install -y --no-install-recommends \
+  # Network utilities
+  dnsutils \
+  # CLI tools for developer and AI agent workflows (see AGENTS.md)
+  ripgrep jq fd-find shellcheck shfmt bat \
+  && rm -rf /var/lib/apt/lists/* \
+  # Debian installs fd and bat under fdfind/batcat; add canonical short names
+  && ln -sf /usr/bin/fdfind /usr/local/bin/fd \
+  && ln -sf /usr/bin/batcat /usr/local/bin/bat
 
 # Add some useful bash aliases:
 RUN echo "alias ll='ls -al'" >> /home/node/.bash_aliases
