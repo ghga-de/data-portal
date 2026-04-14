@@ -172,11 +172,12 @@ export default [
                 ],
               },
             },
-            // main may only import config and main app modules
+            // main may only import config, main app modules and mock setup (dev mode)
             {
               from: { type: 'main' },
               disallow: { to: { type: '*' } },
-              message: 'Main modules may only import config and main app',
+              message:
+                'Main modules may only import config, main app modules and mock setup',
             },
             {
               from: { type: 'main' },
