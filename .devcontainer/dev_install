@@ -12,6 +12,13 @@ npm install -g markdown-toc-gen
 echo "Install static web server..."
 curl --proto '=https' --tlsv1.2 -sSfL https://get.static-web-server.net | sh
 
+echo "Install CLI tools useful for development and AI agents..."
+apt-get update -qq && apt-get install -y --no-install-recommends \
+  ripgrep jq fd-find shellcheck shfmt bat \
+  && rm -rf /var/lib/apt/lists/*
+ln -sf /usr/bin/fdfind /usr/local/bin/fd
+ln -sf /usr/bin/batcat /usr/local/bin/bat
+
 echo "Install application and dev tools..."
 pnpm install
 
