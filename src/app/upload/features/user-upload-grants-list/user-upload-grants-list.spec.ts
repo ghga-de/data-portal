@@ -156,6 +156,19 @@ describe('UserUploadGrantsListComponent', () => {
     expect(screen.queryByText('Locked Box')).not.toBeInTheDocument();
   });
 
+  it('should render a box only once when multiple grants reference the same box', async () => {
+    const duplicateGrantForSameBox: GrantWithBoxInfo = {
+      ...openGrant,
+      id: 'grant-duplicate',
+      iva_id: null,
+    };
+
+    uploadBoxService.setGrants([openGrant, duplicateGrantForSameBox]);
+    fixture.detectChanges();
+
+    expect(screen.getAllByText('Test Upload Box')).toHaveLength(1);
+  });
+
   it('should show an info notification when Create token is clicked', async () => {
     uploadBoxService.setGrants([openGrant]);
     fixture.detectChanges();

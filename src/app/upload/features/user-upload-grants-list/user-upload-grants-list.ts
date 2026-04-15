@@ -38,12 +38,21 @@ export class UserUploadGrantsListComponent {
   protected isLoading = this.#uploadBoxService.userGrants.isLoading;
   protected hasError = this.#uploadBoxService.userGrants.error;
 
-  /** Open upload grants filtered by state. */
-  protected openGrants = computed(() =>
-    this.#uploadBoxService.userGrants
+  /** Open upload grants filtered by state and deduplicated by upload box ID. */
+  protected openGrants = computed(() => {
+    const openGrants = this.#uploadBoxService.userGrants
       .value()
-      .filter((grant) => grant.box_state === UploadBoxState.open),
-  );
+      .filter((grant) => grant.box_state === UploadBoxState.open);
+
+    const uniqueByBoxId = new Map<string, GrantWithBoxInfo>();
+    for (const grant of openGrants) {
+      if (!uniqueByBoxId.has(grant.box_id)) {
+        uniqueByBoxId.set(grant.box_id, grant);
+      }
+    }
+
+    return Array.from(uniqueByBoxId.values());
+  });
 
   /** ID of the box currently being submitted, to disable the button while in flight. */
   protected submittingBoxId = signal<string | null>(null);
