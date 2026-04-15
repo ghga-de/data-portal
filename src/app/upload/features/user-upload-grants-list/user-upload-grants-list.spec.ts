@@ -199,8 +199,8 @@ describe('UserUploadGrantsListComponent', () => {
       );
     });
 
-    it('should reload user grants after success', () => {
-      expect(uploadBoxService.userGrants.reload).toHaveBeenCalled();
+    it('should not force reload user grants after success', () => {
+      expect(uploadBoxService.userGrants.reload).not.toHaveBeenCalled();
     });
   });
 

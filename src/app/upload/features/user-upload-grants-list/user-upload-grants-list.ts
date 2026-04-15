@@ -82,7 +82,6 @@ export class UserUploadGrantsListComponent {
               this.#notification.showSuccess(
                 'The upload box has been submitted successfully.',
               );
-              this.#uploadBoxService.userGrants.reload();
             },
             error: () => {
               this.submittingBoxId.set(null);
