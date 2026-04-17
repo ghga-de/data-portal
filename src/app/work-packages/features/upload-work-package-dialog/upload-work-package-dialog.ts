@@ -85,10 +85,10 @@ export class UploadWorkPackageDialogComponent {
     apply(p.pubkey, PubkeyFieldComponent.schema);
   });
 
-  token = signal('');
-  tokenIsLoading = signal(false);
-  tokenError = signal('');
-  tokenExpiration = signal('');
+  protected token = signal('');
+  protected tokenIsLoading = signal(false);
+  protected tokenError = signal('');
+  protected tokenExpiration = signal('');
 
   /**
    * Close dialog without action.
