@@ -146,8 +146,15 @@ describe('UserUploadGrantsListComponent', () => {
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
-  it('should load user IVAs on init', () => {
-    expect(ivaService.loadUserIvas).toHaveBeenCalled();
+  it('should not load user IVAs when there are no open grants', () => {
+    expect(ivaService.loadUserIvas).not.toHaveBeenCalled();
+  });
+
+  it('should load user IVAs when open grants exist', () => {
+    uploadBoxService.setGrants([openGrant]);
+    fixture.detectChanges();
+
+    expect(ivaService.loadUserIvas).toHaveBeenCalledTimes(1);
   });
 
   it('should create', () => {

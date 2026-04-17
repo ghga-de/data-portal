@@ -8,8 +8,8 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   inject,
-  OnInit,
   signal,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -36,7 +36,7 @@ import { UploadWorkPackageDialogComponent } from '@app/work-packages/features/up
   templateUrl: './user-upload-grants-list.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UserUploadGrantsListComponent implements OnInit {
+export class UserUploadGrantsListComponent {
   #uploadBoxService = inject(UploadBoxService);
   #iva = inject(IvaService);
   #confirmation = inject(ConfirmationService);
@@ -68,12 +68,19 @@ export class UserUploadGrantsListComponent implements OnInit {
   /** ID of the box currently being submitted, to disable the button while in flight. */
   protected submittingBoxId = signal<string | null>(null);
 
+  /** Track whether loading user IVAs has been triggered for this component instance. */
+  #userIvasLoaded = signal(false);
+
   /**
-   * On initialisation, load the current user's IVAs.
+   * Load user IVAs once, and only when there are open grants that may need IVA details.
    */
-  ngOnInit(): void {
+  #loadUserIvasWhenNeeded = effect(() => {
+    if (this.#userIvasLoaded() || this.hasError() || this.openGrants().length === 0) {
+      return;
+    }
     this.#iva.loadUserIvas();
-  }
+    this.#userIvasLoaded.set(true);
+  });
 
   /**
    * Open the upload token creation dialog for a selected upload grant.
