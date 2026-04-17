@@ -22,8 +22,6 @@ export interface UploadWorkPackageRequest extends BaseWorkPackageRequest {
 
 export type WorkPackageRequest = DownloadWorkPackageRequest | UploadWorkPackageRequest;
 
-export type WorkPackage = WorkPackageRequest;
-
 export interface WorkPackageResponse {
   id: string;
   token: string;
