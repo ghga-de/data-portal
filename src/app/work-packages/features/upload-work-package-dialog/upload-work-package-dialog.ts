@@ -150,6 +150,7 @@ export class UploadWorkPackageDialogComponent {
     this.token.set('');
     this.tokenIsLoading.set(false);
     this.tokenError.set('');
+    this.tokenExpiration.set('');
   }
 
   /**

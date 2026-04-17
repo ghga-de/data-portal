@@ -152,6 +152,7 @@ export class DownloadWorkPackageDialogComponent {
     this.token.set('');
     this.tokenIsLoading.set(false);
     this.tokenError.set('');
+    this.tokenExpiration.set('');
   }
 
   /** Copy token to clipboard and show confirmation */
