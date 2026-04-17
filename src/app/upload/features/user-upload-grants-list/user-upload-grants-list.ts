@@ -12,6 +12,7 @@ import {
   signal,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { ConfirmationService } from '@app/shared/services/confirmation';
 import { NotificationService } from '@app/shared/services/notification';
@@ -19,6 +20,8 @@ import { StencilComponent } from '@app/shared/ui/stencil/stencil/stencil';
 import { UploadBoxState } from '@app/upload/models/box';
 import { GrantWithBoxInfo } from '@app/upload/models/grant';
 import { UploadBoxService } from '@app/upload/services/upload-box';
+// eslint-disable-next-line boundaries/dependencies
+import { UploadWorkPackageDialogComponent } from '@app/work-packages/features/upload-work-package-dialog/upload-work-package-dialog';
 
 /**
  * Shows the current user's open research data upload boxes (RDUBs).
@@ -33,6 +36,7 @@ import { UploadBoxService } from '@app/upload/services/upload-box';
 export class UserUploadGrantsListComponent {
   #uploadBoxService = inject(UploadBoxService);
   #confirmation = inject(ConfirmationService);
+  #dialog = inject(MatDialog);
   #notification = inject(NotificationService);
 
   protected isLoading = this.#uploadBoxService.userGrants.isLoading;
@@ -58,11 +62,15 @@ export class UserUploadGrantsListComponent {
   protected submittingBoxId = signal<string | null>(null);
 
   /**
-   * Placeholder handler for the "Create token" button.
-   * Token creation will be implemented in a follow-up PR.
+   * Open the upload token creation dialog for a selected upload grant.
+   * @param grant - the upload grant with box information
    */
-  createToken(): void {
-    this.#notification.showInfo('Upload token creation is not yet implemented.');
+  createToken(grant: GrantWithBoxInfo): void {
+    this.#dialog.open(UploadWorkPackageDialogComponent, {
+      data: grant,
+      width: '64rem',
+      maxWidth: '96vw',
+    });
   }
 
   /**
