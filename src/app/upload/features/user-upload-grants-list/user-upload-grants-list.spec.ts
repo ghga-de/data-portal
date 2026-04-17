@@ -81,6 +81,9 @@ class MockUploadBoxService {
   }
 }
 
+/**
+ * Mock the IVA service as needed by the user upload grants list component
+ */
 class MockIvaService {
   #ivas = signal([
     {

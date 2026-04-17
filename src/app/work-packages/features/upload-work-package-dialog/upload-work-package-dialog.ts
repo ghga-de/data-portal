@@ -26,15 +26,12 @@ import {
 } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-// eslint-disable-next-line boundaries/dependencies
 import { Iva } from '@app/ivas/models/iva';
-// eslint-disable-next-line boundaries/dependencies
 import { IvaTypePipe } from '@app/ivas/pipes/iva-type-pipe';
 import { NotificationService } from '@app/shared/services/notification';
 import { ParagraphsComponent } from '@app/shared/ui/paragraphs/paragraphs';
 import { FRIENDLY_DATE_FORMAT } from '@app/shared/utils/date-formats';
 import { getBackendErrorMessage, MaybeBackendError } from '@app/shared/utils/errors';
-// eslint-disable-next-line boundaries/dependencies
 import { GrantWithBoxInfo } from '@app/upload/models/grant';
 import { UploadWorkPackageRequest } from '@app/work-packages/models/work-package';
 import { WorkPackageService } from '@app/work-packages/services/work-package';

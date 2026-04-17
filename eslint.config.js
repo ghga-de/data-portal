@@ -148,6 +148,22 @@ export default [
               from: { type: 'model', captured: { context: 'access-requests' } },
               allow: { to: { type: 'model', captured: { context: 'ivas' } } },
             },
+            // work-package context may import from some other contexts
+            {
+              from: { type: 'features', captured: { context: 'work-packages' } },
+              allow: {
+                to: [
+                  { type: 'model', captured: { context: 'ivas' } },
+                  { type: 'pipe', captured: { context: 'ivas' } },
+                  { type: 'model', captured: { context: 'access-requests' } },
+                  { type: 'model', captured: { context: 'upload' } },
+                ],
+              },
+            },
+            {
+              from: { type: 'model', captured: { context: 'access-requests' } },
+              allow: { to: { type: 'model', captured: { context: 'ivas' } } },
+            },
             // auth context may import from verification addresses context
             {
               from: { type: 'features', captured: { context: 'auth' } },
