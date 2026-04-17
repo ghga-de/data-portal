@@ -8,6 +8,7 @@ import { Clipboard } from '@angular/cdk/clipboard';
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { IvaState, IvaType } from '@app/ivas/models/iva';
 import { IvaService } from '@app/ivas/services/iva';
@@ -161,7 +162,7 @@ describe('UploadWorkPackageDialogComponent', () => {
     expect(workPackageService.createWorkPackage).not.toHaveBeenCalled();
   });
 
-  it('should create upload work package with correct data', () => {
+  it('should create upload work package with correct request data', () => {
     component['model'].set({
       pubkey: 'MTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTI=',
     });
@@ -184,10 +185,33 @@ describe('UploadWorkPackageDialogComponent', () => {
       research_data_upload_box_id: 'box-123',
       user_public_crypt4gh_key: expect.any(String),
     });
-    expect(component.token()).toBe('wp-123:test-token-456');
   });
 
-  it('should handle error during token creation', () => {
+  it('should display upload token on successful creation', () => {
+    component['model'].set({
+      pubkey: 'MTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTI=',
+    });
+    fixture.detectChanges();
+
+    (
+      workPackageService.createWorkPackage as ReturnType<typeof vitest.fn>
+    ).mockReturnValue(
+      of({
+        id: 'wp-123',
+        token: 'test-token-456',
+        expires: '2026-02-01T00:00:00Z',
+      }),
+    );
+
+    component.onCreateToken();
+    fixture.detectChanges();
+
+    // Verify token is displayed
+    const tokenElement = fixture.debugElement.query(By.css('span.text-green-900'));
+    expect(tokenElement?.nativeElement.textContent).toContain('wp-123:test-token-456');
+  });
+
+  it('should display error message on token creation failure', () => {
     component['model'].set({
       pubkey: 'MTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTI=',
     });
@@ -199,25 +223,42 @@ describe('UploadWorkPackageDialogComponent', () => {
     ).mockReturnValue(throwError(() => error));
 
     component.onCreateToken();
+    fixture.detectChanges();
 
-    expect(component.tokenError()).toContain('could not be created');
+    const errorElement = fixture.debugElement.query(By.css('.text-red-600'));
+    expect(errorElement?.nativeElement.textContent).toContain('could not be created');
     expect(notificationService.showError).toHaveBeenCalled();
   });
 
-  it('should clear token state on reset', () => {
-    component.token.set('test-token');
-    component.tokenError.set('test-error');
-    component.tokenIsLoading.set(true);
+  it('should clear token state from view on reset', () => {
+    (component as any)['token'].set('test-token');
+    (component as any)['tokenError'].set('test-error');
+    (component as any)['tokenIsLoading'].set(true);
+    fixture.detectChanges();
 
     component.resetToken();
+    fixture.detectChanges();
 
-    expect(component.token()).toBe('');
-    expect(component.tokenError()).toBe('');
-    expect(component.tokenIsLoading()).toBe(false);
+    // Verify token is no longer displayed
+    let tokenElement = fixture.debugElement.query(By.css('span.text-green-900'));
+    expect(tokenElement).toBeFalsy();
+
+    // Verify error is no longer displayed
+    let errorElement = fixture.debugElement.query(By.css('div.text-red-600'));
+    expect(errorElement).toBeFalsy();
   });
 
+  it('should not copy if token is empty', () => {
+    (component as any)['token'].set('');
+    fixture.detectChanges();
+
+    component.copyToken();
+
+    expect(clipboard.copy).not.toHaveBeenCalled();
+    expect(notificationService.showSuccess).not.toHaveBeenCalled();
+  });
   it('should copy token to clipboard and show notification', () => {
-    component.token.set('test-token-123');
+    (component as any)['token'].set('test-token-123');
 
     component.copyToken();
 
