@@ -8,15 +8,12 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
   inject,
   signal,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { Iva } from '@app/ivas/models/iva';
-import { IvaService } from '@app/ivas/services/iva';
 import { ConfirmationService } from '@app/shared/services/confirmation';
 import { NotificationService } from '@app/shared/services/notification';
 import { StencilComponent } from '@app/shared/ui/stencil/stencil/stencil';
@@ -38,16 +35,12 @@ import { UploadWorkPackageDialogComponent } from '@app/work-packages/features/up
 })
 export class UserUploadGrantsListComponent {
   #uploadBoxService = inject(UploadBoxService);
-  #iva = inject(IvaService);
   #confirmation = inject(ConfirmationService);
   #dialog = inject(MatDialog);
   #notification = inject(NotificationService);
 
   protected isLoading = this.#uploadBoxService.userGrants.isLoading;
   protected hasError = this.#uploadBoxService.userGrants.error;
-  #userIvas = computed<Iva[]>(() =>
-    this.#iva.userIvas.error() ? [] : this.#iva.userIvas.value(),
-  );
 
   /** Open upload grants filtered by state and deduplicated by upload box ID. */
   protected openGrants = computed(() => {
@@ -68,32 +61,13 @@ export class UserUploadGrantsListComponent {
   /** ID of the box currently being submitted, to disable the button while in flight. */
   protected submittingBoxId = signal<string | null>(null);
 
-  /** Track whether loading user IVAs has been triggered for this component instance. */
-  #userIvasLoaded = signal(false);
-
-  /**
-   * Load user IVAs once, and only when there are open grants that may need IVA details.
-   */
-  #loadUserIvasWhenNeeded = effect(() => {
-    if (this.#userIvasLoaded() || this.hasError() || this.openGrants().length === 0) {
-      return;
-    }
-    this.#iva.loadUserIvas();
-    this.#userIvasLoaded.set(true);
-  });
-
   /**
    * Open the upload token creation dialog for a selected upload grant.
    * @param grant - the upload grant with box information
    */
   createToken(grant: GrantWithBoxInfo): void {
-    const iva =
-      !grant.iva_id || this.#iva.userIvas.error()
-        ? undefined
-        : this.#userIvas().find((i) => i.id === grant.iva_id);
-
     this.#dialog.open(UploadWorkPackageDialogComponent, {
-      data: { ...grant, iva },
+      data: grant,
       width: '64rem',
       maxWidth: '96vw',
     });

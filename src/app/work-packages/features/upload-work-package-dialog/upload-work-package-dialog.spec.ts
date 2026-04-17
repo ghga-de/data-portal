@@ -5,10 +5,12 @@
  */
 
 import { Clipboard } from '@angular/cdk/clipboard';
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { IvaState, IvaType } from '@app/ivas/models/iva';
+import { IvaService } from '@app/ivas/services/iva';
 import { NotificationService } from '@app/shared/services/notification';
 import { UploadBoxState } from '@app/upload/models/box';
 import { GrantWithBoxInfo } from '@app/upload/models/grant';
@@ -16,15 +18,7 @@ import { WorkPackageService } from '@app/work-packages/services/work-package';
 import { of, throwError } from 'rxjs';
 import { UploadWorkPackageDialogComponent } from './upload-work-package-dialog';
 
-const TEST_GRANT: GrantWithBoxInfo & {
-  iva?: {
-    id: string;
-    type: IvaType;
-    value: string;
-    changed: string;
-    state: IvaState;
-  };
-} = {
+const TEST_GRANT: GrantWithBoxInfo = {
   id: 'grant-123',
   user_id: 'user-123',
   iva_id: 'iva-123',
@@ -39,14 +33,30 @@ const TEST_GRANT: GrantWithBoxInfo & {
   box_description: 'A test upload box for unit testing',
   box_state: UploadBoxState.open,
   box_version: 1,
-  iva: {
-    id: 'iva-123',
-    type: IvaType.Phone,
-    value: '+49123456789',
-    changed: '2026-01-01T00:00:00Z',
-    state: IvaState.Verified,
-  },
 };
+
+/**
+ * Mock IVA service with mutable state for testing.
+ */
+class MockIvaService {
+  ivasSignal = signal([
+    {
+      id: 'iva-123',
+      type: IvaType.Phone,
+      value: '+49123456789',
+      changed: '2026-01-01T00:00:00Z',
+      state: IvaState.Verified,
+    },
+  ]);
+  errorSignal = signal<Error | undefined>(undefined);
+
+  userIvas = {
+    value: this.ivasSignal,
+    error: this.errorSignal,
+  };
+
+  loadUserIvas = vitest.fn();
+}
 
 describe('UploadWorkPackageDialogComponent', () => {
   let component: UploadWorkPackageDialogComponent;
@@ -54,6 +64,7 @@ describe('UploadWorkPackageDialogComponent', () => {
   let workPackageService: WorkPackageService;
   let notificationService: NotificationService;
   let clipboard: Clipboard;
+  let ivaService: MockIvaService;
 
   const dialogRef = {
     close: vitest.fn(),
@@ -76,17 +87,12 @@ describe('UploadWorkPackageDialogComponent', () => {
     await TestBed.configureTestingModule({
       imports: [UploadWorkPackageDialogComponent, NoopAnimationsModule],
       providers: [
-        {
-          provide: MAT_DIALOG_DATA,
-          useValue: {
-            ...TEST_GRANT,
-            iva: TEST_GRANT.iva ? { ...TEST_GRANT.iva } : undefined,
-          },
-        },
+        { provide: MAT_DIALOG_DATA, useValue: TEST_GRANT },
         { provide: MatDialogRef, useValue: dialogRef },
         { provide: WorkPackageService, useValue: wpServiceMock },
         { provide: NotificationService, useValue: notifyMock },
         { provide: Clipboard, useValue: clipboardMock },
+        { provide: IvaService, useClass: MockIvaService },
       ],
     }).compileComponents();
 
@@ -95,6 +101,7 @@ describe('UploadWorkPackageDialogComponent', () => {
     workPackageService = TestBed.inject(WorkPackageService);
     notificationService = TestBed.inject(NotificationService);
     clipboard = TestBed.inject(Clipboard);
+    ivaService = TestBed.inject(IvaService) as unknown as MockIvaService;
     vitest.clearAllMocks();
     fixture.detectChanges();
     await fixture.whenStable();
@@ -105,7 +112,7 @@ describe('UploadWorkPackageDialogComponent', () => {
   });
 
   it('should initialize with the selected grant', () => {
-    expect(component['grant']).toStrictEqual(TEST_GRANT);
+    expect(component['grant']).toBe(TEST_GRANT);
   });
 
   it('should close dialog', () => {
@@ -123,8 +130,7 @@ describe('UploadWorkPackageDialogComponent', () => {
   });
 
   it('should not create token if IVA is missing', () => {
-    component['grant'].iva = undefined;
-    component['iva'] = undefined;
+    ivaService.ivasSignal.set([]);
     component['model'].set({
       pubkey: 'MTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTI=',
     });
@@ -136,14 +142,15 @@ describe('UploadWorkPackageDialogComponent', () => {
   });
 
   it('should not create token if IVA is unverified', () => {
-    component['grant'].iva = {
-      id: 'iva-123',
-      type: IvaType.Phone,
-      value: '+49123456789',
-      changed: '2026-01-01T00:00:00Z',
-      state: IvaState.Unverified,
-    };
-    component['iva'] = component['grant'].iva;
+    ivaService.ivasSignal.set([
+      {
+        id: 'iva-123',
+        type: IvaType.Phone,
+        value: '+49123456789',
+        changed: '2026-01-01T00:00:00Z',
+        state: IvaState.Unverified,
+      },
+    ]);
     component['model'].set({
       pubkey: 'MTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTI=',
     });

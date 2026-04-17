@@ -153,6 +153,7 @@ export default [
               from: { type: 'features', captured: { context: 'work-packages' } },
               allow: {
                 to: [
+                  { type: 'service', captured: { context: 'ivas' } },
                   { type: 'model', captured: { context: 'ivas' } },
                   { type: 'pipe', captured: { context: 'ivas' } },
                   { type: 'model', captured: { context: 'access-requests' } },

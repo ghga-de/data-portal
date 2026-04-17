@@ -7,7 +7,6 @@
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
-import { IvaService } from '@app/ivas/services/iva';
 import { ConfirmationService } from '@app/shared/services/confirmation';
 import { NotificationService } from '@app/shared/services/notification';
 import { UploadBoxState } from '@app/upload/models/box';
@@ -81,29 +80,6 @@ class MockUploadBoxService {
   }
 }
 
-/**
- * Mock the IVA service as needed by the user upload grants list component
- */
-class MockIvaService {
-  #ivas = signal([
-    {
-      id: 'iva-verified-001',
-      type: 'Phone',
-      value: '+49123456789',
-      changed: '2026-01-01T00:00:00Z',
-      state: 'Verified',
-    },
-  ]);
-  #error = signal<Error | undefined>(undefined);
-
-  userIvas = {
-    value: this.#ivas,
-    error: this.#error,
-  };
-
-  loadUserIvas = vitest.fn();
-}
-
 const mockConfirmationService = { confirm: vitest.fn() };
 const mockNotificationService = {
   showInfo: vitest.fn(),
@@ -118,7 +94,6 @@ describe('UserUploadGrantsListComponent', () => {
   let component: UserUploadGrantsListComponent;
   let fixture: ComponentFixture<UserUploadGrantsListComponent>;
   let uploadBoxService: MockUploadBoxService;
-  let ivaService: MockIvaService;
 
   beforeEach(async () => {
     mockConfirmationService.confirm.mockReset();
@@ -131,7 +106,6 @@ describe('UserUploadGrantsListComponent', () => {
       imports: [UserUploadGrantsListComponent],
       providers: [
         { provide: UploadBoxService, useClass: MockUploadBoxService },
-        { provide: IvaService, useClass: MockIvaService },
         { provide: ConfirmationService, useValue: mockConfirmationService },
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: MatDialog, useValue: mockDialog },
@@ -141,22 +115,10 @@ describe('UserUploadGrantsListComponent', () => {
     uploadBoxService = TestBed.inject(
       UploadBoxService,
     ) as unknown as MockUploadBoxService;
-    ivaService = TestBed.inject(IvaService) as unknown as MockIvaService;
     fixture = TestBed.createComponent(UserUploadGrantsListComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
-  it('should not load user IVAs when there are no open grants', () => {
-    expect(ivaService.loadUserIvas).not.toHaveBeenCalled();
-  });
-
-  it('should load user IVAs when open grants exist', () => {
-    uploadBoxService.setGrants([openGrant]);
-    fixture.detectChanges();
-
-    expect(ivaService.loadUserIvas).toHaveBeenCalledTimes(1);
-  });
-
   it('should create', () => {
     expect(component).toBeTruthy();
   });
@@ -219,20 +181,11 @@ describe('UserUploadGrantsListComponent', () => {
     expect(mockDialog.open).toHaveBeenCalledWith(
       UploadWorkPackageDialogComponent,
       expect.objectContaining({
-        data: expect.objectContaining(openGrant),
+        data: openGrant,
         width: '64rem',
         maxWidth: '96vw',
       }),
     );
-
-    const openOptions = mockDialog.open.mock.calls[0][1];
-    expect(openOptions.data.iva).toEqual({
-      id: 'iva-verified-001',
-      type: 'Phone',
-      value: '+49123456789',
-      changed: '2026-01-01T00:00:00Z',
-      state: 'Verified',
-    });
   });
 
   it('should open a confirmation dialog when Submit is clicked', async () => {
