@@ -8,6 +8,7 @@ import { Clipboard } from '@angular/cdk/clipboard';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { IvaState, IvaType } from '@app/ivas/models/iva';
 import { NotificationService } from '@app/shared/services/notification';
 import { UploadBoxState } from '@app/upload/models/box';
 import { GrantWithBoxInfo } from '@app/upload/models/grant';
@@ -15,10 +16,18 @@ import { WorkPackageService } from '@app/work-packages/services/work-package';
 import { of, throwError } from 'rxjs';
 import { UploadWorkPackageDialogComponent } from './upload-work-package-dialog';
 
-const TEST_GRANT: GrantWithBoxInfo = {
+const TEST_GRANT: GrantWithBoxInfo & {
+  iva?: {
+    id: string;
+    type: IvaType;
+    value: string;
+    changed: string;
+    state: IvaState;
+  };
+} = {
   id: 'grant-123',
   user_id: 'user-123',
-  iva_id: null,
+  iva_id: 'iva-123',
   box_id: 'box-123',
   created: '2026-01-01T00:00:00Z',
   valid_from: '2026-01-01T00:00:00Z',
@@ -30,6 +39,13 @@ const TEST_GRANT: GrantWithBoxInfo = {
   box_description: 'A test upload box for unit testing',
   box_state: UploadBoxState.open,
   box_version: 1,
+  iva: {
+    id: 'iva-123',
+    type: IvaType.Phone,
+    value: '+49123456789',
+    changed: '2026-01-01T00:00:00Z',
+    state: IvaState.Verified,
+  },
 };
 
 describe('UploadWorkPackageDialogComponent', () => {
@@ -60,7 +76,13 @@ describe('UploadWorkPackageDialogComponent', () => {
     await TestBed.configureTestingModule({
       imports: [UploadWorkPackageDialogComponent, NoopAnimationsModule],
       providers: [
-        { provide: MAT_DIALOG_DATA, useValue: TEST_GRANT },
+        {
+          provide: MAT_DIALOG_DATA,
+          useValue: {
+            ...TEST_GRANT,
+            iva: TEST_GRANT.iva ? { ...TEST_GRANT.iva } : undefined,
+          },
+        },
         { provide: MatDialogRef, useValue: dialogRef },
         { provide: WorkPackageService, useValue: wpServiceMock },
         { provide: NotificationService, useValue: notifyMock },
@@ -83,7 +105,7 @@ describe('UploadWorkPackageDialogComponent', () => {
   });
 
   it('should initialize with the selected grant', () => {
-    expect(component['grant']).toBe(TEST_GRANT);
+    expect(component['grant']).toStrictEqual(TEST_GRANT);
   });
 
   it('should close dialog', () => {
@@ -93,6 +115,38 @@ describe('UploadWorkPackageDialogComponent', () => {
 
   it('should not create token if form is invalid', () => {
     component['model'].set({ pubkey: '' });
+    fixture.detectChanges();
+
+    component.onCreateToken();
+
+    expect(workPackageService.createWorkPackage).not.toHaveBeenCalled();
+  });
+
+  it('should not create token if IVA is missing', () => {
+    component['grant'].iva = undefined;
+    component['iva'] = undefined;
+    component['model'].set({
+      pubkey: 'MTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTI=',
+    });
+    fixture.detectChanges();
+
+    component.onCreateToken();
+
+    expect(workPackageService.createWorkPackage).not.toHaveBeenCalled();
+  });
+
+  it('should not create token if IVA is unverified', () => {
+    component['grant'].iva = {
+      id: 'iva-123',
+      type: IvaType.Phone,
+      value: '+49123456789',
+      changed: '2026-01-01T00:00:00Z',
+      state: IvaState.Unverified,
+    };
+    component['iva'] = component['grant'].iva;
+    component['model'].set({
+      pubkey: 'MTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTI=',
+    });
     fixture.detectChanges();
 
     component.onCreateToken();

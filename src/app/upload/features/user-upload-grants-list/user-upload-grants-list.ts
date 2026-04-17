@@ -9,11 +9,14 @@ import {
   Component,
   computed,
   inject,
+  OnInit,
   signal,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { Iva } from '@app/ivas/models/iva';
+import { IvaService } from '@app/ivas/services/iva';
 import { ConfirmationService } from '@app/shared/services/confirmation';
 import { NotificationService } from '@app/shared/services/notification';
 import { StencilComponent } from '@app/shared/ui/stencil/stencil/stencil';
@@ -33,14 +36,18 @@ import { UploadWorkPackageDialogComponent } from '@app/work-packages/features/up
   templateUrl: './user-upload-grants-list.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UserUploadGrantsListComponent {
+export class UserUploadGrantsListComponent implements OnInit {
   #uploadBoxService = inject(UploadBoxService);
+  #iva = inject(IvaService);
   #confirmation = inject(ConfirmationService);
   #dialog = inject(MatDialog);
   #notification = inject(NotificationService);
 
   protected isLoading = this.#uploadBoxService.userGrants.isLoading;
   protected hasError = this.#uploadBoxService.userGrants.error;
+  #userIvas = computed<Iva[]>(() =>
+    this.#iva.userIvas.error() ? [] : this.#iva.userIvas.value(),
+  );
 
   /** Open upload grants filtered by state and deduplicated by upload box ID. */
   protected openGrants = computed(() => {
@@ -62,12 +69,24 @@ export class UserUploadGrantsListComponent {
   protected submittingBoxId = signal<string | null>(null);
 
   /**
+   * On initialisation, load the current user's IVAs.
+   */
+  ngOnInit(): void {
+    this.#iva.loadUserIvas();
+  }
+
+  /**
    * Open the upload token creation dialog for a selected upload grant.
    * @param grant - the upload grant with box information
    */
   createToken(grant: GrantWithBoxInfo): void {
+    const iva =
+      !grant.iva_id || this.#iva.userIvas.error()
+        ? undefined
+        : this.#userIvas().find((i) => i.id === grant.iva_id);
+
     this.#dialog.open(UploadWorkPackageDialogComponent, {
-      data: grant,
+      data: { ...grant, iva },
       width: '64rem',
       maxWidth: '96vw',
     });

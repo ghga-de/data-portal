@@ -26,6 +26,10 @@ import {
 } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+// eslint-disable-next-line boundaries/dependencies
+import { Iva } from '@app/ivas/models/iva';
+// eslint-disable-next-line boundaries/dependencies
+import { IvaTypePipe } from '@app/ivas/pipes/iva-type-pipe';
 import { NotificationService } from '@app/shared/services/notification';
 import { ParagraphsComponent } from '@app/shared/ui/paragraphs/paragraphs';
 import { FRIENDLY_DATE_FORMAT } from '@app/shared/utils/date-formats';
@@ -35,6 +39,10 @@ import { GrantWithBoxInfo } from '@app/upload/models/grant';
 import { UploadWorkPackageRequest } from '@app/work-packages/models/work-package';
 import { WorkPackageService } from '@app/work-packages/services/work-package';
 import { PubkeyFieldComponent } from '@app/work-packages/ui/pubkey-input/pubkey-input';
+
+interface UploadGrantWithIva extends GrantWithBoxInfo {
+  iva?: Iva;
+}
 
 /**
  * Dialog for creating upload tokens to upload files via the GHGA connector.
@@ -52,6 +60,7 @@ import { PubkeyFieldComponent } from '@app/work-packages/ui/pubkey-input/pubkey-
     MatCardModule,
     ParagraphsComponent,
     DatePipe,
+    IvaTypePipe,
     PubkeyFieldComponent,
     FormField,
   ],
@@ -64,7 +73,8 @@ export class UploadWorkPackageDialogComponent {
   #notify = inject(NotificationService);
   #wpService = inject(WorkPackageService);
 
-  protected grant = inject<GrantWithBoxInfo>(MAT_DIALOG_DATA);
+  protected grant = inject<UploadGrantWithIva>(MAT_DIALOG_DATA);
+  protected iva = this.grant.iva;
   protected readonly friendlyDateFormat = FRIENDLY_DATE_FORMAT;
 
   protected model = signal({ pubkey: '' });
@@ -110,7 +120,7 @@ export class UploadWorkPackageDialogComponent {
    * Submit form to create and display a new upload token.
    */
   onCreateToken(): void {
-    if (!this.uploadForm().valid()) return;
+    if (!this.uploadForm().valid() || this.iva?.state !== 'Verified') return;
 
     const workPackage: UploadWorkPackageRequest = {
       type: 'upload',
