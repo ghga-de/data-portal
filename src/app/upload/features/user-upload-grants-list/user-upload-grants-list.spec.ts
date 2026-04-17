@@ -166,7 +166,7 @@ describe('UserUploadGrantsListComponent', () => {
   it('should show an empty message when no open grants exist', async () => {
     uploadBoxService.setGrants([]);
     fixture.detectChanges();
-    expect(screen.getByText(/no.*open research data upload boxes/i)).toBeVisible();
+    expect(screen.getByText(/no.*open Research Data Upload Boxes/i)).toBeVisible();
   });
 
   it('should render the box title for an open grant', async () => {

@@ -1,5 +1,5 @@
 /**
- * Component that lists the current user's open research data upload boxes.
+ * Component that lists the current user's open Research Data Upload Boxes.
  * @copyright The GHGA Authors
  * @license Apache-2.0
  */
@@ -27,7 +27,7 @@ import { UploadBoxService } from '@app/upload/services/upload-box';
 import { UploadWorkPackageDialogComponent } from '@app/work-packages/features/upload-work-package-dialog/upload-work-package-dialog';
 
 /**
- * Shows the current user's open research data upload boxes (RDUBs).
+ * Shows the current user's open Research Data Upload Boxes (RDUBs).
  * For each open box the user can create an upload token (placeholder) or submit the box.
  */
 @Component({
