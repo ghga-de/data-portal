@@ -161,10 +161,6 @@ export default [
                 ],
               },
             },
-            {
-              from: { type: 'model', captured: { context: 'access-requests' } },
-              allow: { to: { type: 'model', captured: { context: 'ivas' } } },
-            },
             // auth context may import from verification addresses context
             {
               from: { type: 'features', captured: { context: 'auth' } },
