@@ -16,7 +16,7 @@
           <mat-card-title><h2>Dataset</h2></mat-card-title>
         </mat-card-header>
         <mat-card-content>
-          <p class="mt-2"><strong>Dataset ID:</strong> {{ dataset()!.id }}</p>
+          <p><strong>Dataset ID:</strong> {{ dataset()!.id }}</p>
           <p class="mt-1"><strong>Title:</strong> {{ dataset()!.title }}</p>
           <app-paragraphs
             [text]="dataset()!.description"
