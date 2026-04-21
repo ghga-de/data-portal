@@ -161,8 +161,7 @@
   </button>
   @if (
     dataset() &&
-    grant.iva &&
-    grant.iva.state === 'Verified' &&
+    grant.iva?.state === 'Verified' &&
     !token() &&
     !tokenError() &&
     !tokenIsLoading()

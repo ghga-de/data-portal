@@ -124,13 +124,7 @@
   >
     Close
   </button>
-  @if (
-    iva() &&
-    iva()!.state === 'Verified' &&
-    !token() &&
-    !tokenError() &&
-    !tokenIsLoading()
-  ) {
+  @if (iva()?.state === 'Verified' && !token() && !tokenError() && !tokenIsLoading()) {
     <button
       mat-raised-button
       color="primary"
