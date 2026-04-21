@@ -21,7 +21,7 @@
       {{ grant.valid_until | date: friendlyDateFormat }}.
     </p>
 
-    @if (iva() === undefined) {
+    @if (!iva()) {
       <p class="flex items-center">
         <span class="text-error"
           ><mat-icon fontIcon="error" class="me-2 mt-1 shrink-0"></mat-icon></span
