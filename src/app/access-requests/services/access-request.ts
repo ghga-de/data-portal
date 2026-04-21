@@ -243,7 +243,6 @@ export class AccessRequestService {
     },
     {
       defaultValue: undefined,
-      parse: (raw) => raw as AccessRequest,
     },
   );
 
@@ -369,11 +368,6 @@ export class AccessRequestService {
     let grants = this.allAccessGrants();
     const filter = this.#allAccessGrantsFilter();
     if (grants.length && filter) {
-      if (filter.dataset_id !== undefined && filter.dataset_id !== '') {
-        grants = grants.filter((g) =>
-          g.dataset_id.includes(filter.dataset_id as string),
-        );
-      }
       if (filter.dataset_id) {
         grants = grants.filter((g) =>
           g.dataset_id.includes(filter.dataset_id as string),
@@ -428,11 +422,10 @@ export class AccessRequestService {
     this.userAccessGrants
       .value()
       .filter((x) => x.status === 'active')
-      .map((grant: AccessGrant) => {
-        const expiryDate = new Date(grant.valid_until);
-        grant.daysRemaining = this.daysUntil(expiryDate);
-        return grant;
-      }),
+      .map((grant: AccessGrant) => ({
+        ...grant,
+        daysRemaining: this.daysUntil(new Date(grant.valid_until)),
+      })),
   );
 
   /**
@@ -459,4 +452,23 @@ export class AccessRequestService {
       .delete<null>(`${this.#arsGrantUrl}/${id}`)
       .pipe(tap(() => this.#removeGrantLocally(id)));
   }
+
+  /**
+   * Computed signal for the user ID of the access request.
+   */
+  #requestUserId = computed(() => this.accessRequest.value()?.user_id);
+
+  /**
+   * Signal for the external ID of the user who made the access request.
+   */
+  userExtId = httpResource<string | undefined>(
+    () => {
+      const userId = this.#requestUserId();
+      return userId ? `${this.#config.authUrl}/users/${userId}` : undefined;
+    },
+    {
+      parse: (raw) => (raw as { ext_id: string }).ext_id,
+      defaultValue: undefined,
+    },
+  );
 }

@@ -31,7 +31,6 @@ import {
 } from '@app/access-requests/models/access-requests';
 import { AccessRequestStatusClassPipe } from '@app/access-requests/pipes/access-request-status-class-pipe';
 import { AccessRequestService } from '@app/access-requests/services/access-request';
-import { UserSession } from '@app/auth/models/user';
 import { Iva, IvaState } from '@app/ivas/models/iva';
 import { IvaStatePipe } from '@app/ivas/pipes/iva-state-pipe';
 import { IvaTypePipe } from '@app/ivas/pipes/iva-type-pipe';
@@ -141,20 +140,9 @@ export class AccessRequestManagerDetailComponent implements OnInit, HasPendingEd
   #userId = computed(() => this.request()?.user_id);
 
   /**
-   * Resource for loading the external ID of the user who made the access request
-   * Only loads when userId is set
+   * Signal for the external ID of the user who made the access request.
    */
-  userExtId = httpResource<string | undefined>(
-    () => {
-      const userId = this.#userId();
-      if (!userId) return undefined;
-      return `${this.#usersUrl}/${userId}`;
-    },
-    {
-      parse: (raw) => (raw as UserSession).ext_id,
-      defaultValue: undefined,
-    },
-  );
+  userExtId = this.#accessRequestService.userExtId;
 
   /**
    * Get the IVA associated with the access request.
