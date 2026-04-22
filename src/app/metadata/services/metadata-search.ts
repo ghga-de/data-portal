@@ -4,9 +4,11 @@
  * @license Apache-2.0
  */
 
-import { httpResource } from '@angular/common/http';
+import { HttpClient, httpResource } from '@angular/common/http';
 import { Injectable, Signal, computed, inject, signal } from '@angular/core';
 import { ConfigService } from '@app/shared/services/config';
+import { lastValueFrom } from 'rxjs';
+import { DatasetSummary } from '../models/dataset-summary';
 import { FacetFilterSetting } from '../models/facet-filter';
 import {
   DEFAULT_PAGE_SIZE,
@@ -14,6 +16,7 @@ import {
   SearchResults,
   emptySearchResults,
 } from '../models/search-results';
+import { Study } from '../models/study';
 
 /**
  * Metadata search service
@@ -25,6 +28,10 @@ export class MetadataSearchService {
   #config = inject(ConfigService);
   #massUrl = this.#config.massUrl;
   #searchUrl = `${this.#massUrl}/search`;
+  #metldataUrl = this.#config.metldataUrl;
+  #datasetSummaryUrl = `${this.#metldataUrl}/artifacts/stats_public/classes/DatasetStats/resources`;
+  #studyUrl = `${this.#metldataUrl}/artifacts/embedded_public/classes/Study/resources`;
+  #http = inject(HttpClient);
   #className = signal<string | undefined>(undefined);
   #limit = signal<number | undefined>(undefined);
   #skip = signal<number | undefined>(undefined);
@@ -167,5 +174,54 @@ export class MetadataSearchService {
       massQueryUrl += `&skip=${skip}`;
     }
     return massQueryUrl;
+  }
+
+  /**
+   * Fetch a map of all studies keyed by study accession.
+   *
+   * Because there is no dedicated backend endpoint for listing studies, this
+   * method first fetches all dataset IDs via a MASS search, then walks each
+   * dataset summary to discover study accessions and fetches each study
+   * individually. Dataset IDs that are already accounted for by a fetched
+   * study's datasets list are skipped so each study is fetched at most once.
+   *
+   * This approach is a bit inefficient, but it is only temporary until we
+   * switch to a study-based backend.
+   * @returns A promise that resolves to a Map from study accession to Study
+   */
+  async fetchStudyMap(): Promise<Map<string, Study>> {
+    const searchResults = await lastValueFrom(
+      this.#http.get<SearchResults>(`${this.#searchUrl}?class_name=EmbeddedDataset`),
+    );
+
+    const datasetIdSet = new Set<string>(searchResults.hits.map((hit) => hit.id_));
+    const studyMap = new Map<string, Study>();
+
+    while (datasetIdSet.size > 0) {
+      const datasetId = datasetIdSet.values().next().value as string;
+
+      const summary = await lastValueFrom(
+        this.#http.get<DatasetSummary>(`${this.#datasetSummaryUrl}/${datasetId}`),
+      );
+
+      for (const studyAccession of summary.studies_summary.stats.accession) {
+        if (studyMap.has(studyAccession)) {
+          continue;
+        }
+
+        const study = await lastValueFrom(
+          this.#http.get<Study>(`${this.#studyUrl}/${studyAccession}`),
+        );
+        studyMap.set(studyAccession, study);
+
+        for (const linkedDatasetId of study.datasets) {
+          datasetIdSet.delete(linkedDatasetId);
+        }
+      }
+
+      datasetIdSet.delete(datasetId);
+    }
+
+    return studyMap;
   }
 }
