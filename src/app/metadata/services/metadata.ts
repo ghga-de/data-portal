@@ -51,8 +51,8 @@ export class MetadataService {
   );
 
   /**
-   * Load the study details for the given ID
-   * @param id study ID
+   * Load the study details for the given study ID
+   * @param id Study ID
    */
   loadStudy(id: string): void {
     this.#studyID.set(id);
