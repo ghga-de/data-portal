@@ -187,17 +187,16 @@
                 aria-label="Select page of files"
               ></mat-paginator>
             }
-            @if (showMapFilesButton()) {
-              <button mat-raised-button color="primary" class="mt-4" disabled>
-                <mat-icon fontIcon="check"></mat-icon>
-                Map files to metadata and archive
-              </button>
-            }
           } @else {
             <p class="text-warning mt-2">This upload box is still empty.</p>
           }
         </mat-card-content>
       </mat-card>
+
+      <!-- File Mapping -->
+      @if (box.state === 'locked') {
+        <app-upload-box-mapping [box]="box" (archived)="onBoxArchived()" />
+      }
     </div>
   }
 </div>

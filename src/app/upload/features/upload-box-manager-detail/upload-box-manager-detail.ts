@@ -41,6 +41,7 @@ import {
 } from '@app/upload/models/file-upload';
 import { UploadGrant } from '@app/upload/models/grant';
 import { UploadBoxService } from '@app/upload/services/upload-box';
+import { UploadBoxMappingComponent } from '../upload-box-mapping/upload-box-mapping';
 
 /**
  * Detail view component for managing an individual upload box.
@@ -58,6 +59,7 @@ import { UploadBoxService } from '@app/upload/services/upload-box';
     RouterLink,
     Capitalise,
     ParseBytes,
+    UploadBoxMappingComponent,
   ],
   providers: [CommonDatePipe],
   templateUrl: './upload-box-manager-detail.html',
@@ -178,9 +180,6 @@ export class UploadBoxManagerDetailComponent implements OnInit {
     }
   });
 
-  /** Whether to show the "Map files to metadata and archive" button. */
-  showMapFilesButton = computed<boolean>(() => this.uploadBox()?.state === 'locked');
-
   /**
    * Check if an upload grant is currently active.
    * @param grant - the upload grant to check
@@ -211,6 +210,14 @@ export class UploadBoxManagerDetailComponent implements OnInit {
       default:
         return 'text-warning';
     }
+  }
+
+  /**
+   * Handle the archived event from the mapping component by reloading the box.
+   */
+  onBoxArchived(): void {
+    const id = this.id();
+    if (id) this.#uploadBoxService.loadUploadBox(id);
   }
 
   /**

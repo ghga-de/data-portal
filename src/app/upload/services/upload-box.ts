@@ -9,6 +9,7 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { AuthService } from '@app/auth/services/auth';
 import { ConfigService } from '@app/shared/services/config';
 import { map, Observable, tap } from 'rxjs';
+import { AccessionMapRequest } from '../models/accession-map';
 import {
   BoxRetrievalResults,
   ResearchDataUploadBox,
@@ -449,6 +450,19 @@ export class UploadBoxService {
 
         return grantId;
       }),
+    );
+  }
+
+  /**
+   * Submit a file accession mapping for an upload box, causing it to be archived.
+   * @param boxId - the ID of the upload box
+   * @param request - the accession map request payload
+   * @returns An observable that completes when the mapping is accepted
+   */
+  submitFileMapping(boxId: string, request: AccessionMapRequest): Observable<void> {
+    return this.#http.post<void>(
+      `${this.#boxesUrl}/${encodeURIComponent(boxId)}/file-ids`,
+      request,
     );
   }
 
