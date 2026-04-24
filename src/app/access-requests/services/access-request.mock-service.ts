@@ -76,9 +76,4 @@ export class MockAccessRequestService {
   allAccessGrantsFiltered = () => accessGrants;
   revokeAccessGrant = async (id: string) => undefined;
   loadAccessRequest = (id: string) => undefined;
-  userExtId = {
-    isLoading: signal(false),
-    error: signal<unknown>(undefined),
-    value: signal<string | undefined>('ls-id-of-joe@ls-aai.dev'),
-  };
 }

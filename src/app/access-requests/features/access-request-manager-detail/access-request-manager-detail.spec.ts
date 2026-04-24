@@ -65,6 +65,11 @@ describe('AccessRequestManagerDetailComponent', () => {
 
     fixture.componentRef.setInput('id', '9409db13-e23e-433e-9afa-544d8f25b720');
 
+    TestBed.tick();
+    const req = httpMock.expectOne('http://mock.dev/auth/users/doe@test.dev');
+    expect(req.request.method).toBe('GET');
+    req.flush({ ext_id: 'ls-id-of-joe@ls-aai.dev' });
+
     await fixture.whenStable();
   });
 

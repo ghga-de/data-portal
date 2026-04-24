@@ -452,23 +452,4 @@ export class AccessRequestService {
       .delete<null>(`${this.#arsGrantUrl}/${id}`)
       .pipe(tap(() => this.#removeGrantLocally(id)));
   }
-
-  /**
-   * Computed signal for the user ID of the access request.
-   */
-  #requestUserId = computed(() => this.accessRequest.value()?.user_id);
-
-  /**
-   * Signal for the external ID of the user who made the access request.
-   */
-  userExtId = httpResource<string | undefined>(
-    () => {
-      const userId = this.#requestUserId();
-      return userId ? `${this.#config.authUrl}/users/${userId}` : undefined;
-    },
-    {
-      parse: (raw) => (raw as { ext_id: string }).ext_id,
-      defaultValue: undefined,
-    },
-  );
 }
