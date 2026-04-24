@@ -98,6 +98,17 @@ describe('UploadBoxService', () => {
   });
 
   afterEach(() => {
+    // userGrants now loads reactively from auth state; drain any unmatched requests
+    // so tests that don't care about this resource can keep focused assertions.
+    httpMock
+      .match((req) =>
+        req.urlWithParams ===
+        'http://mock.dev/uos/access-grants?userid=doe%40test.dev&valid=true'
+          ? true
+          : false,
+      )
+      .forEach((req) => req.flush([]));
+
     httpMock.verify();
   });
 
@@ -413,6 +424,8 @@ describe('UploadBoxService', () => {
         user_title: 'Dr.',
         box_title: 'Upload Box Alpha',
         box_description: 'First upload box for stewardship tests',
+        box_state: UploadBoxState.open,
+        box_version: 1,
       },
       {
         id: 'grant-002',
@@ -427,12 +440,13 @@ describe('UploadBoxService', () => {
         user_title: null,
         box_title: 'Upload Box Beta',
         box_description: 'Second upload box for stewardship tests',
+        box_state: UploadBoxState.locked,
+        box_version: 2,
       },
     ];
-
-    it('should fetch access grants without filters', () => {
+    it('should fetch upload grants without filters', () => {
       let result: GrantWithBoxInfo[] | undefined;
-      service.getAccessGrants().subscribe((grants) => (result = grants));
+      service.getUploadGrants().subscribe((grants) => (result = grants));
 
       const req = httpMock.expectOne('http://mock.dev/uos/access-grants');
       expect(req.request.method).toBe('GET');
@@ -443,7 +457,7 @@ describe('UploadBoxService', () => {
     });
 
     it('should pass userid query param when userId is provided', () => {
-      service.getAccessGrants({ userId: 'user-abc' }).subscribe();
+      service.getUploadGrants({ userId: 'user-abc' }).subscribe();
 
       const req = httpMock.expectOne(
         'http://mock.dev/uos/access-grants?userid=user-abc',
@@ -456,7 +470,7 @@ describe('UploadBoxService', () => {
 
     it('should pass box_id query param when boxId is provided', () => {
       const boxId = '0a36607a-b53f-49ed-bf3e-a5f2dbc68001';
-      service.getAccessGrants({ boxId }).subscribe();
+      service.getUploadGrants({ boxId }).subscribe();
 
       const req = httpMock.expectOne(
         `http://mock.dev/uos/access-grants?box_id=${boxId}`,
@@ -468,7 +482,7 @@ describe('UploadBoxService', () => {
     });
 
     it('should pass valid=true when valid is true', () => {
-      service.getAccessGrants({ valid: true }).subscribe();
+      service.getUploadGrants({ valid: true }).subscribe();
 
       const req = httpMock.expectOne('http://mock.dev/uos/access-grants?valid=true');
       expect(req.request.params.get('valid')).toBe('true');
@@ -476,7 +490,7 @@ describe('UploadBoxService', () => {
     });
 
     it('should pass valid=false when valid is false', () => {
-      service.getAccessGrants({ valid: false }).subscribe();
+      service.getUploadGrants({ valid: false }).subscribe();
 
       const req = httpMock.expectOne('http://mock.dev/uos/access-grants?valid=false');
       expect(req.request.params.get('valid')).toBe('false');
@@ -484,7 +498,7 @@ describe('UploadBoxService', () => {
     });
 
     it('should omit valid query param when valid is null', () => {
-      service.getAccessGrants({ valid: null }).subscribe();
+      service.getUploadGrants({ valid: null }).subscribe();
 
       const req = httpMock.expectOne('http://mock.dev/uos/access-grants');
       expect(req.request.params.has('valid')).toBe(false);
@@ -493,7 +507,7 @@ describe('UploadBoxService', () => {
 
     it('should pass all filter params when all are provided', () => {
       const boxId = '0a36607a-b53f-49ed-bf3e-a5f2dbc68001';
-      service.getAccessGrants({ userId: 'user-abc', boxId, valid: true }).subscribe();
+      service.getUploadGrants({ userId: 'user-abc', boxId, valid: true }).subscribe();
 
       const req = httpMock.expectOne(
         (r) =>
@@ -508,7 +522,7 @@ describe('UploadBoxService', () => {
 
     it('should propagate a 401 error when not authenticated', () => {
       let caughtError: HttpErrorResponse | undefined;
-      service.getAccessGrants().subscribe({ error: (err) => (caughtError = err) });
+      service.getUploadGrants().subscribe({ error: (err) => (caughtError = err) });
 
       const req = httpMock.expectOne('http://mock.dev/uos/access-grants');
       req.flush(
@@ -522,7 +536,7 @@ describe('UploadBoxService', () => {
 
     it('should propagate a 404 error when the endpoint is not found', () => {
       let caughtError: HttpErrorResponse | undefined;
-      service.getAccessGrants().subscribe({ error: (err) => (caughtError = err) });
+      service.getUploadGrants().subscribe({ error: (err) => (caughtError = err) });
 
       const req = httpMock.expectOne('http://mock.dev/uos/access-grants');
       req.flush({ detail: 'not found' }, { status: 404, statusText: 'Not Found' });
