@@ -49,26 +49,26 @@ describe('MetadataService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should return an empty file map for studies without datasets', async () => {
+  it('should return an empty file list for studies without datasets', async () => {
     const study: Study = {
       ...emptyStudy,
       accession: 'STU1',
       datasets: [],
     };
 
-    const fileMap = await firstValueFrom(service.fetchStudyFileMap(study));
+    const files = await firstValueFrom(service.filesOfStudy(study));
 
-    expect(fileMap.size).toBe(0);
+    expect(files).toEqual([]);
   });
 
-  it('should build a deduplicated file map from all *_files fields', async () => {
+  it('should build a deduplicated file list from all *_files fields', async () => {
     const study: Study = {
       ...emptyStudy,
       accession: 'STU1',
       datasets: ['DS1', 'DS2'],
     };
 
-    const fileMapPromise = firstValueFrom(service.fetchStudyFileMap(study));
+    const filesPromise = firstValueFrom(service.filesOfStudy(study));
 
     const ds1Req = httpMock.expectOne(
       'http://mock.dev/metldata/artifacts/embedded_public/classes/EmbeddedDataset/resources/DS1',
@@ -109,6 +109,7 @@ describe('MetadataService', () => {
       experiment_method_supporting_files: [
         {
           accession: 'FILE-3',
+          alias: 'ALIAS-3',
           format: 'CRAM',
           name: 'third-file',
           ega_accession: 'EGA3',
@@ -127,21 +128,25 @@ describe('MetadataService', () => {
       ],
     });
 
-    const fileMap = await fileMapPromise;
+    const files = await filesPromise;
+    const filesByAccession = new Map(files.map((file) => [file.accession, file]));
 
-    expect(fileMap.size).toBe(3);
-    expect(fileMap.get('FILE-1')).toEqual({
+    expect(files).toHaveLength(3);
+    expect(filesByAccession.get('FILE-1')).toEqual({
+      accession: 'FILE-1',
       alias: 'ALIAS-1',
       name: 'first-file',
       format: 'BAM',
     });
-    expect(fileMap.get('FILE-2')).toEqual({
+    expect(filesByAccession.get('FILE-2')).toEqual({
+      accession: 'FILE-2',
       alias: 'ALIAS-2',
       name: 'second-file',
       format: 'VCF',
     });
-    expect(fileMap.get('FILE-3')).toEqual({
-      alias: '',
+    expect(filesByAccession.get('FILE-3')).toEqual({
+      accession: 'FILE-3',
+      alias: 'ALIAS-3',
       name: 'third-file',
       format: 'CRAM',
     });
@@ -154,13 +159,13 @@ describe('MetadataService', () => {
       datasets: ['DS1'],
     };
 
-    const fileMapPromise = firstValueFrom(service.fetchStudyFileMap(study));
+    const filesPromise = firstValueFrom(service.filesOfStudy(study));
 
     const req = httpMock.expectOne(
       'http://mock.dev/metldata/artifacts/embedded_public/classes/EmbeddedDataset/resources/DS1',
     );
     req.flush({ detail: 'failed' }, { status: 500, statusText: 'Server Error' });
 
-    await expect(fileMapPromise).rejects.toBeDefined();
+    await expect(filesPromise).rejects.toBeDefined();
   });
 });

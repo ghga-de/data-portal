@@ -7,7 +7,7 @@
 import { HttpClient, httpResource } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { ConfigService } from '@app/shared/services/config';
-import { concatMap, from, Observable, reduce } from 'rxjs';
+import { concatMap, from, map, Observable, reduce } from 'rxjs';
 import {
   DatasetDetails,
   DatasetDetailsRaw,
@@ -16,7 +16,7 @@ import {
   ExperimentMethod,
   Individual,
 } from '../models/dataset-details';
-import { EmFileDescriptor } from '../models/dataset-information';
+import { EmFile } from '../models/dataset-information';
 import { DatasetSummary, emptyDatasetSummary } from '../models/dataset-summary';
 import { emptyStudy, Study } from '../models/study';
 
@@ -104,12 +104,14 @@ export class MetadataService {
   }
 
   /**
-   * Fetch a map of unique files for a study, keyed by file accession.
+   * Fetch the unique files for a study.
+   *
+   * Unfortunately, this method is not efficient, but it is only used temporarily
+   * until we switch to a study-based backend.
    * @param study Study containing the list of dataset accessions to inspect
-   * @returns An observable emitting a map from file accession to descriptor
-   * (name, alias and format)
+   * @returns An observable emitting a list of unique EM files
    */
-  fetchStudyFileMap(study: Study): Observable<Map<string, EmFileDescriptor>> {
+  filesOfStudy(study: Study): Observable<EmFile[]> {
     return from(study.datasets).pipe(
       concatMap((datasetAccession) =>
         this.#http.get<DatasetDetails>(
@@ -124,18 +126,20 @@ export class MetadataService {
 
         return from(propertyValue);
       }),
-      reduce((fileMap, file) => {
-        if (!this.#isDatasetFile(file) || fileMap.has(file.accession)) {
-          return fileMap;
+      reduce((filesByAccession, file) => {
+        if (!this.#isDatasetFile(file) || filesByAccession.has(file.accession)) {
+          return filesByAccession;
         }
 
-        fileMap.set(file.accession, {
-          alias: file.alias ?? '',
+        filesByAccession.set(file.accession, {
+          accession: file.accession,
+          alias: file.alias,
           name: file.name,
           format: file.format,
         });
-        return fileMap;
-      }, new Map<string, EmFileDescriptor>()),
+        return filesByAccession;
+      }, new Map<string, EmFile>()),
+      map((filesByAccession) => Array.from(filesByAccession.values())),
     );
   }
 
@@ -186,7 +190,7 @@ export class MetadataService {
    * @param value Value from a dynamic dataset details property
    * @returns True when value is a dataset file with required fields
    */
-  #isDatasetFile(value: unknown): value is DatasetFile {
+  #isDatasetFile(value: unknown): value is DatasetFile & { alias: string } {
     if (!value || typeof value !== 'object') {
       return false;
     }
@@ -194,6 +198,7 @@ export class MetadataService {
     const candidate = value as Partial<DatasetFile>;
     return (
       typeof candidate.accession === 'string' &&
+      typeof candidate.alias === 'string' &&
       typeof candidate.name === 'string' &&
       typeof candidate.format === 'string'
     );

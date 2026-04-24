@@ -18,7 +18,8 @@ export interface FileInformation {
   storage_alias?: string;
 }
 
-export interface EmFileDescriptor {
+export interface EmFile {
+  accession: string;
   alias: string;
   name: string;
   format: string;

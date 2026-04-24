@@ -193,7 +193,7 @@ export class MetadataSearchService {
   }
 
   /**
-   * Fetch a map of all studies keyed by study accession.
+   * Load a map of all studies keyed by study accession.
    *
    * Because there is no dedicated backend endpoint for listing studies, this
    * method first fetches all dataset IDs via a MASS search, then walks each
@@ -201,17 +201,11 @@ export class MetadataSearchService {
    * individually. Dataset IDs that are already accounted for by a fetched
    * study's datasets list are skipped so each study is fetched at most once.
    *
-   * This approach is a bit inefficient, but it is only temporary until we
-   * switch to a study-based backend.
+   * Unfortunately, this method is not efficient, but it is only used temporarily
+   * until we switch to a study-based backend.
    * @returns An observable that emits a Map from study accession to Study
    */
-  fetchStudyMap(): Observable<Map<string, Study>> {
-    const initialState: StudyMapAccumulator = {
-      studyMap: new Map<string, Study>(),
-      skippedDatasetIds: new Set<string>(),
-      fetchedStudyAccessions: new Set<string>(),
-    };
-
+  loadStudiesMap(): Observable<Map<string, Study>> {
     return this.#http
       .get<SearchResults>(`${this.#searchUrl}?class_name=EmbeddedDataset`)
       .pipe(
@@ -256,7 +250,11 @@ export class MetadataSearchService {
                 }, acc),
               );
           },
-          initialState,
+          {
+            studyMap: new Map<string, Study>(),
+            skippedDatasetIds: new Set<string>(),
+            fetchedStudyAccessions: new Set<string>(),
+          },
           1,
         ),
         last(),
