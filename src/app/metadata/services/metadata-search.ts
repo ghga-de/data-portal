@@ -7,7 +7,17 @@
 import { HttpClient, httpResource } from '@angular/common/http';
 import { Injectable, Signal, computed, inject, signal } from '@angular/core';
 import { ConfigService } from '@app/shared/services/config';
-import { lastValueFrom } from 'rxjs';
+import {
+  Observable,
+  concatMap,
+  from,
+  last,
+  map,
+  mergeMap,
+  mergeScan,
+  of,
+  reduce,
+} from 'rxjs';
 import { DatasetSummary } from '../models/dataset-summary';
 import { FacetFilterSetting } from '../models/facet-filter';
 import {
@@ -17,6 +27,12 @@ import {
   emptySearchResults,
 } from '../models/search-results';
 import { Study } from '../models/study';
+
+interface StudyMapAccumulator {
+  studyMap: Map<string, Study>;
+  skippedDatasetIds: Set<string>;
+  fetchedStudyAccessions: Set<string>;
+}
 
 /**
  * Metadata search service
@@ -187,41 +203,64 @@ export class MetadataSearchService {
    *
    * This approach is a bit inefficient, but it is only temporary until we
    * switch to a study-based backend.
-   * @returns A promise that resolves to a Map from study accession to Study
+   * @returns An observable that emits a Map from study accession to Study
    */
-  async fetchStudyMap(): Promise<Map<string, Study>> {
-    const searchResults = await lastValueFrom(
-      this.#http.get<SearchResults>(`${this.#searchUrl}?class_name=EmbeddedDataset`),
-    );
+  fetchStudyMap(): Observable<Map<string, Study>> {
+    const initialState: StudyMapAccumulator = {
+      studyMap: new Map<string, Study>(),
+      skippedDatasetIds: new Set<string>(),
+      fetchedStudyAccessions: new Set<string>(),
+    };
 
-    const datasetIdSet = new Set<string>(searchResults.hits.map((hit) => hit.id_));
-    const studyMap = new Map<string, Study>();
+    return this.#http
+      .get<SearchResults>(`${this.#searchUrl}?class_name=EmbeddedDataset`)
+      .pipe(
+        map((searchResults) => searchResults.hits.map((hit) => hit.id_)),
+        mergeMap((datasetIds) => from(datasetIds)),
+        mergeScan(
+          (acc: StudyMapAccumulator, datasetId: string) => {
+            if (acc.skippedDatasetIds.has(datasetId)) {
+              return of(acc);
+            }
 
-    while (datasetIdSet.size > 0) {
-      const datasetId = datasetIdSet.values().next().value as string;
+            return this.#http
+              .get<DatasetSummary>(`${this.#datasetSummaryUrl}/${datasetId}`)
+              .pipe(
+                mergeMap((summary) => from(summary.studies_summary.stats.accession)),
+                concatMap((studyAccession) => {
+                  if (acc.fetchedStudyAccessions.has(studyAccession)) {
+                    return of(undefined);
+                  }
 
-      const summary = await lastValueFrom(
-        this.#http.get<DatasetSummary>(`${this.#datasetSummaryUrl}/${datasetId}`),
+                  return this.#http.get<Study>(`${this.#studyUrl}/${studyAccession}`);
+                }),
+                reduce((datasetAcc: StudyMapAccumulator, study: Study | undefined) => {
+                  if (!study) {
+                    return datasetAcc;
+                  }
+
+                  const studyMap = new Map(datasetAcc.studyMap);
+                  studyMap.set(study.accession, study);
+
+                  const skippedDatasetIds = new Set(datasetAcc.skippedDatasetIds);
+                  for (const linkedDatasetId of study.datasets) {
+                    skippedDatasetIds.add(linkedDatasetId);
+                  }
+
+                  const fetchedStudyAccessions = new Set(
+                    datasetAcc.fetchedStudyAccessions,
+                  );
+                  fetchedStudyAccessions.add(study.accession);
+
+                  return { studyMap, skippedDatasetIds, fetchedStudyAccessions };
+                }, acc),
+              );
+          },
+          initialState,
+          1,
+        ),
+        last(),
+        map((acc) => acc.studyMap),
       );
-
-      for (const studyAccession of summary.studies_summary.stats.accession) {
-        if (studyMap.has(studyAccession)) {
-          continue;
-        }
-
-        const study = await lastValueFrom(
-          this.#http.get<Study>(`${this.#studyUrl}/${studyAccession}`),
-        );
-        studyMap.set(studyAccession, study);
-
-        for (const linkedDatasetId of study.datasets) {
-          datasetIdSet.delete(linkedDatasetId);
-        }
-      }
-
-      datasetIdSet.delete(datasetId);
-    }
-
-    return studyMap;
   }
 }
