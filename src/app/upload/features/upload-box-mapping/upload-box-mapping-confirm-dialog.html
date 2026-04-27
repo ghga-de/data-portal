@@ -5,11 +5,11 @@
       <div class="flex items-center gap-2 font-semibold">
         <mat-icon fontIcon="error" />
         @if (data.unmappedBoxFileAliases.length === 1) {
-          <span>The following file in the upload box cannot be mapped:</span>
+          <span>The following file in the upload box has not been mapped:</span>
         } @else {
           <span
-            >{{ data.unmappedBoxFileAliases.length }} files in the upload box cannot be
-            mapped.</span
+            >{{ data.unmappedBoxFileAliases.length }} files in the upload box have not
+            been mapped.</span
           >
         }
       </div>
@@ -31,14 +31,16 @@
   }
 
   @if (data.unmappedMetaFileNames.length > 0) {
-    <div class="border-warning bg-warning/10 text-warning mt-4 rounded border px-3 pt-3 pb-2">
+    <div
+      class="border-warning bg-warning/10 text-warning mt-4 rounded border px-3 pt-3 pb-2"
+    >
       <div class="flex items-center gap-2 font-semibold">
         <mat-icon fontIcon="warning" />
         @if (data.unmappedMetaFileNames.length === 1) {
-          <span>The following metadata file is not mapped:</span>
+          <span>The following metadata file has not been mapped:</span>
         } @else {
           <span
-            >{{ data.unmappedMetaFileNames.length }} metadata files are not
+            >{{ data.unmappedMetaFileNames.length }} metadata files have not been
             mapped.</span
           >
         }
@@ -60,13 +62,19 @@
     </div>
   }
 
-  <p class="mt-4">
-    This action is <strong>irreversible</strong>. The upload box will be archived with
-    the specified mapping and cannot be modified afterwards.
-  </p>
+  @if (data.unmappedBoxFileAliases.length === 0) {
+    <p class="mt-4">
+      This action is <strong>irreversible</strong>. The upload box will be archived with
+      the specified mapping and cannot be modified afterwards.
+    </p>
+  }
 
   @if (data.unmappedBoxFileAliases.length === 0) {
-    <mat-checkbox class="mt-4" [checked]="confirmed()" (change)="confirmed.set($event.checked)">
+    <mat-checkbox
+      class="mt-4"
+      [checked]="confirmed()"
+      (change)="confirmed.set($event.checked)"
+    >
       I understand this action cannot be undone
     </mat-checkbox>
   }
