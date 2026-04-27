@@ -1579,14 +1579,19 @@ export const uploadBoxTestDatasetSummary: DatasetSummary = {
   },
   experiments_summary: { count: 1, stats: { experiment_methods: [] } },
   files_summary: {
-    count: 12,
+    count: 16,
     stats: {
       format: [
-        { value: 'FASTQ', count: 5 },
+        { value: 'FASTQ', count: 6 },
         { value: 'BAM', count: 2 },
         { value: 'CRAM', count: 1 },
-        { value: 'VCF', count: 2 },
+        { value: 'VCF', count: 1 },
         { value: 'BED', count: 2 },
+        { value: 'FASTA', count: 1 },
+        { value: 'METH', count: 1 },
+        { value: 'RAW', count: 1 },
+        { value: 'PDF', count: 1 },
+        { value: 'CSV', count: 1 },
       ],
     },
   },
@@ -1595,10 +1600,9 @@ export const uploadBoxTestDatasetSummary: DatasetSummary = {
 /**
  * DatasetDetailsRaw for the upload-box-mapping test dataset.
  * `research_data_files` aliases/names are chosen to test all mapping scenarios:
- * - exact alias match (files 1–3, 5, 7–9)
+ * - exact alias match (files 1–3, 5, 7–9, 11–15)
  * - case-insensitive alias match (files 4, 6)
  * - exact name match only (file 10)
- * - no match at all (files 11–12)
  */
 export const uploadBoxTestDatasetDetails: DatasetDetailsRaw = {
   ...datasetDetails,
@@ -1690,16 +1694,44 @@ export const uploadBoxTestDatasetDetails: DatasetDetailsRaw = {
     {
       accession: 'GHGAF99999999999011',
       ega_accession: 'EGAF99999911',
-      alias: 'unmatched_metadata_file.vcf',
-      name: 'Unmatched Metadata File',
-      format: 'VCF',
+      alias: 'ms_proteomics_run1.raw',
+      name: 'MS Proteomics Run 1',
+      format: 'RAW',
     },
     {
       accession: 'GHGAF99999999999012',
       ega_accession: 'EGAF99999912',
-      alias: 'extra_metadata_file.fastq',
-      name: 'Extra Metadata File',
+      alias: 'study_data_manifest.pdf',
+      name: 'Study Data Manifest',
+      format: 'PDF',
+    },
+    {
+      accession: 'GHGAF99999999999013',
+      ega_accession: 'EGAF99999913',
+      alias: 'sample_003_R1.fastq.gz',
+      name: 'Sample 003 Read 1',
       format: 'FASTQ',
+    },
+    {
+      accession: 'GHGAF99999999999014',
+      ega_accession: 'EGAF99999914',
+      alias: 'aligned_reads_003.bam',
+      name: 'Aligned Reads 003',
+      format: 'BAM',
+    },
+    {
+      accession: 'GHGAF99999999999015',
+      ega_accession: 'EGAF99999915',
+      alias: 'chip_peaks_002.bed',
+      name: 'ChIP Peaks 002',
+      format: 'BED',
+    },
+    {
+      accession: 'GHGAF99999999999016',
+      ega_accession: 'EGAF99999916',
+      alias: 'some_unessential_data.csv',
+      name: 'Some Unessential Data',
+      format: 'CSV',
     },
   ],
 };

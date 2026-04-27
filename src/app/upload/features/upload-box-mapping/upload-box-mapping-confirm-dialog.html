@@ -1,5 +1,5 @@
 <h2 mat-dialog-title>Confirm Mapping and Archive</h2>
-<div mat-dialog-content>
+<div mat-dialog-content class="!pb-2">
   @if (data.unmappedBoxFileAliases.length > 0) {
     <div class="border-error bg-error/10 text-error rounded border px-3 pt-3 pb-2">
       <div class="flex items-center gap-2 font-semibold">
@@ -32,7 +32,8 @@
 
   @if (data.unmappedMetaFileNames.length > 0) {
     <div
-      class="border-warning bg-warning/10 text-warning mt-4 rounded border px-3 pt-3 pb-2"
+      class="border-warning bg-warning/10 text-warning rounded border px-3 pt-3 pb-2"
+      [class.mt-4]="data.unmappedBoxFileAliases.length > 0"
     >
       <div class="flex items-center gap-2 font-semibold">
         <mat-icon fontIcon="warning" />
@@ -63,7 +64,7 @@
   }
 
   @if (data.unmappedBoxFileAliases.length === 0) {
-    <p class="mt-4">
+    <p [class.mt-4]="data.unmappedMetaFileNames.length > 0">
       This action is <strong>irreversible</strong>. The upload box will be archived with
       the specified mapping and cannot be modified afterwards.
     </p>
@@ -71,7 +72,7 @@
 
   @if (data.unmappedBoxFileAliases.length === 0) {
     <mat-checkbox
-      class="mt-4"
+      class="mt-2"
       [checked]="confirmed()"
       (change)="confirmed.set($event.checked)"
     >
@@ -81,8 +82,13 @@
 </div>
 <div mat-dialog-actions align="end">
   <button mat-button (click)="onCancel()">Cancel</button>
-  @if (canConfirm) {
-    <button mat-raised-button color="primary" (click)="onConfirm()">
+  @if (data.unmappedBoxFileAliases.length === 0) {
+    <button
+      mat-raised-button
+      color="primary"
+      [disabled]="!canConfirm"
+      (click)="onConfirm()"
+    >
       <mat-icon fontIcon="archive" />
       Confirm and Archive
     </button>

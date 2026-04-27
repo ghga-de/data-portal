@@ -285,15 +285,18 @@
                   mat-stroked-button
                   [disabled]="!canCancel()"
                   (click)="onCancel()"
-                  >Cancel</button
                 >
+                  <mat-icon fontIcon="cancel" />
+                  Cancel
+                </button>
               </div>
             </div>
           } @else if (pendingMappedField()) {
             <div class="flex flex-wrap items-center gap-3">
-              <button mat-stroked-button [disabled]="!canCancel()" (click)="onCancel()"
-                >Cancel</button
-              >
+              <button mat-stroked-button [disabled]="!canCancel()" (click)="onCancel()">
+                <mat-icon fontIcon="cancel" />
+                Cancel
+              </button>
             </div>
           }
         </div>
