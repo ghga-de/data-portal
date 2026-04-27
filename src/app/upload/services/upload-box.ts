@@ -35,9 +35,9 @@ export class UploadBoxService {
   #config = inject(ConfigService);
   #http = inject(HttpClient);
   #userId = computed<string | undefined>(() => this.#auth.user()?.id || undefined);
-  #uosUrl = this.#config.uosUrl;
-  #boxesUrl = `${this.#uosUrl}/boxes`;
-  #accessGrantsUrl = `${this.#uosUrl}/access-grants`;
+  #rsUrl = this.#config.rsUrl;
+  #boxesUrl = `${this.#rsUrl}/upload-boxes`;
+  #grantsUrl = `${this.#rsUrl}/upload-grants`;
   #wkvsUrl = this.#config.wkvsUrl;
   #storageLabelsUrl = `${this.#wkvsUrl}/values/storage_labels`;
 
@@ -85,7 +85,7 @@ export class UploadBoxService {
     () => {
       const boxId = this.#loadGrantsForBox();
       if (!boxId) return undefined;
-      return `${this.#accessGrantsUrl}?box_id=${encodeURIComponent(boxId)}`;
+      return `${this.#grantsUrl}?box_id=${encodeURIComponent(boxId)}`;
     },
     { defaultValue: [] },
   );
@@ -97,7 +97,7 @@ export class UploadBoxService {
     () => {
       const userId = this.#userId();
       if (!userId) return undefined;
-      return `${this.#accessGrantsUrl}?userid=${encodeURIComponent(userId)}&valid=true`;
+      return `${this.#grantsUrl}?userid=${encodeURIComponent(userId)}&valid=true`;
     },
     { defaultValue: [] },
   );
@@ -121,7 +121,7 @@ export class UploadBoxService {
     () => {
       const id = this.#loadSingleBox();
       if (!id) return undefined;
-      return `${this.#uosUrl}/box/${id}`;
+      return `${this.#boxesUrl}/${id}`;
     },
     {
       defaultValue: undefined,
@@ -213,7 +213,7 @@ export class UploadBoxService {
   }
 
   /**
-   * Trigger loading of all upload boxes from the UOS backend.
+   * Trigger loading of all upload boxes from the RS backend.
    */
   loadAllUploadBoxes(): void {
     this.#loadAllUploadBoxes.set(true);
@@ -374,7 +374,7 @@ export class UploadBoxService {
   }
 
   /**
-   * Fetch upload grants from the UOS backend.
+   * Fetch upload grants from the RS backend.
    * @param params - optional filter parameters
    * @param params.userId - filter by user ID (maps to the `userid` query param)
    * @param params.boxId - filter by box ID (maps to the `box_id` query param)
@@ -391,7 +391,7 @@ export class UploadBoxService {
     if (params?.boxId) httpParams = httpParams.set('box_id', params.boxId);
     if (params?.valid != null)
       httpParams = httpParams.set('valid', String(params.valid));
-    return this.#http.get<GrantWithBoxInfo[]>(this.#accessGrantsUrl, {
+    return this.#http.get<GrantWithBoxInfo[]>(this.#grantsUrl, {
       params: httpParams,
     });
   }
@@ -435,7 +435,7 @@ export class UploadBoxService {
       title: string | null;
     },
   ): Observable<GrantId> {
-    return this.#http.post<GrantId>(this.#accessGrantsUrl, data).pipe(
+    return this.#http.post<GrantId>(this.#grantsUrl, data).pipe(
       map((grantId) => {
         if (user) {
           this.#addGrantLocally({
@@ -513,7 +513,7 @@ export class UploadBoxService {
    * @returns An observable that completes when the grant is revoked
    */
   revokeUploadGrant(id: string): Observable<void> {
-    return this.#http.delete<void>(`${this.#accessGrantsUrl}/${id}`).pipe(
+    return this.#http.delete<void>(`${this.#grantsUrl}/${id}`).pipe(
       map((response) => {
         try {
           this.#revokeGrantLocally(id);
