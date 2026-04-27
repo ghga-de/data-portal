@@ -1690,7 +1690,7 @@ export const uploadBoxTestDatasetDetails: DatasetDetailsRaw = {
       name: 'methylation_sample_001.meth',
       format: 'METH',
     },
-    // No match at all:
+    // Further exact alias matches:
     {
       accession: 'GHGAF99999999999011',
       ega_accession: 'EGAF99999911',
@@ -1726,6 +1726,7 @@ export const uploadBoxTestDatasetDetails: DatasetDetailsRaw = {
       name: 'ChIP Peaks 002',
       format: 'BED',
     },
+    // No match in upload box (metadata-only):
     {
       accession: 'GHGAF99999999999016',
       ega_accession: 'EGAF99999916',

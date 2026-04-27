@@ -31,7 +31,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { RouterLink } from '@angular/router';
-import { concatMap, of, switchMap } from 'rxjs';
+import { catchError, concatMap, of, switchMap, throwError } from 'rxjs';
 
 import { EmFile } from '@app/metadata/models/dataset-information';
 import { Study } from '@app/metadata/models/study';
@@ -192,6 +192,9 @@ export class UploadBoxMappingComponent implements OnInit {
 
   /** Whether a mapping submission is in progress */
   isSubmitting = signal<boolean>(false);
+
+  /** Guard to prevent opening a second field-change confirmation dialog */
+  #fieldChangeDialogOpen = signal<boolean>(false);
 
   // Async data
 
@@ -447,17 +450,21 @@ export class UploadBoxMappingComponent implements OnInit {
   /**
    * Watch pending field changes; if manual mappings exist, ask for confirmation
    * before committing, otherwise commit immediately.
+   * A re-entry lock prevents a second dialog from opening while one is already
+   * open (e.g. if manualMappings changes reactively during dialog lifetime).
    */
   #fieldChangeEffect = effect(() => {
     const pending = this.pendingMappedField();
     const committed = this.committedMappedField();
     if (pending === committed) return;
+    if (this.#fieldChangeDialogOpen()) return;
 
     if (this.manualMappings().size === 0) {
       this.committedMappedField.set(pending);
       return;
     }
 
+    this.#fieldChangeDialogOpen.set(true);
     const ref = this.#dialog.open<ConfirmDialogComponent, ConfirmDialogData, boolean>(
       ConfirmDialogComponent,
       {
@@ -472,6 +479,7 @@ export class UploadBoxMappingComponent implements OnInit {
       },
     );
     ref.afterClosed().subscribe((confirmed) => {
+      this.#fieldChangeDialogOpen.set(false);
       if (confirmed) {
         this.manualMappings.set(new Map());
         this.committedMappedField.set(pending);
@@ -486,14 +494,6 @@ export class UploadBoxMappingComponent implements OnInit {
 
   /** @inheritdoc */
   ngOnInit(): void {
-    this.tableDataSource.sortingDataAccessor = (row, column) => {
-      if (column === 'metadataName') {
-        const field = this.committedMappedField();
-        return fileSortKey(field ? (row.metadataFile[field] ?? undefined) : undefined);
-      }
-      return fileSortKey(row.boxFile?.alias);
-    };
-
     const snapshot = this.#mappingStateService.snapshotFor(this.box().id);
     if (snapshot) {
       this.selectedStudyAccession.set(snapshot.studyAccession);
@@ -628,8 +628,9 @@ export class UploadBoxMappingComponent implements OnInit {
     const metaFiles = this.metadataFiles();
     const field = this.committedMappedField();
 
+    const unmappedBoxFileIds = this.unusedBoxFileIds();
     const unmappedBoxFileAliases = boxFiles
-      .filter((bf) => !Array.from(effective.values()).includes(bf.id))
+      .filter((bf) => unmappedBoxFileIds.has(bf.id))
       .map((bf) => bf.alias);
 
     const unmappedMetaFileNames = metaFiles
@@ -673,8 +674,11 @@ export class UploadBoxMappingComponent implements OnInit {
         mapping,
       })
       .pipe(
+        catchError(() => throwError(() => 'mapping' as const)),
         concatMap(() =>
-          this.#uploadBoxService.archiveUploadBox(box.id, box.version + 1),
+          this.#uploadBoxService
+            .archiveUploadBox(box.id, box.version + 1)
+            .pipe(catchError(() => throwError(() => 'archival' as const))),
         ),
       )
       .subscribe({
@@ -686,10 +690,12 @@ export class UploadBoxMappingComponent implements OnInit {
           );
           this.archived.emit();
         },
-        error: () => {
+        error: (phase: 'mapping' | 'archival') => {
           this.isSubmitting.set(false);
           this.#notificationService.showError(
-            'Failed to submit the file mapping. Please try again.',
+            phase === 'archival'
+              ? 'Mapping was submitted but archival failed.'
+              : 'Failed to submit the file mapping.',
           );
         },
       });

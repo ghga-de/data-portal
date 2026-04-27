@@ -86,7 +86,7 @@
     <button
       mat-raised-button
       color="primary"
-      [disabled]="!canConfirm"
+      [disabled]="!canConfirm()"
       (click)="onConfirm()"
     >
       <mat-icon fontIcon="archive" />

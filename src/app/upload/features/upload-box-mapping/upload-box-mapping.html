@@ -74,14 +74,13 @@
               [value]="pendingMappedField() ?? null"
               (change)="pendingMappedField.set($event.value)"
               class="flex gap-4"
-              style="--mat-radio-label-text-size: 1rem"
             >
               <mat-radio-button value="alias">File alias</mat-radio-button>
               <mat-radio-button value="name">File name</mat-radio-button>
             </mat-radio-group>
           </div>
 
-          <!-- File counts summary and filter/table/buttons (only when field is committed) -->
+          <!-- File counts summary, filter, table, and buttons (only when field is committed) -->
           @if (committedMappedField()) {
             <div class="flex text-base">
               <span class="w-1/2 pl-4"
@@ -111,10 +110,8 @@
                 </button>
               }
             </mat-form-field>
-          }
 
-          <!-- Mapping table -->
-          @if (committedMappedField()) {
+            <!-- Mapping table -->
             <div class="overflow-x-auto">
               <table
                 mat-table
@@ -200,6 +197,9 @@
                           [ngModel]="inlineInputValue()"
                           (ngModelChange)="inlineInputValue.set($event)"
                           [matAutocomplete]="autocomplete"
+                          [attr.aria-label]="
+                            'Map upload box file for ' + row.metadataFile.alias
+                          "
                           placeholder="Type or select file name in upload box…"
                           (keydown.enter)="commitInlineEdit(row)"
                           (keydown.escape)="editingMetaAccession.set(null)"
@@ -233,6 +233,12 @@
                         [title]="
                           'Click to ' + (row.boxFile ? 'change' : 'set') + ' mapping'
                         "
+                        [attr.aria-label]="
+                          'Click to ' +
+                          (row.boxFile ? 'change' : 'set') +
+                          ' mapping for ' +
+                          row.metadataFile.alias
+                        "
                       >
                         @if (row.boxFile) {
                           <span
@@ -262,10 +268,8 @@
                 aria-label="Select page of file mappings"
               ></mat-paginator>
             </div>
-          }
 
-          <!-- Action buttons -->
-          @if (committedMappedField()) {
+            <!-- Action buttons -->
             <div class="mt-4 flex w-full flex-wrap items-center justify-between gap-3">
               <button
                 mat-raised-button

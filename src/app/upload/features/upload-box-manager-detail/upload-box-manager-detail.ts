@@ -221,9 +221,11 @@ export class UploadBoxManagerDetailComponent implements OnInit {
   }
 
   /**
-   * Handle the archived event from the mapping component by reloading the box.
+   * Handle the archived event from the mapping component by clearing the cached
+   * box and reloading fresh data, so the UI transitions out of the locked state.
    */
   onBoxArchived(): void {
+    this.#cachedBox.set(undefined);
     const id = this.id();
     if (id) this.#uploadBoxService.loadUploadBox(id);
   }

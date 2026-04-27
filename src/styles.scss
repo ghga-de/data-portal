@@ -466,6 +466,10 @@ mat-expansion-panel {
   );
 }
 
+.mat-mdc-radio-group {
+  --mat-radio-label-text-size: 1rem;
+}
+
 table[mat-table].bold-table-headers {
   @include mat.table-overrides(
     (

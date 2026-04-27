@@ -4,7 +4,13 @@
  * @license Apache-2.0
  */
 
-import { Component, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import {
@@ -42,6 +48,7 @@ export interface MappingConfirmDialogData {
     MatIconModule,
   ],
   templateUrl: './upload-box-mapping-confirm-dialog.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UploadBoxMappingConfirmDialogComponent {
   #dialogRef = inject(MatDialogRef<UploadBoxMappingConfirmDialogComponent, boolean>);
@@ -50,13 +57,10 @@ export class UploadBoxMappingConfirmDialogComponent {
   /** Whether the user has ticked the confirmation checkbox */
   protected confirmed = signal<boolean>(false);
 
-  /**
-   * Whether the confirm button should be enabled.
-   * @returns true when all box files are mapped and the user confirmed the checkbox
-   */
-  protected get canConfirm(): boolean {
-    return this.confirmed() && this.data.unmappedBoxFileAliases.length === 0;
-  }
+  /** Whether the confirm button should be enabled */
+  protected canConfirm = computed<boolean>(
+    () => this.confirmed() && this.data.unmappedBoxFileAliases.length === 0,
+  );
 
   /** Close the dialog with a positive result */
   protected onConfirm(): void {
