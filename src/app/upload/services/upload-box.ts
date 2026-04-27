@@ -466,7 +466,7 @@ export class UploadBoxService {
   }
 
   /**
-   * Apply a submitted file mapping locally: stamp accessions onto boxFileUploads
+   * Apply a submitted file mapping locally: add accessions to boxFileUploads
    * and increment the box version in all local caches.
    * @param boxId - the ID of the upload box
    * @param request - the submitted accession map request

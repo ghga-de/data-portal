@@ -13,7 +13,7 @@ export interface MappingSnapshot {
   studyAccession: string | undefined;
   /** The committed mapped field */
   mappedField: MappedField | undefined;
-  /** Manual mappings serialised as an entries array */
+  /** Manual mappings serialised as Map entries (JSON-serialisable) */
   manualMappings: [string, string | null][];
 }
 

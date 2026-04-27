@@ -58,9 +58,7 @@ export class UploadBoxMappingConfirmDialogComponent {
   protected confirmed = signal<boolean>(false);
 
   /** Whether the confirm button should be enabled */
-  protected canConfirm = computed<boolean>(
-    () => this.confirmed() && this.data.unmappedBoxFileAliases.length === 0,
-  );
+  protected canConfirm = computed<boolean>(() => this.confirmed());
 
   /** Close the dialog with a positive result */
   protected onConfirm(): void {

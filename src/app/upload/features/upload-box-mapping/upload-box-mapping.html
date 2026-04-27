@@ -73,7 +73,7 @@
             <mat-radio-group
               [value]="pendingMappedField() ?? null"
               (change)="pendingMappedField.set($event.value)"
-              class="flex gap-4"
+              class="flex gap-4 larger-mat-radio-label"
             >
               <mat-radio-button value="alias">File alias</mat-radio-button>
               <mat-radio-button value="name">File name</mat-radio-button>
@@ -198,7 +198,10 @@
                           (ngModelChange)="inlineInputValue.set($event)"
                           [matAutocomplete]="autocomplete"
                           [attr.aria-label]="
-                            'Map upload box file for ' + row.metadataFile.alias
+                            'Map upload box file for ' +
+                            (committedMappedField() === 'name'
+                              ? row.metadataFile.name
+                              : row.metadataFile.alias)
                           "
                           placeholder="Type or select file name in upload box…"
                           (keydown.enter)="commitInlineEdit(row)"
@@ -285,11 +288,7 @@
                   <mat-icon fontIcon="refresh" />
                   Reset
                 </button>
-                <button
-                  mat-stroked-button
-                  [disabled]="!canCancel()"
-                  (click)="onCancel()"
-                >
+                <button mat-stroked-button (click)="onCancel()">
                   <mat-icon fontIcon="cancel" />
                   Cancel
                 </button>
@@ -297,7 +296,7 @@
             </div>
           } @else if (pendingMappedField()) {
             <div class="flex flex-wrap items-center gap-3">
-              <button mat-stroked-button [disabled]="!canCancel()" (click)="onCancel()">
+              <button mat-stroked-button (click)="onCancel()">
                 <mat-icon fontIcon="cancel" />
                 Cancel
               </button>

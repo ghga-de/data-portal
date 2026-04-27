@@ -1582,7 +1582,7 @@ export const uploadBoxTestDatasetSummary: DatasetSummary = {
     count: 16,
     stats: {
       format: [
-        { value: 'FASTQ', count: 6 },
+        { value: 'FASTQ', count: 5 },
         { value: 'BAM', count: 2 },
         { value: 'CRAM', count: 1 },
         { value: 'VCF', count: 1 },

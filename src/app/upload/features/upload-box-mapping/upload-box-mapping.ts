@@ -283,7 +283,7 @@ export class UploadBoxMappingComponent implements OnInit {
     () => this.metadataFiles().length - this.mappedMetaCount(),
   );
 
-  /** Number of mappings that came from auto-matching (exact) */
+  /** Number of auto-matched mappings not overridden by a manual entry */
   exactMatchCount = computed(() => {
     let count = 0;
     const auto = this.autoMappings();
@@ -329,7 +329,10 @@ export class UploadBoxMappingComponent implements OnInit {
       let mappingType: MappingRow['mappingType'] = 'none';
       if (boxFileId) {
         const manualEntry = manual.get(meta.accession);
-        const isManuallySet = manualEntry !== undefined && manualEntry !== null;
+        const isManuallySet =
+          manualEntry !== undefined &&
+          manualEntry !== null &&
+          manualEntry !== auto.get(meta.accession);
         const isAutoMatch =
           auto.has(meta.accession) && auto.get(meta.accession) === boxFileId;
         mappingType = !isManuallySet && isAutoMatch ? 'exact' : 'manual';
@@ -534,12 +537,10 @@ export class UploadBoxMappingComponent implements OnInit {
       // Find a matching box file
       const lower = alias.toLowerCase();
       const exact = this.boxFiles().find((bf) => bf.alias === alias);
-      const caseMatch = exact
-        ? exact
-        : this.boxFiles().filter((bf) => bf.alias.toLowerCase() === lower);
-      const match =
-        exact ??
-        (Array.isArray(caseMatch) && caseMatch.length === 1 ? caseMatch[0] : undefined);
+      const caseMatches = !exact
+        ? this.boxFiles().filter((bf) => bf.alias.toLowerCase() === lower)
+        : [];
+      const match = exact ?? (caseMatches.length === 1 ? caseMatches[0] : undefined);
 
       if (match) {
         const isUnused = this.unusedBoxFileIds().has(match.id);
@@ -722,7 +723,4 @@ export class UploadBoxMappingComponent implements OnInit {
 
   /** Whether the Reset button should be enabled */
   canReset = computed<boolean>(() => this.manualMappings().size > 0);
-
-  /** Whether the Cancel button should be enabled */
-  canCancel = computed<boolean>(() => !!this.selectedStudyAccession());
 }
