@@ -359,7 +359,16 @@ export class UploadBoxMappingComponent implements OnInit {
     const currentBoxId = editingAcc
       ? this.effectiveMappings().get(editingAcc)
       : undefined;
-    const query = this.inlineInputValue().toLowerCase();
+    const query = this.inlineInputValue().toLowerCase().trim();
+
+    // Derive the metadata field value for this row so we can float
+    // name-matching candidates to the top even when no text is typed.
+    const field = this.committedMappedField();
+    const editingMetaFile = editingAcc
+      ? this.metadataFiles().find((f) => f.accession === editingAcc)
+      : undefined;
+    const metaValue =
+      editingMetaFile && field ? (editingMetaFile[field] ?? '').toLowerCase() : '';
 
     const candidates = this.boxFiles().filter(
       (bf) => unused.has(bf.id) || bf.id === currentBoxId,
@@ -368,8 +377,21 @@ export class UploadBoxMappingComponent implements OnInit {
     return candidates.sort((a, b) => {
       const aAlias = a.alias.toLowerCase();
       const bAlias = b.alias.toLowerCase();
-      const aStarts = aAlias.startsWith(query);
-      const bStarts = bAlias.startsWith(query);
+      // Tier 1: name-field exact match (or typed exact match) — absolute top
+      const aNameMatch =
+        (metaValue !== '' && aAlias === metaValue) ||
+        (query !== '' && aAlias === query);
+      const bNameMatch =
+        (metaValue !== '' && bAlias === metaValue) ||
+        (query !== '' && bAlias === query);
+      if (aNameMatch !== bNameMatch) return aNameMatch ? -1 : 1;
+      // Tier 2: currently-mapped file
+      const aMapped = a.id === currentBoxId;
+      const bMapped = b.id === currentBoxId;
+      if (aMapped !== bMapped) return aMapped ? -1 : 1;
+      // Tier 3: prefix matches when the user has typed something
+      const aStarts = query !== '' && aAlias.startsWith(query);
+      const bStarts = query !== '' && bAlias.startsWith(query);
       if (aStarts !== bStarts) return aStarts ? -1 : 1;
       return fileSortKey(a.alias).localeCompare(fileSortKey(b.alias));
     });
