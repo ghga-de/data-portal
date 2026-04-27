@@ -103,7 +103,7 @@ describe('UploadBoxService', () => {
     httpMock
       .match((req) =>
         req.urlWithParams ===
-        'http://mock.dev/rs/upload-grants?userid=doe%40test.dev&valid=true'
+        'http://mock.dev/rs/upload-grants?user_id=doe%40test.dev&valid=true'
           ? true
           : false,
       )
@@ -299,7 +299,7 @@ describe('UploadBoxService', () => {
     const req = httpMock.expectOne('http://mock.dev/rs/upload-boxes');
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(newBoxData);
-    req.flush({ id: createdId }, { status: 201, statusText: 'Created' });
+    req.flush(createdId, { status: 201, statusText: 'Created' });
 
     expect(emittedId).toBe(createdId);
     expect(service.uploadBoxes().some((box) => box.id === createdId)).toBe(true);
@@ -456,13 +456,13 @@ describe('UploadBoxService', () => {
       expect(result).toEqual(TEST_GRANTS);
     });
 
-    it('should pass userid query param when userId is provided', () => {
+    it('should pass user_id query param when userId is provided', () => {
       service.getUploadGrants({ userId: 'user-abc' }).subscribe();
 
       const req = httpMock.expectOne(
-        'http://mock.dev/rs/upload-grants?userid=user-abc',
+        'http://mock.dev/rs/upload-grants?user_id=user-abc',
       );
-      expect(req.request.params.get('userid')).toBe('user-abc');
+      expect(req.request.params.get('user_id')).toBe('user-abc');
       expect(req.request.params.has('box_id')).toBe(false);
       expect(req.request.params.has('valid')).toBe(false);
       req.flush([]);
@@ -476,7 +476,7 @@ describe('UploadBoxService', () => {
         `http://mock.dev/rs/upload-grants?box_id=${boxId}`,
       );
       expect(req.request.params.get('box_id')).toBe(boxId);
-      expect(req.request.params.has('userid')).toBe(false);
+      expect(req.request.params.has('user_id')).toBe(false);
       expect(req.request.params.has('valid')).toBe(false);
       req.flush([]);
     });
@@ -512,7 +512,7 @@ describe('UploadBoxService', () => {
       const req = httpMock.expectOne(
         (r) =>
           r.url === 'http://mock.dev/rs/upload-grants' &&
-          r.params.get('userid') === 'user-abc' &&
+          r.params.get('user_id') === 'user-abc' &&
           r.params.get('box_id') === boxId &&
           r.params.get('valid') === 'true',
       );

@@ -33,7 +33,7 @@ import {
   workPackageResponse,
 } from './data';
 
-export type ResponseValue = undefined | number | object;
+export type ResponseValue = undefined | number | string | object;
 
 /**
  * MSW responses to be returned for various endpoints of our API.
@@ -230,9 +230,7 @@ export const responses: { [endpoint: string]: ResponseValue } = {
    */
 
   // Create a new upload box
-  'POST /api/rs/upload-boxes': {
-    id: crypto.randomUUID(),
-  },
+  'POST /api/rs/upload-boxes': crypto.randomUUID(),
 
   // Fetch all upload boxes
   'GET /api/rs/upload-boxes': uploadBoxes,

@@ -97,7 +97,7 @@ export class UploadBoxService {
     () => {
       const userId = this.#userId();
       if (!userId) return undefined;
-      return `${this.#grantsUrl}?userid=${encodeURIComponent(userId)}&valid=true`;
+      return `${this.#grantsUrl}?user_id=${encodeURIComponent(userId)}&valid=true`;
     },
     { defaultValue: [] },
   );
@@ -249,8 +249,7 @@ export class UploadBoxService {
    * @returns An observable that emits the ID of the created box
    */
   createUploadBox(data: ResearchDataUploadBoxBase): Observable<string> {
-    return this.#http.post<{ id: string }>(this.#boxesUrl, data).pipe(
-      map((response) => response.id),
+    return this.#http.post<string>(this.#boxesUrl, data).pipe(
       map((id) => {
         this.#addUploadBoxLocally(data, id);
         return id;
@@ -376,7 +375,7 @@ export class UploadBoxService {
   /**
    * Fetch upload grants from the RS backend.
    * @param params - optional filter parameters
-   * @param params.userId - filter by user ID (maps to the `userid` query param)
+   * @param params.userId - filter by user ID (maps to the `user_id` query param)
    * @param params.boxId - filter by box ID (maps to the `box_id` query param)
    * @param params.valid - true = valid only, false = invalid only, null/omitted = both
    * @returns An observable that emits an array of GrantWithBoxInfo objects
@@ -387,7 +386,7 @@ export class UploadBoxService {
     valid?: boolean | null;
   }): Observable<GrantWithBoxInfo[]> {
     let httpParams = new HttpParams();
-    if (params?.userId) httpParams = httpParams.set('userid', params.userId);
+    if (params?.userId) httpParams = httpParams.set('user_id', params.userId);
     if (params?.boxId) httpParams = httpParams.set('box_id', params.boxId);
     if (params?.valid != null)
       httpParams = httpParams.set('valid', String(params.valid));
