@@ -98,7 +98,7 @@
                 matInput
                 [ngModel]="filterText()"
                 (ngModelChange)="filterText.set($event)"
-                placeholder="Type to filter…"
+                placeholder="Type part of filename or extension to filter…"
               />
               @if (filterText()) {
                 <button
@@ -200,7 +200,7 @@
                           [ngModel]="inlineInputValue()"
                           (ngModelChange)="inlineInputValue.set($event)"
                           [matAutocomplete]="autocomplete"
-                          placeholder="Type file name…"
+                          placeholder="Type or select file name in upload box…"
                           (keydown.enter)="commitInlineEdit(row)"
                           (keydown.escape)="editingMetaAccession.set(null)"
                         />
@@ -241,7 +241,7 @@
                             >{{ row.boxFile.alias }}</span
                           >
                         } @else {
-                          <span class="text-warning italic">not mapped</span>
+                          <span class="text-warning italic">unmapped</span>
                         }
                         <mat-icon
                           fontIcon="change_circle"
