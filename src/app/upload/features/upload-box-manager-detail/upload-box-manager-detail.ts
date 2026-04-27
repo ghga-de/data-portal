@@ -34,7 +34,11 @@ import {
   DEFAULT_TIME_ZONE,
   FRIENDLY_DATE_FORMAT,
 } from '@app/shared/utils/date-formats';
-import { ResearchDataUploadBox, UploadBoxStateClass } from '@app/upload/models/box';
+import {
+  ResearchDataUploadBox,
+  UploadBoxState,
+  UploadBoxStateClass,
+} from '@app/upload/models/box';
 import {
   FileUploadState,
   FileUploadWithAccession,
@@ -159,7 +163,11 @@ export class UploadBoxManagerDetailComponent implements OnInit {
   readonly grantColumns = ['grantee', 'status', 'validity', 'details'];
 
   /** Columns for the file uploads table. */
-  readonly fileColumns = ['alias', 'status', 'size', 'uploaded'];
+  fileColumns = computed<string[]>(() =>
+    this.uploadBox()?.state === UploadBoxState.archived
+      ? ['alias', 'accession', 'size', 'uploaded']
+      : ['alias', 'status', 'size', 'uploaded'],
+  );
 
   /** The upload grants for this box. */
   grants = computed<UploadGrant[]>(() => this.#uploadBoxService.boxGrants.value());
