@@ -460,10 +460,51 @@ export class UploadBoxService {
    * @returns An observable that completes when the mapping is accepted
    */
   submitFileMapping(boxId: string, request: AccessionMapRequest): Observable<void> {
-    return this.#http.post<void>(
-      `${this.#boxesUrl}/${encodeURIComponent(boxId)}/file-ids`,
-      request,
+    return this.#http
+      .post<void>(`${this.#boxesUrl}/${encodeURIComponent(boxId)}/file-ids`, request)
+      .pipe(tap(() => this.#applyFileMappingLocally(boxId, request)));
+  }
+
+  /**
+   * Apply a submitted file mapping locally: stamp accessions onto boxFileUploads
+   * and increment the box version in all local caches.
+   * @param boxId - the ID of the upload box
+   * @param request - the submitted accession map request
+   */
+  #applyFileMappingLocally(boxId: string, request: AccessionMapRequest): void {
+    // Invert the mapping: boxFileId -> accession
+    const accessionByBoxFileId = new Map<string, string>(
+      Object.entries(request.mapping).map(([accession, boxFileId]) => [
+        boxFileId,
+        accession,
+      ]),
     );
+
+    if (!this.boxFileUploads.error()) {
+      const updated = this.boxFileUploads.value().map((f) => {
+        const accession = accessionByBoxFileId.get(f.id);
+        return accession !== undefined ? { ...f, accession } : f;
+      });
+      this.boxFileUploads.value.set(updated);
+    }
+
+    this.#updateUploadBoxLocally(boxId, { version: request.box_version });
+  }
+
+  /**
+   * Send a PATCH request to set the upload box state to archived.
+   * @param boxId - the ID of the upload box
+   * @param currentVersion - the current (post-mapping) box version
+   * @returns An observable that completes when the archive is accepted
+   */
+  archiveUploadBox(boxId: string, currentVersion: number): Observable<void> {
+    const changes: ResearchDataUploadBoxUpdate = {
+      version: currentVersion,
+      state: UploadBoxState.archived,
+    };
+    return this.#http
+      .patch<void>(`${this.#boxesUrl}/${encodeURIComponent(boxId)}`, changes)
+      .pipe(tap(() => this.#updateUploadBoxLocally(boxId, changes)));
   }
 
   /**

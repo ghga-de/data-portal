@@ -31,7 +31,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { RouterLink } from '@angular/router';
-import { of, switchMap } from 'rxjs';
+import { concatMap, of, switchMap } from 'rxjs';
 
 import { EmFile } from '@app/metadata/models/dataset-information';
 import { Study } from '@app/metadata/models/study';
@@ -665,16 +665,25 @@ export class UploadBoxMappingComponent implements OnInit {
     }
 
     this.isSubmitting.set(true);
+    const box = this.box();
     this.#uploadBoxService
-      .submitFileMapping(this.box().id, {
-        box_version: this.box().version,
+      .submitFileMapping(box.id, {
+        box_version: box.version,
         study_id: studyId,
         mapping,
       })
+      .pipe(
+        concatMap(() =>
+          this.#uploadBoxService.archiveUploadBox(box.id, box.version + 1),
+        ),
+      )
       .subscribe({
         next: () => {
           this.isSubmitting.set(false);
-          this.#mappingStateService.clearSnapshot(this.box().id);
+          this.#mappingStateService.clearSnapshot(box.id);
+          this.#notificationService.showSuccess(
+            'File mapping submitted and upload box archived successfully.',
+          );
           this.archived.emit();
         },
         error: () => {
