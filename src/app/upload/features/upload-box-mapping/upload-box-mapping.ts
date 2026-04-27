@@ -45,15 +45,13 @@ import {
 } from '@app/shared/ui/confirm-dialog/confirm-dialog';
 import { ResearchDataUploadBox } from '@app/upload/models/box';
 import { FileUploadWithAccession } from '@app/upload/models/file-upload';
+import { MappedField } from '@app/upload/models/mapping';
 import { UploadBoxService } from '@app/upload/services/upload-box';
 import { UploadBoxMappingStateService } from '@app/upload/services/upload-box-mapping-state';
 import {
   MappingConfirmDialogData,
   UploadBoxMappingConfirmDialogComponent,
 } from './upload-box-mapping-confirm-dialog';
-
-/** The metadata field to use for matching */
-export type MappedField = 'alias' | 'name';
 
 /** A single row in the mapping table */
 export interface MappingRow {

@@ -136,7 +136,7 @@
                       <span class="pr-2">Name in Experimental Metadata</span>
                       <span class="mt-1 flex gap-4 pr-2 text-sm font-normal">
                         @if (mappedMetaCount() > 0) {
-                          <span class="text-success"
+                          <span class="text-gray-700"
                             >Mapped: {{ mappedMetaCount() }}</span
                           >
                         }
@@ -170,16 +170,16 @@
                       <span class="mt-1 flex gap-4 pr-2 text-sm font-normal">
                         @if (exactMatchCount() > 0) {
                           <span class="text-success"
-                            >Exact: {{ exactMatchCount() }}</span
+                            >Matches: {{ exactMatchCount() }}</span
                           >
                         }
                         @if (manualMappingCount() > 0) {
-                          <span class="text-primary"
+                          <span class="text-blue-700"
                             >Manual: {{ manualMappingCount() }}</span
                           >
                         }
                         @if (unmappedBoxCount() > 0) {
-                          <span class="text-warning"
+                          <span class="text-error"
                             >Unmapped: {{ unmappedBoxCount() }}</span
                           >
                         }
@@ -237,7 +237,7 @@
                         @if (row.boxFile) {
                           <span
                             [class.text-success]="row.mappingType === 'exact'"
-                            [class.text-primary]="row.mappingType === 'manual'"
+                            [class.text-blue-700]="row.mappingType === 'manual'"
                             >{{ row.boxFile.alias }}</span
                           >
                         } @else {

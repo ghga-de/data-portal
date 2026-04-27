@@ -5,7 +5,7 @@
  */
 
 import { Injectable, signal } from '@angular/core';
-import { MappedField } from '../features/upload-box-mapping/upload-box-mapping';
+import { MappedField } from '../models/mapping';
 
 /** Persisted state for a single upload box mapping session */
 export interface MappingSnapshot {
