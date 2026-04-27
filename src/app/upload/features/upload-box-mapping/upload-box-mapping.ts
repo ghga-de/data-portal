@@ -37,6 +37,7 @@ import { EmFile } from '@app/metadata/models/dataset-information';
 import { Study } from '@app/metadata/models/study';
 import { MetadataService } from '@app/metadata/services/metadata';
 import { MetadataSearchService } from '@app/metadata/services/metadata-search';
+import { NavigationTrackingService } from '@app/shared/services/navigation';
 import { NotificationService } from '@app/shared/services/notification';
 import {
   ConfirmDialogComponent,
@@ -45,6 +46,7 @@ import {
 import { ResearchDataUploadBox } from '@app/upload/models/box';
 import { FileUploadWithAccession } from '@app/upload/models/file-upload';
 import { UploadBoxService } from '@app/upload/services/upload-box';
+import { UploadBoxMappingStateService } from '@app/upload/services/upload-box-mapping-state';
 import {
   MappingConfirmDialogData,
   UploadBoxMappingConfirmDialogComponent,
@@ -154,6 +156,8 @@ export class UploadBoxMappingComponent implements OnInit {
   #metadataService = inject(MetadataService);
   #dialog = inject(MatDialog);
   #notificationService = inject(NotificationService);
+  #mappingStateService = inject(UploadBoxMappingStateService);
+  #navigationService = inject(NavigationTrackingService);
 
   /** The locked upload box */
   box = input.required<ResearchDataUploadBox>();
@@ -411,6 +415,15 @@ export class UploadBoxMappingComponent implements OnInit {
     }
   });
 
+  /** Persist mapping state whenever the three persistent signals change */
+  #saveStateEffect = effect(() => {
+    this.#mappingStateService.saveSnapshot(this.box().id, {
+      studyAccession: this.selectedStudyAccession(),
+      mappedField: this.committedMappedField(),
+      manualMappings: Array.from(this.manualMappings()),
+    });
+  });
+
   /**
    * Watch pending field changes; if manual mappings exist, ask for confirmation
    * before committing, otherwise commit immediately.
@@ -460,6 +473,14 @@ export class UploadBoxMappingComponent implements OnInit {
       }
       return fileSortKey(row.boxFile?.alias);
     };
+
+    const snapshot = this.#mappingStateService.snapshotFor(this.box().id);
+    if (snapshot) {
+      this.selectedStudyAccession.set(snapshot.studyAccession);
+      this.committedMappedField.set(snapshot.mappedField);
+      this.pendingMappedField.set(snapshot.mappedField);
+      this.manualMappings.set(new Map(snapshot.manualMappings));
+    }
   }
 
   // Row editing
@@ -520,60 +541,31 @@ export class UploadBoxMappingComponent implements OnInit {
   // Actions
 
   /**
-   * Reset manual mappings, optionally after user confirmation.
+   * Reset manual mappings without confirmation.
    * Auto-mappings are recomputed automatically.
    */
   onReset(): void {
-    if (this.manualMappings().size === 0) {
-      return; // nothing to reset
-    }
-    const ref = this.#dialog.open<ConfirmDialogComponent, ConfirmDialogData, boolean>(
-      ConfirmDialogComponent,
-      {
-        data: {
-          title: 'Reset mappings',
-          message:
-            'This will discard all manually established mappings and restore the automatic matches. Do you want to proceed?',
-          confirmText: 'Reset',
-          cancelText: 'Keep editing',
-          confirmClass: 'button-error',
-        },
-      },
-    );
-    ref.afterClosed().subscribe((confirmed) => {
-      if (confirmed) this.manualMappings.set(new Map());
-    });
+    this.manualMappings.set(new Map());
+    this.#notificationService.showInfo('Manual mappings have been reset.');
   }
 
   /**
-   * Cancel and reset the entire mapping form.
-   * Asks for confirmation if manual mappings exist.
+   * Cancel the mapping form: clear the field selection and manual mappings,
+   * keep the study selection, and navigate back.
    */
   onCancel(): void {
-    if (this.manualMappings().size > 0) {
-      const ref = this.#dialog.open<ConfirmDialogComponent, ConfirmDialogData, boolean>(
-        ConfirmDialogComponent,
-        {
-          data: {
-            title: 'Discard mappings',
-            message:
-              'You have established manual mappings that will be lost. Do you want to discard all mapping progress?',
-            confirmText: 'Discard',
-            cancelText: 'Keep editing',
-            confirmClass: 'button-error',
-          },
-        },
-      );
-      ref.afterClosed().subscribe((confirmed) => {
-        if (confirmed) this.#resetForm();
-      });
-    } else {
-      this.#resetForm();
-    }
+    this.committedMappedField.set(undefined);
+    this.pendingMappedField.set(undefined);
+    this.filterText.set('');
+    this.manualMappings.set(new Map());
+    this.editingMetaAccession.set(null);
+    this.inlineInputValue.set('');
+    this.#navigationService.back(['/upload-box-manager']);
   }
 
-  /** Reset all form state back to initial values */
+  /** Reset all form state back to initial values and clear the saved snapshot */
   #resetForm(): void {
+    this.#mappingStateService.clearSnapshot(this.box().id);
     this.selectedStudyAccession.set(undefined);
     this.committedMappedField.set(undefined);
     this.pendingMappedField.set(undefined);
@@ -662,6 +654,7 @@ export class UploadBoxMappingComponent implements OnInit {
       .subscribe({
         next: () => {
           this.isSubmitting.set(false);
+          this.#mappingStateService.clearSnapshot(this.box().id);
           this.archived.emit();
         },
         error: () => {
@@ -691,4 +684,10 @@ export class UploadBoxMappingComponent implements OnInit {
       !!this.committedMappedField() &&
       !this.isSubmitting(),
   );
+
+  /** Whether the Reset button should be enabled */
+  canReset = computed<boolean>(() => this.manualMappings().size > 0);
+
+  /** Whether the Cancel button should be enabled */
+  canCancel = computed<boolean>(() => !!this.selectedStudyAccession());
 }
