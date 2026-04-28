@@ -173,8 +173,8 @@ describe('UploadBoxManagerDetailComponent', () => {
       expect(screen.getByText('Tübingen 1')).toBeVisible();
     });
 
-    it('should not call loadUploadBox when box is found in list', () => {
-      expect(uploadBoxService.loadUploadBox).not.toHaveBeenCalled();
+    it('should call loadUploadBox to keep detail state synchronized', () => {
+      expect(uploadBoxService.loadUploadBox).toHaveBeenCalledWith(TEST_BOX.id);
     });
 
     it('should call loadBoxGrants with the box id', () => {
