@@ -377,7 +377,9 @@ export class UploadBoxMappingComponent implements OnInit {
       editingMetaFile && field ? (editingMetaFile[field] ?? '').toLowerCase() : '';
 
     const candidates = this.boxFiles().filter(
-      (bf) => unused.has(bf.id) || bf.id === currentBoxId,
+      (bf) =>
+        (unused.has(bf.id) || bf.id === currentBoxId) &&
+        (!query || bf.alias.toLowerCase().includes(query)),
     );
 
     return candidates.sort((a, b) => {

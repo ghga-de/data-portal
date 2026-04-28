@@ -203,6 +203,8 @@
                               ? row.metadataFile.name
                               : row.metadataFile.alias)
                           "
+                          autocomplete="off"
+                          type="search"
                           placeholder="Type or select file name in upload box…"
                           (keydown.enter)="commitInlineEdit(row)"
                           (keydown.escape)="editingMetaAccession.set(null)"
