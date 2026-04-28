@@ -15,6 +15,9 @@ header.rules.header.meta.schema = false;
 
 // Define the configuration
 export default [
+  {
+    ignores: ['out-tsc/**', 'playwright-report/**', 'test-results/**'],
+  },
   // Configuration for TypeScript files
   {
     files: ['**/*.ts'],
