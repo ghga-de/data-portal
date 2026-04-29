@@ -71,7 +71,7 @@ export class UserManagerDetailComponent implements OnInit {
   readonly friendlyDateFormat = FRIENDLY_DATE_FORMAT;
   readonly periodTimeZone = DEFAULT_TIME_ZONE;
 
-  showTransition = false;
+  showTransition = signal(false);
 
   #userService = inject(UserService);
 
@@ -191,8 +191,8 @@ export class UserManagerDetailComponent implements OnInit {
    * Also, load all access requests and grants.
    */
   ngOnInit() {
-    this.showTransition = true;
-    setTimeout(() => (this.showTransition = false), 300);
+    this.showTransition.set(true);
+    setTimeout(() => this.showTransition.set(false), 300);
     // Note: The following two calls are inefficient.
     // We need to add a way to load only a given user's access requests and grants.
     // This can be also useful for the access grants detail view.
@@ -205,7 +205,7 @@ export class UserManagerDetailComponent implements OnInit {
    * Navigate back to the last page (usually the user manager)
    */
   goBack(): void {
-    this.showTransition = true;
+    this.showTransition.set(true);
     setTimeout(() => {
       this.#location.back(['/user-manager']);
     });

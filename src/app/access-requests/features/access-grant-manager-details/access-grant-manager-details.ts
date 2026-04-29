@@ -5,7 +5,16 @@
  */
 
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, computed, effect, inject, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -68,7 +77,7 @@ export class AccessGrantManagerDetailsComponent implements OnInit {
   #dialog = inject(MatDialog);
 
   id = input.required<string>();
-  showTransition = false;
+  showTransition = signal(false);
   isLoading = this.#ars.allAccessGrantsResource.isLoading;
 
   error = computed(() => {
@@ -160,15 +169,15 @@ export class AccessGrantManagerDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.#ars.loadAllAccessGrants();
     this.#ars.loadAllAccessRequests();
-    this.showTransition = true;
-    setTimeout(() => (this.showTransition = false), 300);
+    this.showTransition.set(true);
+    setTimeout(() => this.showTransition.set(false), 300);
   }
 
   /**
    * Navigate back to the Access Grant Manager.
    */
   goBack(): void {
-    this.showTransition = true;
+    this.showTransition.set(true);
     setTimeout(() => {
       this.#location.back(['/access-grant-manager']);
     });

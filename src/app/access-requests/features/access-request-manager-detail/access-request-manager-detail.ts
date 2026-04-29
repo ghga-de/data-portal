@@ -78,7 +78,7 @@ import { AccessRequestFieldEditComponent } from '../access-request-field-edit/ac
 })
 export class AccessRequestManagerDetailComponent implements OnInit, HasPendingEdits {
   readonly friendlyDateFormat = FRIENDLY_DATE_FORMAT;
-  showTransition = false;
+  showTransition = signal(false);
   allowedState = AccessRequestStatus.allowed;
   #config = inject(ConfigService);
   #ivaService = inject(IvaService);
@@ -209,8 +209,8 @@ export class AccessRequestManagerDetailComponent implements OnInit, HasPendingEd
    * On initialization, fetch the access request if needed
    */
   ngOnInit(): void {
-    this.showTransition = true;
-    setTimeout(() => (this.showTransition = false), 300);
+    this.showTransition.set(true);
+    setTimeout(() => this.showTransition.set(false), 300);
     const id = this.id();
     if (id) {
       // Has it been fetched individually already?
@@ -235,7 +235,7 @@ export class AccessRequestManagerDetailComponent implements OnInit, HasPendingEd
    * Navigate back to the last page (usually the access request manager)
    */
   goBack(): void {
-    this.showTransition = true;
+    this.showTransition.set(true);
     setTimeout(() => {
       this.#location.back(['/access-request-manager']);
     });
