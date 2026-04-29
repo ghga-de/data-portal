@@ -5,7 +5,7 @@
  */
 
 import { DatePipe } from '@angular/common';
-import { Component, computed, effect, inject, input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, effect, inject, input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -55,6 +55,7 @@ import { AccessGrantRevocationDialogComponent } from '../access-grant-revocation
     IvaStatePipe,
   ],
   templateUrl: './access-grant-manager-details.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AccessGrantManagerDetailsComponent implements OnInit {
   readonly friendlyDateFormat = FRIENDLY_DATE_FORMAT;
