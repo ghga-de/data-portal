@@ -4,7 +4,14 @@
  * @license Apache-2.0
  */
 
-import { ChangeDetectionStrategy, Component, WritableSignal, effect, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  WritableSignal,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { LogEntry, PyodideOutput } from '@app/tools/models/pyodide';
