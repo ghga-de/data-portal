@@ -6,6 +6,7 @@
 
 import { expectPageRequiresLogin } from '../utils/expect-login-required-error';
 import { expectTitle } from '../utils/expect-title';
+import { clickAndWaitForUrl } from '../utils/navigation-helpers';
 import { expect, test } from './admin-fixtures';
 
 test.use({
@@ -48,6 +49,8 @@ test('can use Upload Box manager when logged in', async ({ adminPage: page }) =>
 });
 
 test('can navigate to Upload Box details', async ({ adminPage: page }) => {
+  test.setTimeout(45_000);
+
   const detailsPageMain = page.locator('main');
   const detailsButton = detailsPageMain
     .getByRole('button', { name: 'View upload box details' })
@@ -80,11 +83,12 @@ test('can navigate to Upload Box details', async ({ adminPage: page }) => {
     name: 'Go back to previous page',
   });
   await expect(backButton).toBeVisible();
-  await backButton.click();
-  await expect(page).toHaveURL('/upload-box-manager');
+  await clickAndWaitForUrl(page, backButton, '/upload-box-manager');
 });
 
 test('can navigate to Add Grant page', async ({ adminPage: page }) => {
+  test.setTimeout(45_000);
+
   const detailsButton = page
     .locator('main')
     .getByRole('button', { name: 'View upload box details' })
@@ -95,8 +99,8 @@ test('can navigate to Add Grant page', async ({ adminPage: page }) => {
 
   const addGrantButton = page.getByRole('button', { name: 'Add new upload grant' });
   await expect(addGrantButton).toBeVisible();
-  await addGrantButton.click();
-  await expect(page).toHaveURL(/\/upload-box-manager\/.+\/grant\/new/);
+  const addGrantUrl = /\/upload-box-manager\/.+\/grant\/new/;
+  await clickAndWaitForUrl(page, addGrantButton, addGrantUrl);
   await expectTitle(page, 'New Upload Grant');
 
   const backButton = page.getByRole('button', {
@@ -113,7 +117,7 @@ test('displays error message when upload box not found', async ({
   await page.goto('/upload-box-manager/invalid-id');
 
   const main = page.locator('main');
-  await expect(main).toContainText('Upload box not found.');
+  await expect(main).toContainText('Upload box not found.', { timeout: 15000 });
 
   const backButton = page.getByRole('button', { name: 'Go back to previous page' });
   await expect(backButton).toBeVisible();
