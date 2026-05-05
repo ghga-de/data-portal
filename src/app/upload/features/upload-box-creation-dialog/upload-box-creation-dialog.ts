@@ -34,14 +34,14 @@ import { NotificationService } from '@app/shared/services/notification';
 import { ResearchDataUploadBoxBase } from '@app/upload/models/box';
 import { UploadBoxService } from '@app/upload/services/upload-box';
 
-/** Minimum upload box limit in TB (1 GB in decimal units). */
-const MIN_UPLOAD_BOX_SIZE_TB = 0.001;
+/** Minimum upload box limit in TiB (1 GiB in binary units). */
+const MIN_UPLOAD_BOX_SIZE_TIB = 1 / 1024;
 
-/** Maximum upload box limit in TB (1 million TB in decimal units). */
-const MAX_UPLOAD_BOX_SIZE_TB = 1_000_000;
+/** Maximum upload box limit in TiB (1 million TiB in binary units). */
+const MAX_UPLOAD_BOX_SIZE_TIB = 1_000_000;
 
-/** Number of bytes in one decimal TB. */
-const BYTES_PER_TB_DECIMAL = 1_000_000_000_000;
+/** Number of bytes in one binary TiB (1024^4). */
+const BYTES_PER_TIB = 1_099_511_627_776;
 
 /**
  * Dialog for creating a new upload box.
@@ -86,13 +86,13 @@ export class UploadBoxCreationDialogComponent {
     required(p.storage_alias);
     required(p.max_size_tb);
     min(p.max_size_tb, 0); // do not use actual minimum since it is also the step size
-    max(p.max_size_tb, MAX_UPLOAD_BOX_SIZE_TB);
+    max(p.max_size_tb, MAX_UPLOAD_BOX_SIZE_TIB);
     validate(p.max_size_tb, ({ value }) => {
       const sizeTb = value();
       if (sizeTb === null || Number.isNaN(sizeTb)) {
         return { kind: 'required' };
       }
-      if (sizeTb < MIN_UPLOAD_BOX_SIZE_TB) {
+      if (sizeTb < MIN_UPLOAD_BOX_SIZE_TIB) {
         return { kind: 'min' };
       }
       return null;
@@ -126,7 +126,7 @@ export class UploadBoxCreationDialogComponent {
       title: box.title.trim(),
       description: box.description.trim(),
       storage_alias: box.storage_alias,
-      max_size: Math.round(maxSizeTb * BYTES_PER_TB_DECIMAL),
+      max_size: Math.round(maxSizeTb * BYTES_PER_TIB),
     };
 
     this.#uploadBoxService.createUploadBox(payload).subscribe({

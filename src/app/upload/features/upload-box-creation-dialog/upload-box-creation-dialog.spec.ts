@@ -70,9 +70,9 @@ describe('UploadBoxCreationDialogComponent', () => {
     expect(screen.getByRole('button', { name: /^ok$/i })).toBeDisabled();
   });
 
-  it('should configure size limit step to 1 TB', () => {
+  it('should configure size limit step to 1 TiB', () => {
     const sizeInput = screen.getByRole('spinbutton', {
-      name: 'Size limit (in SI Terabytes)',
+      name: 'Size limit (in TiB)',
     });
 
     expect(sizeInput).toHaveAttribute('step', '1');
@@ -87,7 +87,7 @@ describe('UploadBoxCreationDialogComponent', () => {
       name: 'Storage location',
     });
     const sizeInput = screen.getByRole('spinbutton', {
-      name: 'Size limit (in SI Terabytes)',
+      name: 'Size limit (in TiB)',
     });
 
     await userEvent.type(titleInput, 'New Box');
@@ -118,7 +118,7 @@ describe('UploadBoxCreationDialogComponent', () => {
     expect(screen.getByRole('button', { name: /^ok$/i })).toBeDisabled();
   });
 
-  it('should keep OK disabled when size limit is below 1 GB', async () => {
+  it('should keep OK disabled when size limit is below 1 GiB', async () => {
     const titleInput = screen.getByRole('textbox', { name: 'Title' });
     const descriptionInput = screen.getByRole('textbox', {
       name: 'Description',
@@ -127,7 +127,7 @@ describe('UploadBoxCreationDialogComponent', () => {
       name: 'Storage location',
     });
     const sizeInput = screen.getByRole('spinbutton', {
-      name: 'Size limit (in SI Terabytes)',
+      name: 'Size limit (in TiB)',
     });
 
     await userEvent.type(titleInput, 'New Box');
@@ -140,7 +140,7 @@ describe('UploadBoxCreationDialogComponent', () => {
     expect(screen.getByRole('button', { name: /^ok$/i })).toBeDisabled();
   });
 
-  it('should keep OK disabled when size limit exceeds 1,000,000 TB', async () => {
+  it('should keep OK disabled when size limit exceeds 1,000,000 TiB', async () => {
     const titleInput = screen.getByRole('textbox', { name: 'Title' });
     const descriptionInput = screen.getByRole('textbox', {
       name: 'Description',
@@ -149,7 +149,7 @@ describe('UploadBoxCreationDialogComponent', () => {
       name: 'Storage location',
     });
     const sizeInput = screen.getByRole('spinbutton', {
-      name: 'Size limit (in SI Terabytes)',
+      name: 'Size limit (in TiB)',
     });
 
     await userEvent.type(titleInput, 'New Box');
@@ -178,7 +178,7 @@ describe('UploadBoxCreationDialogComponent', () => {
       name: 'Storage location',
     });
     const sizeInput = screen.getByRole('spinbutton', {
-      name: 'Size limit (in SI Terabytes)',
+      name: 'Size limit (in TiB)',
     });
 
     await userEvent.type(titleInput, '  New Box  ');
@@ -192,7 +192,7 @@ describe('UploadBoxCreationDialogComponent', () => {
       title: 'New Box',
       description: 'Description',
       storage_alias: 'TUE01',
-      max_size: 1250000000000,
+      max_size: 1374389534720,
     });
     expect(mockDialogRef.close).toHaveBeenCalledWith('new-box-id');
     expect(mockNotificationService.showError).not.toHaveBeenCalled();
@@ -211,7 +211,7 @@ describe('UploadBoxCreationDialogComponent', () => {
       name: 'Storage location',
     });
     const sizeInput = screen.getByRole('spinbutton', {
-      name: 'Size limit (in SI Terabytes)',
+      name: 'Size limit (in TiB)',
     });
 
     await userEvent.type(titleInput, 'New Box');
