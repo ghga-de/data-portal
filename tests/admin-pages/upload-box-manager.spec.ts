@@ -49,8 +49,6 @@ test('can use Upload Box manager when logged in', async ({ adminPage: page }) =>
 });
 
 test('can navigate to Upload Box details', async ({ adminPage: page }) => {
-  test.setTimeout(45_000);
-
   const detailsPageMain = page.locator('main');
   const detailsButton = detailsPageMain
     .getByRole('button', { name: 'View upload box details' })
@@ -87,8 +85,6 @@ test('can navigate to Upload Box details', async ({ adminPage: page }) => {
 });
 
 test('can navigate to Add Grant page', async ({ adminPage: page }) => {
-  test.setTimeout(45_000);
-
   const detailsButton = page
     .locator('main')
     .getByRole('button', { name: 'View upload box details' })
