@@ -1069,6 +1069,7 @@ export const uploadBoxes: BoxRetrievalResults = {
       file_count: 3,
       size: 123456789,
       storage_alias: 'TUE01',
+      max_size: 10_000_000_000_000, // 10 TB
     },
     {
       id: '0a36607a-b53f-49ed-bf3e-a5f2dbc68002',
@@ -1081,6 +1082,7 @@ export const uploadBoxes: BoxRetrievalResults = {
       file_count: 15,
       size: 120259084288, // ~112 GB total
       storage_alias: 'HD02',
+      max_size: 15_000_000_000_000, // 15 TB
     },
     {
       id: '0a36607a-b53f-49ed-bf3e-a5f2dbc68003',
@@ -1093,6 +1095,7 @@ export const uploadBoxes: BoxRetrievalResults = {
       file_count: 28,
       size: 1567890123,
       storage_alias: 'TUE03',
+      max_size: 7_500_000_000_000, // 7.5 TB
     },
   ],
 };
