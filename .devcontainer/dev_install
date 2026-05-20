@@ -1,16 +1,17 @@
 #!/bin/bash
 # install service in dev container
+set -euo pipefail
 
 cd /workspace
 
 echo "Install pnpm..."
-corepack prepare pnpm@10.33.2 --activate
-
-echo "Add Markdown TOC generator for updating the Readme"
-npm install -g markdown-toc-gen
+corepack prepare pnpm@11.1.3 --activate
 
 echo "Install static web server..."
 curl --proto '=https' --tlsv1.2 -sSfL https://get.static-web-server.net | sh
+
+echo "Clean up existing node_modules to ensure fresh install..."
+rm -rf node_modules .pnpm-store
 
 echo "Install application and dev tools..."
 pnpm install
