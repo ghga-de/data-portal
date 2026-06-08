@@ -22,7 +22,7 @@ jobs:
           node-version: 24
           cache: 'pnpm'
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile --config.ignore-pnpmfile=false --config.pnpmfile=.pnpmfile.cjs
       - name: Install Playwright Browsers
         run: pnpm exec playwright install --with-deps
       - name: Build application
