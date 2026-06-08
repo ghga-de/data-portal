@@ -21,6 +21,6 @@ jobs:
           node-version: 24
           cache: 'pnpm'
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile --config.ignore-pnpmfile=false --config.pnpmfile=.pnpmfile.cjs
+        run: pnpm install --frozen-lockfile
       - name: Run unit tests
         run: npm run test

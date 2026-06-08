@@ -4,7 +4,7 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-pnpmfileChecksum: sha256-ak1U4mHeBoNlqhDue+HZetsVVJeI8Ik2W/DyjfigCt4=
+pnpmfileChecksum: sha256-kSTQuaMBZFqFmnKt1weI8KZHentUbgcJhB5HaH3VH4k=
 
 importers:
 
@@ -5766,8 +5766,8 @@ snapshots:
 
   '@angular-devkit/core@21.1.0(chokidar@5.0.0)':
     dependencies:
-      ajv: 8.18.0
-      ajv-formats: 3.0.1(ajv@8.18.0)
+      ajv: 8.20.0
+      ajv-formats: 3.0.1(ajv@8.20.0)
       jsonc-parser: 3.3.1
       picomatch: 4.0.4
       rxjs: 7.8.2

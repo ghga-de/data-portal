@@ -21,20 +21,8 @@ jobs:
         with:
           node-version: 24
           cache: 'pnpm'
-      - name: Debug pnpm config
-        run: |
-          echo "--- global-pnpmfile ---"
-          pnpm config get global-pnpmfile || true
-          echo "--- pnpm config list ---"
-          pnpm config list || true
-          echo "--- env (npm/pnpm) ---"
-          env | grep -iE 'pnpm|npm_config' || true
-          echo "--- npmrc files ---"
-          for f in ~/.npmrc /etc/npmrc "$PWD/.npmrc"; do
-            echo "== $f =="; cat "$f" 2>/dev/null || echo "(none)"
-          done
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile --config.ignore-pnpmfile=false --config.pnpmfile=.pnpmfile.cjs
+        run: pnpm install --frozen-lockfile
       - name: Install Playwright Browsers
         run: pnpm exec playwright install --with-deps
       - name: Build application
