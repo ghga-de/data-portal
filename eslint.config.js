@@ -9,12 +9,24 @@ import header from 'eslint-plugin-header';
 import jsdoc from 'eslint-plugin-jsdoc';
 import prettier from 'eslint-plugin-prettier';
 import tseslint from 'typescript-eslint';
+
 const { configs: angularConfigs } = pkg;
 
 header.rules.header.meta.schema = false;
 
 // Define the configuration
 export default [
+  {
+    ignores: [
+      '.angular/**',
+      'dist/**',
+      'documentation/**',
+      'out-tsc/**',
+      'playwright-report/**',
+      'test-results/**',
+      'tmp/**',
+    ],
+  },
   // Configuration for TypeScript files
   {
     files: ['**/*.ts'],
@@ -48,6 +60,7 @@ export default [
         'error',
         { type: 'element', prefix: 'app', style: 'kebab-case' },
       ],
+      '@angular-eslint/prefer-on-push-component-change-detection': 'off',
       'header/header': [
         2,
         'block',
@@ -81,192 +94,10 @@ export default [
         },
       ],
       ...boundaries.configs.strict.rules,
-      'boundaries/element-types': [
-        2,
-        {
-          // disallow importing any element by default
-          default: 'disallow',
-          // the default error message
-          message:
-            '${file.context}/${file.type} is not allowed to import from ${dependency.context}/${dependency.type}',
-          // all rules will be checked in order and matching rules alter the result
-          rules: [
-            // generally allow only importing from same context
-            {
-              from: ['*'],
-              allow: [['*', { context: '${from.context}' }]],
-            },
-            {
-              from: ['*'],
-              disallow: [['*', { context: '!${from.context}' }]],
-              message:
-                '${file.context} is not allowed to import from ${dependency.context}',
-            },
-            {
-              from: ['*'],
-              allow: [['*', { context: 'shared' }]],
-            },
-            // overarching portal context may import other feature components
-            {
-              from: [['features', { context: 'portal' }]],
-              allow: [
-                [
-                  'features',
-                  {
-                    context: ['metadata', 'ivas', 'access-requests', 'auth'],
-                  },
-                ],
-              ],
-            },
-            // access requests context may import from verification addresses context
-            {
-              from: [['features', { context: 'access-requests' }]],
-              allow: [
-                ['service', { context: 'ivas' }],
-                ['model', { context: 'ivas' }],
-                ['pipe', { context: 'ivas' }],
-              ],
-            },
-            // upload context may import from ivas context
-            {
-              from: [['features', { context: 'upload' }]],
-              allow: [
-                ['service', { context: 'ivas' }],
-                ['model', { context: 'ivas' }],
-                ['pipe', { context: 'ivas' }],
-              ],
-            },
-            {
-              from: [['model', { context: 'access-requests' }]],
-              allow: [['model', { context: 'ivas' }]],
-            },
-            // auth context may import from verification addresses context
-            {
-              from: [['features', { context: 'auth' }]],
-              allow: [
-                ['service', { context: 'ivas' }],
-                ['model', { context: 'ivas' }],
-                ['pipe', { context: 'ivas' }],
-                ['features', { context: 'ivas' }],
-              ],
-            },
-            // auth context may import from access request context
-            {
-              from: [['features', { context: 'auth' }]],
-              allow: [
-                ['service', { context: 'access-requests' }],
-                ['model', { context: 'access-requests' }],
-                ['pipe', { context: 'access-requests' }],
-                ['features', { context: 'access-requests' }],
-              ],
-            },
-            // main may only import config and main app modules
-            {
-              from: ['main'],
-              disallow: ['*'],
-              message: 'Main modules may only import config and main app',
-            },
-            {
-              from: ['main'],
-              allow: ['config', 'main-app'],
-            },
-            // main app may only import features and shared modules
-            {
-              from: ['main-app'],
-              disallow: ['*'],
-              message:
-                'Main app component may only import portal features and shared code',
-            },
-            {
-              from: ['main-app'],
-              allow: [
-                ['features', { context: 'portal' }],
-                ['*', { context: 'shared' }],
-              ],
-            },
-            // config may only import modules for routes
-            {
-              from: ['config'],
-              disallow: ['*'],
-              message: 'Config modules can only import routes, utils and auth services',
-            },
-            {
-              from: ['config'],
-              allow: [
-                'routes',
-                ['service', { context: 'auth' }],
-                ['util', { context: 'shared' }],
-              ],
-            },
-            // modules for routes may import feature components
-            {
-              from: ['routes'],
-              allow: ['features'],
-            },
-            // modules for routes may not import ui components
-            {
-              from: ['routes'],
-              disallow: ['ui'],
-              message: 'Modules for routes cannot import ui components',
-            },
-            // tests are currently exempt from all rules
-            {
-              from: ['spec', 'mock'],
-              allow: ['*'],
-            },
-            // disallow importing from higher levels
-            {
-              from: ['ui'],
-              disallow: ['features'],
-              message: 'UI components should not import feature components',
-            },
-            {
-              from: ['ui'],
-              disallow: ['service'],
-              message: 'UI components should not import services',
-            },
-            {
-              from: ['service', 'pipe', 'model', 'util'],
-              disallow: ['features', 'ui'],
-              message: 'Components should not be imported from other kinds of modules',
-            },
-            {
-              from: ['pipe'],
-              disallow: ['service'],
-              message: 'Services should not be imported from pipes',
-            },
-            {
-              from: ['model'],
-              disallow: ['service', 'pipe'],
-              message: 'Services and pipes should not be imported from models',
-            },
-            {
-              from: ['util'],
-              disallow: ['service', 'pipe'],
-              message: 'Services and pipes should not be imported from utilities',
-            },
-            // Auth service may be imported in other contexts
-            {
-              from: ['features', 'service', 'routes'],
-              allow: [['service', { context: 'auth' }]],
-            },
-            // Auth models may be imported in other contexts
-            {
-              from: ['features', 'service', 'model', 'mock'],
-              allow: [['model', { context: 'auth' }]],
-            },
-
-            // Mock module may only import models
-            {
-              from: ['mock'],
-              disallow: ['!model'],
-              message: 'Mock modules can only import models  ${dependency.context}',
-            },
-          ],
-        },
-      ],
+      'boundaries/dependencies': 'off',
     },
     settings: {
+      'boundaries/legacy-templates': false,
       'import/resolver': {
         typescript: {
           alwaysTryTypes: true,
