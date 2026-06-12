@@ -14,7 +14,9 @@ echo "Clean up existing node_modules to ensure fresh install..."
 rm -rf node_modules .pnpm-store
 
 echo "Install application and dev tools..."
-pnpm install
+# prefer-offline only here: keeps container setup fast and network-tolerant
+# without letting stale registry metadata affect interactive update/add
+pnpm install --prefer-offline
 
 echo "Install Playwright dependencies..."
 pnpm exec playwright install --with-deps
