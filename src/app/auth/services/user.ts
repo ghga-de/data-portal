@@ -5,7 +5,7 @@
  */
 
 import { HttpClient, httpResource } from '@angular/common/http';
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Service, signal } from '@angular/core';
 import { ConfigService } from '@app/shared/services/config';
 import { Observable, tap } from 'rxjs';
 import {
@@ -28,7 +28,7 @@ export interface DisplayUser extends RegisteredUser {
  * Service for managing users in the GHGA Data Portal.
  * This service handles fetching and managing user data for data stewards.
  */
-@Injectable()
+@Service({ autoProvided: false })
 export class UserService {
   #config = inject(ConfigService);
   #http = inject(HttpClient);

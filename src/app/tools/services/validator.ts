@@ -5,7 +5,7 @@
  */
 
 import { HttpClient } from '@angular/common/http';
-import { effect, inject, Injectable, signal } from '@angular/core';
+import { effect, inject, Service, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { PyodideOutput } from '../models/pyodide';
 import { PyodideService } from './pyodide';
@@ -21,9 +21,7 @@ const validatorScriptPath = '/assets/schemas/validate.py';
  * It uses the `schemapack` package to perform the validation.
  * It provides methods to prepare schema and JSON files and run the validator script,.
  */
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class MetadataValidationService {
   #pyodideService = inject(PyodideService);
   #http = inject(HttpClient);

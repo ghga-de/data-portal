@@ -5,7 +5,7 @@
  */
 
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, signal, WritableSignal } from '@angular/core';
+import { inject, Service, signal, WritableSignal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { LogEntry, PyodideOutput } from '../models/pyodide';
 
@@ -52,9 +52,7 @@ type LoadPyodide = (options: { indexURL: string }) => Promise<PyodideRuntime>;
  * This service handles the initialization of Pyodide,
  * loading necessary packages, and serves as a basis for running our Python scripts in their own services (like TranspilerService and ValidatorService).
  */
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class PyodideService {
   #pyodide: PyodideRuntime | null = null;
   #pyodideLoading: WritableSignal<boolean> = signal(false);

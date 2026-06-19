@@ -10,7 +10,7 @@ import {
   HttpParams,
   HttpResponse,
 } from '@angular/common/http';
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Service, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { ConfigService } from '@app/shared/services/config';
 import { NotificationService } from '@app/shared/services/notification';
@@ -45,7 +45,7 @@ import { CsrfService } from './csrf';
  * This service provides the OIDC and 2FA related functionality
  * and keeps track of the state of the user session.
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class AuthService {
   #config = inject(ConfigService);
   #http = inject(HttpClient);

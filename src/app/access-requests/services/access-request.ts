@@ -5,7 +5,7 @@
  */
 
 import { HttpClient, httpResource } from '@angular/common/http';
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Service, signal } from '@angular/core';
 import { AuthService } from '@app/auth/services/auth';
 import { ConfigService } from '@app/shared/services/config';
 import { NotificationService } from '@app/shared/services/notification';
@@ -23,7 +23,7 @@ import {
 /**
  *  This service handles state and management of access requests (to datasets)
  */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class AccessRequestService {
   #http = inject(HttpClient);
   #auth = inject(AuthService);

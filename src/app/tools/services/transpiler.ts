@@ -4,7 +4,7 @@
  * @license Apache-2.0
  */
 
-import { effect, inject, Injectable, signal, WritableSignal } from '@angular/core';
+import { effect, inject, Service, signal, WritableSignal } from '@angular/core';
 import { PyodideOutput } from '../models/pyodide';
 import { PyodideService } from './pyodide';
 
@@ -15,9 +15,7 @@ const transpilerScriptPath = '/assets/schemas/transpile.py';
 /**
  * This service handles the transpilation of metadata.
  */
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class TranspilerService {
   #pyodideService = inject(PyodideService);
   #isReady: WritableSignal<boolean> = signal(false);
