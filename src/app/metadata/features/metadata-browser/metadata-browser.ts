@@ -5,13 +5,7 @@
  */
 
 import { HttpErrorResponse } from '@angular/common/http';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-} from '@angular/core';
+import { Component, computed, effect, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -46,7 +40,6 @@ import { SearchResultListComponent } from '../search-result-list/search-result-l
     MetadataBrowserFilterComponent,
   ],
   templateUrl: './metadata-browser.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MetadataBrowserComponent {
   #config = inject(ConfigService);

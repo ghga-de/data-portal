@@ -5,7 +5,7 @@
  */
 
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
@@ -30,7 +30,6 @@ import { ExternalLinkDirective } from '@app/shared/ui/external-link/external-lin
   host: {
     '[style.--svg-encoded]': 'background',
   },
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SiteFooterComponent {
   date = new Date();

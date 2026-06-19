@@ -7,7 +7,6 @@
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
-  ChangeDetectionStrategy,
   Component,
   OnInit,
   Signal,
@@ -69,7 +68,6 @@ import { DatasetDetailsTableComponent } from '../dataset-details-table/dataset-d
   ],
   providers: [MetadataService],
   templateUrl: './dataset-details.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DatasetDetailsComponent implements OnInit {
   id = input.required<string>();

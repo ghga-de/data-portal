@@ -6,7 +6,6 @@
 
 import {
   AfterViewInit,
-  ChangeDetectionStrategy,
   Component,
   QueryList,
   ViewChild,
@@ -60,7 +59,6 @@ type DatasetDetailsRow = Experiment | Sample | File;
   ],
   templateUrl: './dataset-details-table.html',
   styleUrl: './dataset-details-table.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DatasetDetailsTableComponent implements AfterViewInit {
   tableName = input.required<'experiments' | 'samples' | 'files'>();

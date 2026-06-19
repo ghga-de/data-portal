@@ -7,7 +7,6 @@
 import { DatePipe as CommonDatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
-  ChangeDetectionStrategy,
   Component,
   OnInit,
   computed,
@@ -65,7 +64,6 @@ import { DeletionConfirmationDialogComponent } from '../deletion-confirmation-di
   ],
   providers: [CommonDatePipe],
   templateUrl: './user-manager-detail.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserManagerDetailComponent implements OnInit {
   readonly friendlyDateFormat = FRIENDLY_DATE_FORMAT;

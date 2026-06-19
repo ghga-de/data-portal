@@ -7,7 +7,6 @@
 import { DatePipe as CommonDatePipe } from '@angular/common';
 import {
   AfterViewInit,
-  ChangeDetectionStrategy,
   Component,
   QueryList,
   ViewChild,
@@ -49,7 +48,6 @@ import { providePaginatorIntl } from '@app/shared/services/paginator-intl';
   ],
   providers: [CommonDatePipe, providePaginatorIntl('Users per page')],
   templateUrl: './user-manager-list.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserManagerListComponent implements AfterViewInit {
   #router = inject(Router);
