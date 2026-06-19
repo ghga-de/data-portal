@@ -39,6 +39,7 @@ import { AccessRequestDialogComponent } from '../access-request-dialog/access-re
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DynamicAccessRequestButtonComponent {
+  protected readonly AccessRequestStatus = AccessRequestStatus;
   datasetID = input.required<string>();
   #accessRequestService = inject(AccessRequestService);
   #auth = inject(AuthService);

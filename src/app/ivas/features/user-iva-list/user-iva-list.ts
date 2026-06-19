@@ -42,6 +42,7 @@ import { VerificationDialogComponent } from '../verification-dialog/verification
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserIvaListComponent implements OnInit {
+  protected readonly IvaState = IvaState;
   #dialog = inject(MatDialog);
   #confirm = inject(ConfirmationService);
   #notify = inject(NotificationService);
