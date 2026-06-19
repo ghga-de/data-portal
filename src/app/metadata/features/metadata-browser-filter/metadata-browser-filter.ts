@@ -5,7 +5,6 @@
  */
 
 import { Component, OnInit, computed, effect, inject, signal } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
 import { form, FormField } from '@angular/forms/signals';
 import {
   MatAutocompleteModule,
@@ -47,7 +46,6 @@ import { highlightMatchingText } from '@app/shared/utils/highlight-matching-text
     MatInputModule,
     MatIconModule,
     StencilComponent,
-    ReactiveFormsModule,
     MatAccordion,
     FormField,
   ],
