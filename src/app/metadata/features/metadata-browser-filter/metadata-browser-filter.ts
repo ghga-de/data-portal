@@ -116,7 +116,7 @@ export class MetadataBrowserFilterComponent implements OnInit {
   });
 
   #paginatedEffect = effect(() => {
-    this.paginated() ? this.#performSearch() : null;
+    if (this.paginated()) this.#performSearch();
   });
 
   #deferredFacetUpdateEffect = effect(() => {
@@ -196,7 +196,7 @@ export class MetadataBrowserFilterComponent implements OnInit {
     if (Object.keys(facetData).length === 0) {
       return '';
     }
-    let facetStrings = [];
+    const facetStrings = [];
     for (const key in facetData) {
       for (const index in facetData[key]) {
         facetStrings.push(key + ':' + facetData[key][index]);

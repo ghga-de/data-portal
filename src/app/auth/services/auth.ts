@@ -510,7 +510,7 @@ export class AuthService {
   ): Promise<boolean> {
     if (!id && !ext_id) return false;
     const state = this.sessionState();
-    let url = this.#usersUrl;
+    const url = this.#usersUrl;
     let rpc: Observable<null>;
     if (id) {
       if (state !== 'NeedsReRegistration') return false;

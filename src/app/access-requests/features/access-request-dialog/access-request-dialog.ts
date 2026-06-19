@@ -117,7 +117,7 @@ export class AccessRequestDialogComponent {
     this.todayMidnight.setHours(0, 0, 0, 0);
     const defaultFromDate = new Date(this.todayMidnight);
 
-    let d = new Date(this.todayMidnight);
+    const d = new Date(this.todayMidnight);
     d.setHours(23, 59, 59, 999);
     d.setDate(d.getDate() + this.#config.defaultAccessDurationDays - 1);
     const defaultUntilDate = d;

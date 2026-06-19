@@ -83,7 +83,7 @@ export class UmamiService {
       const eventName = target.getAttribute('data-umami-event');
       if (!eventName) return true;
       const eventData: { [key: string]: string } = {};
-      for (let attr of target.attributes) {
+      for (const attr of target.attributes) {
         if (attr.name.startsWith('data-umami-event-')) {
           const key = attr.name.slice('data-umami-event-'.length);
           eventData[key] = attr.value;

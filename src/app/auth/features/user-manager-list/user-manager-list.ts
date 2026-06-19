@@ -28,8 +28,6 @@ import { DatePipe } from '@app/shared/pipes/date-pipe';
 import { UserExtIdPipe } from '@app/shared/pipes/user-ext-id-pipe';
 import { providePaginatorIntl } from '@app/shared/services/paginator-intl';
 
-const DEFAULT_EXT_ID_SUFFIX = '@lifescience-ri.eu';
-
 /**
  * User Manager List component.
  *

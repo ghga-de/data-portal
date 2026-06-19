@@ -60,7 +60,7 @@ export class AppComponent implements OnInit {
    */
   #initUmami(): void {
     const scheduleIdle = (cb: () => void) =>
-      (((window as any).requestIdleCallback as any) || setTimeout)(cb);
+      (window.requestIdleCallback ?? setTimeout)(cb);
     scheduleIdle(() => {
       runInInjectionContext(this.#envInjector, () => inject(UmamiService));
     });

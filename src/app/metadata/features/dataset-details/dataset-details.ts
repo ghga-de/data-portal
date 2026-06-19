@@ -42,13 +42,6 @@ import { ExternalLinkDirective } from '@app/shared/ui/external-link/external-lin
 import { ParagraphsComponent } from '../../../shared/ui/paragraphs/paragraphs';
 import { DatasetDetailsTableComponent } from '../dataset-details-table/dataset-details-table';
 
-const COLUMNS = {
-  experiments: 'accession ega_accession title description method platform',
-  samples:
-    'accession ega_accession description status sex phenotype biospecimen_type tissue',
-  files: 'accession ega_accession name type origin size location hash',
-};
-
 /**
  * Component for the dataset details page
  */

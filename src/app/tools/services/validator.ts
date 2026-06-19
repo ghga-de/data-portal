@@ -31,7 +31,7 @@ export class MetadataValidationService {
   readonly log = this.#pyodideService.getProcessLog();
 
   constructor() {
-    const eff = effect(() => {
+    effect(() => {
       if (this.#pyodideService.isPyodideInitialized()) {
         this.#loadDependencies();
       }
@@ -49,9 +49,8 @@ export class MetadataValidationService {
    *  This function prepares a YAML schema file in the Pyodide filesystem.
    *  It fetches the YAML schema from the assets, writes it to the Pyodide filesystem,
    *  and logs the success or failure of the operation.
-   * @param path - The path where the YAML schema file should be created in the Pyodide filesystem.
    */
-  async prepareSchemaFileFromAssets(path: string = YAML_SCHEMA_ASSET_PATH) {
+  async prepareSchemaFileFromAssets() {
     const yamlString = await firstValueFrom(
       this.#http.get(YAML_SCHEMA_ASSET_PATH, { responseType: 'text' }),
     );

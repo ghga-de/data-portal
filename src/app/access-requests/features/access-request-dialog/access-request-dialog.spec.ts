@@ -91,7 +91,18 @@ describe('AccessRequestDialogComponent', () => {
 
     component.updateUntilRangeForFromValue(fromDate);
     component.updateFromRangeForUntilValue(untilDate);
-    (component as any).model.set({
+    (
+      component as unknown as {
+        model: {
+          set: (value: {
+            description: string;
+            fromDate: Date | null;
+            untilDate: Date | null;
+            email: string;
+          }) => void;
+        };
+      }
+    ).model.set({
       description: 'Need access for analysis',
       fromDate,
       untilDate,

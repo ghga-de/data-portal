@@ -235,7 +235,7 @@ export class UserManagerDetailComponent implements OnInit {
    * Activate and deactivate the user after confirmation.
    * @param isDeactivated Whether the user is currently deactivated (thus we want to reactivate the account)
    */
-  safeStatusChange(isDeactivated: Boolean = false): void {
+  safeStatusChange(isDeactivated: boolean = false): void {
     this.#confirmationService.confirm({
       title: 'Confirm user account deactivation',
       message: `<p>Please confirm that the user account of ${this.user()!.displayName} shall be <strong>${!isDeactivated ? 'de' : ''}activated</strong>.`,

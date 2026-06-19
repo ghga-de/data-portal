@@ -40,7 +40,7 @@ export class NavigationTrackingService {
    * @param fallbackRoute An array representing the Angular route to navigate
    * to if no browser history is available
    */
-  public back(fallbackRoute?: any[]): void {
+  public back(fallbackRoute?: unknown[]): void {
     if (this.#navigationCount > 1 || !fallbackRoute) {
       this.#location.back();
     } else {

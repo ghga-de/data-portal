@@ -23,7 +23,7 @@ export class TranspilerService {
   #isReady: WritableSignal<boolean> = signal(false);
 
   constructor() {
-    const eff = effect(() => {
+    effect(() => {
       if (this.#pyodideService.isPyodideInitialized()) {
         this.#loadDependencies();
       }

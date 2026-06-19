@@ -251,8 +251,11 @@ export class AccessRequestService {
    * @param id - the ID of the updated access request
    * @param changes - the changes to the access request which may be partial
    */
-  #updateAccessRequestLocally(id: string, changes: any): void {
-    const withStatusChange = (request: AccessRequest, changes: any) =>
+  #updateAccessRequestLocally(id: string, changes: Partial<AccessRequest>): void {
+    const withStatusChange = (
+      request: AccessRequest,
+      changes: Partial<AccessRequest>,
+    ) =>
       'status' in changes && request.status !== changes.status
         ? {
             ...changes,
