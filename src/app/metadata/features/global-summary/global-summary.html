@@ -48,7 +48,7 @@
       ><mat-card-content>
         <app-global-summary-card-content
           [isLoading]="isLoading()"
-          [data]="$safeNavigationMigration(methods().stats?.instrument_model)"
+          [data]="methods().stats?.instrument_model"
           caption="Experiments"
           propertyName="Platform"
         ></app-global-summary-card-content></mat-card-content
@@ -70,7 +70,7 @@
       ><mat-card-content
         ><app-global-summary-card-content
           [isLoading]="isLoading()"
-          [data]="$safeNavigationMigration(individuals().stats?.sex)"
+          [data]="individuals().stats?.sex"
           caption="Individuals"
           propertyName="Sex"
         ></app-global-summary-card-content> </mat-card-content
@@ -92,7 +92,7 @@
       ><mat-card-content
         ><app-global-summary-card-content
           [isLoading]="isLoading()"
-          [data]="$safeNavigationMigration(files().stats?.format)"
+          [data]="files().stats?.format"
           caption="Files"
           propertyName="File Type"
         ></app-global-summary-card-content> </mat-card-content

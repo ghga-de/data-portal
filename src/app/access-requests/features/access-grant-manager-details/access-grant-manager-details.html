@@ -23,7 +23,7 @@
         <p>
           <strong>Status:</strong>&nbsp;<span
             class="{{
-              $safeNavigationMigration(ag?.status) | AccessGrantStatusClassPipe
+              ag.status | AccessGrantStatusClassPipe
             }} capitalize w-24"
             >{{ ag.status }}</span
           >
