@@ -4,7 +4,12 @@
  * @license Apache-2.0
  */
 
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {
+  ComponentFixture,
+  DeferBlockBehavior,
+  DeferBlockState,
+  TestBed,
+} from '@angular/core/testing';
 import { AppComponent } from './app';
 
 import { Component } from '@angular/core';
@@ -45,6 +50,7 @@ describe('AppComponent', () => {
     await TestBed.configureTestingModule({
       imports: [AppComponent],
       providers: [{ provide: ConfigService, useClass: MockConfigService }],
+      deferBlockBehavior: DeferBlockBehavior.Manual,
       teardown: { destroyAfterEach: false },
     })
       .overrideComponent(AppComponent, {
@@ -77,7 +83,11 @@ describe('AppComponent', () => {
     expect(compiled.querySelector('footer')).not.toBeNull();
   });
 
-  it('should have a version ribbon', () => {
+  it('should have a version ribbon', async () => {
+    // The ribbon is the first @defer block in the template; render it to its
+    // final state since manual defer behavior does not play through triggers.
+    const ribbonDeferBlock = (await fixture.getDeferBlocks())[0];
+    await ribbonDeferBlock.render(DeferBlockState.Complete);
     const compiled = fixture.nativeElement as HTMLElement;
     const ribbon = compiled.querySelector('app-version-ribbon');
     expect(ribbon).not.toBeNull();
