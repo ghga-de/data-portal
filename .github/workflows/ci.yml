@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        flavor: ["", "dhi"]
+        flavor: ['', 'dhi']
 
     steps:
       - uses: ghga-de/gh-action-ci@v2
