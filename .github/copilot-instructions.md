@@ -6,3 +6,5 @@ Additional Copilot notes:
 
 - Prefer inline suggestions over generating new files
 - Avoid large refactors unless requested
+- In VS Code, prefer MCP-backed Angular guidance from `.vscode/mcp.json` over guessing Angular APIs or CLI behavior
+- Prefer shared project skills in `.claude/skills/` so Copilot agent mode and Claude Code can use the same workflows
