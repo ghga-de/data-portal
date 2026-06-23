@@ -5,7 +5,7 @@ on:
 
 jobs:
   lint:
-    name: Run ESLint
+    name: Run Prettier and ESLint
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository
@@ -22,5 +22,7 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+      - name: Check formatting
+        run: pnpm format:check
       - name: Run Linter
-        run: npm run lint
+        run: pnpm lint
