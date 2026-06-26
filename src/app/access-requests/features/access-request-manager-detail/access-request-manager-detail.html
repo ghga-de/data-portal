@@ -179,8 +179,9 @@
                     >{{ (iva.state | IvaStatePipe).name }}</span
                   >).
                 </p>
+              } @else {
+                <p>No verification address is associated with this request.</p>
               }
-              <p>The status or address of this request cannot be changed any more.</p>
             } @else if (ivas().length === 1) {
               @let iva = ivas()[0];
               <p>
@@ -251,7 +252,7 @@
             } @else if (grantsError()) {
               <p>The corresponding access grants could not be loaded.</p>
             } @else if (!grants().length) {
-              <p>There are no access grants corresponding to this request yet.</p>
+              <p>There are no access grants corresponding to this request.</p>
             } @else {
               <!--
                 The aggregated current access state (active/upcoming/expired) is
