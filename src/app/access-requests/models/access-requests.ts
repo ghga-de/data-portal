@@ -6,6 +6,15 @@
 
 import { Iva } from '@app/ivas/models/iva';
 
+/**
+ * The status of an access request.
+ *
+ * This is a terminal resolution of the request by a data steward: once a
+ * request is allowed or denied it is never updated again. It is therefore
+ * shown to users under the label "Resolution" (rather than "Status", which
+ * would suggest a live state), to distinguish it from the access grant status,
+ * which does reflect the current state. The internal values are kept as-is.
+ */
 export enum AccessRequestStatus {
   allowed = 'allowed',
   denied = 'denied',

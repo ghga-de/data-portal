@@ -367,6 +367,72 @@ export class AccessRequestService {
     }
   };
 
+  /**
+   * Build the composite key used to group access grants by user and dataset.
+   * @param userId - the user ID
+   * @param datasetId - the dataset ID
+   * @returns the composite key
+   */
+  #grantKey = (userId: string, datasetId: string): string => `${userId} ${datasetId}`;
+
+  /**
+   * Aggregate the current access state across all grants of the same user and
+   * dataset. Since a user can hold multiple grants for one dataset (e.g. after
+   * a renewal), the most permissive current state wins: active if any grant is
+   * currently active, otherwise waiting if any grant becomes valid in the
+   * future, otherwise expired if grants exist but all have ended.
+   * @param grants - the grants to aggregate (all for the same user and dataset)
+   * @returns the aggregated grant status, or undefined if there are no grants
+   */
+  #aggregateGrantStatus(grants: AccessGrant[]): AccessGrantStatus | undefined {
+    let result: AccessGrantStatus | undefined = undefined;
+    for (const grant of grants) {
+      const status = this.computeStatusForAccessGrant(grant);
+      if (status === AccessGrantStatus.active) return AccessGrantStatus.active;
+      if (status === AccessGrantStatus.waiting) {
+        result = AccessGrantStatus.waiting;
+      } else if (result !== AccessGrantStatus.waiting) {
+        result = AccessGrantStatus.expired;
+      }
+    }
+    return result;
+  }
+
+  /**
+   * Map from the user/dataset key to the aggregated current grant state,
+   * derived from all loaded access grants. Used to show the live access state
+   * alongside the access requests in the manager list. Grants must have been
+   * loaded via loadAllAccessGrants() for this to be populated.
+   */
+  #grantStateByUserAndDataset = computed<Map<string, AccessGrantStatus>>(() => {
+    const grantsByKey = new Map<string, AccessGrant[]>();
+    const grants = this.allAccessGrantsResource.error()
+      ? []
+      : this.allAccessGrantsResource.value();
+    for (const grant of grants) {
+      const key = this.#grantKey(grant.user_id, grant.dataset_id);
+      const list = grantsByKey.get(key);
+      if (list) list.push(grant);
+      else grantsByKey.set(key, [grant]);
+    }
+    const result = new Map<string, AccessGrantStatus>();
+    for (const [key, list] of grantsByKey) {
+      const status = this.#aggregateGrantStatus(list);
+      if (status) result.set(key, status);
+    }
+    return result;
+  });
+
+  /**
+   * Get the aggregated current grant state for a given user and dataset.
+   * @param userId - the user ID
+   * @param datasetId - the dataset ID
+   * @returns the aggregated grant status, or undefined if there is no grant
+   */
+  grantStateFor(userId: string, datasetId: string): AccessGrantStatus | undefined {
+    return this.#grantStateByUserAndDataset().get(this.#grantKey(userId, datasetId));
+  }
+
   allAccessGrantsFiltered = computed(() => {
     let grants = this.allAccessGrants();
     const filter = this.#allAccessGrantsFilter();
