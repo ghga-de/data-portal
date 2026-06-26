@@ -39,6 +39,19 @@ export const AccessGrantStatusClass: Record<AccessGrantStatus, string> = {
   expired: 'text-error',
 };
 
+/**
+ * User-facing labels for the current (aggregated) access grant state, as shown
+ * in the access request manager's "Access" column and on the request details
+ * page. The grant's "waiting" state (access granted but not yet started) reads
+ * better as "upcoming" in this context. The access grant manager itself keeps
+ * its own raw wording.
+ */
+export const AccessGrantStateLabel: Record<AccessGrantStatus, string> = {
+  [AccessGrantStatus.active]: 'active',
+  [AccessGrantStatus.waiting]: 'upcoming',
+  [AccessGrantStatus.expired]: 'expired',
+};
+
 export interface AccessRequest {
   id: string;
   user_id: string;

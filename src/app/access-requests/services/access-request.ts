@@ -399,25 +399,46 @@ export class AccessRequestService {
   }
 
   /**
+   * Map from the user/dataset key to all corresponding access grants (each with
+   * its computed current status), derived from all loaded access grants. Grants
+   * must have been loaded via loadAllAccessGrants() for this to be populated.
+   */
+  #grantsByUserAndDataset = computed<Map<string, AccessGrant[]>>(() => {
+    const result = new Map<string, AccessGrant[]>();
+    for (const grant of this.allAccessGrants()) {
+      const key = this.#grantKey(grant.user_id, grant.dataset_id);
+      const list = result.get(key);
+      if (list) list.push(grant);
+      else result.set(key, [grant]);
+    }
+    return result;
+  });
+
+  /**
+   * Get all access grants for a given user and dataset, each with its computed
+   * current status, ordered by creation date (oldest first).
+   * Grants must have been loaded via loadAllAccessGrants().
+   * @param userId - the user ID
+   * @param datasetId - the dataset ID
+   * @returns the matching access grants (empty if there are none)
+   */
+  grantsFor(userId: string, datasetId: string): AccessGrant[] {
+    const grants = this.#grantsByUserAndDataset().get(
+      this.#grantKey(userId, datasetId),
+    );
+    return grants ? [...grants].sort((a, b) => a.created.localeCompare(b.created)) : [];
+  }
+
+  /**
    * Map from the user/dataset key to the aggregated current grant state,
    * derived from all loaded access grants. Used to show the live access state
    * alongside the access requests in the manager list. Grants must have been
    * loaded via loadAllAccessGrants() for this to be populated.
    */
   #grantStateByUserAndDataset = computed<Map<string, AccessGrantStatus>>(() => {
-    const grantsByKey = new Map<string, AccessGrant[]>();
-    const grants = this.allAccessGrantsResource.error()
-      ? []
-      : this.allAccessGrantsResource.value();
-    for (const grant of grants) {
-      const key = this.#grantKey(grant.user_id, grant.dataset_id);
-      const list = grantsByKey.get(key);
-      if (list) list.push(grant);
-      else grantsByKey.set(key, [grant]);
-    }
     const result = new Map<string, AccessGrantStatus>();
-    for (const [key, list] of grantsByKey) {
-      const status = this.#aggregateGrantStatus(list);
+    for (const [key, grants] of this.#grantsByUserAndDataset()) {
+      const status = this.#aggregateGrantStatus(grants);
       if (status) result.set(key, status);
     }
     return result;

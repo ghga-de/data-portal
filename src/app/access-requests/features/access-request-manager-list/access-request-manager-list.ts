@@ -23,6 +23,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Router, RouterLink } from '@angular/router';
 import {
+  AccessGrantStateLabel,
   AccessGrantStatus,
   AccessRequest,
   AccessRequestStatus,
@@ -124,15 +125,9 @@ export class AccessRequestManagerListComponent implements AfterViewInit {
 
   /**
    * User-facing labels for the aggregated grant state shown in the "Access"
-   * column. The grant's "waiting" state (access granted but not yet started) is
-   * shown as "upcoming", which reads better under the "Access" header. These
-   * labels are local to this column; the grant manager keeps its own wording.
+   * column, shared with the access request details page.
    */
-  accessLabels: Record<AccessGrantStatus, string> = {
-    [AccessGrantStatus.active]: 'active',
-    [AccessGrantStatus.waiting]: 'upcoming',
-    [AccessGrantStatus.expired]: 'expired',
-  };
+  accessLabels = AccessGrantStateLabel;
 
   source = new MatTableDataSource<AccessRequest>([]);
 
