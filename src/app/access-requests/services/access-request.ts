@@ -385,17 +385,12 @@ export class AccessRequestService {
    * @returns the aggregated grant status, or undefined if there are no grants
    */
   #aggregateGrantStatus(grants: AccessGrant[]): AccessGrantStatus | undefined {
-    let result: AccessGrantStatus | undefined = undefined;
-    for (const grant of grants) {
-      const status = this.computeStatusForAccessGrant(grant);
-      if (status === AccessGrantStatus.active) return AccessGrantStatus.active;
-      if (status === AccessGrantStatus.waiting) {
-        result = AccessGrantStatus.waiting;
-      } else if (result !== AccessGrantStatus.waiting) {
-        result = AccessGrantStatus.expired;
-      }
-    }
-    return result;
+    // Multiple passes are fine here: there is usually only one grant per
+    // user and dataset (a handful at most after renewals).
+    const statuses = grants.map(this.computeStatusForAccessGrant);
+    if (statuses.includes(AccessGrantStatus.active)) return AccessGrantStatus.active;
+    if (statuses.includes(AccessGrantStatus.waiting)) return AccessGrantStatus.waiting;
+    return statuses.length ? AccessGrantStatus.expired : undefined;
   }
 
   /**
