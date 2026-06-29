@@ -18,6 +18,15 @@ export const UploadBoxStateClass: Record<UploadBoxState, string> = {
   archived: 'text-gray-600',
 };
 
+/** Minimum upload box limit in TiB (1 GiB in binary units). */
+export const MIN_UPLOAD_BOX_SIZE_TIB = 1 / 1024;
+
+/** Maximum upload box limit in TiB (1 million TiB in binary units). */
+export const MAX_UPLOAD_BOX_SIZE_TIB = 1_000_000;
+
+/** Number of bytes in one binary TiB (1024^4). */
+export const BYTES_PER_TIB = 1_099_511_627_776;
+
 /** Base data required to create a Research Data Upload Box */
 export interface ResearchDataUploadBoxBase {
   title: string;
