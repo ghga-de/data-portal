@@ -23,7 +23,7 @@ export interface ResearchDataUploadBoxBase {
   title: string;
   description: string;
   storage_alias: string;
-  max_size: number; // in bytes
+  max_size: number; // maximum size in bytes
 }
 
 /** All data describing a Research Data Upload Box */
@@ -34,7 +34,7 @@ export interface ResearchDataUploadBox extends ResearchDataUploadBoxBase {
   last_changed: string; // ISO date string
   changed_by: string;
   file_count: number;
-  size: number; // in bytes
+  size: number; // current size in bytes
   // Note: the API also returns file_upload_box_id, file_upload_box_version, and
   // file_upload_box_state, but these are not used in the frontend.
 }
@@ -45,6 +45,7 @@ export interface ResearchDataUploadBoxUpdate {
   state?: UploadBoxState;
   title?: string;
   description?: string;
+  max_size?: number; // maximum size in bytes
 }
 
 /** Response when retrieving Research Data Upload Boxes */
