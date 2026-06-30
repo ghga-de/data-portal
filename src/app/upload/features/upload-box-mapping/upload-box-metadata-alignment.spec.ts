@@ -6,20 +6,10 @@
 
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { uploadBoxes } from '@app/../mocks/data';
-import { UploadBoxState } from '@app/upload/models/box';
 import { FileUploadWithAccession } from '@app/upload/models/file-upload';
 import { UploadBoxService } from '@app/upload/services/upload-box';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { UploadBoxMetadataAlignmentComponent } from './upload-box-metadata-alignment';
-
-const TEST_BOX = {
-  ...uploadBoxes.boxes[0],
-  id: 'box-1',
-  version: 4,
-  state: UploadBoxState.locked,
-  file_count: 2,
-};
 
 /**
  * Build a box file upload with the given id and alias.
@@ -105,7 +95,6 @@ describe('UploadBoxMetadataAlignmentComponent', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(UploadBoxMetadataAlignmentComponent);
-    fixture.componentRef.setInput('box', TEST_BOX);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

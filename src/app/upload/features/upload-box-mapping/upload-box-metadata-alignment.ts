@@ -4,13 +4,12 @@
  * @license Apache-2.0
  */
 
-import { Component, computed, inject, input, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 
-import { ResearchDataUploadBox } from '@app/upload/models/box';
 import { FileUploadWithAccession } from '@app/upload/models/file-upload';
 import {
   computeMetadataAlignment,
@@ -32,9 +31,6 @@ import { UploadBoxService } from '@app/upload/services/upload-box';
 })
 export class UploadBoxMetadataAlignmentComponent {
   #uploadBoxService = inject(UploadBoxService);
-
-  /** The locked upload box */
-  box = input.required<ResearchDataUploadBox>();
 
   /** The parsed and validated uploaded metadata, if any */
   uploadedMetadata = signal<UploadedMetadata | undefined>(undefined);

@@ -50,6 +50,17 @@ describe('parseUploadedMetadata', () => {
     expect(result.ok).toBe(false);
   });
 
+  it('rejects a non-boolean included_in_submission', () => {
+    const result = parseUploadedMetadata(
+      makeMetadata({
+        research_data_files: [
+          { alias: 'a', name: 'b', included_in_submission: 'true', dataset: 'd' },
+        ],
+      }),
+    );
+    expect(result.ok).toBe(false);
+  });
+
   it('extracts the first study and allows extra properties', () => {
     const result = parseUploadedMetadata(
       makeMetadata({

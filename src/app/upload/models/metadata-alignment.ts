@@ -77,10 +77,10 @@ function validateFileEntry(entry: unknown, key: string): string | undefined {
   if (
     typeof e['alias'] !== 'string' ||
     typeof e['name'] !== 'string' ||
-    !('included_in_submission' in e) ||
+    typeof e['included_in_submission'] !== 'boolean' ||
     !('dataset' in e)
   ) {
-    return `Each entry in "${key}" must have "alias", "name", "included_in_submission", and "dataset".`;
+    return `Each entry in "${key}" must have a string "alias" and "name", a boolean "included_in_submission", and a "dataset".`;
   }
   return undefined;
 }
