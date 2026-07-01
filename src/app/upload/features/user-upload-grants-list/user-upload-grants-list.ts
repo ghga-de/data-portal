@@ -65,6 +65,9 @@ export class UserUploadGrantsListComponent {
       data: grant,
       width: 'clamp(40em, 85vw, 64em)',
       maxWidth: 'calc(100vw - 2rem)',
+      // Focus the dialog heading instead of the first tabbable element, which
+      // would otherwise be the first sortable column header of the files table.
+      autoFocus: 'first-heading',
     });
   }
 

@@ -9,6 +9,7 @@ import { Component, computed, effect, input, output, viewChild } from '@angular/
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { DatePipe } from '@app/shared/pipes/date-pipe';
 import { ParseBytes } from '@app/shared/pipes/parse-bytes-pipe';
@@ -34,6 +35,7 @@ import { FileUploadStatePipe } from '@app/upload/pipes/file-upload-state-pipe';
     MatButtonModule,
     MatIcon,
     MatPaginatorModule,
+    MatSortModule,
     MatTableModule,
     DatePipe,
     ParseBytes,
@@ -81,10 +83,11 @@ export class UploadBoxFilesTableComponent {
   /** Whether to show the paginator (only useful for larger file lists). */
   showPaginator = computed<boolean>(() => this.files().length > 10);
 
-  /** MatTableDataSource for paginated file uploads. */
+  /** MatTableDataSource for paginated and sortable file uploads. */
   dataSource = new MatTableDataSource<FileUploadWithAccession>();
 
   private readonly paginator = viewChild(MatPaginator);
+  private readonly sort = viewChild(MatSort);
 
   #syncFilesEffect = effect(() => {
     this.dataSource.data = this.files();
@@ -96,4 +99,32 @@ export class UploadBoxFilesTableComponent {
       this.dataSource.paginator = paginator;
     }
   });
+
+  #assignSortEffect = effect(() => {
+    const sort = this.sort();
+    if (sort) {
+      this.dataSource.sort = sort;
+    }
+  });
+
+  /**
+   * Wire up sorting that reads the value backing each visible column, since the
+   * column names do not match the file properties one-to-one.
+   */
+  constructor() {
+    this.dataSource.sortingDataAccessor = (file, column) => {
+      switch (column) {
+        case 'size':
+          return file.decrypted_size;
+        case 'uploaded':
+          return file.state_updated;
+        case 'status':
+          return file.state;
+        case 'accession':
+          return file.accession ?? '';
+        default:
+          return file.alias;
+      }
+    };
+  }
 }

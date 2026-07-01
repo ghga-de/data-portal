@@ -7,7 +7,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UploadBoxState } from '@app/upload/models/box';
 import { FileUploadWithAccession } from '@app/upload/models/file-upload';
-import { screen } from '@testing-library/angular';
+import { screen, within } from '@testing-library/angular';
 import { UploadBoxFilesTableComponent } from './upload-box-files-table';
 
 /**
@@ -110,6 +110,30 @@ describe('UploadBoxFilesTableComponent', () => {
     screen.getByLabelText('Delete file alpha.txt').click();
     expect(emitted).toHaveLength(1);
     expect(emitted[0].alias).toBe('alpha.txt');
+  });
+
+  it('should sort the files by a column when its header is clicked', async () => {
+    const fixture = await createComponent({
+      files: [
+        makeFile({ id: 'a', alias: 'gamma.txt' }),
+        makeFile({ id: 'b', alias: 'alpha.txt' }),
+        makeFile({ id: 'c', alias: 'beta.txt' }),
+      ],
+      boxState: UploadBoxState.open,
+    });
+
+    const aliasOrder = () =>
+      screen
+        .getAllByRole('row')
+        .slice(1)
+        .map((row) => within(row).getAllByRole('cell')[0].textContent?.trim());
+
+    expect(aliasOrder()).toEqual(['gamma.txt', 'alpha.txt', 'beta.txt']);
+
+    screen.getByRole('columnheader', { name: /Filename/i }).click();
+    await fixture.whenStable();
+
+    expect(aliasOrder()).toEqual(['alpha.txt', 'beta.txt', 'gamma.txt']);
   });
 
   it('should show the accession column for archived boxes', async () => {
