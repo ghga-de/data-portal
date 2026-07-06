@@ -58,6 +58,7 @@ class MockUploadBoxService {
   #boxLoading = signal<boolean>(false);
   #boxError = signal<Error | undefined>(undefined);
   #files = signal<FileUploadWithAccession[]>([]);
+  #filesLoading = signal<boolean>(false);
 
   uploadBox = {
     value: this.#boxValue.asReadonly(),
@@ -67,7 +68,7 @@ class MockUploadBoxService {
 
   boxFileUploads = {
     value: this.#files.asReadonly(),
-    isLoading: () => false,
+    isLoading: this.#filesLoading.asReadonly(),
     error: () => undefined,
   };
 
@@ -96,6 +97,14 @@ class MockUploadBoxService {
    */
   setFiles(files: FileUploadWithAccession[]): void {
     this.#files.set(files);
+  }
+
+  /**
+   * Test helper: set the loading state of the box file uploads.
+   * @param loading - whether the file list is currently loading
+   */
+  setFilesLoading(loading: boolean): void {
+    this.#filesLoading.set(loading);
   }
 }
 
@@ -145,6 +154,24 @@ describe('UserUploadBoxDetailsDialogComponent', () => {
     expect(
       screen.queryByRole('button', { name: /edit|lock|delete|submit/i }),
     ).toBeNull();
+  });
+
+  it('should show a loading placeholder while the files are still loading', async () => {
+    const { fixture, service } = await createComponent();
+    service.setBox(box);
+    service.setFilesLoading(true);
+    await fixture.whenStable();
+    expect(screen.getByText(/loading files/i)).toBeInTheDocument();
+  });
+
+  it('should show the files once loaded, not a stuck loading placeholder', async () => {
+    const { fixture, service } = await createComponent();
+    service.setBox(box);
+    service.setFiles([file]);
+    service.setFilesLoading(false);
+    await fixture.whenStable();
+    expect(screen.getByText('alpha.txt')).toBeInTheDocument();
+    expect(screen.queryByText(/loading files/i)).not.toBeInTheDocument();
   });
 
   it('should show a notice when the box is empty', async () => {

@@ -76,6 +76,11 @@ export class UserUploadBoxDetailsDialogComponent {
       .filter((file) => file.box_id === fileUploadBoxId);
   });
 
+  /** Whether the box's file list is still being loaded. */
+  protected filesLoading = computed<boolean>(() =>
+    this.#uploadBoxService.boxFileUploads.isLoading(),
+  );
+
   /** Load the box files once the box is available and known to be non-empty. */
   #loadFilesEffect = effect(() => {
     const box = this.box();
