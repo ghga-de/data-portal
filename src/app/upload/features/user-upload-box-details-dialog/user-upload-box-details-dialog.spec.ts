@@ -28,13 +28,16 @@ const box: ResearchDataUploadBox = {
   changed_by: 'user-1',
   file_count: 1,
   size: 1024,
+  // The underlying file upload box ID differs from the research box `id`; file
+  // uploads reference this value via their own `box_id`.
+  file_upload_box_id: 'file-upload-box-1',
 };
 
 const grant = { box_id: 'box-1' } as GrantWithBoxInfo;
 
 const file: FileUploadWithAccession = {
   id: 'file-1',
-  box_id: 'box-1',
+  box_id: 'file-upload-box-1',
   alias: 'alpha.txt',
   state: 'interrogated',
   state_updated: '2026-01-01T00:00:00Z',
