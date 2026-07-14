@@ -22,31 +22,30 @@ RUN jq '{name, version, type}' package.json > ./package.json.run
 # extract js-yaml and its dependencies for runtime
 RUN mkdir -p /tmp/runtime-deps && \
     cp -rL node_modules/js-yaml /tmp/runtime-deps/
+# create config.js, group-writable so it can be written at runtime under any UID
+RUN touch ./dist/data-portal/browser/config.js \
+ && chmod g+w ./dist/data-portal/browser ./dist/data-portal/browser/config.js
 
 # RUNNER: a container to run the service
 FROM base AS runner
-RUN adduser -D appuser
-WORKDIR /home/appuser
-USER appuser
-# install dist directory and run script
-COPY --from=builder /service/dist/data-portal/browser ./dist
-# install static web server
-COPY --from=builder /usr/local/bin/static-web-server /usr/local/bin
-# copy the base package.json with name and version
-COPY --from=builder /service/package.json.run ./package.json
-# install run script
-COPY run.js ./run.mjs
-# copy runtime dependencies (js-yaml with resolved symlinks)
-COPY --from=builder /tmp/runtime-deps/js-yaml ./node_modules/js-yaml
-# install configuration files
-COPY data-portal.default.yaml .
-COPY sws.toml .
-USER root
+ARG UID=1000
+WORKDIR /app
 # remove npm and corepack to trim the image and avoid outdated dependencies
-RUN rm -rf /usr/local/lib/node_modules /home/appuser/.cache /root/.cache
-# make some dirs and files writeable for the appuser
-RUN touch ./dist/config.js && chown appuser ./dist ./dist/config.js ./package.json
-USER appuser
+RUN rm -rf /usr/local/lib/node_modules /root/.cache /root/.npm
+# install dist directory and run script
+COPY --chown=${UID}:0 --from=builder /service/dist/data-portal/browser ./dist
+# install static web server
+COPY --from=builder /usr/local/bin/static-web-server /usr/local/bin/static-web-server
+# copy the base package.json with name and version
+COPY --chown=${UID}:0 --from=builder /service/package.json.run ./package.json
+# install run script
+COPY --chown=${UID}:0 run.js ./run.mjs
+# copy runtime dependencies (js-yaml with resolved symlinks)
+COPY --chown=${UID}:0 --from=builder /tmp/runtime-deps/js-yaml ./node_modules/js-yaml
+# install configuration files
+COPY --chown=${UID}:0 data-portal.default.yaml .
+COPY --chown=${UID}:0 sws.toml .
+USER ${UID}
 
 ENTRYPOINT ["node"]
-CMD ["/home/appuser/run.mjs"]
+CMD ["/app/run.mjs"]
