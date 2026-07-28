@@ -28,7 +28,7 @@ jobs:
       - name: Build application
         run: pnpm build
       - name: Run Playwright tests
-        run: pnpm exec playwright test --project=chromium --project=firefox --project=webkit --workers=4
+        run: pnpm exec playwright test --project=chromium --project=firefox --project=webkit --workers=2
         env:
           CI: true
           FORCE_COLOR: 1
