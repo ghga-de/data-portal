@@ -15,7 +15,10 @@ import { SearchResults } from '@app/metadata/models/search-results';
 import { Study } from '@app/metadata/models/study';
 import { BaseStorageLabels } from '@app/metadata/models/well-known-values';
 import { BoxRetrievalResults, UploadBoxState } from '@app/upload/models/box';
-import { FileUploadWithAccession } from '@app/upload/models/file-upload';
+import {
+  BoxUploadsPage,
+  FileUploadWithAccession,
+} from '@app/upload/models/file-upload';
 import { GrantWithBoxInfo } from '@app/upload/models/grant';
 import { FileIdMap, Study as RsStudy } from '@app/upload/models/study';
 import { DatasetWithExpiration } from '@app/work-packages/models/dataset';
@@ -1625,6 +1628,85 @@ export const uploadBox5FileUploads: FileUploadWithAccession[] = [
     accession: null,
   },
 ];
+
+/**
+ * The `/upload-boxes/{id}/uploads` endpoint is paginated and sorted by the RS and
+ * answers with a page of file uploads plus the total unpaginated count. The
+ * fixtures below are the pre-computed responses for the specific requests the
+ * portal makes against the mocked boxes; `responses.ts` maps each query string to
+ * one of them. Deriving them from the file lists above only avoids spelling out
+ * the same files several times — the mock does not paginate or sort at runtime.
+ * @param files - all file uploads of the box, in the order the RS would return them
+ * @param skip - the number of file uploads the request skips
+ * @param limit - the page size the request asks for
+ * @returns the page response for that request
+ */
+function uploadsPage(
+  files: FileUploadWithAccession[],
+  skip = 0,
+  limit = 10,
+): BoxUploadsPage {
+  return { items: files.slice(skip, skip + limit), total_count: files.length };
+}
+
+/**
+ * Order file uploads by alias, the default order of the RS.
+ * @param files - the file uploads of a box
+ * @returns the file uploads ordered by ascending alias
+ */
+function byAlias(files: FileUploadWithAccession[]): FileUploadWithAccession[] {
+  return [...files].sort((left, right) => left.alias.localeCompare(right.alias));
+}
+
+/**
+ * Order file uploads by descending alias.
+ * @param files - the file uploads of a box
+ * @returns the file uploads ordered by descending alias
+ */
+function byAliasDesc(files: FileUploadWithAccession[]): FileUploadWithAccession[] {
+  return byAlias(files).reverse();
+}
+
+/** The empty page returned for upload boxes without any file uploads */
+export const emptyUploadsPage: BoxUploadsPage = { items: [], total_count: 0 };
+
+/** Pages of file uploads for box 1 (open, 4 files) */
+export const uploadBox1UploadsPage1 = uploadsPage(byAlias(uploadBox1FileUploads));
+export const uploadBox1UploadsAll = uploadsPage(
+  byAlias(uploadBox1FileUploads),
+  0,
+  1000,
+);
+
+/** Pages of file uploads for box 2 (locked, 15 files, used by the mapping tool) */
+export const uploadBox2UploadsPage1 = uploadsPage(byAlias(uploadBox2FileUploads));
+export const uploadBox2UploadsPage2 = uploadsPage(byAlias(uploadBox2FileUploads), 10);
+export const uploadBox2UploadsAll = uploadsPage(
+  byAlias(uploadBox2FileUploads),
+  0,
+  1000,
+);
+
+/** Pages of file uploads for box 3 (archived, 28 files) */
+export const uploadBox3UploadsPage1 = uploadsPage(byAlias(uploadBox3FileUploads));
+export const uploadBox3UploadsPage2 = uploadsPage(byAlias(uploadBox3FileUploads), 10);
+export const uploadBox3UploadsPage3 = uploadsPage(byAlias(uploadBox3FileUploads), 20);
+
+/**
+ * The only file upload page mocked in a non-default sort order, needed by the e2e
+ * test asserting that sorting reorders the whole box rather than the loaded page.
+ * Sorting is otherwise not mocked — see the note in `responses.ts`.
+ */
+export const uploadBox3UploadsDescPage1 = uploadsPage(
+  byAliasDesc(uploadBox3FileUploads),
+);
+
+/** Pages of file uploads for box 4 (open, 15 files) */
+export const uploadBox4UploadsPage1 = uploadsPage(byAlias(uploadBox4FileUploads));
+export const uploadBox4UploadsPage2 = uploadsPage(byAlias(uploadBox4FileUploads), 10);
+
+/** Pages of file uploads for box 5 (open, 2 files) */
+export const uploadBox5UploadsPage1 = uploadsPage(byAlias(uploadBox5FileUploads));
 
 /**
  * WPS API

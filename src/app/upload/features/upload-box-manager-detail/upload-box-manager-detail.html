@@ -209,10 +209,17 @@
               [files]="fileUploads()"
               [boxState]="box.state"
               [loading]="filesLoading()"
+              [totalCount]="filesTotalCount()"
+              [pageIndex]="filesPageIndex()"
+              [pageSize]="filesPageSize()"
+              [sortActive]="filesSortState().column"
+              [sortDirection]="filesSortState().direction"
               [showDelete]="box.state === 'open'"
               [deletable]="canDeleteFileFn"
               deleteEventLabel="Upload Box Manager Detail Delete File Clicked"
               (deleteFile)="deleteFile($event)"
+              (page)="onFilesPage($event)"
+              (sortChange)="onFilesSort($event)"
             />
           } @else {
             <p class="text-warning mt-2">This upload box is still empty.</p>

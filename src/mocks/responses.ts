@@ -21,11 +21,19 @@ import {
   searchResults,
   storageLabels,
   studyData,
-  uploadBox1FileUploads,
-  uploadBox2FileUploads,
-  uploadBox3FileUploads,
-  uploadBox4FileUploads,
-  uploadBox5FileUploads,
+  emptyUploadsPage,
+  uploadBox1UploadsAll,
+  uploadBox1UploadsPage1,
+  uploadBox2UploadsAll,
+  uploadBox2UploadsPage1,
+  uploadBox2UploadsPage2,
+  uploadBox3UploadsDescPage1,
+  uploadBox3UploadsPage1,
+  uploadBox3UploadsPage2,
+  uploadBox3UploadsPage3,
+  uploadBox4UploadsPage1,
+  uploadBox4UploadsPage2,
+  uploadBox5UploadsPage1,
   uploadBoxes,
   pediatricLeukemiaDatasetDetails,
   pediatricLeukemiaFileIds,
@@ -273,18 +281,48 @@ export const responses: { [endpoint: string]: ResponseValue } = {
   // Fetch all upload boxes
   'GET /api/rs/upload-boxes': uploadBoxes,
 
-  // Fetch file uploads for a specific box
-  'GET /api/rs/upload-boxes/0a36607a-b53f-49ed-bf3e-a5f2dbc68001/uploads':
-    uploadBox1FileUploads,
-  'GET /api/rs/upload-boxes/0a36607a-b53f-49ed-bf3e-a5f2dbc68002/uploads':
-    uploadBox2FileUploads,
-  'GET /api/rs/upload-boxes/0a36607a-b53f-49ed-bf3e-a5f2dbc68003/uploads':
-    uploadBox3FileUploads,
-  'GET /api/rs/upload-boxes/0a36607a-b53f-49ed-bf3e-a5f2dbc68004/uploads':
-    uploadBox4FileUploads,
-  'GET /api/rs/upload-boxes/0a36607a-b53f-49ed-bf3e-a5f2dbc68005/uploads':
-    uploadBox5FileUploads,
-  'GET /api/rs/upload-boxes/*/uploads': [],
+  // Fetch a page of file uploads for a specific box. The RS paginates and sorts
+  // this endpoint, so there is one pre-made response per request the portal makes:
+  // `limit=10` pages back the file table, `limit=1000` the complete list the
+  // mapping tool needs.
+  //
+  // Only pagination is mocked. Sorting is not: the sole `sort` entry below exists
+  // for the e2e test that checks sorting reorders the whole box instead of just
+  // the loaded page. Every other sort request falls back to the entry matching the
+  // most parameters, i.e. the unsorted page, so clicking a sort header against the
+  // mock backend re-fetches the same rows. That is expected — add a fixture for a
+  // specific sort order if a test needs one, rather than sorting in the handler.
+  'GET /api/rs/upload-boxes/0a36607a-b53f-49ed-bf3e-a5f2dbc68001/uploads?skip=0&limit=10':
+    uploadBox1UploadsPage1,
+  'GET /api/rs/upload-boxes/0a36607a-b53f-49ed-bf3e-a5f2dbc68001/uploads?skip=0&limit=1000':
+    uploadBox1UploadsAll,
+
+  'GET /api/rs/upload-boxes/0a36607a-b53f-49ed-bf3e-a5f2dbc68002/uploads?skip=0&limit=10':
+    uploadBox2UploadsPage1,
+  'GET /api/rs/upload-boxes/0a36607a-b53f-49ed-bf3e-a5f2dbc68002/uploads?skip=10&limit=10':
+    uploadBox2UploadsPage2,
+  'GET /api/rs/upload-boxes/0a36607a-b53f-49ed-bf3e-a5f2dbc68002/uploads?skip=0&limit=1000':
+    uploadBox2UploadsAll,
+
+  'GET /api/rs/upload-boxes/0a36607a-b53f-49ed-bf3e-a5f2dbc68003/uploads?skip=0&limit=10':
+    uploadBox3UploadsPage1,
+  'GET /api/rs/upload-boxes/0a36607a-b53f-49ed-bf3e-a5f2dbc68003/uploads?skip=10&limit=10':
+    uploadBox3UploadsPage2,
+  'GET /api/rs/upload-boxes/0a36607a-b53f-49ed-bf3e-a5f2dbc68003/uploads?skip=20&limit=10':
+    uploadBox3UploadsPage3,
+  // The one mocked sort order (see above), used by the pagination e2e test.
+  'GET /api/rs/upload-boxes/0a36607a-b53f-49ed-bf3e-a5f2dbc68003/uploads?skip=0&limit=10&sort=-alias':
+    uploadBox3UploadsDescPage1,
+
+  'GET /api/rs/upload-boxes/0a36607a-b53f-49ed-bf3e-a5f2dbc68004/uploads?skip=0&limit=10':
+    uploadBox4UploadsPage1,
+  'GET /api/rs/upload-boxes/0a36607a-b53f-49ed-bf3e-a5f2dbc68004/uploads?skip=10&limit=10':
+    uploadBox4UploadsPage2,
+
+  'GET /api/rs/upload-boxes/0a36607a-b53f-49ed-bf3e-a5f2dbc68005/uploads?skip=0&limit=10':
+    uploadBox5UploadsPage1,
+
+  'GET /api/rs/upload-boxes/*/uploads': emptyUploadsPage,
 
   // Delete a single file upload from a box
   'DELETE /api/rs/upload-boxes/*/uploads/*': 204,

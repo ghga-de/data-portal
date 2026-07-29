@@ -5,6 +5,8 @@
  */
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { PageEvent } from '@angular/material/paginator';
+import { Sort } from '@angular/material/sort';
 import { UploadBoxState } from '@app/upload/models/box';
 import { FileUploadWithAccession } from '@app/upload/models/file-upload';
 import { screen, within } from '@testing-library/angular';
@@ -48,6 +50,7 @@ const files: FileUploadWithAccession[] = [
  * @param inputs.loading - whether the file list is still loading
  * @param inputs.showDelete - whether to show the delete column
  * @param inputs.deletable - predicate deciding which files are deletable
+ * @param inputs.totalCount - the total number of files across all pages
  * @returns the created fixture
  */
 async function createComponent(inputs: {
@@ -56,6 +59,7 @@ async function createComponent(inputs: {
   loading?: boolean;
   showDelete?: boolean;
   deletable?: (file: FileUploadWithAccession) => boolean;
+  totalCount?: number;
 }): Promise<ComponentFixture<UploadBoxFilesTableComponent>> {
   await TestBed.configureTestingModule({
     imports: [UploadBoxFilesTableComponent],
@@ -63,6 +67,7 @@ async function createComponent(inputs: {
   const fixture = TestBed.createComponent(UploadBoxFilesTableComponent);
   fixture.componentRef.setInput('files', inputs.files);
   fixture.componentRef.setInput('boxState', inputs.boxState);
+  fixture.componentRef.setInput('totalCount', inputs.totalCount ?? inputs.files.length);
   if (inputs.loading !== undefined) {
     fixture.componentRef.setInput('loading', inputs.loading);
   }
@@ -117,7 +122,7 @@ describe('UploadBoxFilesTableComponent', () => {
     expect(emitted[0].alias).toBe('alpha.txt');
   });
 
-  it('should sort the files by a column when its header is clicked', async () => {
+  it('should request a new sort order instead of reordering the page itself', async () => {
     const fixture = await createComponent({
       files: [
         makeFile({ id: 'a', alias: 'gamma.txt' }),
@@ -133,12 +138,56 @@ describe('UploadBoxFilesTableComponent', () => {
         .slice(1)
         .map((row) => within(row).getAllByRole('cell')[0].textContent?.trim());
 
-    expect(aliasOrder()).toEqual(['gamma.txt', 'alpha.txt', 'beta.txt']);
+    const sorts: Sort[] = [];
+    fixture.componentInstance.sortChange.subscribe((sort) => sorts.push(sort));
 
+    // The table is sorted by alias ascending by default, so the first click on
+    // the filename header asks the server for the descending order.
     screen.getByRole('columnheader', { name: /Filename/i }).click();
     await fixture.whenStable();
 
-    expect(aliasOrder()).toEqual(['alpha.txt', 'beta.txt', 'gamma.txt']);
+    expect(sorts).toEqual([{ active: 'alias', direction: 'desc' }]);
+    // The page itself is served by the backend and must stay as delivered.
+    expect(aliasOrder()).toEqual(['gamma.txt', 'alpha.txt', 'beta.txt']);
+  });
+
+  it('should request a new sort order when the accession header is clicked', async () => {
+    const fixture = await createComponent({
+      files: [makeFile({ state: 'archived', accession: 'GHGAF001' })],
+      boxState: UploadBoxState.archived,
+    });
+
+    const sorts: Sort[] = [];
+    fixture.componentInstance.sortChange.subscribe((sort) => sorts.push(sort));
+
+    screen.getByRole('columnheader', { name: /Accession/i }).click();
+    await fixture.whenStable();
+
+    expect(sorts).toEqual([{ active: 'accession', direction: 'asc' }]);
+  });
+
+  it('should hide the paginator when all files fit on one page', async () => {
+    await createComponent({ files, boxState: UploadBoxState.open });
+    expect(screen.queryByLabelText('Select page of files')).not.toBeInTheDocument();
+  });
+
+  it('should request another page when the paginator is used', async () => {
+    const fixture = await createComponent({
+      files,
+      boxState: UploadBoxState.open,
+      totalCount: 25,
+    });
+    expect(screen.getByLabelText('Select page of files')).toBeInTheDocument();
+
+    const pages: PageEvent[] = [];
+    fixture.componentInstance.page.subscribe((event) => pages.push(event));
+
+    screen.getByLabelText('Next page').click();
+    await fixture.whenStable();
+
+    expect(pages).toHaveLength(1);
+    expect(pages[0].pageIndex).toBe(1);
+    expect(pages[0].pageSize).toBe(10);
   });
 
   it('should show a loading placeholder while the file list is loading', async () => {

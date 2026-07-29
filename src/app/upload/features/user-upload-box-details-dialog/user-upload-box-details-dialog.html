@@ -40,6 +40,13 @@
             [files]="files()"
             [boxState]="box.state"
             [loading]="filesLoading()"
+            [totalCount]="filesTotalCount()"
+            [pageIndex]="filesPageIndex()"
+            [pageSize]="filesPageSize()"
+            [sortActive]="filesSortState().column"
+            [sortDirection]="filesSortState().direction"
+            (page)="onFilesPage($event)"
+            (sortChange)="onFilesSort($event)"
           />
         } @else {
           <p class="text-warning">This upload box is still empty.</p>
