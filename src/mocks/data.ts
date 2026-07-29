@@ -1552,6 +1552,27 @@ export const uploadBox2FileUploads: FileUploadWithAccession[] = [
 ];
 
 /**
+ * Build the upload timestamp for one of the generated file uploads of a box.
+ *
+ * The uploads of a box are spread over two consecutive days, and deliberately not
+ * in the same order as the file aliases, so that sorting the file table by upload
+ * time gives a visibly different order than sorting it by file name.
+ * @param index - the index of the file within the box
+ * @param count - the number of files in the box
+ * @param firstDay - the ISO date (YYYY-MM-DD) of the first of the two days
+ * @returns the ISO timestamp at which the file finished uploading
+ */
+function uploadedAt(index: number, count: number, firstDay: string): string {
+  // 11 is coprime with both box sizes, so this permutes the files without repeats.
+  const slot = (index * 11) % count;
+  const perDay = Math.ceil(count / 2);
+  const uploaded = new Date(`${firstDay}T08:00:00Z`);
+  uploaded.setUTCDate(uploaded.getUTCDate() + Math.floor(slot / perDay));
+  uploaded.setUTCMinutes(uploaded.getUTCMinutes() + (slot % perDay) * 25);
+  return `${uploaded.toISOString().slice(0, 19)}Z`;
+}
+
+/**
  * RS file uploads for box 3 (archived, 28 files)
  */
 export const uploadBox3FileUploads: FileUploadWithAccession[] = Array.from(
@@ -1561,7 +1582,7 @@ export const uploadBox3FileUploads: FileUploadWithAccession[] = Array.from(
     box_id: 'b0f11e00-0000-4000-8000-a5f2dbc68003',
     alias: `archived_sample_${String(i + 1).padStart(3, '0')}.fastq.gz`,
     state: 'archived' as FileUploadWithAccession['state'],
-    state_updated: '2025-06-01T10:00:00Z',
+    state_updated: uploadedAt(i, 28, '2025-06-01'),
     storage_alias: 'TUE03',
     bucket_id: 'inbox-tue03',
     decrypted_sha256: (i % 10).toString().repeat(64),
@@ -1585,7 +1606,7 @@ export const uploadBox4FileUploads: FileUploadWithAccession[] = Array.from(
       box_id: 'b0f11e00-0000-4000-8000-a5f2dbc68004',
       alias: `sample_proteome_${String(i + 1).padStart(3, '0')}.raw`,
       state,
-      state_updated: '2026-02-04T08:00:00Z',
+      state_updated: uploadedAt(i, 15, '2026-02-04'),
       storage_alias: 'HD02',
       bucket_id: 'inbox-hd02',
       decrypted_sha256:
@@ -1630,83 +1651,37 @@ export const uploadBox5FileUploads: FileUploadWithAccession[] = [
 ];
 
 /**
- * The `/upload-boxes/{id}/uploads` endpoint is paginated and sorted by the RS and
- * answers with a page of file uploads plus the total unpaginated count. The
- * fixtures below are the pre-computed responses for the specific requests the
- * portal makes against the mocked boxes; `responses.ts` maps each query string to
- * one of them. Deriving them from the file lists above only avoids spelling out
- * the same files several times — the mock does not paginate or sort at runtime.
- * @param files - all file uploads of the box, in the order the RS would return them
- * @param skip - the number of file uploads the request skips
- * @param limit - the page size the request asks for
- * @returns the page response for that request
+ * Build the complete file upload collection of an upload box.
+ *
+ * The `/upload-boxes/{id}/uploads` endpoint is paginated and sorted by the RS, so
+ * these fixtures hold every file of a box in the RS default order (by alias). The
+ * mock handler derives whatever page and sort order a request asks for from them,
+ * which is why there is one fixture per box rather than one per request.
+ * @param files - all file uploads of the box
+ * @returns the complete collection response for that box
  */
-function uploadsPage(
-  files: FileUploadWithAccession[],
-  skip = 0,
-  limit = 10,
-): BoxUploadsPage {
-  return { items: files.slice(skip, skip + limit), total_count: files.length };
+function uploadsCollection(files: FileUploadWithAccession[]): BoxUploadsPage {
+  const items = [...files].sort((left, right) => left.alias.localeCompare(right.alias));
+  return { items, total_count: items.length };
 }
 
-/**
- * Order file uploads by alias, the default order of the RS.
- * @param files - the file uploads of a box
- * @returns the file uploads ordered by ascending alias
- */
-function byAlias(files: FileUploadWithAccession[]): FileUploadWithAccession[] {
-  return [...files].sort((left, right) => left.alias.localeCompare(right.alias));
-}
+/** The response for upload boxes without any file uploads */
+export const emptyUploadsCollection: BoxUploadsPage = { items: [], total_count: 0 };
 
-/**
- * Order file uploads by descending alias.
- * @param files - the file uploads of a box
- * @returns the file uploads ordered by descending alias
- */
-function byAliasDesc(files: FileUploadWithAccession[]): FileUploadWithAccession[] {
-  return byAlias(files).reverse();
-}
+/** File uploads of box 1 (open, 4 files) */
+export const uploadBox1Uploads = uploadsCollection(uploadBox1FileUploads);
 
-/** The empty page returned for upload boxes without any file uploads */
-export const emptyUploadsPage: BoxUploadsPage = { items: [], total_count: 0 };
+/** File uploads of box 2 (locked, 15 files, used by the mapping tool) */
+export const uploadBox2Uploads = uploadsCollection(uploadBox2FileUploads);
 
-/** Pages of file uploads for box 1 (open, 4 files) */
-export const uploadBox1UploadsPage1 = uploadsPage(byAlias(uploadBox1FileUploads));
-export const uploadBox1UploadsAll = uploadsPage(
-  byAlias(uploadBox1FileUploads),
-  0,
-  1000,
-);
+/** File uploads of box 3 (archived, 28 files, i.e. three pages) */
+export const uploadBox3Uploads = uploadsCollection(uploadBox3FileUploads);
 
-/** Pages of file uploads for box 2 (locked, 15 files, used by the mapping tool) */
-export const uploadBox2UploadsPage1 = uploadsPage(byAlias(uploadBox2FileUploads));
-export const uploadBox2UploadsPage2 = uploadsPage(byAlias(uploadBox2FileUploads), 10);
-export const uploadBox2UploadsAll = uploadsPage(
-  byAlias(uploadBox2FileUploads),
-  0,
-  1000,
-);
+/** File uploads of box 4 (open, 15 files) */
+export const uploadBox4Uploads = uploadsCollection(uploadBox4FileUploads);
 
-/** Pages of file uploads for box 3 (archived, 28 files) */
-export const uploadBox3UploadsPage1 = uploadsPage(byAlias(uploadBox3FileUploads));
-export const uploadBox3UploadsPage2 = uploadsPage(byAlias(uploadBox3FileUploads), 10);
-export const uploadBox3UploadsPage3 = uploadsPage(byAlias(uploadBox3FileUploads), 20);
-
-/**
- * The only file upload page mocked in a non-default sort order, needed by the e2e
- * test asserting that sorting reorders the whole box rather than the loaded page.
- * Sorting is otherwise not mocked — see the note in `responses.ts`.
- */
-export const uploadBox3UploadsDescPage1 = uploadsPage(
-  byAliasDesc(uploadBox3FileUploads),
-);
-
-/** Pages of file uploads for box 4 (open, 15 files) */
-export const uploadBox4UploadsPage1 = uploadsPage(byAlias(uploadBox4FileUploads));
-export const uploadBox4UploadsPage2 = uploadsPage(byAlias(uploadBox4FileUploads), 10);
-
-/** Pages of file uploads for box 5 (open, 2 files) */
-export const uploadBox5UploadsPage1 = uploadsPage(byAlias(uploadBox5FileUploads));
+/** File uploads of box 5 (open, 2 files) */
+export const uploadBox5Uploads = uploadsCollection(uploadBox5FileUploads);
 
 /**
  * WPS API

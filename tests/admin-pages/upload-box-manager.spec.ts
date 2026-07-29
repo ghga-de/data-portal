@@ -145,6 +145,11 @@ test('paginates and sorts the file list on the server', async ({ adminPage: page
   await filesTable.getByRole('columnheader', { name: 'Filename' }).click();
   await expect(firstFile()).toHaveText('archived_sample_028.fastq.gz');
   await expect(paginator).toContainText('1 – 10 of 28');
+
+  // Archived boxes show the accession instead of the upload status, and it is
+  // sorted by the backend like any other column.
+  await filesTable.getByRole('columnheader', { name: 'Accession' }).click();
+  await expect(firstFile()).toHaveText('archived_sample_001.fastq.gz');
 });
 
 test('validates required fields in the create upload box dialog', async ({
