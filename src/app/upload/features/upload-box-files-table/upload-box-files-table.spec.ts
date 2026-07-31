@@ -37,7 +37,7 @@ function makeFile(
   };
 }
 
-const files: FileUploadWithAccession[] = [
+const pageFiles: FileUploadWithAccession[] = [
   makeFile({ id: 'f1', alias: 'alpha.txt', state: 'init' }),
   makeFile({ id: 'f2', alias: 'beta.txt', state: 'interrogated' }),
 ];
@@ -45,7 +45,7 @@ const files: FileUploadWithAccession[] = [
 /**
  * Render the component with the given inputs.
  * @param inputs - the signal inputs to set
- * @param inputs.files - the file uploads to display
+ * @param inputs.pageFiles - the file uploads on the page to display
  * @param inputs.boxState - the state of the box the files belong to
  * @param inputs.loading - whether the file list is still loading
  * @param inputs.showDelete - whether to show the delete column
@@ -54,7 +54,7 @@ const files: FileUploadWithAccession[] = [
  * @returns the created fixture
  */
 async function createComponent(inputs: {
-  files: FileUploadWithAccession[];
+  pageFiles: FileUploadWithAccession[];
   boxState: UploadBoxState;
   loading?: boolean;
   showDelete?: boolean;
@@ -65,9 +65,12 @@ async function createComponent(inputs: {
     imports: [UploadBoxFilesTableComponent],
   }).compileComponents();
   const fixture = TestBed.createComponent(UploadBoxFilesTableComponent);
-  fixture.componentRef.setInput('files', inputs.files);
+  fixture.componentRef.setInput('pageFiles', inputs.pageFiles);
   fixture.componentRef.setInput('boxState', inputs.boxState);
-  fixture.componentRef.setInput('totalCount', inputs.totalCount ?? inputs.files.length);
+  fixture.componentRef.setInput(
+    'totalCount',
+    inputs.totalCount ?? inputs.pageFiles.length,
+  );
   if (inputs.loading !== undefined) {
     fixture.componentRef.setInput('loading', inputs.loading);
   }
@@ -83,14 +86,14 @@ async function createComponent(inputs: {
 
 describe('UploadBoxFilesTableComponent', () => {
   it('should render the file names', async () => {
-    await createComponent({ files, boxState: UploadBoxState.open });
+    await createComponent({ pageFiles, boxState: UploadBoxState.open });
     expect(screen.getByText('alpha.txt')).toBeInTheDocument();
     expect(screen.getByText('beta.txt')).toBeInTheDocument();
   });
 
   it('should not show a delete column unless enabled', async () => {
     await createComponent({
-      files,
+      pageFiles,
       boxState: UploadBoxState.open,
       deletable: () => true,
     });
@@ -99,7 +102,7 @@ describe('UploadBoxFilesTableComponent', () => {
 
   it('should show delete buttons only for deletable files when enabled', async () => {
     await createComponent({
-      files,
+      pageFiles,
       boxState: UploadBoxState.open,
       showDelete: true,
       deletable: (file) => file.state === 'init',
@@ -110,7 +113,7 @@ describe('UploadBoxFilesTableComponent', () => {
 
   it('should emit deleteFile when a delete button is clicked', async () => {
     const fixture = await createComponent({
-      files,
+      pageFiles,
       boxState: UploadBoxState.open,
       showDelete: true,
       deletable: () => true,
@@ -124,7 +127,7 @@ describe('UploadBoxFilesTableComponent', () => {
 
   it('should request a new sort order instead of reordering the page itself', async () => {
     const fixture = await createComponent({
-      files: [
+      pageFiles: [
         makeFile({ id: 'a', alias: 'gamma.txt' }),
         makeFile({ id: 'b', alias: 'alpha.txt' }),
         makeFile({ id: 'c', alias: 'beta.txt' }),
@@ -153,7 +156,7 @@ describe('UploadBoxFilesTableComponent', () => {
 
   it('should request a new sort order when the accession header is clicked', async () => {
     const fixture = await createComponent({
-      files: [makeFile({ state: 'archived', accession: 'GHGAF001' })],
+      pageFiles: [makeFile({ state: 'archived', accession: 'GHGAF001' })],
       boxState: UploadBoxState.archived,
     });
 
@@ -167,13 +170,13 @@ describe('UploadBoxFilesTableComponent', () => {
   });
 
   it('should hide the paginator when all files fit on one page', async () => {
-    await createComponent({ files, boxState: UploadBoxState.open });
+    await createComponent({ pageFiles, boxState: UploadBoxState.open });
     expect(screen.queryByLabelText('Select page of files')).not.toBeInTheDocument();
   });
 
   it('should request another page when the paginator is used', async () => {
     const fixture = await createComponent({
-      files,
+      pageFiles,
       boxState: UploadBoxState.open,
       totalCount: 25,
     });
@@ -192,7 +195,7 @@ describe('UploadBoxFilesTableComponent', () => {
 
   it('should show a loading placeholder while the file list is loading', async () => {
     await createComponent({
-      files: [],
+      pageFiles: [],
       boxState: UploadBoxState.open,
       loading: true,
     });
@@ -202,7 +205,7 @@ describe('UploadBoxFilesTableComponent', () => {
 
   it('should show an empty placeholder once loaded with no files', async () => {
     await createComponent({
-      files: [],
+      pageFiles: [],
       boxState: UploadBoxState.open,
       loading: false,
     });
@@ -212,7 +215,7 @@ describe('UploadBoxFilesTableComponent', () => {
 
   it('should show the accession column for archived boxes', async () => {
     await createComponent({
-      files: [
+      pageFiles: [
         makeFile({ alias: 'gamma.txt', state: 'archived', accession: 'GHGAF001' }),
       ],
       boxState: UploadBoxState.archived,

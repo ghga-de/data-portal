@@ -195,7 +195,7 @@ export class UploadBoxManagerDetailComponent implements OnInit {
   });
 
   /** The file uploads on the currently shown page of this box. */
-  fileUploads = computed<FileUploadWithAccession[]>(() =>
+  pageFiles = computed<FileUploadWithAccession[]>(() =>
     this.#uploadBoxService.boxFiles(),
   );
 

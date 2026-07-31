@@ -37,7 +37,7 @@
         <p class="mb-2"><strong>Files:</strong></p>
         @if (box.file_count > 0) {
           <app-upload-box-files-table
-            [files]="files()"
+            [pageFiles]="pageFiles()"
             [boxState]="box.state"
             [loading]="filesLoading()"
             [totalCount]="filesTotalCount()"

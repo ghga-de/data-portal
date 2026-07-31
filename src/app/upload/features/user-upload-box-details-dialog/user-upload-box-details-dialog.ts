@@ -71,7 +71,7 @@ export class UserUploadBoxDetailsDialogComponent {
    * upload box via its `box_id`, which is the `file_upload_box_id` of the research
    * box, not its `id`.
    */
-  protected files = computed<FileUploadWithAccession[]>(() => {
+  protected pageFiles = computed<FileUploadWithAccession[]>(() => {
     const fileUploadBoxId = this.box()?.file_upload_box_id;
     if (!fileUploadBoxId) return [];
     return this.#uploadBoxService

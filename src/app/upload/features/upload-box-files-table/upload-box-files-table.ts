@@ -27,10 +27,10 @@ import { FileUploadStatePipe } from '@app/upload/pipes/file-upload-state-pipe';
 /**
  * Presentational, paginated table of the file uploads in an upload box.
  *
- * Pagination and sorting are driven by the server: `files` holds a single page
- * as delivered by the RS, and the paginator and sort headers only report the
- * requested page and order via the `page` and `sortChange` outputs. The parent
- * is responsible for fetching the matching page.
+ * Pagination and sorting are driven by the server: `pageFiles` holds a single
+ * page as delivered by the RS, and the paginator and sort headers only report
+ * the requested page and order via the `page` and `sortChange` outputs. The
+ * parent is responsible for fetching the matching page.
  *
  * The visible columns depend on the box state: archived boxes show the assigned
  * accession, other boxes show the upload status. When `showDelete` is set, an
@@ -53,8 +53,8 @@ import { FileUploadStatePipe } from '@app/upload/pipes/file-upload-state-pipe';
   templateUrl: './upload-box-files-table.html',
 })
 export class UploadBoxFilesTableComponent {
-  /** The file uploads of the currently shown page. */
-  files = input.required<FileUploadWithAccession[]>();
+  /** The file uploads of the currently shown page, not the whole collection. */
+  pageFiles = input.required<FileUploadWithAccession[]>();
 
   /** The state of the box the files belong to (controls the visible columns). */
   boxState = input.required<UploadBoxState>();

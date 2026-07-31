@@ -6,7 +6,7 @@
     [matSortActive]="sortActive()"
     [matSortDirection]="sortDirection()"
     (matSortChange)="sortChange.emit($event)"
-    [dataSource]="files()"
+    [dataSource]="pageFiles()"
     class="w-full"
   >
     <ng-container matColumnDef="alias">
