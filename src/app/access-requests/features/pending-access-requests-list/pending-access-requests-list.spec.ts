@@ -10,11 +10,13 @@ import { ActivatedRoute } from '@angular/router';
 import { fakeActivatedRoute } from '@app/../mocks/route';
 import { AccessRequestService } from '@app/access-requests/services/access-request';
 import { MockAccessRequestService } from '@app/access-requests/services/access-request.mock-service';
+import { screen } from '@testing-library/angular';
 import { PendingAccessRequestsListComponent } from './pending-access-requests-list';
 
 describe('PendingAccessRequestsListComponent', () => {
   let component: PendingAccessRequestsListComponent;
   let fixture: ComponentFixture<PendingAccessRequestsListComponent>;
+  let accessRequestService: AccessRequestService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -25,6 +27,7 @@ describe('PendingAccessRequestsListComponent', () => {
       ],
     }).compileComponents();
 
+    accessRequestService = TestBed.inject(AccessRequestService);
     fixture = TestBed.createComponent(PendingAccessRequestsListComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
@@ -32,5 +35,13 @@ describe('PendingAccessRequestsListComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should fetch the access requests again when the refresh button is used', () => {
+    const reload = vitest.spyOn(accessRequestService, 'reloadUserAccessRequests');
+    screen
+      .getByRole('button', { name: 'Refresh your pending access requests' })
+      .click();
+    expect(reload).toHaveBeenCalledTimes(1);
   });
 });

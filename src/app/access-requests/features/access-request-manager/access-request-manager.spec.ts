@@ -59,4 +59,9 @@ describe('AccessRequestManagerComponent', () => {
   it('should fetch all the access requests again upon initialization', () => {
     expect(accessRequestService.reloadAllAccessRequests).toHaveBeenCalled();
   });
+
+  it('should fetch all the access requests again when the refresh button is used', () => {
+    screen.getByRole('button', { name: 'Refresh the access requests' }).click();
+    expect(accessRequestService.reloadAllAccessRequests).toHaveBeenCalledTimes(2);
+  });
 });

@@ -67,6 +67,29 @@ mock handlers that contain backend logic.
   cannot be sorted correctly. Do not extend this to filtering, validation, or computed
   fields.
 
+## Test flavours
+
+Three levels of testing exist, with different purposes. Pick the level that can
+actually prove the thing you want to prove.
+
+- **Unit tests** (Vitest, `*.spec.ts` next to the code): the default. Services are
+  tested against `HttpTestingController`, components against mocked services. This is
+  where behaviour belongs — request shapes, cache invalidation, state transitions,
+  rendering and event wiring.
+- **E2E tests in this repo** (Playwright, `tests`): a **smoke test layer**. They run
+  against the MSW mocks, which serve static responses, so they can show that pages
+  render, that navigation and dialogs work, and that the app talks to the endpoints it
+  is supposed to. They exist mainly to keep frontend feedback fast. Keep them cheap and
+  few.
+- **Archive test bed**: real backend, real state. This is the only level that can
+  verify a flow whose outcome depends on the backend actually changing something.
+
+The practical consequence: do **not** try to cover a "change something, then see the
+change reflected" flow with a Playwright test here. The mocks return the same static
+response before and after the mutation, so such a test could only assert that a request
+was made — which a unit test already does more precisely and far more cheaply. Leave
+those flows to the archive test bed, which is more expensive to run.
+
 ## Repo commands (pnpm)
 
 This repo uses `pnpm` (not npm) for dependency installation and scripts.

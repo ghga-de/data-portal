@@ -157,6 +157,15 @@ describe('UserUploadBoxDetailsDialogComponent', () => {
     expect(service.reloadFileUploadsForBox).toHaveBeenCalledWith('box-1');
   });
 
+  it('should fetch the box and its files again when the refresh button is used', async () => {
+    const { fixture, service } = await createComponent();
+    service.setBox(box);
+    await fixture.whenStable();
+    screen.getByRole('button', { name: 'Refresh the file list' }).click();
+    expect(service.reloadUploadBox).toHaveBeenCalledTimes(2);
+    expect(service.reloadFileUploadsForBox).toHaveBeenCalledTimes(2);
+  });
+
   it('should fetch the files only once per opening', async () => {
     const { fixture, service } = await createComponent();
     service.setBox(box);

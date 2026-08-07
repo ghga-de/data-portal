@@ -129,6 +129,13 @@ describe('UserUploadGrantsListComponent', () => {
     expect(uploadBoxService.reloadUserGrants).toHaveBeenCalledTimes(1);
   });
 
+  it('should fetch the user grants again when the refresh button is used', () => {
+    screen
+      .getByRole('button', { name: 'Refresh your Research Data Upload Boxes' })
+      .click();
+    expect(uploadBoxService.reloadUserGrants).toHaveBeenCalledTimes(2);
+  });
+
   it('should show a loading indicator while grants are loading', async () => {
     uploadBoxService.setLoading(true);
     fixture.detectChanges();

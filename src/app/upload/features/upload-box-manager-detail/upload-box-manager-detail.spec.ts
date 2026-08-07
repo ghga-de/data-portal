@@ -254,6 +254,15 @@ describe('UploadBoxManagerDetailComponent', () => {
       expect(uploadBoxService.reloadBoxGrants).toHaveBeenCalledWith(TEST_BOX.id);
     });
 
+    it('should fetch the box, its grants and its files again when the refresh button is used', () => {
+      screen.getByRole('button', { name: 'Refresh the upload box details' }).click();
+      expect(uploadBoxService.reloadUploadBox).toHaveBeenLastCalledWith(TEST_BOX.id);
+      expect(uploadBoxService.reloadBoxGrants).toHaveBeenLastCalledWith(TEST_BOX.id);
+      expect(uploadBoxService.reloadFileUploadsForBox).toHaveBeenLastCalledWith(
+        TEST_BOX.id,
+      );
+    });
+
     it('should display upload grants when available', async () => {
       uploadBoxService.setBoxGrants(uploadGrants);
       await fixture.whenStable();

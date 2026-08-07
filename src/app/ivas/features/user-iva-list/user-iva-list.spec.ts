@@ -10,6 +10,7 @@ import { Iva, IvaState, IvaType } from '@app/ivas/models/iva';
 import { IvaService } from '@app/ivas/services/iva';
 import { ConfirmationService } from '@app/shared/services/confirmation';
 import { NotificationService } from '@app/shared/services/notification';
+import { screen } from '@testing-library/angular';
 import { of, throwError } from 'rxjs';
 import { UserIvaListComponent } from './user-iva-list';
 
@@ -36,6 +37,7 @@ const testIva: Iva = {
  */
 class MockIvaService {
   loadUserIvas = () => undefined;
+  reloadUserIvas = vitest.fn();
   userIvas = { value: () => [], isLoading: () => false, error: () => undefined };
   requestCodeForIva = vitest.fn();
 }
@@ -64,6 +66,11 @@ describe('UserIvaListComponent', () => {
     fixture = TestBed.createComponent(UserIvaListComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
+  });
+
+  it('should fetch the IVAs again when the refresh button is used', () => {
+    screen.getByRole('button', { name: 'Refresh your IVAs' }).click();
+    expect(ivaService.reloadUserIvas).toHaveBeenCalledTimes(1);
   });
 
   it('should create', () => {

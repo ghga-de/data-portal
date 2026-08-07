@@ -113,6 +113,11 @@ describe('UploadBoxManagerComponent', () => {
     expect(uploadBoxService.reloadAllUploadBoxes).toHaveBeenCalled();
   });
 
+  it('should fetch all upload boxes again when the refresh button is used', () => {
+    screen.getByRole('button', { name: 'Refresh the upload boxes' }).click();
+    expect(uploadBoxService.reloadAllUploadBoxes).toHaveBeenCalledTimes(2);
+  });
+
   it('should hide filters when no upload boxes are loaded', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('button.button-primary')).toBeNull();
