@@ -10,7 +10,6 @@ import { AccessRequestService } from '@app/access-requests/services/access-reque
 import { MockAccessRequestService } from '@app/access-requests/services/access-request.mock-service';
 import { ConfigService } from '@app/shared/services/config';
 import { provideHttpCache } from '@ngneat/cashew';
-import { screen } from '@testing-library/angular';
 import { ActiveAccessGrantsListComponent } from './active-access-grants-list';
 
 const MockConfigService = {
@@ -43,9 +42,9 @@ describe('ActiveAccessGrantsListComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should fetch the access grants again when the refresh button is used', () => {
+  it('should fetch the access grants again when refreshed', () => {
     const reload = vitest.spyOn(accessRequestService, 'reloadUserAccessGrants');
-    screen.getByRole('button', { name: 'Refresh your dataset access' }).click();
+    component.refresh();
     expect(reload).toHaveBeenCalledTimes(1);
   });
 });

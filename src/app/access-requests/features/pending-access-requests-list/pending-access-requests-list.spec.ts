@@ -10,7 +10,6 @@ import { ActivatedRoute } from '@angular/router';
 import { fakeActivatedRoute } from '@app/../mocks/route';
 import { AccessRequestService } from '@app/access-requests/services/access-request';
 import { MockAccessRequestService } from '@app/access-requests/services/access-request.mock-service';
-import { screen } from '@testing-library/angular';
 import { PendingAccessRequestsListComponent } from './pending-access-requests-list';
 
 describe('PendingAccessRequestsListComponent', () => {
@@ -37,11 +36,9 @@ describe('PendingAccessRequestsListComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should fetch the access requests again when the refresh button is used', () => {
+  it('should fetch the access requests again when refreshed', () => {
     const reload = vitest.spyOn(accessRequestService, 'reloadUserAccessRequests');
-    screen
-      .getByRole('button', { name: 'Refresh your pending access requests' })
-      .click();
+    component.refresh();
     expect(reload).toHaveBeenCalledTimes(1);
   });
 });

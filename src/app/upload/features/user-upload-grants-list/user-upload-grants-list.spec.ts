@@ -129,10 +129,8 @@ describe('UserUploadGrantsListComponent', () => {
     expect(uploadBoxService.reloadUserGrants).toHaveBeenCalledTimes(1);
   });
 
-  it('should fetch the user grants again when the refresh button is used', () => {
-    screen
-      .getByRole('button', { name: 'Refresh your Research Data Upload Boxes' })
-      .click();
+  it('should fetch the user grants again when refreshed', () => {
+    component.refresh();
     expect(uploadBoxService.reloadUserGrants).toHaveBeenCalledTimes(2);
   });
 

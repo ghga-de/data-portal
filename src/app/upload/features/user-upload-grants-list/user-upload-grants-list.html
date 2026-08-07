@@ -1,11 +1,3 @@
-<div class="flex justify-end">
-  <app-refresh-button
-    what="your Research Data Upload Boxes"
-    [loading]="isLoading()"
-    umamiEvent="User Upload Grants List Refresh Clicked"
-    (refresh)="refresh()"
-  />
-</div>
 @if (hasError()) {
   <p class="text-base"
     >There was an error retrieving your Research Data Upload Boxes.</p

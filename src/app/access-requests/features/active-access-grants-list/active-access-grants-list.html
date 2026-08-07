@@ -1,11 +1,3 @@
-<div class="flex justify-end">
-  <app-refresh-button
-    what="your dataset access"
-    [loading]="isLoading()"
-    umamiEvent="Granted Access Grants List Refresh Clicked"
-    (refresh)="refresh()"
-  />
-</div>
 @if (hasError()) {
   <p class="text-base">There was an error retrieving your granted access requests.</p>
 } @else {

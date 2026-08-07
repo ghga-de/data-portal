@@ -1,11 +1,3 @@
-<div class="flex justify-end">
-  <app-refresh-button
-    what="your IVAs"
-    [loading]="ivasAreLoading()"
-    umamiEvent="User IVA List Refresh Clicked"
-    (refresh)="reload()"
-  />
-</div>
 @if (ivasAreLoading()) {
   <p class="text-base">Loading your IVAs...</p>
 } @else if (ivasError()) {

@@ -11,7 +11,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { ConfirmationService } from '@app/shared/services/confirmation';
 import { NotificationService } from '@app/shared/services/notification';
-import { RefreshButtonComponent } from '@app/shared/ui/refresh-button/refresh-button';
 import { StencilComponent } from '@app/shared/ui/stencil/stencil/stencil';
 import { UploadBoxState } from '@app/upload/models/box';
 import { GrantWithBoxInfo } from '@app/upload/models/grant';
@@ -26,7 +25,7 @@ import { UploadWorkPackageDialogComponent } from '@app/work-packages/features/up
  */
 @Component({
   selector: 'app-user-upload-grants-list',
-  imports: [StencilComponent, MatIconModule, MatButtonModule, RefreshButtonComponent],
+  imports: [StencilComponent, MatIconModule, MatButtonModule],
   templateUrl: './user-upload-grants-list.html',
 })
 export class UserUploadGrantsListComponent implements OnInit {
@@ -35,7 +34,7 @@ export class UserUploadGrantsListComponent implements OnInit {
   #dialog = inject(MatDialog);
   #notification = inject(NotificationService);
 
-  protected isLoading = this.#uploadBoxService.userGrants.isLoading;
+  isLoading = this.#uploadBoxService.userGrants.isLoading;
   protected hasError = this.#uploadBoxService.userGrants.error;
 
   /**

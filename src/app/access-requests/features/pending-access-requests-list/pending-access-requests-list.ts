@@ -8,7 +8,6 @@ import { DatePipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AccessRequestService } from '@app/access-requests/services/access-request';
-import { RefreshButtonComponent } from '@app/shared/ui/refresh-button/refresh-button';
 import { FRIENDLY_DATE_FORMAT } from '@app/shared/utils/date-formats';
 import { StencilComponent } from '../../../shared/ui/stencil/stencil/stencil';
 
@@ -17,7 +16,7 @@ import { StencilComponent } from '../../../shared/ui/stencil/stencil/stencil';
  */
 @Component({
   selector: 'app-pending-access-requests-list',
-  imports: [RouterLink, StencilComponent, DatePipe, RefreshButtonComponent],
+  imports: [RouterLink, StencilComponent, DatePipe],
   templateUrl: './pending-access-requests-list.html',
 })
 export class PendingAccessRequestsListComponent {
