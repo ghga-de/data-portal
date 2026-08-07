@@ -229,6 +229,11 @@ Worker configuration:
 - For faster local runs with the same command, do `export PLAYWRIGHT_WORKERS=<number of workers>`.
 - If tests get flaky, lower the value (or return to `1`).
 
+Stopping early:
+
+- A local run stops at the first failure, which is usually what you want while fixing something.
+- CI stops after 5, so that a single broken test can be reported for each of the three browsers rather than aborting the remaining tests after the first of them. Beyond that the suite is broken enough that stopping saves more than it hides.
+
 Timeouts:
 
 - The per-test timeout is raised to 60s and the `expect` timeout to 10s, well above the Playwright defaults. CI runners are far slower than a local machine: logging in and reaching an admin page alone costs around 15 seconds there, and even a mocked request can take more than a second, which used to exhaust the default 30s budget mid-test.

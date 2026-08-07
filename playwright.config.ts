@@ -38,8 +38,10 @@ export default defineConfig({
      tests that are stuck, not targets — do not treat a passing slow test as fine. */
   timeout: 60_000,
   expect: { timeout: 10_000 },
-  /* Stop after first failure */
-  maxFailures: 1,
+  /* Stop early, but on CI leave room for one broken test to be reported for each
+     browser (plus a little headroom) instead of aborting the rest of the run
+     after the first of them. Locally, failing on the first one is quicker. */
+  maxFailures: process.env.CI ? 5 : 1,
   /* Reporter to use. Keep HTML report generation, but never auto-open it. */
   reporter: [['html', { open: 'never' }]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
