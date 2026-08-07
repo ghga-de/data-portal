@@ -8,7 +8,8 @@ import { HttpClient, HttpParams, httpResource } from '@angular/common/http';
 import { computed, inject, resource, Service, signal } from '@angular/core';
 import { AuthService } from '@app/auth/services/auth';
 import { ConfigService } from '@app/shared/services/config';
-import { CacheBucket, HttpCacheManager, withCache } from '@ngneat/cashew';
+import { volatileCacheContext } from '@app/shared/utils/http-cache';
+import { CacheBucket, HttpCacheManager } from '@ngneat/cashew';
 import { firstValueFrom, fromEvent, map, Observable, takeUntil, tap } from 'rxjs';
 import { AccessionMapRequest } from '../models/accession-map';
 import {
@@ -64,11 +65,11 @@ export class UploadBoxService {
   #userGrantsBucket = new CacheBucket();
   #fileUploadsBucket = new CacheBucket();
 
-  #boxesContext = withCache({ bucket: this.#boxesBucket });
-  #boxContext = withCache({ bucket: this.#boxBucket });
-  #boxGrantsContext = withCache({ bucket: this.#boxGrantsBucket });
-  #userGrantsContext = withCache({ bucket: this.#userGrantsBucket });
-  #fileUploadsContext = withCache({ bucket: this.#fileUploadsBucket });
+  #boxesContext = volatileCacheContext(this.#boxesBucket);
+  #boxContext = volatileCacheContext(this.#boxBucket);
+  #boxGrantsContext = volatileCacheContext(this.#boxGrantsBucket);
+  #userGrantsContext = volatileCacheContext(this.#userGrantsBucket);
+  #fileUploadsContext = volatileCacheContext(this.#fileUploadsBucket);
 
   #loadAllUploadBoxes = signal<boolean>(false);
   #loadStorageLabels = signal<boolean>(false);

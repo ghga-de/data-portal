@@ -9,7 +9,8 @@ import { computed, inject, Service, signal } from '@angular/core';
 import { AuthService } from '@app/auth/services/auth';
 import { ConfigService } from '@app/shared/services/config';
 import { NotificationService } from '@app/shared/services/notification';
-import { CacheBucket, HttpCacheManager, withCache } from '@ngneat/cashew';
+import { volatileCacheContext } from '@app/shared/utils/http-cache';
+import { CacheBucket, HttpCacheManager } from '@ngneat/cashew';
 import { Observable, tap } from 'rxjs';
 import {
   AccessGrant,
@@ -51,11 +52,11 @@ export class AccessRequestService {
   #userGrantsBucket = new CacheBucket();
   #allGrantsBucket = new CacheBucket();
 
-  #userRequestsContext = withCache({ bucket: this.#userRequestsBucket });
-  #allRequestsContext = withCache({ bucket: this.#allRequestsBucket });
-  #requestContext = withCache({ bucket: this.#requestBucket });
-  #userGrantsContext = withCache({ bucket: this.#userGrantsBucket });
-  #allGrantsContext = withCache({ bucket: this.#allGrantsBucket });
+  #userRequestsContext = volatileCacheContext(this.#userRequestsBucket);
+  #allRequestsContext = volatileCacheContext(this.#allRequestsBucket);
+  #requestContext = volatileCacheContext(this.#requestBucket);
+  #userGrantsContext = volatileCacheContext(this.#userGrantsBucket);
+  #allGrantsContext = volatileCacheContext(this.#allGrantsBucket);
 
   performAccessRequest = (data: AccessRequestDetailData) => {
     this.#http
