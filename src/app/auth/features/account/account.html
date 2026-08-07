@@ -40,7 +40,18 @@
 
 <mat-card appearance="outlined" class="text-primary my-4 p-2">
   <mat-card-header>
-    <mat-card-title><h2>Independent Verification Addresses (IVAs)</h2></mat-card-title>
+    <mat-card-title>
+      <div class="flex items-start justify-between gap-2">
+        <h2>Independent Verification Addresses (IVAs)</h2>
+        <app-refresh-button
+          class="-mt-2"
+          what="your IVAs"
+          [loading]="ivaList.ivasAreLoading()"
+          umamiEvent="User IVA List Refresh Clicked"
+          (refresh)="ivaList.reload()"
+        />
+      </div>
+    </mat-card-title>
     <mat-card-subtitle
       >GHGA uses Independent Verification Addresses (IVAs) to verify your account's
       identity. These IVAs are linked to data access requests and also need to be
@@ -53,13 +64,6 @@
         >GHGA User Documentation</a
       >.</mat-card-subtitle
     >
-    <app-refresh-button
-      class="ml-auto self-start"
-      what="your IVAs"
-      [loading]="ivaList.ivasAreLoading()"
-      umamiEvent="User IVA List Refresh Clicked"
-      (refresh)="ivaList.reload()"
-    />
   </mat-card-header>
   <mat-card-content class="my-4 text-base">
     <app-user-iva-list #ivaList></app-user-iva-list
@@ -68,20 +72,24 @@
 
 <mat-card appearance="outlined" class="text-primary my-4 p-2">
   <mat-card-header>
-    <mat-card-title><h2>Dataset Access</h2></mat-card-title>
+    <mat-card-title>
+      <div class="flex items-start justify-between gap-2">
+        <h2>Dataset Access</h2>
+        <app-refresh-button
+          class="-mt-2"
+          what="your dataset access"
+          [loading]="grantsList.isLoading()"
+          umamiEvent="Granted Access Grants List Refresh Clicked"
+          (refresh)="grantsList.refresh()"
+        />
+      </div>
+    </mat-card-title>
     <mat-card-subtitle
       >If you have been granted access to any datasets, these will appear below. In
       order to download data from these datasets, you will need to create download
       tokens through the respective button. You can then download the files using the
       GHGA Connector.</mat-card-subtitle
     >
-    <app-refresh-button
-      class="ml-auto self-start"
-      what="your dataset access"
-      [loading]="grantsList.isLoading()"
-      umamiEvent="Granted Access Grants List Refresh Clicked"
-      (refresh)="grantsList.refresh()"
-    />
   </mat-card-header>
   <mat-card-content class="my-4 text-base">
     <app-granted-access-grants-list #grantsList></app-granted-access-grants-list>
@@ -90,20 +98,24 @@
 
 <mat-card appearance="outlined" class="text-primary my-4 p-2">
   <mat-card-header>
-    <mat-card-title><h2>Pending Access Requests</h2></mat-card-title>
+    <mat-card-title>
+      <div class="flex items-start justify-between gap-2">
+        <h2>Pending Access Requests</h2>
+        <app-refresh-button
+          class="-mt-2"
+          what="your pending access requests"
+          [loading]="requestsList.isLoading()"
+          umamiEvent="Pending Access Requests List Refresh Clicked"
+          (refresh)="requestsList.refresh()"
+        />
+      </div>
+    </mat-card-title>
     <mat-card-subtitle
       >If you have any pending access requests to any datasets, these will appear below.
       Any request that is granted will be moved to the section above (Dataset Access).
       If an access request is denied, it will no longer be displayed here, and a new
       access request can be created by going to the desired dataset.</mat-card-subtitle
     >
-    <app-refresh-button
-      class="ml-auto self-start"
-      what="your pending access requests"
-      [loading]="requestsList.isLoading()"
-      umamiEvent="Pending Access Requests List Refresh Clicked"
-      (refresh)="requestsList.refresh()"
-    />
   </mat-card-header>
   <mat-card-content class="my-4 text-base">
     <app-pending-access-requests-list #requestsList></app-pending-access-requests-list>
@@ -112,20 +124,24 @@
 
 <mat-card appearance="outlined" class="text-primary my-4 p-2">
   <mat-card-header>
-    <mat-card-title><h2>Research Data Upload</h2></mat-card-title>
+    <mat-card-title>
+      <div class="flex items-start justify-between gap-2">
+        <h2>Research Data Upload</h2>
+        <app-refresh-button
+          class="-mt-2"
+          what="your Research Data Upload Boxes"
+          [loading]="uploadList.isLoading()"
+          umamiEvent="User Upload Grants List Refresh Clicked"
+          (refresh)="uploadList.refresh()"
+        />
+      </div>
+    </mat-card-title>
     <mat-card-subtitle
       >If you have been granted access to a Research Data Upload Box, this will be shown
       below. In order to upload data to these boxes, you will need to create an upload
       token using the respective button. You can then upload and manage the files using
       the GHGA Connector.</mat-card-subtitle
     >
-    <app-refresh-button
-      class="ml-auto self-start"
-      what="your Research Data Upload Boxes"
-      [loading]="uploadList.isLoading()"
-      umamiEvent="User Upload Grants List Refresh Clicked"
-      (refresh)="uploadList.refresh()"
-    />
   </mat-card-header>
   <mat-card-content class="my-4 text-base">
     <app-user-upload-grants-list #uploadList></app-user-upload-grants-list>

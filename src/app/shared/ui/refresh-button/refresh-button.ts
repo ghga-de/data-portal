@@ -19,6 +19,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 @Component({
   selector: 'app-refresh-button',
   imports: [MatButtonModule, MatIconModule, MatTooltipModule],
+  // Keep the button at its natural size when it sits next to a heading that wraps.
+  host: { class: 'shrink-0' },
   template: `
     <button
       mat-icon-button
