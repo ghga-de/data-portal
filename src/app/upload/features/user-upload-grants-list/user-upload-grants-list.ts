@@ -5,12 +5,13 @@
  */
 
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { ConfirmationService } from '@app/shared/services/confirmation';
 import { NotificationService } from '@app/shared/services/notification';
+import { RefreshButtonComponent } from '@app/shared/ui/refresh-button/refresh-button';
 import { StencilComponent } from '@app/shared/ui/stencil/stencil/stencil';
 import { UploadBoxState } from '@app/upload/models/box';
 import { GrantWithBoxInfo } from '@app/upload/models/grant';
@@ -25,10 +26,10 @@ import { UploadWorkPackageDialogComponent } from '@app/work-packages/features/up
  */
 @Component({
   selector: 'app-user-upload-grants-list',
-  imports: [StencilComponent, MatIconModule, MatButtonModule],
+  imports: [StencilComponent, MatIconModule, MatButtonModule, RefreshButtonComponent],
   templateUrl: './user-upload-grants-list.html',
 })
-export class UserUploadGrantsListComponent {
+export class UserUploadGrantsListComponent implements OnInit {
   #uploadBoxService = inject(UploadBoxService);
   #confirmation = inject(ConfirmationService);
   #dialog = inject(MatDialog);
@@ -36,6 +37,24 @@ export class UserUploadGrantsListComponent {
 
   protected isLoading = this.#uploadBoxService.userGrants.isLoading;
   protected hasError = this.#uploadBoxService.userGrants.error;
+
+  /**
+   * Fetch the grants again whenever the account page is opened. The underlying
+   * resource is triggered by the logged-in user alone, so without this it would
+   * be fetched once per session and grants created afterwards (by a data
+   * steward, possibly the user themselves) would never show up.
+   */
+  ngOnInit(): void {
+    this.#uploadBoxService.reloadUserGrants();
+  }
+
+  /**
+   * Fetch the grants again on request. Box states and titles are changed by data
+   * stewards, and new grants can be issued while the account page is open.
+   */
+  refresh(): void {
+    this.#uploadBoxService.reloadUserGrants();
+  }
 
   /** Open upload grants filtered by state and deduplicated by upload box ID. */
   protected openGrants = computed(() => {

@@ -42,7 +42,7 @@ describe('AccessRequestManagerComponent', () => {
 
     fixture = TestBed.createComponent(AccessRequestManagerComponent);
     accessRequestService = TestBed.inject(AccessRequestService);
-    accessRequestService.loadAllAccessRequests = vitest.fn();
+    accessRequestService.reloadAllAccessRequests = vitest.fn();
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
@@ -56,7 +56,7 @@ describe('AccessRequestManagerComponent', () => {
     expect(heading).toHaveTextContent('Access Request Management');
   });
 
-  it('should load all the access requests upon initialization', () => {
-    expect(accessRequestService.loadAllAccessRequests).toHaveBeenCalled();
+  it('should fetch all the access requests again upon initialization', () => {
+    expect(accessRequestService.reloadAllAccessRequests).toHaveBeenCalled();
   });
 });

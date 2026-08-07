@@ -49,6 +49,7 @@ class MockUploadBoxService {
     reload: () => undefined,
   };
   loadUserGrants = () => undefined;
+  reloadUserGrants = () => undefined;
 }
 
 const MockConfigService = {

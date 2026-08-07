@@ -8,6 +8,7 @@ import { DatePipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AccessRequestService } from '@app/access-requests/services/access-request';
+import { RefreshButtonComponent } from '@app/shared/ui/refresh-button/refresh-button';
 import { FRIENDLY_DATE_FORMAT } from '@app/shared/utils/date-formats';
 import { StencilComponent } from '../../../shared/ui/stencil/stencil/stencil';
 
@@ -16,7 +17,7 @@ import { StencilComponent } from '../../../shared/ui/stencil/stencil/stencil';
  */
 @Component({
   selector: 'app-pending-access-requests-list',
-  imports: [RouterLink, StencilComponent, DatePipe],
+  imports: [RouterLink, StencilComponent, DatePipe, RefreshButtonComponent],
   templateUrl: './pending-access-requests-list.html',
 })
 export class PendingAccessRequestsListComponent {
@@ -26,4 +27,12 @@ export class PendingAccessRequestsListComponent {
   pendingRequests = this.#ars.pendingUserAccessRequests;
   isLoading = this.#ars.userAccessRequests.isLoading;
   hasError = this.#ars.userAccessRequests.error;
+
+  /**
+   * Fetch the access requests again on request, since data access committees
+   * process them while the account page is open.
+   */
+  refresh(): void {
+    this.#ars.reloadUserAccessRequests();
+  }
 }

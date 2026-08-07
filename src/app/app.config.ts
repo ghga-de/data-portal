@@ -46,8 +46,13 @@ export const appConfig: ApplicationConfig = {
       withFetch(),
       withInterceptors([withHttpCacheInterceptor(), csrfInterceptor]),
     ),
-    // cache all GET requests by default
-    provideHttpCache({ strategy: 'implicit' }),
+    // Cache all GET requests by default. Services drop the affected cache
+    // entries themselves whenever they change data or fetch it again on
+    // request, which is the primary mechanism for keeping views up to date.
+    // The short time to live is only a backstop, so that an endpoint whose
+    // invalidation was overlooked recovers on its own instead of serving the
+    // same response for the whole session (cashew defaults to one hour).
+    provideHttpCache({ strategy: 'implicit', ttl: 60_000 }),
     { provide: MAT_DATE_LOCALE, useValue: DEFAULT_DATE_LOCALE },
     {
       provide: DATE_PIPE_DEFAULT_OPTIONS,

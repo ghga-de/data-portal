@@ -1,3 +1,11 @@
+<div class="flex justify-end">
+  <app-refresh-button
+    what="your pending access requests"
+    [loading]="isLoading()"
+    umamiEvent="Pending Access Requests List Refresh Clicked"
+    (refresh)="refresh()"
+  />
+</div>
 @if (hasError()) {
   <p class="text-base">There was an error retrieving your pending access requests.</p>
 } @else {

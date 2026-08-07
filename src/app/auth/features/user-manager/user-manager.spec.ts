@@ -24,6 +24,7 @@ class MockConfigService {
  */
 class MockUserService {
   loadUsers = () => undefined;
+  reloadUsers = () => undefined;
   setUsersFilter = () => undefined;
   users = {
     value: () => [],

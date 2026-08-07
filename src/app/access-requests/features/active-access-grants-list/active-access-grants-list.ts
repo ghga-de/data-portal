@@ -11,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterLink, RouterModule } from '@angular/router';
 import { AccessGrant } from '@app/access-requests/models/access-requests';
 import { AccessRequestService } from '@app/access-requests/services/access-request';
+import { RefreshButtonComponent } from '@app/shared/ui/refresh-button/refresh-button';
 import { StencilComponent } from '../../../shared/ui/stencil/stencil/stencil';
 // eslint-disable-next-line boundaries/dependencies
 import { DownloadWorkPackageDialogComponent } from '@app/work-packages/features/download-work-package-dialog/download-work-package-dialog';
@@ -20,7 +21,14 @@ import { DownloadWorkPackageDialogComponent } from '@app/work-packages/features/
  */
 @Component({
   selector: 'app-granted-access-grants-list',
-  imports: [RouterLink, StencilComponent, MatIconModule, MatButtonModule, RouterModule],
+  imports: [
+    RouterLink,
+    StencilComponent,
+    MatIconModule,
+    MatButtonModule,
+    RouterModule,
+    RefreshButtonComponent,
+  ],
   templateUrl: './active-access-grants-list.html',
 })
 export class ActiveAccessGrantsListComponent {
@@ -30,6 +38,14 @@ export class ActiveAccessGrantsListComponent {
   protected activeGrants = computed(() => this.#ars.activeUserAccessGrants());
   protected isLoading = this.#ars.userAccessGrants.isLoading;
   protected hasError = this.#ars.userAccessGrants.error;
+
+  /**
+   * Fetch the access grants again on request, since grants are issued and
+   * revoked by data stewards while the account page is open.
+   */
+  refresh(): void {
+    this.#ars.reloadUserAccessGrants();
+  }
 
   /**
    * Open the download work package dialog for a specific grant.

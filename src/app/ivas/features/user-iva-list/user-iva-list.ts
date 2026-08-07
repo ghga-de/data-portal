@@ -15,6 +15,7 @@ import { IvaTypePipe } from '@app/ivas/pipes/iva-type-pipe';
 import { IvaService } from '@app/ivas/services/iva';
 import { ConfirmationService } from '@app/shared/services/confirmation';
 import { NotificationService } from '@app/shared/services/notification';
+import { RefreshButtonComponent } from '@app/shared/ui/refresh-button/refresh-button';
 import { NewIvaDialogComponent } from '../new-iva-dialog/new-iva-dialog';
 import { VerificationDialogComponent } from '../verification-dialog/verification-dialog';
 
@@ -29,6 +30,7 @@ import { VerificationDialogComponent } from '../verification-dialog/verification
     MatIconModule,
     MatDialogModule,
     IvaTypePipe,
+    RefreshButtonComponent,
   ],
   providers: [IvaTypePipe],
   templateUrl: './user-iva-list.html',
