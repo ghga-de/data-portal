@@ -229,6 +229,11 @@ Worker configuration:
 - For faster local runs with the same command, do `export PLAYWRIGHT_WORKERS=<number of workers>`.
 - If tests get flaky, lower the value (or return to `1`).
 
+Timeouts:
+
+- The per-test timeout is raised to 60s and the `expect` timeout to 10s, well above the Playwright defaults. CI runners are far slower than a local machine: logging in and reaching an admin page alone costs around 15 seconds there, and even a mocked request can take more than a second, which used to exhaust the default 30s budget mid-test.
+- These are upper bounds for tests that are genuinely stuck, not targets. A test that only passes because of them is telling you something — check the Playwright trace before raising them further.
+
 Recommendations for writing stable e2e tests:
 
 - Assert stable end states (final URL, final title, final visible content), not transient intermediate states.
