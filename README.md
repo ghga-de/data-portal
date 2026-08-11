@@ -1,5 +1,17 @@
 # GHGA Data Portal
 
+> [!IMPORTANT]
+> **This repository is archived and no longer maintained.**
+>
+> Development of the data portal continues in the GHGA mono repository at
+> [ghga-de/ghga](https://github.com/ghga-de/ghga), where the application now lives under
+> [`frontend/data-portal`](https://github.com/ghga-de/ghga/tree/main/frontend/data-portal).
+> Please open issues and pull requests there.
+>
+> This repository is kept read-only for its history. Version 2.5.15 (August 2026) was the
+> last release made here; everything after that has been developed in the mono repository.
+> The documentation below describes the state of the code as of that version.
+
 This repository contains the front-end application for the GHGA data portal.
 
 <!-- toc -->

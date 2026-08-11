@@ -461,7 +461,14 @@ export default tseslint.config(
       'markdown/no-empty-links': 'error',
       'markdown/no-html': 'error',
       'markdown/no-invalid-label-refs': 'error',
-      'markdown/no-missing-label-refs': 'error',
+      // GitHub alerts (`> [!NOTE]`) parse as shorthand label references,
+      // so allow their labels instead of flagging them as missing.
+      'markdown/no-missing-label-refs': [
+        'error',
+        {
+          allowLabels: ['!NOTE', '!TIP', '!IMPORTANT', '!WARNING', '!CAUTION'],
+        },
+      ],
     },
   },
   // Disable ESLint rules that conflict with Prettier (must come last).

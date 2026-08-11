@@ -1,5 +1,12 @@
 # Agent Instructions for the Data Portal
 
+> [!IMPORTANT]
+> **This repository is archived and no longer maintained.** Development continues in the
+> GHGA mono repository [ghga-de/ghga](https://github.com/ghga-de/ghga), where the data
+> portal lives under `frontend/data-portal`. Do not make changes here; work in the mono
+> repository instead. Version 2.5.15 (August 2026) was the last release made here, and the
+> instructions below describe the project as of that version.
+
 This is the primary, tool-agnostic AI entrypoint for any coding agent working in this repository.
 
 ## Instruction source of truth
